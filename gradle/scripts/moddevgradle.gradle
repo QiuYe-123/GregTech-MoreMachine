@@ -1,9 +1,9 @@
 ext.isJetbrainsRuntime = System.getProperty('java.vm.vendor').contains('JetBrains')
 
 mixin {
-    var refmap = add sourceSets.main, "gtmthings.refmap.json"
+    var refmap = add sourceSets.main, "gtmoremachine.refmap.json"
     slimJar.from refmap
-    config "gtmthings.mixins.json"
+    config "gtmoremachine.mixins.json"
 }
 
 // we have to force LWJGL version 3.3.2, because RenderNurse requires Java 21, and LWJGL 3.3.1 cannot run on Java 21.
@@ -28,8 +28,6 @@ legacyForge {
     }
 
     accessTransformers = project.files('src/main/resources/META-INF/accesstransformer.cfg')
-
-    interfaceInjectionData = project.files('injected_interfaces/interfaces.json')
 
     addModdingDependenciesTo(sourceSets.test)
 

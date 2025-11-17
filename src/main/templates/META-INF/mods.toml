@@ -1,6 +1,7 @@
 modLoader="javafml"
-loaderVersion = "[47,)"
-license="${mod_license}"
+loaderVersion = "[${forge_version},)"
+issueTrackerURL = "${mod_issue_tracker}"
+license = "${mod_license}"
 
 [[mods]]
 modId="${mod_id}"
@@ -11,30 +12,49 @@ description = "${mod_description}"
 displayURL = "${mod_url}"
 credits = ""
 
-[[dependencies.${mod_id}]]
+
+[[dependencies.${ mod_id }]]
 modId = "forge"
 mandatory = true
 versionRange = "[${forge_version},)"
 ordering = "NONE"
 side = "BOTH"
 
-[[dependencies.${mod_id}]]
+[[dependencies.${ mod_id }]]
 modId = "minecraft"
 mandatory = true
-versionRange = "[${minecraft_version},)"
+versionRange = "${minecraft_version}"
 ordering = "NONE"
 side = "BOTH"
 
-[[dependencies.${mod_id}]]
-modId = "gtceu"
+[[dependencies.${ mod_id }]]
+modId = "ldlib"
 mandatory = true
-versionRange = "[${gtceu_version},)"
+embedded = true
+versionRange = "[${ldlib_version},)"
 ordering = "AFTER"
 side = "BOTH"
+[dependencies.${ mod_id }.mc-publish]
+ignore = false
+modrinth = "ldlib"
+curseforge = "ldlib"
+
+[[dependencies.${ mod_id }]]
+modId = "configuration"
+mandatory = true
+embedded = true
+versionRange = "[3.1.0,)"
+ordering = "AFTER"
+side = "BOTH"
+[dependencies.${ mod_id }.mc-publish]
+ignore = false
+modrinth = "configuration"
+curseforge = "configuration"
+
 
 [[dependencies.${mod_id}]]
-modId = "ae2"
-mandatory = true
-versionRange = "[${ae2_version},)"
-ordering = "AFTER"
+modId = "gtceu"
+mandatory = false
+versionRange = "[7,)"
+ordering = "BEFORE"
 side = "BOTH"

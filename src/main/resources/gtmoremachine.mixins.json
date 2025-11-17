@@ -2,16 +2,14 @@
   "required": true,
   "minVersion": "0.8",
   "package": "cn.qiuye.gtmoremachine.mixin",
-  "compatibilityLevel": "JAVA_8",
   "refmap": "gtmoremachine.refmap.json",
-  "mixins": [
-  ],
+  "compatibilityLevel": "JAVA_17",
   "client": [
   ],
+  "mixins": [
+  ],
   "injectors": {
-    "defaultRequire": 1
-  },
-  "overwrites": {
-    "requireAnnotations": true
+    "defaultRequire": 1,
+    "maxShiftBy": 5
   }
 }
