@@ -1,0 +1,26 @@
+spotless {
+    encoding 'UTF-8'
+
+    format 'misc', {
+        target '.gitignore'
+
+        trimTrailingWhitespace()
+        leadingTabsToSpaces()
+        endWithNewline()
+    }
+    java {
+        target 'src/main/java/**/*.java'
+
+        def orderFile = file("$rootDir/gradle/spotless/spotless.importorder")
+        def formatFile = file("$rootDir/gradle/spotless/spotless.eclipseformat.xml")
+        toggleOffOn()
+        importOrderFile(orderFile)
+        removeUnusedImports('cleanthat-javaparser-unnecessaryimport')
+        endWithNewline()
+        eclipse('4.31').configFile(formatFile)
+    }
+    kotlin {
+        target'src/main/kotlin/**/*.kt'
+        ktlint('1.4.1').setEditorConfigPath("$rootDir/gradle/spotless/spotless.ktlint")
+    }
+}
