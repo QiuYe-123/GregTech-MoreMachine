@@ -5,7 +5,7 @@ configuration = "3.1.0-forge"
 gtm = "7.3.0"
 mixinExtras = "0.5.0-rc.3"
 
-jei = "15.20.0.112"
+jei = "15.20.0.121"
 emi = "1.1.22+1.20.1"
 ae2 = "15.4.10"
 guideme = "20.1.11"
@@ -48,6 +48,9 @@ jei-forge-api       = { module = "mezz.jei:jei-1.20.1-forge-api", version.ref = 
 jei-forge-impl      = { module = "mezz.jei:jei-1.20.1-forge", version.ref = "jei" }
 emi                 = { module = "dev.emi:emi-forge", version.ref = "emi" }
 
+ftblibrary          = { module = "dev.ftb.mods:ftb-library-forge", version.ref = "ftblibrary" }
+ftbteams            = { module = "dev.ftb.mods:ftb-teams-forge", version.ref = "ftbteams" }
+
 ae2                 = { module = "appeng:appliedenergistics2-forge", version.ref = "ae2" }
 guideme             = { module = "org.appliedenergistics:guideme", version.ref = "guideme" }
 architectury        = { module = "dev.architectury:architectury-forge", version.ref = "architectury" }
@@ -59,9 +62,6 @@ oculus              = { module = "maven.modrinth:oculus", version.ref = "oculus"
 ferritecore         = { module = "maven.modrinth:uXXizFIs", version.ref = "ferritecore" }
 modernfix           = { module = "maven.modrinth:modernfix", version.ref = "modernfix" }
 modernui            = { module = "maven.modrinth:modern-ui", version.ref = "modernui" }
-
-ftblibrary          = { module = "dev.ftb.mods:ftb-library-forge", version.ref = "ftblibrary" }
-ftbteams            = { module = "dev.ftb.mods:ftb-teams-forge", version.ref = "ftbteams" }
 
 sophisticatedcore  = { module = "maven.modrinth:nmoqTijg", version.ref = "sophisticated-core" }
 sophisticatedbackpacks = { module = "maven.modrinth:TyCTlI4b", version.ref = "sophisticated-backpacks" }

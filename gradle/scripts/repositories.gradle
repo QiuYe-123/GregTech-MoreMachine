@@ -21,7 +21,7 @@ repositories {
     }
     maven { // Configuration
         name = 'Configuration'
-        url = 'https://api.repsy.io/mvn/toma/public/'
+        url = 'https://repo.repsy.io/mvn/toma/public/'
     }
     maven {
         name = 'GTCEu Maven'

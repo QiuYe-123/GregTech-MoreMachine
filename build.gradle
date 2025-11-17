@@ -88,6 +88,7 @@ apply from: "$rootDir/gradle/scripts/publishing.gradle"
 apply from: "$rootDir/gradle/scripts/spotless.gradle"
 
 generateModMetadata.doFirst {
+    mkdir('run/client')
     mkdir('run/server')
     mkdir('run/data')
 }

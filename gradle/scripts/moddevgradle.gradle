@@ -47,6 +47,7 @@ legacyForge {
             sourceSet = sourceSets.clientExtra
             ideName = "Client"
 
+            gameDirectory.set(file('run/client'))
             systemProperty('forge.enabledGameTestNamespaces', project.mod_id)
         }
 
