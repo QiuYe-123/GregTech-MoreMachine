@@ -7,6 +7,7 @@
   "client": [
   ],
   "mixins": [
+    "SimpleTieredMachineMixin"
   ],
   "injectors": {
     "defaultRequire": 1,
