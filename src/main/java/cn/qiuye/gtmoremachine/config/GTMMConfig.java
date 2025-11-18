@@ -1,6 +1,7 @@
 package cn.qiuye.gtmoremachine.config;
 
 import cn.qiuye.gtmoremachine.GTmm;
+
 import dev.toma.configuration.Configuration;
 import dev.toma.configuration.config.Config;
 import dev.toma.configuration.config.Configurable;
