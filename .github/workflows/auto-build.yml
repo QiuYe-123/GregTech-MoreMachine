@@ -66,6 +66,6 @@ jobs:
           prerelease: true
           body: |
             The latest build of GTMoreMachine for Minecraft ${{ github.ref_name }}.
-            Please report any [issues](https://github.com/lostmyself8/Mekanism-Extras/issues).
+            Please report any [issues](https://github.com/QiuYe-123/GTMoreMachine/issues).
             ${{ steps.changelog.outputs.changelog }}
           files: build/libs/*.jar
