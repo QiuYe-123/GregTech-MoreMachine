@@ -2,6 +2,7 @@
 ldlib = "1.0.45"
 registrate = "MC1.20-1.3.11"
 configuration = "3.1.0-forge"
+kotlinforforge = "4.11.0"
 gtm = "7.3.0"
 mixinExtras = "0.5.0-rc.3"
 
@@ -40,6 +41,7 @@ jech = "4.5.11-dev-shadow"
 ldlib               = { module = "com.lowdragmc.ldlib:ldlib-forge-1.20.1", version.ref = "ldlib" }
 registrate          = { module = "com.tterrag.registrate:Registrate", version.ref = "registrate" }
 configuration       = { module = "dev.toma.configuration:configuration-1.20.1", version.ref = "configuration" }
+kotlinforforge      = { module = "thedarkcolour:kotlinforforge", version.ref = "kotlinforforge" }
 gtm                 = { module = "com.gregtechceu.gtceu:gtceu-1.20.1", version.ref = "gtm"}
 mixinExtras-common  = { module = "io.github.llamalad7:mixinextras-common", version.ref = "mixinExtras" }
 

@@ -1,12 +1,13 @@
 plugins {
     id 'java-library'
-    id 'org.jetbrains.kotlin.jvm'
     id 'eclipse'
     id 'idea'
     id 'maven-publish'
     alias libs.plugins.modDevGradle
     alias libs.plugins.spotless
     alias libs.plugins.lombok
+    alias libs.plugins.kotlin.jvm
+    alias libs.plugins.kotlin.plugin
 }
 
 group = maven_group
@@ -101,15 +102,4 @@ tasks.withType(JavaCompile).configureEach {
 
 lombok {
     version = "1.18.38"
-}
-
-java {
-    withSourcesJar()
-}
-
-idea {
-    module {
-        downloadSources = true
-        downloadJavadoc = true
-    }
 }

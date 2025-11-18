@@ -3,6 +3,9 @@ dependencies {
 
     modClientLocalRuntime(forge.jecharacters.get())
 
+    // kotlin-for-forge
+    modApi(forge.kotlinforforge.get())
+
     // Mixin (& Extras)
     annotationProcessor(variantOf(libs.mixin) { classifier("processor") })
     api(annotationProcessor(forge.mixinExtras.common.get()))
