@@ -1,5 +1,6 @@
 package cn.qiuye.gtmoremachine;
 
+import cn.qiuye.gtmoremachine.api.GTMMValues;
 import cn.qiuye.gtmoremachine.client.ClientProxy;
 import cn.qiuye.gtmoremachine.common.CommonProxy;
 import cn.qiuye.gtmoremachine.utils.FormattingUtil;
@@ -154,5 +155,8 @@ public class GTmm {
 
     public static class Mods {
 
+        public static boolean isFTBTeamsLoaded() {
+            return isModLoaded(GTMMValues.MODID_FTB_TEAMS);
+        }
     }
 }
