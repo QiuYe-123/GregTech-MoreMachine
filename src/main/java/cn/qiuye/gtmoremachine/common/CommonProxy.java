@@ -8,8 +8,8 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 public class CommonProxy {
 
     public CommonProxy() {
-        IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
         init();
+        IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
     }
 
     private static void init() {
