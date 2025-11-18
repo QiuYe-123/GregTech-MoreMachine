@@ -104,8 +104,8 @@ public class GTmm {
     }
 
     /**
-     * 对于异步操作使用此方法，否则使用 {@link GTECore isClientSide}
-     * For async stuff use this, otherwise use {@link GTECore isClientSide}
+     * 对于异步操作使用此方法，否则使用 {@link GTmm isClientSide}
+     * For async stuff use this, otherwise use {@link GTmm isClientSide}
      *
      * @return 当前线程是否为客户端线程 if the current thread is the client thread
      */
