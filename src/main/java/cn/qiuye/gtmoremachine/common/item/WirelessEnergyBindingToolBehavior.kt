@@ -20,7 +20,7 @@ import net.minecraft.world.level.BlockGetter
 
 import java.math.BigInteger
 
-class WirelessEnergyBindingToolBehavior {
+open class WirelessEnergyBindingToolBehavior {
     companion object : IInteractionItem {
 
         override fun onItemUseFirst(stack: ItemStack?, context: UseOnContext): InteractionResult {
