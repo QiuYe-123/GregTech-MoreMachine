@@ -20,7 +20,7 @@ spotless {
         eclipse('4.31').configFile(formatFile)
     }
     kotlin {
-        target'src/main/kotlin/**/*.kt'
+        target'src/main/java/**/*.kt'
         ktlint('1.4.1').setEditorConfigPath("$rootDir/gradle/spotless/spotless.ktlint")
     }
 }
