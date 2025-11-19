@@ -139,4 +139,16 @@ public class FormattingUtil {
         }
         return result;
     }
+
+    public static String formatNumber(double number) {
+        final String[] UNITS = { "", "K", "M", "G", "T", "P", "E", "Z", "Y", "B", "N", "D" };
+        DecimalFormat df = new DecimalFormat("#.##");
+        double temp = number;
+        int unitIndex = 0;
+        while (temp >= 1000 && unitIndex < UNITS.length - 1) {
+            temp /= 1000;
+            unitIndex++;
+        }
+        return df.format(temp) + UNITS[unitIndex];
+    }
 }
