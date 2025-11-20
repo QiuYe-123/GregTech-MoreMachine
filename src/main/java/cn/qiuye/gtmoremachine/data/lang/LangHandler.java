@@ -4,5 +4,7 @@ import com.tterrag.registrate.providers.RegistrateLangProvider;
 
 public class LangHandler {
 
-    public static void init(RegistrateLangProvider provider) {}
+    public static void init(RegistrateLangProvider provider) {
+        ConfigurationLang.init(provider);
+    }
 }
