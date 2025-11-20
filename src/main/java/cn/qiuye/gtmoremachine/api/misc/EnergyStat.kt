@@ -1,7 +1,5 @@
 package cn.qiuye.gtmoremachine.api.misc
 
-import lombok.Getter
-
 import java.math.BigDecimal
 import java.math.BigInteger
 import java.math.RoundingMode
@@ -12,8 +10,7 @@ class EnergyStat(windowStart: Int) {
     private val day: TimeWheel = TimeWheel(TimeWheel.TIMESCALE.HOUR, 24, windowStart)
     private var lastChangedCache: BigInteger = BigInteger.ZERO
 
-    @Getter
-    private var avgEnergy: BigDecimal = BigDecimal.ZERO
+    var avgEnergy: BigDecimal = BigDecimal.ZERO
 
     fun tick() {
         if (minute.tock()) {

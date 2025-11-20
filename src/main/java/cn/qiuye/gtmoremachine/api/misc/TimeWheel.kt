@@ -15,8 +15,6 @@ class TimeWheel(slotResolution: Int, private val slotNum: Int, windowStart: Int)
         const val HOUR: Int = 20 * 60 * 60
     }
 
-    var length: Int = 0
-    var windowSize: Int = slotResolution * slotNum
     var slotResolution: Int = if (slotResolution <= 0) 20 else slotResolution
     var slots: ArrayDeque<Slot?>
     private var sum: BigInteger = BigInteger.ZERO

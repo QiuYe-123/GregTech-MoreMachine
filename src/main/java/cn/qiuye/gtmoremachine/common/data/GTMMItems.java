@@ -2,6 +2,7 @@ package cn.qiuye.gtmoremachine.common.data;
 
 import cn.qiuye.gtmoremachine.GTmm;
 import cn.qiuye.gtmoremachine.common.item.WirelessEnergyBindingToolBehavior;
+import cn.qiuye.gtmoremachine.common.item.WirelessEnergyTerminalBehavior;
 
 import com.gregtechceu.gtceu.api.item.ComponentItem;
 import com.gregtechceu.gtceu.api.item.component.ICustomRenderer;
@@ -25,8 +26,14 @@ public class GTMMItems {
     public static ItemEntry<ComponentItem> WIRELESS_ENERGY_BINDING_TOOL = GTMMREGISTRATE
             .item("wireless_energy_binding_tool", ComponentItem::create)
             .properties(p -> p.stacksTo(1))
-            .onRegister(attach(WirelessEnergyBindingToolBehavior.Companion))
+            .onRegister(attach(new WirelessEnergyBindingToolBehavior()))
             .register();
+
+    public static ItemEntry<ComponentItem> WIRELESS_ENERGY_TERMINAL = GTMMREGISTRATE
+            .item("wireless_energy_terminal", ComponentItem::create)
+            .properties(p -> p.stacksTo(1))
+            .onRegister(attach(new WirelessEnergyTerminalBehavior()))
+            .onRegister(attach(new WirelessEnergyBindingToolBehavior())).register();
 
     public static void init() {}
 }
