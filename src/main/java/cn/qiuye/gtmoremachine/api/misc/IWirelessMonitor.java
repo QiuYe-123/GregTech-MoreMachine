@@ -33,7 +33,7 @@ public interface IWirelessMonitor extends IWirelessEnergyContainerHolder {
         if (container == null) return List.of();
         BigInteger energyTotal = container.getStorage();
         textListCache.add(Component.translatable("gtmoremachine.machine.wireless_energy_monitor.tooltip.0",
-                TeamUtils.GetName(getLevel(), getUUID())).withStyle(ChatFormatting.AQUA));
+                TeamUtils.getName(getLevel(), getUUID())).withStyle(ChatFormatting.AQUA));
         textListCache.add(FormattingUtil.formatWithConstantWidth("gtmoremachine.machine.wireless_energy_monitor.tooltip.1",
                 Component.literal(NumberUtils.formatBigIntegerNumberOrSic(energyTotal))).withStyle(ChatFormatting.GOLD));
         if (GTMMConfig.INSTANCE.isWirelessRateEnable) {
