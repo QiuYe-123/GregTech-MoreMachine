@@ -1,5 +1,6 @@
 package cn.qiuye.gtmoremachine.api.misc;
 
+import cn.qiuye.gtmoremachine.api.gui.monitor.Format;
 import cn.qiuye.gtmoremachine.utils.FormattingUtil;
 import cn.qiuye.gtmoremachine.utils.NumberUtils;
 import cn.qiuye.gtmoremachine.utils.TeamUtils;
@@ -24,13 +25,13 @@ public interface ITransferData {
 
     MetaMachine machine();
 
-    default Component getInfo() {
+    default Component getInfo(Format format) {
         MetaMachine machine = machine();
         BigInteger eut = Throughput();
         String pos = machine.getPos().toShortString();
         return Component.translatable(machine.getBlockState().getBlock().getDescriptionId())
                 .withStyle(Style.EMPTY.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.translatable("recipe.condition.dimension.tooltip", machine.getLevel().dimension().location()).append(" [").append(pos).append("] ").append(Component.translatable("gtmoremachine.machine.wireless_energy_monitor.tooltip.0", TeamUtils.getName(machine.getLevel(), UUID()))))))
-                .append((eut.compareTo(BigInteger.ZERO) > 0 ? " +" : " ") + NumberUtils.formatBigIntegerNumberOrSic(eut)).append(" EU/t (").append(FormattingUtil.voltageName(new BigDecimal(eut))).append(")")
+                .append((eut.compareTo(BigInteger.ZERO) > 0 ? " +" : " ") + NumberUtils.bigIntegerNumberOrSicText(eut, format)).append(" EU/t (").append(FormattingUtil.voltageName(new BigDecimal(eut))).append(")")
                 .append(ComponentPanelWidget.withButton(Component.literal(" [ ] "), pos));
     }
 }

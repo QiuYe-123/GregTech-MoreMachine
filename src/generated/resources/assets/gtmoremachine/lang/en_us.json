@@ -1,5 +1,6 @@
 {
   "block.gtmoremachine.wireless_energy_monitor": "Wireless Energy Monitor",
   "item.gtmoremachine.wireless_energy_binding_tool": "Wireless Energy Binding Tool",
+  "item.gtmoremachine.wireless_energy_terminal": "Wireless Energy Terminal",
   "itemGroup.gtmoremachine.wireless": "GTMoreMachine"
 }

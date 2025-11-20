@@ -1,5 +1,7 @@
 package cn.qiuye.gtmoremachine.utils
 
+import cn.qiuye.gtmoremachine.api.gui.monitor.Format
+
 import net.minecraft.network.chat.Component
 import net.minecraft.network.chat.MutableComponent
 
@@ -26,4 +28,22 @@ object NumberUtils {
     @JvmStatic
     fun formatBigIntegerNumberOrSic(number: BigInteger): String =
         FormattingUtil.formatNumberReadable(BigDecimal(number))
+
+    @JvmStatic
+    fun bigDecimalNumberOrSicText(number: BigDecimal, format: Format): String = if (format ==
+        Format.Unit
+    ) {
+        formatBigDecimalNumberOrSic(number)
+    } else {
+        FormattingUtil.DECIMAL_FORMAT_SIC_2F.format(number)
+    }
+
+    @JvmStatic
+    fun bigIntegerNumberOrSicText(number: BigInteger, format: Format): String = if (format ==
+        Format.Unit
+    ) {
+        formatBigIntegerNumberOrSic(number)
+    } else {
+        FormattingUtil.DECIMAL_FORMAT_SIC_2F.format(BigDecimal(number))
+    }
 }
