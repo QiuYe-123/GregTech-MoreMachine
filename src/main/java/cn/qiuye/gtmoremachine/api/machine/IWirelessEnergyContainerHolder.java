@@ -1,0 +1,22 @@
+package cn.qiuye.gtmoremachine.api.machine;
+
+import cn.qiuye.gtmoremachine.api.capability.IBindable;
+import cn.qiuye.gtmoremachine.api.misc.WirelessEnergyContainer;
+
+import javax.annotation.Nullable;
+
+public interface IWirelessEnergyContainerHolder extends IBindable {
+
+    void setWirelessEnergyContainerCache(WirelessEnergyContainer container);
+
+    WirelessEnergyContainer getWirelessEnergyContainerCache();
+
+    @Nullable
+    default WirelessEnergyContainer getWirelessEnergyContainer() {
+        if (getUUID() != null && getWirelessEnergyContainerCache() == null) {
+            WirelessEnergyContainer container = WirelessEnergyContainer.getOrCreateContainer(getUUID());
+            setWirelessEnergyContainerCache(container);
+        }
+        return getWirelessEnergyContainerCache();
+    }
+}

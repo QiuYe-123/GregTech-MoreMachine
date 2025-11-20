@@ -1,0 +1,186 @@
+package cn.qiuye.gtmoremachine.api.misc;
+
+import cn.qiuye.gtmoremachine.api.gui.monitor.Format;
+import cn.qiuye.gtmoremachine.api.gui.monitor.PowerStatus;
+import cn.qiuye.gtmoremachine.api.gui.monitor.Statistics;
+import cn.qiuye.gtmoremachine.api.machine.IWirelessEnergyContainerHolder;
+import cn.qiuye.gtmoremachine.config.GTMMConfig;
+import cn.qiuye.gtmoremachine.utils.BigIntegerUtils;
+import cn.qiuye.gtmoremachine.utils.FormattingUtil;
+import cn.qiuye.gtmoremachine.utils.NumberUtils;
+import cn.qiuye.gtmoremachine.utils.TeamUtils;
+
+import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.utils.GTUtil;
+
+import com.lowdragmc.lowdraglib.gui.widget.ComponentPanelWidget;
+
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.level.Level;
+
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.time.Duration;
+import java.util.*;
+
+public interface IWirelessMonitor extends IWirelessEnergyContainerHolder {
+
+    default List<Component> getDisplayText(Statistics statistics, Format format, PowerStatus powerStatus) {
+        List<Component> textListCache = new ArrayList<>();
+        WirelessEnergyContainer container = getWirelessEnergyContainer();
+        if (container == null) return List.of();
+        BigInteger energyTotal = container.getStorage();
+        textListCache.add(Component.translatable("gtmoremachine.machine.wireless_energy_monitor.tooltip.0",
+                TeamUtils.GetName(getLevel(), getUUID())).withStyle(ChatFormatting.AQUA));
+        textListCache.add(FormattingUtil.formatWithConstantWidth("gtmoremachine.machine.wireless_energy_monitor.tooltip.1",
+                Component.literal(NumberUtils.formatBigIntegerNumberOrSic(energyTotal))).withStyle(ChatFormatting.GOLD));
+        if (GTMMConfig.INSTANCE.isWirelessRateEnable) {
+            long rate = container.getRate();
+            textListCache.add(FormattingUtil.formatWithConstantWidth("gtmoremachine.machine.wireless_energy_monitor.tooltip.2",
+                    Component.literal(NumberUtils.formatBigIntegerNumberOrSic(BigInteger.valueOf(rate))),
+                    Component.literal(String.valueOf(rate / GTValues.VEX[GTUtil.getFloorTierByVoltage(rate)])),
+                    Component.literal(GTValues.VNF[GTUtil.getFloorTierByVoltage(rate)])).withStyle(ChatFormatting.GRAY));
+        }
+
+        var stat = container.getEnergyStat();
+        textListCache.add(Component.translatable("gtmoremachine.machine.wireless_energy_monitor.tooltip.net_power"));
+
+        BigDecimal avgMinute = stat.getMinuteAvg();
+        textListCache.add(FormattingUtil.formatWithConstantWidth("gtmoremachine.machine.wireless_energy_monitor.tooltip.last_minute",
+                Component.literal(NumberUtils.formatBigDecimalNumberOrSic(avgMinute)).withStyle(ChatFormatting.DARK_AQUA),
+                Component.literal(FormattingUtil.voltageAmperage(avgMinute).toEngineeringString()), FormattingUtil.voltageName(avgMinute)));
+        BigDecimal avgHour = stat.getHourAvg();
+        textListCache.add(FormattingUtil.formatWithConstantWidth("gtmoremachine.machine.wireless_energy_monitor.tooltip.last_hour",
+                Component.literal(NumberUtils.formatBigDecimalNumberOrSic(avgHour)).withStyle(ChatFormatting.YELLOW),
+                Component.literal(FormattingUtil.voltageAmperage(avgHour).toEngineeringString()),
+                FormattingUtil.voltageName(avgHour)));
+        BigDecimal avgDay = stat.getDayAvg();
+        textListCache.add(FormattingUtil.formatWithConstantWidth("gtmoremachine.machine.wireless_energy_monitor.tooltip.last_day",
+                Component.literal(NumberUtils.formatBigDecimalNumberOrSic(avgDay)).withStyle(ChatFormatting.DARK_GREEN),
+                Component.literal(FormattingUtil.voltageAmperage(avgDay).toEngineeringString()),
+                FormattingUtil.voltageName(avgDay)));
+        // average useage
+        BigDecimal avgEnergy = stat.getAvgEnergy();
+        textListCache.add(FormattingUtil.formatWithConstantWidth("gtmoremachine.machine.wireless_energy_monitor.tooltip.now",
+                Component.literal(NumberUtils.formatBigDecimalNumberOrSic(avgEnergy)).withStyle(ChatFormatting.DARK_PURPLE),
+                Component.literal(FormattingUtil.voltageAmperage(avgEnergy).toEngineeringString()),
+                FormattingUtil.voltageName(avgEnergy)));
+
+        int compare = avgEnergy.compareTo(BigDecimal.valueOf(0));
+        BigInteger multiply = avgEnergy.abs().toBigInteger().multiply(BigInteger.valueOf(20));
+        if (compare > 0) {
+            textListCache.add(Component.translatable("gtceu.multiblock.power_substation.time_to_fill",
+                    container.getCapacity() == null ? Component.translatable("gtmoremachine.machine.wireless_energy_monitor.tooltip.time_to_fill") : getTimeToFillDrainText((container.getCapacity().subtract(energyTotal)).divide(multiply))).withStyle(ChatFormatting.GRAY));
+        } else if (compare < 0) {
+            textListCache.add(Component.translatable("gtceu.multiblock.power_substation.time_to_drain",
+                    getTimeToFillDrainText(energyTotal.divide(multiply))).withStyle(ChatFormatting.GRAY));
+        }
+
+        if (GTMMConfig.INSTANCE.isWirelessRateEnable && container.getBindPos() != null) {
+            String pos = container.getBindPos().pos().toShortString();
+            textListCache.add(Component.translatable("gtmoremachine.machine.wireless_energy_hatch.tooltip.2",
+                    Component.translatable("recipe.condition.dimension.tooltip", container.getBindPos().dimension().location().toString()).append(" [").append(pos).append("] ")).withStyle(ChatFormatting.GRAY));
+        }
+        textListCache.add(Component.translatable("gtmoremachine.machine.wireless_energy_monitor.tooltip.statistics",
+                ComponentPanelWidget.withButton(getStatisticsText(statistics), "statistics", getStaticsclolor(statistics)),
+                ComponentPanelWidget.withButton(getFormatText(format), "format", getFormatclolor(format)),
+                ComponentPanelWidget.withButton(getPowerStatusText(powerStatus), "powerStatus", getPowerStatusclolor(powerStatus))));
+
+        List<Map.Entry<MetaMachine, ITransferData>> entryList = new ArrayList<>(WirelessEnergyContainer.TRANSFER_DATA.entrySet());
+        entryList.sort((entry1, entry2) -> {
+            BigInteger throughput1 = entry1.getValue().Throughput();
+            BigInteger throughput2 = entry2.getValue().Throughput();
+            return throughput1.compareTo(throughput2);
+        });
+
+        for (Map.Entry<MetaMachine, ITransferData> m : entryList) {
+            UUID uuid = m.getValue().UUID();
+            if (statistics == Statistics.Global || uuid.equals(TeamUtils.getTeamUUID(this.getUUID()))) {
+                textListCache.add(m.getValue().getInfo());
+            }
+        }
+
+        WirelessEnergyContainer.observed = true;
+        WirelessEnergyContainer.TRANSFER_DATA.clear();
+
+        return textListCache;
+    }
+
+    Level getLevel();
+
+    private static Component getTimeToFillDrainText(BigInteger timeToFillSeconds) {
+        if (timeToFillSeconds.compareTo(BigIntegerUtils.big_integer_max_kong) > 0) {
+            timeToFillSeconds = BigIntegerUtils.big_integer_max_kong;
+        }
+
+        Duration duration = Duration.ofSeconds(timeToFillSeconds.longValue());
+        String key;
+        long fillTime;
+        if (duration.getSeconds() <= 180) {
+            fillTime = duration.getSeconds();
+            key = "gtceu.multiblock.power_substation.time_seconds";
+        } else if (duration.toMinutes() <= 180) {
+            fillTime = duration.toMinutes();
+            key = "gtceu.multiblock.power_substation.time_minutes";
+        } else if (duration.toHours() <= 72) {
+            fillTime = duration.toHours();
+            key = "gtceu.multiblock.power_substation.time_hours";
+        } else if (duration.toDays() <= 730) { // 2 years
+            fillTime = duration.toDays();
+            key = "gtceu.multiblock.power_substation.time_days";
+        } else if (duration.toDays() / 365 < 1_000_000) {
+            fillTime = duration.toDays() / 365;
+            key = "gtceu.multiblock.power_substation.time_years";
+        } else {
+            return Component.translatable("gtceu.multiblock.power_substation.time_forever");
+        }
+
+        return Component.translatable(key, NumberUtils.formatLong(fillTime));
+    }
+
+    private static Component getStatisticsText(Statistics statistics) {
+        return switch (statistics) {
+            case Global -> Component.translatable("gtmoremachine.machine.wireless_energy_monitor.tooltip.all");
+            case Team -> Component.translatable("gtmoremachine.machine.wireless_energy_monitor.tooltip.team");
+        };
+    }
+
+    private static int getStaticsclolor(Statistics statistics) {
+        return switch (statistics) {
+            case Global -> 16777045;
+            case Team -> 16755200;
+        };
+    }
+
+    private static Component getFormatText(Format format) {
+        return switch (format) {
+            case Science -> Component.translatable("gtmoremachine.machine.wireless_energy_monitor.tooltip.science");
+            case Unit -> Component.translatable("gtmoremachine.machine.wireless_energy_monitor.tooltip.unit");
+        };
+    }
+
+    private static int getFormatclolor(Format format) {
+        return switch (format) {
+            case Science -> 5636095;
+            case Unit -> 16733525;
+        };
+    }
+
+    private static Component getPowerStatusText(PowerStatus powerStatus) {
+        return switch (powerStatus) {
+            case All -> Component.translatable("gtmoremachine.machine.wireless_energy_monitor.tooltip.power_all");
+            case In -> Component.translatable("gtmoremachine.machine.wireless_energy_monitor.tooltip.power_in");
+            case Out -> Component.translatable("gtmoremachine.machine.wireless_energy_monitor.tooltip.power_out");
+        };
+    }
+
+    private static int getPowerStatusclolor(PowerStatus powerStatus) {
+        return switch (powerStatus) {
+            case All -> 5635925;
+            case In -> 5592575;
+            case Out -> 11141120;
+        };
+    }
+}

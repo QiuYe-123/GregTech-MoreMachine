@@ -1,6 +1,7 @@
 package cn.qiuye.gtmoremachine;
 
 import cn.qiuye.gtmoremachine.common.registry.GTMMRegistration;
+import cn.qiuye.gtmoremachine.data.GTMMDatagen;
 
 import com.gregtechceu.gtceu.api.addon.GTAddon;
 import com.gregtechceu.gtceu.api.addon.IGTAddon;
@@ -20,5 +21,7 @@ public class GTMMGTAddon implements IGTAddon {
     }
 
     @Override
-    public void initializeAddon() {}
+    public void initializeAddon() {
+        GTMMDatagen.initPost();
+    }
 }

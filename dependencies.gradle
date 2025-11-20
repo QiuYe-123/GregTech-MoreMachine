@@ -6,6 +6,8 @@ dependencies {
     // kotlin-for-forge
     modApi(forge.kotlinforforge.get())
 
+    jarJar(modImplementation(libs.caffeine.get()))
+
     // Mixin (& Extras)
     annotationProcessor(variantOf(libs.mixin) { classifier("processor") })
     api(annotationProcessor(forge.mixinExtras.common.get()))
@@ -42,6 +44,7 @@ dependencies {
     modLocalRuntime(forge.jade)
     modLocalRuntime(forge.curios)
     modLocalRuntime(forge.modernfix)
+    modLocalRuntime(forge.modernui)
     modLocalRuntime(forge.ferritecore)
 
     // AE2 //
@@ -71,7 +74,6 @@ dependencies {
     // Client-only runtime mods //
     modClientLocalRuntime(forge.embeddium)
     modClientLocalRuntime(forge.oculus)
-    modClientLocalRuntime(forge.modernui)
     renderNurseCfg(libs.renderNurse)
 
 //    // Mouse Tweaks

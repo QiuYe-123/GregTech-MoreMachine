@@ -12,7 +12,7 @@ import dev.ftb.mods.ftbteams.api.Team;
 import java.util.Optional;
 import java.util.UUID;
 
-public class TeamUtil {
+public class TeamUtils {
 
     public static UUID getTeamUUID(UUID playerUUID) {
         if (GTmm.Mods.isFTBTeamsLoaded() && FTBTeamsAPI.api().isManagerLoaded()) {
