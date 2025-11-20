@@ -35,11 +35,11 @@ public interface IWirelessMonitor extends IWirelessEnergyContainerHolder {
         textListCache.add(Component.translatable("gtmoremachine.machine.wireless_energy_monitor.tooltip.0",
                 TeamUtils.getName(getLevel(), getUUID())).withStyle(ChatFormatting.AQUA));
         textListCache.add(FormattingUtil.formatWithConstantWidth("gtmoremachine.machine.wireless_energy_monitor.tooltip.1",
-                Component.literal(NumberUtils.formatBigIntegerNumberOrSic(energyTotal))).withStyle(ChatFormatting.GOLD));
+                Component.literal(NumberUtils.bigIntegerNumberOrSicText(energyTotal, format))).withStyle(ChatFormatting.GOLD));
         if (GTMMConfig.INSTANCE.isWirelessRateEnable) {
             long rate = container.getRate();
             textListCache.add(FormattingUtil.formatWithConstantWidth("gtmoremachine.machine.wireless_energy_monitor.tooltip.2",
-                    Component.literal(NumberUtils.formatBigIntegerNumberOrSic(BigInteger.valueOf(rate))),
+                    Component.literal(NumberUtils.bigIntegerNumberOrSicText(BigInteger.valueOf(rate), format)),
                     Component.literal(String.valueOf(rate / GTValues.VEX[GTUtil.getFloorTierByVoltage(rate)])),
                     Component.literal(GTValues.VNF[GTUtil.getFloorTierByVoltage(rate)])).withStyle(ChatFormatting.GRAY));
         }
@@ -49,22 +49,22 @@ public interface IWirelessMonitor extends IWirelessEnergyContainerHolder {
 
         BigDecimal avgMinute = stat.getMinuteAvg();
         textListCache.add(FormattingUtil.formatWithConstantWidth("gtmoremachine.machine.wireless_energy_monitor.tooltip.last_minute",
-                Component.literal(NumberUtils.formatBigDecimalNumberOrSic(avgMinute)).withStyle(ChatFormatting.DARK_AQUA),
+                Component.literal(NumberUtils.bigDecimalNumberOrSicText(avgMinute, format)).withStyle(ChatFormatting.DARK_AQUA),
                 Component.literal(FormattingUtil.voltageAmperage(avgMinute).toEngineeringString()), FormattingUtil.voltageName(avgMinute)));
         BigDecimal avgHour = stat.getHourAvg();
         textListCache.add(FormattingUtil.formatWithConstantWidth("gtmoremachine.machine.wireless_energy_monitor.tooltip.last_hour",
-                Component.literal(NumberUtils.formatBigDecimalNumberOrSic(avgHour)).withStyle(ChatFormatting.YELLOW),
+                Component.literal(NumberUtils.bigDecimalNumberOrSicText(avgHour, format)).withStyle(ChatFormatting.YELLOW),
                 Component.literal(FormattingUtil.voltageAmperage(avgHour).toEngineeringString()),
                 FormattingUtil.voltageName(avgHour)));
         BigDecimal avgDay = stat.getDayAvg();
         textListCache.add(FormattingUtil.formatWithConstantWidth("gtmoremachine.machine.wireless_energy_monitor.tooltip.last_day",
-                Component.literal(NumberUtils.formatBigDecimalNumberOrSic(avgDay)).withStyle(ChatFormatting.DARK_GREEN),
+                Component.literal(NumberUtils.bigDecimalNumberOrSicText(avgDay, format)).withStyle(ChatFormatting.DARK_GREEN),
                 Component.literal(FormattingUtil.voltageAmperage(avgDay).toEngineeringString()),
                 FormattingUtil.voltageName(avgDay)));
         // average useage
         BigDecimal avgEnergy = stat.getAvgEnergy();
         textListCache.add(FormattingUtil.formatWithConstantWidth("gtmoremachine.machine.wireless_energy_monitor.tooltip.now",
-                Component.literal(NumberUtils.formatBigDecimalNumberOrSic(avgEnergy)).withStyle(ChatFormatting.DARK_PURPLE),
+                Component.literal(NumberUtils.bigDecimalNumberOrSicText(avgEnergy, format)).withStyle(ChatFormatting.DARK_PURPLE),
                 Component.literal(FormattingUtil.voltageAmperage(avgEnergy).toEngineeringString()),
                 FormattingUtil.voltageName(avgEnergy)));
 
@@ -97,8 +97,15 @@ public interface IWirelessMonitor extends IWirelessEnergyContainerHolder {
 
         for (Map.Entry<MetaMachine, ITransferData> m : entryList) {
             UUID uuid = m.getValue().UUID();
+            BigInteger through = m.getValue().Throughput();
             if (statistics == Statistics.Global || uuid.equals(TeamUtils.getTeamUUID(this.getUUID()))) {
-                textListCache.add(m.getValue().getInfo());
+                if (powerStatus == PowerStatus.All) {
+                    textListCache.add(m.getValue().getInfo(format));
+                } else if (powerStatus == PowerStatus.In && through.compareTo(BigInteger.ZERO) > 0) {
+                    textListCache.add(m.getValue().getInfo(format));
+                } else if (powerStatus == PowerStatus.Out && through.compareTo(BigInteger.ZERO) < 0) {
+                    textListCache.add(m.getValue().getInfo(format));
+                }
             }
         }
 

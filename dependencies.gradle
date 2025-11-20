@@ -42,7 +42,6 @@ dependencies {
     modLocalRuntime(forge.jade)
     modLocalRuntime(forge.curios)
     modLocalRuntime(forge.modernfix)
-    modLocalRuntime(forge.modernui)
     modLocalRuntime(forge.ferritecore)
 
     // AE2 //
@@ -72,6 +71,7 @@ dependencies {
     // Client-only runtime mods //
     modClientLocalRuntime(forge.embeddium)
     modClientLocalRuntime(forge.oculus)
+    modClientLocalRuntime(forge.modernui)
     renderNurseCfg(libs.renderNurse)
 
 //    // Mouse Tweaks
