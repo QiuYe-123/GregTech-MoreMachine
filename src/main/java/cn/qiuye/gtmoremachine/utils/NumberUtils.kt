@@ -1,36 +1,29 @@
-package cn.qiuye.gtmoremachine.utils;
+package cn.qiuye.gtmoremachine.utils
 
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.Component
+import net.minecraft.network.chat.MutableComponent
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
+import java.math.BigDecimal
+import java.math.BigInteger
 
-import static cn.qiuye.gtmoremachine.utils.FormattingUtil.formatNumber;
+object NumberUtils {
 
-public class NumberUtils {
+    @JvmStatic
+    fun formatLong(number: Long): String = FormattingUtil.formatNumber(number.toDouble())
 
-    public static String formatLong(long number) {
-        return FormattingUtil.formatNumber(number);
-    }
+    @JvmStatic
+    fun longnumberText(number: Long): MutableComponent = Component.literal(formatLong(number))
 
-    public static MutableComponent LongnumberText(long number) {
-        return Component.literal(formatLong(number));
-    }
+    @JvmStatic
+    fun formatDouble(number: Double): String = FormattingUtil.formatNumber(number)
 
-    public static String formatDouble(double number) {
-        return FormattingUtil.formatNumber(number);
-    }
+    @JvmStatic
+    fun doublenumberText(number: Double): MutableComponent = Component.literal(formatDouble(number))
 
-    public static MutableComponent DoublenumberText(double number) {
-        return Component.literal(formatDouble(number));
-    }
+    @JvmStatic
+    fun formatBigDecimalNumberOrSic(number: BigDecimal): String = FormattingUtil.formatNumberReadable(number)
 
-    public static String formatBigDecimalNumberOrSic(BigDecimal number) {
-        return FormattingUtil.formatNumberReadable(number);
-    }
-
-    public static String formatBigIntegerNumberOrSic(BigInteger number) {
-        return FormattingUtil.formatNumberReadable(new BigDecimal(number));
-    }
+    @JvmStatic
+    fun formatBigIntegerNumberOrSic(number: BigInteger): String =
+        FormattingUtil.formatNumberReadable(BigDecimal(number))
 }
