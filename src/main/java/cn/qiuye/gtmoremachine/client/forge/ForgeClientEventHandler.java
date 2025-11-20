@@ -1,7 +1,7 @@
 package cn.qiuye.gtmoremachine.client.forge;
 
 import cn.qiuye.gtmoremachine.GTmm;
-import cn.qiuye.gtmoremachine.common.block.machine.electric.WirelessEnergyMonitor;
+import cn.qiuye.gtmoremachine.common.machine.electric.WirelessEnergyMonitor;
 
 import com.gregtechceu.gtceu.api.GTValues;
 

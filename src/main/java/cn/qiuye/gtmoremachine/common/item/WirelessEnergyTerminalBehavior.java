@@ -33,7 +33,7 @@ import java.util.List;
 import java.util.UUID;
 
 import static cn.qiuye.gtmoremachine.api.gui.widget.AlignLabelWidget.ALIGN_CENTER;
-import static cn.qiuye.gtmoremachine.common.block.machine.electric.WirelessEnergyMonitor.DISPLAY_TEXT_WIDTH;
+import static cn.qiuye.gtmoremachine.common.machine.electric.WirelessEnergyMonitor.DISPLAY_TEXT_WIDTH;
 
 public class WirelessEnergyTerminalBehavior implements IItemUIFactory {
 

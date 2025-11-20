@@ -22,6 +22,6 @@ public class GTMMConfig {
     }
 
     @Configurable
-    @Configurable.Comment({ " " })
+    @Configurable.Comment({ "如果启用，则需要使用无线能源绑定工具绑定电池箱或者变电站来提高无线能量传输上限。", "If enabled, you need to use a wireless energy binding tool to bind the battery box or substation to increase the wireless energy transfer limit." })
     public boolean isWirelessRateEnable = true;
 }
