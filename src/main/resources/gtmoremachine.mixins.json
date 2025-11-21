@@ -8,9 +8,7 @@
   ],
   "mixins": [
     "gtm.api.machine.multiblock.MultiblockDisplayText$BuilderMixin",
-    "gtm.common.machine.multiblock.electric.BedrockOreMinerMachineMixin",
-    "gtm.common.machine.multiblock.electric.CleanroomMachineMixin",
-    "gtm.common.machine.multiblock.electric.FluidDrillMachineMixin"
+    "gtm.common.machine.multiblock.electric.CleanroomMachineMixin"
   ],
   "injectors": {
     "defaultRequire": 1,
