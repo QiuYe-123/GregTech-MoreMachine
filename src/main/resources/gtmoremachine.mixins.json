@@ -7,7 +7,8 @@
   "client": [
   ],
   "mixins": [
-    "SimpleTieredMachineMixin"
+    "gtm.api.machine.multiblock.MultiblockDisplayText$BuilderMixin",
+    "gtm.common.machine.multiblock.electric.CleanroomMachineMixin"
   ],
   "injectors": {
     "defaultRequire": 1,

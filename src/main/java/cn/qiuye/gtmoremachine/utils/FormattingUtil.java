@@ -225,8 +225,8 @@ public class FormattingUtil {
         DecimalFormat df = new DecimalFormat("#.##");
         double temp = number;
         int unitIndex = 0;
-        while (temp >= 1000 && unitIndex < UNITS.length - 1) {
-            temp /= 1000;
+        while (temp >= 100 && unitIndex < UNITS.length - 1) {
+            temp /= 100;
             unitIndex++;
         }
         return df.format(temp) + UNITS[unitIndex];
