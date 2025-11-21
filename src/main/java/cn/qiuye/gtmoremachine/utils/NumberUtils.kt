@@ -30,7 +30,7 @@ object NumberUtils {
         FormattingUtil.formatNumberReadable(BigDecimal(number))
 
     @JvmStatic
-    fun bigDecimalNumberOrSicText(number: BigDecimal, format: Format): String = if (format ==
+    fun formatBigDecimalNumberOrSic(number: BigDecimal, format: Format): String = if (format ==
         Format.Unit
     ) {
         formatBigDecimalNumberOrSic(number)
@@ -39,7 +39,7 @@ object NumberUtils {
     }
 
     @JvmStatic
-    fun bigIntegerNumberOrSicText(number: BigInteger, format: Format): String = if (format ==
+    fun formatBigIntegerNumberOrSic(number: BigInteger, format: Format): String = if (format ==
         Format.Unit
     ) {
         formatBigIntegerNumberOrSic(number)

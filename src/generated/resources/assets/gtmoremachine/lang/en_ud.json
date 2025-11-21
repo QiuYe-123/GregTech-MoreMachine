@@ -1,4 +1,8 @@
 {
+  "block.gtmoremachine.creative_energy_hatch": "ɥɔʇɐH ʎbɹǝuƎ ǝʌıʇɐǝɹƆɹ§",
+  "block.gtmoremachine.creative_fluid_input_hatch": "ɥɔʇɐH ʇnduI ǝʌıʇɐǝɹƆ",
+  "block.gtmoremachine.creative_item_input_bus": "snᗺ ʇnduI ǝʌıʇɐǝɹƆ",
+  "block.gtmoremachine.creative_laser_hatch": "ɥɔʇɐH ʇǝbɹɐ⟘ ɹǝsɐꞀ ǝʌıʇɐǝɹƆɹ§",
   "block.gtmoremachine.ev_1024a_wireless_laser_source_hatch": "ɥɔʇɐH ǝɔɹnoS ɹǝsɐꞀ Ɐㄣᄅ0'Ɩ ΛƎϛ§",
   "block.gtmoremachine.ev_1024a_wireless_laser_target_hatch": "ɥɔʇɐH ʇǝbɹɐ⟘ ɹǝsɐꞀ Ɐㄣᄅ0'Ɩ ΛƎϛ§",
   "block.gtmoremachine.ev_16384a_wireless_laser_source_hatch": "ɥɔʇɐH ǝɔɹnoS ɹǝsɐꞀ Ɐㄣ8Ɛ'9Ɩ ΛƎϛ§",
@@ -87,6 +91,7 @@
   "block.gtmoremachine.max_64a_wireless_energy_output_hatch": "ɥɔʇɐH oɯɐuʎᗡ ㄣ9 XⱯWן§ɔ§",
   "block.gtmoremachine.max_65536a_wireless_laser_source_hatch": "ɥɔʇɐH ǝɔɹnoS ɹǝsɐꞀ Ɐ9Ɛϛ'ϛ9 XⱯWן§ɔ§",
   "block.gtmoremachine.max_65536a_wireless_laser_target_hatch": "ɥɔʇɐH ʇǝbɹɐ⟘ ɹǝsɐꞀ Ɐ9Ɛϛ'ϛ9 XⱯWן§ɔ§",
+  "block.gtmoremachine.me_export_buffer": "ɹǝɟɟnᗺ ʇɹodxƎ ǝW",
   "block.gtmoremachine.mv_16a_wireless_energy_input_hatch": "ɥɔʇɐH ʎbɹǝuƎ 9Ɩ ΛWq§",
   "block.gtmoremachine.mv_16a_wireless_energy_output_hatch": "ɥɔʇɐH oɯɐuʎᗡ 9Ɩ ΛWq§",
   "block.gtmoremachine.mv_2a_wireless_energy_input_hatch": "ɥɔʇɐH ʎbɹǝuƎ ᄅ ΛWq§",
@@ -224,7 +229,11 @@
   "block.gtmoremachine.zpm_65536a_wireless_laser_source_hatch": "ɥɔʇɐH ǝɔɹnoS ɹǝsɐꞀ Ɐ9Ɛϛ'ϛ9 WԀZɔ§",
   "block.gtmoremachine.zpm_65536a_wireless_laser_target_hatch": "ɥɔʇɐH ʇǝbɹɐ⟘ ɹǝsɐꞀ Ɐ9Ɛϛ'ϛ9 WԀZɔ§",
   "config.gtmoremachine.option.isWirelessRateEnable": "ǝןqɐuƎǝʇɐᴚssǝןǝɹıMsı",
+  "item.gtmoremachine.creative_energy_cover": "ɹǝʌoƆ ʎbɹǝuƎ ǝʌıʇɐǝɹƆ",
+  "item.gtmoremachine.creative_fluid_cell": "ןןǝƆ pınןℲ ǝʌıʇɐǝɹƆ",
   "item.gtmoremachine.wireless_energy_binding_tool": "ןoo⟘ buıpuıᗺ ʎbɹǝuƎ ssǝןǝɹıM",
   "item.gtmoremachine.wireless_energy_terminal": "ןɐuıɯɹǝ⟘ ʎbɹǝuƎ ssǝןǝɹıM",
+  "itemGroup.gtmoremachine.creative": "ǝuıɥɔɐWǝɹoW⟘⅁",
+  "itemGroup.gtmoremachine.more_machines": "ǝuıɥɔɐWǝɹoW⟘⅁",
   "itemGroup.gtmoremachine.wireless": "ǝuıɥɔɐWǝɹoW⟘⅁"
 }

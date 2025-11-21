@@ -1,5 +1,11 @@
 package cn.qiuye.gtmoremachine.integration.jade;
 
+import cn.qiuye.gtmoremachine.integration.jade.provider.WirelessEnergyHatchProvider;
+import cn.qiuye.gtmoremachine.integration.jade.provider.WirelessOpticalComputationHatchProvider;
+
+import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
+import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
+
 import snownee.jade.api.IWailaClientRegistration;
 import snownee.jade.api.IWailaCommonRegistration;
 import snownee.jade.api.IWailaPlugin;
@@ -9,8 +15,14 @@ import snownee.jade.api.WailaPlugin;
 public class GTJadePlugin implements IWailaPlugin {
 
     @Override
-    public void register(IWailaCommonRegistration registration) {}
+    public void register(IWailaCommonRegistration registration) {
+        registration.registerBlockDataProvider(new WirelessEnergyHatchProvider(), MetaMachineBlockEntity.class);
+        registration.registerBlockDataProvider(new WirelessOpticalComputationHatchProvider(), MetaMachineBlockEntity.class);
+    }
 
     @Override
-    public void registerClient(IWailaClientRegistration registration) {}
+    public void registerClient(IWailaClientRegistration registration) {
+        registration.registerBlockComponent(new WirelessEnergyHatchProvider(), MetaMachineBlock.class);
+        registration.registerBlockComponent(new WirelessOpticalComputationHatchProvider(), MetaMachineBlock.class);
+    }
 }
