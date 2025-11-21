@@ -16,14 +16,14 @@ class TimeWheel(slotResolution: Int, private val slotNum: Int, windowStart: Int)
     }
 
     var slotResolution: Int = if (slotResolution <= 0) 20 else slotResolution
-    var slots: ArrayDeque<Slot?>
+    var slots: ArrayDeque<Slot>
     private var sum: BigInteger = BigInteger.ZERO
     private val startIndex: Int = (windowStart / slotResolution) % slotNum
     private var currentIndex: Int
 
     init {
         this.currentIndex = startIndex
-        slots = ArrayDeque<Slot?>(slotNum)
+        slots = ArrayDeque<Slot>(slotNum)
         slots.offer(Slot())
     }
 

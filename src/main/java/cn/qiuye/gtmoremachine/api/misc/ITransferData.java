@@ -27,11 +27,11 @@ public interface ITransferData {
 
     default Component getInfo(Format format) {
         MetaMachine machine = machine();
-        BigInteger eut = Throughput();
+        BigDecimal eut = new BigDecimal(Throughput());
         String pos = machine.getPos().toShortString();
         return Component.translatable(machine.getBlockState().getBlock().getDescriptionId())
                 .withStyle(Style.EMPTY.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.translatable("recipe.condition.dimension.tooltip", machine.getLevel().dimension().location()).append(" [").append(pos).append("] ").append(Component.translatable("gtmoremachine.machine.wireless_energy_monitor.tooltip.0", TeamUtils.getName(machine.getLevel(), UUID()))))))
-                .append((eut.compareTo(BigInteger.ZERO) > 0 ? " +" : " ") + NumberUtils.bigIntegerNumberOrSicText(eut, format)).append(" EU/t (").append(FormattingUtil.voltageName(new BigDecimal(eut))).append(")")
+                .append((eut.compareTo(BigDecimal.ZERO) > 0 ? " +" : " ") + NumberUtils.bigDecimalNumberOrSicText(eut, format)).append(" EU/t (").append(NumberUtils.bigDecimalNumberOrSicText(FormattingUtil.voltageAmperage(eut), format)).append(FormattingUtil.voltageName(eut)).append(")")
                 .append(ComponentPanelWidget.withButton(Component.literal(" [ ] "), pos));
     }
 }

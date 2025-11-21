@@ -2,6 +2,7 @@ package cn.qiuye.gtmoremachine.common.data.machines;
 
 import cn.qiuye.gtmoremachine.GTmm;
 import cn.qiuye.gtmoremachine.common.data.GTMMCreativeModeTabs;
+import cn.qiuye.gtmoremachine.common.machine.electric.WirelessEnergyInterface;
 import cn.qiuye.gtmoremachine.common.machine.electric.WirelessEnergyMonitor;
 
 import com.gregtechceu.gtceu.api.GTCEuAPI;
@@ -14,12 +15,11 @@ import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import static cn.qiuye.gtmoremachine.common.data.machines.WirelessMachinesUtils.registerWirelessEnergyHatch;
 import static cn.qiuye.gtmoremachine.common.data.machines.WirelessMachinesUtils.registerWirelessLaserHatch;
 import static cn.qiuye.gtmoremachine.common.registry.GTMMRegistration.GTMMREGISTRATE;
-import static com.gregtechceu.gtceu.api.GTValues.*;
 
 public class WirelessMachines {
 
-    public static final int[] ALL_TIERS = GTValues.tiersBetween(LV, GTCEuAPI.isHighTier() ? MAX : UHV);
-    public static final int[] WIRELL_ENERGY_HIGH_TIERS = GTValues.tiersBetween(EV, GTCEuAPI.isHighTier() ? MAX : UHV);
+    public static final int[] ALL_TIERS = GTValues.tiersBetween(GTValues.LV, GTCEuAPI.isHighTier() ? GTValues.MAX : GTValues.UHV);
+    public static final int[] WIRELL_ENERGY_HIGH_TIERS = GTValues.tiersBetween(GTValues.EV, GTCEuAPI.isHighTier() ? GTValues.MAX : GTValues.UHV);
 
     static {
         GTMMREGISTRATE.creativeModeTab(() -> GTMMCreativeModeTabs.WIRELESS_TAB);
@@ -27,8 +27,17 @@ public class WirelessMachines {
 
     public static final MachineDefinition WIRELESS_ENERGY_MONITOR = GTMMREGISTRATE
             .machine("wireless_energy_monitor", WirelessEnergyMonitor::new)
+            .langValue("Wireless Energy Monitor")
             .rotationState(RotationState.NON_Y_AXIS)
             .workableTieredHullModel(GTmm.id("block/machines/wireless_energy_monitor"))
+            .tier(GTValues.IV)
+            .register();
+
+    public static final MachineDefinition WIRELESS_ENERGY_INTERFACE = GTMMREGISTRATE
+            .machine("wireless_energy_interface", WirelessEnergyInterface::new)
+            .langValue("Wireless Energy Interface")
+            .rotationState(RotationState.ALL)
+            .overlayTieredHullModel("energy_input_hatch")
             .tier(GTValues.IV)
             .register();
 
