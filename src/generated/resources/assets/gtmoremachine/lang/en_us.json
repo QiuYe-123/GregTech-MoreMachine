@@ -1,4 +1,8 @@
 {
+  "block.gtmoremachine.creative_energy_hatch": "§rCreative Energy Hatch",
+  "block.gtmoremachine.creative_fluid_input_hatch": "Creative Input Hatch",
+  "block.gtmoremachine.creative_item_input_bus": "Creative Input Bus",
+  "block.gtmoremachine.creative_laser_hatch": "§rCreative Laser Target Hatch",
   "block.gtmoremachine.ev_1024a_wireless_laser_source_hatch": "§5EV 1,024A Laser Source Hatch",
   "block.gtmoremachine.ev_1024a_wireless_laser_target_hatch": "§5EV 1,024A Laser Target Hatch",
   "block.gtmoremachine.ev_16384a_wireless_laser_source_hatch": "§5EV 16,384A Laser Source Hatch",
@@ -87,6 +91,7 @@
   "block.gtmoremachine.max_64a_wireless_energy_output_hatch": "§c§lMAX 64 Dynamo Hatch",
   "block.gtmoremachine.max_65536a_wireless_laser_source_hatch": "§c§lMAX 65,536A Laser Source Hatch",
   "block.gtmoremachine.max_65536a_wireless_laser_target_hatch": "§c§lMAX 65,536A Laser Target Hatch",
+  "block.gtmoremachine.me_export_buffer": "Me Export Buffer",
   "block.gtmoremachine.mv_16a_wireless_energy_input_hatch": "§bMV 16 Energy Hatch",
   "block.gtmoremachine.mv_16a_wireless_energy_output_hatch": "§bMV 16 Dynamo Hatch",
   "block.gtmoremachine.mv_2a_wireless_energy_input_hatch": "§bMV 2 Energy Hatch",
@@ -224,7 +229,11 @@
   "block.gtmoremachine.zpm_65536a_wireless_laser_source_hatch": "§cZPM 65,536A Laser Source Hatch",
   "block.gtmoremachine.zpm_65536a_wireless_laser_target_hatch": "§cZPM 65,536A Laser Target Hatch",
   "config.gtmoremachine.option.isWirelessRateEnable": "isWirelessRateEnable",
+  "item.gtmoremachine.creative_energy_cover": "Creative Energy Cover",
+  "item.gtmoremachine.creative_fluid_cell": "Creative Fluid Cell",
   "item.gtmoremachine.wireless_energy_binding_tool": "Wireless Energy Binding Tool",
   "item.gtmoremachine.wireless_energy_terminal": "Wireless Energy Terminal",
+  "itemGroup.gtmoremachine.creative": "GTMoreMachine",
+  "itemGroup.gtmoremachine.more_machines": "GTMoreMachine",
   "itemGroup.gtmoremachine.wireless": "GTMoreMachine"
 }

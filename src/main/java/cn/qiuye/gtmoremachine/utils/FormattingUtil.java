@@ -92,11 +92,11 @@ public class FormattingUtil {
     }
 
     public static Component voltageName(BigDecimal avgEnergy) {
-        return Component.literal(GTValues.VNF[GTUtil.getFloorTierByVoltage(avgEnergy.abs().longValue())]);
+        return Component.literal(GTValues.VNF[GTUtil.getFloorTierByVoltage(avgEnergy.min(BigDecimal.valueOf(Long.MAX_VALUE)).abs().longValue())]);
     }
 
     public static BigDecimal voltageAmperage(BigDecimal avgEnergy) {
-        return avgEnergy.abs().divide(BigDecimal.valueOf(GTValues.VEX[GTUtil.getFloorTierByVoltage(avgEnergy.abs().longValue())]), 1, RoundingMode.FLOOR);
+        return avgEnergy.abs().divide(BigDecimal.valueOf(GTValues.VEX[GTUtil.getFloorTierByVoltage(avgEnergy.min(BigDecimal.valueOf(Long.MAX_VALUE)).abs().longValue())]), 1, RoundingMode.FLOOR);
     }
 
     public static String getSpacer(Font font, String splitChar, int spaceLength) {

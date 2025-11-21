@@ -155,6 +155,10 @@ public class GTmm {
 
     public static class Mods {
 
+        public static boolean isAE2Loaded() {
+            return isModLoaded(GTMMValues.MODID_APPENG);
+        }
+
         public static boolean isFTBTeamsLoaded() {
             return isModLoaded(GTMMValues.MODID_FTB_TEAMS);
         }

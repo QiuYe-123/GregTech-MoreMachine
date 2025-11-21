@@ -30,8 +30,15 @@ public interface ITransferData {
         BigDecimal eut = new BigDecimal(Throughput());
         String pos = machine.getPos().toShortString();
         return Component.translatable(machine.getBlockState().getBlock().getDescriptionId())
-                .withStyle(Style.EMPTY.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.translatable("recipe.condition.dimension.tooltip", machine.getLevel().dimension().location()).append(" [").append(pos).append("] ").append(Component.translatable("gtmoremachine.machine.wireless_energy_monitor.tooltip.0", TeamUtils.getName(machine.getLevel(), UUID()))))))
-                .append((eut.compareTo(BigDecimal.ZERO) > 0 ? " +" : " ") + NumberUtils.bigDecimalNumberOrSicText(eut, format)).append(" EU/t (").append(NumberUtils.bigDecimalNumberOrSicText(FormattingUtil.voltageAmperage(eut), format)).append(FormattingUtil.voltageName(eut)).append(")")
+                .withStyle(Style.EMPTY.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
+                        Component.translatable("recipe.condition.dimension.tooltip",
+                                machine.getLevel().dimension().location()).append(" [").append(pos).append("] ")
+                                .append(Component.translatable("gtmoremachine.machine.wireless_energy_monitor.tooltip.0",
+                                        TeamUtils.getName(machine.getLevel(), UUID()))))))
+                .append((eut.compareTo(BigDecimal.ZERO) > 0 ? " +" : " ") + NumberUtils.formatBigDecimalNumberOrSic(eut, format))
+                .append(" EU/t (")
+                .append(NumberUtils.formatBigDecimalNumberOrSic(FormattingUtil.voltageAmperage(eut), format) + " A ")
+                .append(FormattingUtil.voltageName(eut)).append(")")
                 .append(ComponentPanelWidget.withButton(Component.literal(" [ ] "), pos));
     }
 }

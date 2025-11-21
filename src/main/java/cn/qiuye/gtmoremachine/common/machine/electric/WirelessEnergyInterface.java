@@ -137,7 +137,7 @@ public class WirelessEnergyInterface extends TieredIOPartMachine implements IInt
         if (is.is(GTItems.TOOL_DATA_STICK.asItem())) {
             setOwnerUUID(null);
             setWirelessEnergyContainerCache(null);
-            player.sendSystemMessage(Component.translatable("gtmthings.machine.wireless_energy_hatch.tooltip.unbind"));
+            player.sendSystemMessage(Component.translatable("gtmoremachine.machine.wireless_energy_hatch.tooltip.unbind"));
             updateEnergySubscription();
             return true;
         }
