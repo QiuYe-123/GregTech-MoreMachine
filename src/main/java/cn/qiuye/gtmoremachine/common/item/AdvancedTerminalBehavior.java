@@ -1,7 +1,7 @@
 package cn.qiuye.gtmoremachine.common.item;
 
+import cn.qiuye.gtmoremachine.GTmm;
 import cn.qiuye.gtmoremachine.api.gui.BlockMapSelectorWidget;
-import cn.qiuye.gtmoremachine.api.gui.widget.AlignLabelWidget;
 import cn.qiuye.gtmoremachine.api.gui.widget.ExtendLabelWidget;
 import cn.qiuye.gtmoremachine.api.gui.widget.TerminalInputWidget;
 import cn.qiuye.gtmoremachine.api.pattern.AdvancedBlockPattern;
@@ -22,6 +22,7 @@ import com.lowdragmc.lowdraglib.gui.texture.TextTexture;
 import com.lowdragmc.lowdraglib.gui.widget.*;
 import com.lowdragmc.lowdraglib.utils.BlockInfo;
 
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -38,7 +39,6 @@ import lombok.Setter;
 import java.util.*;
 
 import static cn.qiuye.gtmoremachine.api.gui.BlockMapSelectorWidget.getBlock;
-import static cn.qiuye.gtmoremachine.api.gui.widget.AlignLabelWidget.ALIGN_CENTER;
 import static cn.qiuye.gtmoremachine.common.block.BlockMap.*;
 
 @Getter
@@ -71,14 +71,14 @@ public class AdvancedTerminalBehavior implements IItemUIFactory {
 
     private AutoBuildSetting getAutoBuildSetting(ItemStack mainHandItem) {
         var autoBuildSetting = new AutoBuildSetting();
-        var tag = mainHandItem.getTag();
-        if (tag != null && !tag.isEmpty()) {
-            autoBuildSetting.setTier(tag.contains("Tier") ? tag.getInt("Tier") : 0);
-            autoBuildSetting.setRepeatCount(tag.contains("Tier") ? tag.getInt("RepeatCount") : 0);
-            autoBuildSetting.setNoHatchMode(!tag.contains("Tier") || tag.getBoolean("NoHatchMode"));
-            autoBuildSetting.setReplaceMode(tag.contains("Tier") && tag.getBoolean("ReplaceMode"));
-            autoBuildSetting.setUseAE(tag.contains("Tier") && tag.getBoolean("IsUseAE"));
-            autoBuildSetting.setUseMirror(tag.contains("Tier") && tag.getBoolean("IsUseMirror"));
+        var tag = mainHandItem.getOrCreateTag();
+        if (!tag.isEmpty()) {
+            autoBuildSetting.setTier(tag.getInt("Tier"));
+            autoBuildSetting.setRepeatCount(tag.getInt("RepeatCount"));
+            autoBuildSetting.setNoHatchMode(tag.getBoolean("NoHatchMode"));
+            autoBuildSetting.setReplaceMode(tag.getBoolean("ReplaceMode"));
+            autoBuildSetting.setUseAE(tag.getBoolean("IsUseAE"));
+            autoBuildSetting.setUseMirror(tag.getBoolean("IsUseMirror"));
             String block = tag.getString("blocks");
             if (!block.isEmpty()) {
                 autoBuildSetting.tierBlock = tierBlockMap.get(block).get();
@@ -89,19 +89,18 @@ public class AdvancedTerminalBehavior implements IItemUIFactory {
     }
 
     @Override
-    public ModularUI createUI(HeldItemUIFactory.HeldItemHolder holder, Player entityPlayer) {
-        return new ModularUI(176, 166, holder, entityPlayer).widget(createWidget(entityPlayer));
+    public ModularUI createUI(HeldItemUIFactory.HeldItemHolder heldItemHolder, Player player) {
+        return new ModularUI(176, 166, heldItemHolder, player).widget(createWidget(player));
     }
 
-    private Widget createWidget(Player entityPlayer) {
-        ItemStack handItem = entityPlayer.getMainHandItem();
+    private Widget createWidget(Player player) {
+        final var handItem = player.getMainHandItem();
         var group = new WidgetGroup(0, 0, 182 + 8, 117 + 8);
         int rowIndex = 1;
         var contain = new DraggableScrollableWidgetGroup(4, 4, 182, 117)
                 .setBackground(GuiTextures.DISPLAY).setYScrollBarWidth(2)
                 .setYBarStyle(null, ColorPattern.T_WHITE.rectTexture().setRadius(1));
-        contain.addWidget(new AlignLabelWidget(89, 5, Component.translatable("item.gtmoremachine.advanced_terminal.setting.title"))
-                .setTextAlign(ALIGN_CENTER))
+        contain.addWidget(new ExtendLabelWidget(65, 8, Component.translatable("item.gtmoremachine.advanced_terminal.setting.title")))
                 .addWidget(new ExtendLabelWidget(4, 5 + 16 * rowIndex++, Component.translatable("item.gtmoremachine.advanced_terminal.setting.1")))
                 .addWidget(new ExtendLabelWidget(4, 5 + 16 * rowIndex, Component.translatable("item.gtmoremachine.advanced_terminal.setting.2"))
                         .setHoverTooltips(Component.translatable("item.gtmoremachine.advanced_terminal.setting.2.tooltip")))
@@ -111,39 +110,38 @@ public class AdvancedTerminalBehavior implements IItemUIFactory {
                 .addWidget(new ExtendLabelWidget(4, 5 + 16 * rowIndex, Component.translatable("item.gtmoremachine.advanced_terminal.setting.3"))
                         .setHoverTooltips("item.gtmoremachine.advanced_terminal.setting.3.tooltip"))
                 .addWidget(new SwitchWidget(140, 5 + 16 * rowIndex++, 25, 16,
-                        (c, v) -> setBuildHatches(!getBuildHatches(handItem), handItem))
+                        (c, v) -> setBuildHatches(v, handItem))
                         .setPressed(getBuildHatches(handItem))
                         .setTexture(new GuiTextureGroup(GuiTextures.BUTTON, new TextTexture("OFF")),
                                 new GuiTextureGroup(GuiTextures.BUTTON, new TextTexture("ON"))))
                 .addWidget(new ExtendLabelWidget(4, 5 + 16 * rowIndex, Component.translatable("item.gtmoremachine.advanced_terminal.setting.4"))
                         .setHoverTooltips("item.gtmoremachine.advanced_terminal.setting.4.tooltip"))
                 .addWidget(new SwitchWidget(140, 5 + 16 * rowIndex++, 25, 16,
-                        (c, b) -> setReplaceMode(!getReplaceMode(handItem), handItem))
+                        (c, v) -> setReplaceMode(v, handItem))
                         .setPressed(getReplaceMode(handItem))
                         .setTexture(new GuiTextureGroup(GuiTextures.BUTTON, new TextTexture("OFF")),
                                 new GuiTextureGroup(GuiTextures.BUTTON, new TextTexture("ON"))))
                 .addWidget(new ExtendLabelWidget(4, 5 + 16 * rowIndex, Component.translatable("item.gtmoremachine.advanced_terminal.setting.5"))
                         .setHoverTooltips("item.gtmoremachine.advanced_terminal.setting.5.tooltip"))
                 .addWidget(new SwitchWidget(140, 5 + 16 * rowIndex++, 25, 16,
-                        (c, v) -> setUseAE(!getUseAE(handItem), handItem))
+                        (c, v) -> setUseAE(v, handItem))
                         .setPressed(getUseAE(handItem))
                         .setTexture(new GuiTextureGroup(GuiTextures.BUTTON, new TextTexture("OFF")),
                                 new GuiTextureGroup(GuiTextures.BUTTON, new TextTexture("ON"))))
                 .addWidget(new LabelWidget(4, 5 + 16 * rowIndex, "item.gtmoremachine.advanced_terminal.setting.6")
                         .setHoverTooltips("item.gtmoremachine.advanced_terminal.setting.6.tooltip"))
                 .addWidget(new SwitchWidget(140, 5 + 16 * rowIndex++, 25, 16,
-                        (c, v) -> setUseMirror(!getUseMirror(handItem), handItem))
+                        (c, v) -> setUseMirror(v, handItem))
                         .setPressed(getUseMirror(handItem))
                         .setTexture(new GuiTextureGroup(GuiTextures.BUTTON, new TextTexture("OFF")),
                                 new GuiTextureGroup(GuiTextures.BUTTON, new TextTexture("ON"))));
         var blockLabel = new ExtendLabelWidget(47, 24, getBlockComponent(handItem));
         var blockMap = new BlockMapSelectorWidget(group.getSizeHeight() + 4, contain.getSizeWidth(), (s, i) -> {
             if (s != null && i != null) {
-                var tag = handItem.getOrCreateTag();
-                if (tag.contains("blocks") && tag.contains("Tier")) {
-                    tag.putString("blocks", s);
-                    tag.putInt("Tier", i);
-                }
+                var tag = handItem.getTag();
+                if (tag == null) tag = new CompoundTag();
+                tag.putString("blocks", s);
+                tag.putInt("Tier", i);
                 handItem.setTag(tag);
                 blockLabel.setComponent(Component.literal(" (").append(getBlock(s))
                         .append(Component.literal(":"))
@@ -159,9 +157,9 @@ public class AdvancedTerminalBehavior implements IItemUIFactory {
         return group;
     }
 
-    private Component getBlockComponent(ItemStack itemStack) {
-        var tag = itemStack.getOrCreateTag();
-        if (!tag.isEmpty()) {
+    private static Component getBlockComponent(ItemStack itemStack) {
+        var tag = itemStack.getTag();
+        if (tag != null && !tag.isEmpty()) {
             var block = tag.getString("blocks");
             if (!block.isEmpty()) {
                 int tier = tag.getInt("Tier");
@@ -184,67 +182,73 @@ public class AdvancedTerminalBehavior implements IItemUIFactory {
     }
 
     private void setRepeatCount(int repeatCount, ItemStack itemStack) {
-        var tag = itemStack.getOrCreateTag();
+        var tag = itemStack.getTag();
+        if (tag == null) tag = new CompoundTag();
         tag.putInt("RepeatCount", repeatCount);
         itemStack.setTag(tag);
     }
 
     private boolean getBuildHatches(ItemStack itemStack) {
-        var tag = itemStack.getOrCreateTag();
-        if (!tag.isEmpty() && tag.contains("NoHatchMode")) {
+        var tag = itemStack.getTag();
+        if (tag != null && !tag.isEmpty() && tag.contains("NoHatchMode")) {
             return tag.getBoolean("NoHatchMode");
         } else {
-            return true; // 默认值为 0 (否)
+            return true;
         }
     }
 
     private void setBuildHatches(boolean isBuildHatches, ItemStack itemStack) {
-        var tag = itemStack.getOrCreateTag();
+        var tag = itemStack.getTag();
+        if (tag == null) tag = new CompoundTag();
         tag.putBoolean("NoHatchMode", isBuildHatches);
         itemStack.setTag(tag);
+        GTmm.LOGGER.info(tag);
     }
 
     private boolean getReplaceMode(ItemStack itemStack) {
-        var tag = itemStack.getOrCreateTag();
-        if (!tag.isEmpty() && tag.contains("ReplaceMode")) {
+        var tag = itemStack.getTag();
+        if (tag != null && !tag.isEmpty() && tag.contains("ReplaceMode")) {
             return tag.getBoolean("ReplaceMode");
-        } else {
-            return false; // 默认值为 0 (否)
-        }
-    }
-
-    private void setReplaceMode(boolean isReplaceCoil, ItemStack itemStack) {
-        var tag = itemStack.getOrCreateTag();
-        tag.putBoolean("ReplaceMode", isReplaceCoil);
-        itemStack.setTag(tag);
-    }
-
-    private boolean getUseAE(ItemStack itemStack) {
-        var tag = itemStack.getOrCreateTag();
-        if (!tag.isEmpty() && tag.contains("IsUseAE")) {
-            return tag.getBoolean("IsUseAE");
-        } else {
-            return false; // 默认值为 0 (否)
-        }
-    }
-
-    private void setUseAE(boolean isUseAE, ItemStack itemStack) {
-        var tag = itemStack.getOrCreateTag();
-        tag.putBoolean("IsUseAE", isUseAE);
-        itemStack.setTag(tag);
-    }
-
-    private boolean getUseMirror(ItemStack itemStack) {
-        var tag = itemStack.getOrCreateTag();
-        if (!tag.isEmpty() && tag.contains("IsUseMirror")) {
-            return tag.getBoolean("IsUseMirror");
         } else {
             return false;
         }
     }
 
+    private void setReplaceMode(boolean isReplaceCoil, ItemStack itemStack) {
+        var tag = itemStack.getTag();
+        if (tag == null) tag = new CompoundTag();
+        tag.putBoolean("ReplaceMode", isReplaceCoil);
+        itemStack.setTag(tag);
+    }
+
+    private boolean getUseAE(ItemStack itemStack) {
+        var tag = itemStack.getTag();
+        if (tag != null && !tag.isEmpty() && tag.contains("IsUseAE")) {
+            return tag.getBoolean("IsUseAE");
+        } else {
+            return false;
+        }
+    }
+
+    private void setUseAE(boolean isUseAE, ItemStack itemStack) {
+        var tag = itemStack.getTag();
+        if (tag == null) tag = new CompoundTag();
+        tag.putBoolean("IsUseAE", isUseAE);
+        itemStack.setTag(tag);
+    }
+
+    private boolean getUseMirror(ItemStack itemStack) {
+        var tag = itemStack.getTag();
+        if (tag != null && !tag.isEmpty() && tag.contains("IsUseMirror")) {
+            return tag.getBoolean("IsUseMirror");
+        } else {
+            return false; // 默认值为 0 (否)
+        }
+    }
+
     private void setUseMirror(boolean isUseMirror, ItemStack itemStack) {
-        var tag = itemStack.getOrCreateTag();
+        var tag = itemStack.getTag();
+        if (tag == null) tag = new CompoundTag();
         tag.putBoolean("IsUseMirror", isUseMirror);
         itemStack.setTag(tag);
     }
