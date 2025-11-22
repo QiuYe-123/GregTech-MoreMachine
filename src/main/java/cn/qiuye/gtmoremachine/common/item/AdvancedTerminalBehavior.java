@@ -20,10 +20,8 @@ import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
 import com.lowdragmc.lowdraglib.gui.texture.TextTexture;
 import com.lowdragmc.lowdraglib.gui.widget.*;
-import com.lowdragmc.lowdraglib.syncdata.annotation.DropSaved;
 import com.lowdragmc.lowdraglib.utils.BlockInfo;
 
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -41,7 +39,6 @@ import java.util.*;
 
 import static cn.qiuye.gtmoremachine.api.gui.BlockMapSelectorWidget.getBlock;
 import static cn.qiuye.gtmoremachine.api.gui.widget.AlignLabelWidget.ALIGN_CENTER;
-import static cn.qiuye.gtmoremachine.api.pattern.AdvancedBlockPattern.getAdvancedBlockPattern;
 import static cn.qiuye.gtmoremachine.common.block.BlockMap.*;
 
 @Getter
@@ -74,14 +71,14 @@ public class AdvancedTerminalBehavior implements IItemUIFactory {
 
     private AutoBuildSetting getAutoBuildSetting(ItemStack mainHandItem) {
         var autoBuildSetting = new AutoBuildSetting();
-        var tag = mainHandItem.getOrCreateTag();
-        if (!tag.isEmpty()) {
-            autoBuildSetting.setTier(tag.getInt("Tier"));
-            autoBuildSetting.setRepeatCount(tag.getInt("RepeatCount"));
-            autoBuildSetting.setNoHatchMode(tag.getBoolean("NoHatchMode"));
-            autoBuildSetting.setReplaceMode(tag.getBoolean("ReplaceMode"));
-            autoBuildSetting.setUseAE(tag.getBoolean("ReplaceMode"));
-            autoBuildSetting.setUseMirror(tag.getBoolean("IsUseAE"));
+        var tag = mainHandItem.getTag();
+        if (tag != null && !tag.isEmpty()) {
+            autoBuildSetting.setTier(tag.contains("Tier") ? tag.getInt("Tier") : 0);
+            autoBuildSetting.setRepeatCount(tag.contains("Tier") ? tag.getInt("RepeatCount") : 0);
+            autoBuildSetting.setNoHatchMode(!tag.contains("Tier") || tag.getBoolean("NoHatchMode"));
+            autoBuildSetting.setReplaceMode(tag.contains("Tier") && tag.getBoolean("ReplaceMode"));
+            autoBuildSetting.setUseAE(tag.contains("Tier") && tag.getBoolean("IsUseAE"));
+            autoBuildSetting.setUseMirror(tag.contains("Tier") && tag.getBoolean("IsUseMirror"));
             String block = tag.getString("blocks");
             if (!block.isEmpty()) {
                 autoBuildSetting.tierBlock = tierBlockMap.get(block).get();
@@ -135,16 +132,18 @@ public class AdvancedTerminalBehavior implements IItemUIFactory {
                 .addWidget(new LabelWidget(4, 5 + 16 * rowIndex, "item.gtmoremachine.advanced_terminal.setting.6")
                         .setHoverTooltips("item.gtmoremachine.advanced_terminal.setting.6.tooltip"))
                 .addWidget(new SwitchWidget(140, 5 + 16 * rowIndex++, 25, 16,
-                        (c, v) -> setUseMirror(!getUseAE(handItem), handItem))
-                        .setPressed(getUseAE(handItem))
+                        (c, v) -> setUseMirror(!getUseMirror(handItem), handItem))
+                        .setPressed(getUseMirror(handItem))
                         .setTexture(new GuiTextureGroup(GuiTextures.BUTTON, new TextTexture("OFF")),
                                 new GuiTextureGroup(GuiTextures.BUTTON, new TextTexture("ON"))));
         var blockLabel = new ExtendLabelWidget(47, 24, getBlockComponent(handItem));
         var blockMap = new BlockMapSelectorWidget(group.getSizeHeight() + 4, contain.getSizeWidth(), (s, i) -> {
             if (s != null && i != null) {
-                CompoundTag tag = handItem.getOrCreateTag();
-                tag.putString("blocks", s);
-                tag.putInt("Tier", i);
+                var tag = handItem.getOrCreateTag();
+                if (tag.contains("blocks") && tag.contains("Tier")) {
+                    tag.putString("blocks", s);
+                    tag.putInt("Tier", i);
+                }
                 handItem.setTag(tag);
                 blockLabel.setComponent(Component.literal(" (").append(getBlock(s))
                         .append(Component.literal(":"))
@@ -176,56 +175,76 @@ public class AdvancedTerminalBehavior implements IItemUIFactory {
     }
 
     private int getRepeatCount(ItemStack itemStack) {
-        CompoundTag tag = itemStack.getOrCreateTag();
-        return !tag.isEmpty() ? tag.getInt("RepeatCount") : 0;
+        var tag = itemStack.getTag();
+        if (tag != null && !tag.isEmpty() && tag.contains("RepeatCount")) {
+            return tag.getInt("RepeatCount");
+        } else {
+            return 0;
+        }
     }
 
     private void setRepeatCount(int repeatCount, ItemStack itemStack) {
-        CompoundTag tag = itemStack.getOrCreateTag();
-	    tag.putInt("RepeatCount", repeatCount);
+        var tag = itemStack.getOrCreateTag();
+        tag.putInt("RepeatCount", repeatCount);
         itemStack.setTag(tag);
     }
 
     private boolean getBuildHatches(ItemStack itemStack) {
-        CompoundTag tag = itemStack.getOrCreateTag();
-        return tag.isEmpty() || tag.getBoolean("NoHatchMode");
+        var tag = itemStack.getOrCreateTag();
+        if (!tag.isEmpty() && tag.contains("NoHatchMode")) {
+            return tag.getBoolean("NoHatchMode");
+        } else {
+            return true; // 默认值为 0 (否)
+        }
     }
 
     private void setBuildHatches(boolean isBuildHatches, ItemStack itemStack) {
-        CompoundTag tag = itemStack.getOrCreateTag();
-	    tag.putBoolean("NoHatchMode", isBuildHatches);
+        var tag = itemStack.getOrCreateTag();
+        tag.putBoolean("NoHatchMode", isBuildHatches);
         itemStack.setTag(tag);
     }
 
     private boolean getReplaceMode(ItemStack itemStack) {
-        CompoundTag tag = itemStack.getOrCreateTag();
-        return !tag.isEmpty() && tag.getBoolean("ReplaceMode");
+        var tag = itemStack.getOrCreateTag();
+        if (!tag.isEmpty() && tag.contains("ReplaceMode")) {
+            return tag.getBoolean("ReplaceMode");
+        } else {
+            return false; // 默认值为 0 (否)
+        }
     }
 
     private void setReplaceMode(boolean isReplaceCoil, ItemStack itemStack) {
-        CompoundTag tag = itemStack.getOrCreateTag();
-	    tag.putBoolean("ReplaceMode", isReplaceCoil);
+        var tag = itemStack.getOrCreateTag();
+        tag.putBoolean("ReplaceMode", isReplaceCoil);
         itemStack.setTag(tag);
     }
 
     private boolean getUseAE(ItemStack itemStack) {
-        CompoundTag tag = itemStack.getOrCreateTag();
-        return !tag.isEmpty() && tag.getBoolean("IsUseAE");
+        var tag = itemStack.getOrCreateTag();
+        if (!tag.isEmpty() && tag.contains("IsUseAE")) {
+            return tag.getBoolean("IsUseAE");
+        } else {
+            return false; // 默认值为 0 (否)
+        }
     }
 
     private void setUseAE(boolean isUseAE, ItemStack itemStack) {
-        CompoundTag tag = itemStack.getOrCreateTag();
-	    tag.putBoolean("IsUseAE", isUseAE);
+        var tag = itemStack.getOrCreateTag();
+        tag.putBoolean("IsUseAE", isUseAE);
         itemStack.setTag(tag);
     }
 
     private boolean getUseMirror(ItemStack itemStack) {
-        CompoundTag tag = itemStack.getOrCreateTag();
-        return !tag.isEmpty() && tag.getBoolean("IsUseMirror");
+        var tag = itemStack.getOrCreateTag();
+        if (!tag.isEmpty() && tag.contains("IsUseMirror")) {
+            return tag.getBoolean("IsUseMirror");
+        } else {
+            return false;
+        }
     }
 
-    private static void setUseMirror(boolean isUseMirror, ItemStack itemStack) {
-        CompoundTag tag = itemStack.getOrCreateTag();
+    private void setUseMirror(boolean isUseMirror, ItemStack itemStack) {
+        var tag = itemStack.getOrCreateTag();
         tag.putBoolean("IsUseMirror", isUseMirror);
         itemStack.setTag(tag);
     }
@@ -267,8 +286,7 @@ public class AdvancedTerminalBehavior implements IItemUIFactory {
             if (!this.noHatchMode) return true;
             if (blockInfos != null && blockInfos.length > 0) {
                 var blockInfo = blockInfos[0];
-                return !(blockInfo.getBlockState().getBlock()
-                        instanceof MetaMachineBlock machineBlock) ||
+                return !(blockInfo.getBlockState().getBlock() instanceof MetaMachineBlock machineBlock) ||
                         !Hatch.Set.contains(machineBlock);
             }
             return true;
