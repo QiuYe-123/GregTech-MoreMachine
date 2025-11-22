@@ -1,8 +1,8 @@
 package cn.qiuye.gtmoremachine.common.block;
 
 import com.gregtechceu.gtceu.api.GTCEuAPI;
-
 import com.gregtechceu.gtceu.common.data.GTBlocks;
+
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.common.util.Lazy;
 

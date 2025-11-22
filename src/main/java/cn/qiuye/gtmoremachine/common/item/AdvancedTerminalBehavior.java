@@ -1,6 +1,5 @@
 package cn.qiuye.gtmoremachine.common.item;
 
-import cn.qiuye.gtmoremachine.GTmm;
 import cn.qiuye.gtmoremachine.api.gui.BlockMapSelectorWidget;
 import cn.qiuye.gtmoremachine.api.gui.widget.ExtendLabelWidget;
 import cn.qiuye.gtmoremachine.api.gui.widget.TerminalInputWidget;

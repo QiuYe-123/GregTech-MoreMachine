@@ -16,7 +16,9 @@ class GetMEStorage {
 
     companion object {
         fun getMEStorage(stack: ItemStack, player: Player, candidates: List<ItemStack>): IntObjectPair<IItemHandler?>? {
-            if (stack.item is WirelessTerminalItem && stack.hasTag() && stack.tag!!
+            if (stack.item is WirelessTerminalItem &&
+                stack.hasTag() &&
+                stack.tag!!
                     .contains("accessPoint", 10)
             ) {
                 val terminalItem = stack.item as WirelessTerminalItem

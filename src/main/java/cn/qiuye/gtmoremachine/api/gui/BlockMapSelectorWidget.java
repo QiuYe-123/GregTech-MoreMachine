@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.function.BiConsumer;
 
 import static net.minecraft.network.chat.Component.translatable;
-import static net.minecraft.network.chat.FormattedText.composite;
 
 public class BlockMapSelectorWidget extends WidgetGroup {
 
