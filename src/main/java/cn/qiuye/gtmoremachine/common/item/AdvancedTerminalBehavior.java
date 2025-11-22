@@ -135,7 +135,7 @@ public class AdvancedTerminalBehavior implements IItemUIFactory {
                         .setPressed(getUseMirror(handItem))
                         .setTexture(new GuiTextureGroup(GuiTextures.BUTTON, new TextTexture("OFF")),
                                 new GuiTextureGroup(GuiTextures.BUTTON, new TextTexture("ON"))));
-        var blockLabel = new ExtendLabelWidget(47, 24, getBlockComponent(handItem));
+        var blockLabel = new ExtendLabelWidget(47, 21, getBlockComponent(handItem));
         var blockMap = new BlockMapSelectorWidget(group.getSizeHeight() + 4, contain.getSizeWidth(), (s, i) -> {
             if (s != null && i != null) {
                 var tag = handItem.getTag();
@@ -150,7 +150,7 @@ public class AdvancedTerminalBehavior implements IItemUIFactory {
             }
         });
         blockMap.setInit(handItem);
-        var open = new SwitchWidget(14, 21, 30, 16, (c, f) -> blockMap.showType(f))
+        var open = new SwitchWidget(4, 21, 30, 16, (c, f) -> blockMap.showType(f))
                 .setHoverTooltips(Component.translatable("item.gtmoremachine.advanced_terminal.setting.1.tooltip"));
         contain.addWidget(open).addWidget(blockLabel);
         group.addWidget(contain).addWidget(blockMap).setBackground(GuiTextures.BACKGROUND_INVERSE);

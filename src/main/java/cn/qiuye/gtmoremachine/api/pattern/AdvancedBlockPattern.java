@@ -1,6 +1,8 @@
 package cn.qiuye.gtmoremachine.api.pattern;
 
+import cn.qiuye.gtmoremachine.GTmm;
 import cn.qiuye.gtmoremachine.common.item.AdvancedTerminalBehavior;
+import cn.qiuye.gtmoremachine.utils.GetMEStorage;
 
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
@@ -116,6 +118,8 @@ public class AdvancedBlockPattern extends BlockPattern {
         Direction facing = controller.self().getFrontFacing();
         Direction upwardsFacing = controller.self().getUpwardsFacing();
         boolean isUseMirror = autoBuildSetting.isUseMirror();
+        boolean isUseAE = autoBuildSetting.isUseAE();
+
         Object2IntOpenHashMap<SimplePredicate> cacheGlobal = new Object2IntOpenHashMap<>(worldState.getGlobalCount());
         Object2IntOpenHashMap<SimplePredicate> cacheLayer = new Object2IntOpenHashMap<>(worldState.getLayerCount());
         Object2ObjectOpenHashMap<BlockPos, Object> blocks = new Object2ObjectOpenHashMap<>();
@@ -211,7 +215,7 @@ public class AdvancedBlockPattern extends BlockPattern {
                             continue;
 
                         // check inventory
-                        var result = foundItem(player, candidates, item -> item instanceof BlockItem);
+                        var result = foundItem(player, candidates, item -> item instanceof BlockItem, isUseAE);
                         ItemStack found = result.getA();
                         IItemHandler handler = result.getB();
                         int foundSlot = result.getC();
@@ -279,13 +283,14 @@ public class AdvancedBlockPattern extends BlockPattern {
 
     public static Triplet<ItemStack, IItemHandler, Integer> foundItem(Player player,
                                                                       List<ItemStack> candidates,
-                                                                      Predicate<Item> test) {
+                                                                      Predicate<Item> test,
+                                                                      boolean isUseAE) {
         ItemStack found = null;
         IItemHandler handler = null;
         int foundSlot = -1;
         if (!player.isCreative()) {
             var foundHandler = getMatchStackWithHandler(candidates,
-                    player.getCapability(ForgeCapabilities.ITEM_HANDLER), test);
+                    player.getCapability(ForgeCapabilities.ITEM_HANDLER), test, player, isUseAE);
             if (foundHandler != null) {
                 foundSlot = foundHandler.firstInt();
                 handler = foundHandler.second();
@@ -420,7 +425,9 @@ public class AdvancedBlockPattern extends BlockPattern {
     @Nullable
     private static IntObjectPair<IItemHandler> getMatchStackWithHandler(List<ItemStack> candidates,
                                                                         LazyOptional<IItemHandler> cap,
-                                                                        Predicate<Item> test) {
+                                                                        Predicate<Item> test,
+                                                                        Player player,
+                                                                        boolean isUseAE) {
         IItemHandler handler = cap.resolve().orElse(null);
         if (handler == null) return null;
         for (int i = 0; i < handler.getSlots(); i++) {
@@ -431,8 +438,10 @@ public class AdvancedBlockPattern extends BlockPattern {
             @NotNull
             LazyOptional<IItemHandler> stackCap = stack.getCapability(ForgeCapabilities.ITEM_HANDLER);
             if (stackCap.isPresent()) {
-                var rt = getMatchStackWithHandler(candidates, stackCap, test);
+                var rt = getMatchStackWithHandler(candidates, stackCap, test, player, isUseAE);
                 if (rt != null) return rt;
+            } else if (isUseAE && GTmm.Mods.isAE2Loaded()) {
+                GetMEStorage.Companion.getMEStorage(stack, player, candidates);
             } else if (candidates.stream().anyMatch(candidate -> ItemStack.isSameItemSameTags(candidate, stack)) &&
                     !stack.isEmpty() && test.test(stack.getItem())) {
                         return IntObjectPair.of(i, handler);
