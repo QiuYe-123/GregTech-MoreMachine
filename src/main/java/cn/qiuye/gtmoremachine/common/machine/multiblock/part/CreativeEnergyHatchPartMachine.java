@@ -59,7 +59,7 @@ public class CreativeEnergyHatchPartMachine extends TieredIOPartMachine implemen
     @Getter
     private int amps = 1;
     @Persisted
-    private int setTier = 0;
+    private int setTier = GTValues.VNF.length - 1;
 
     public CreativeEnergyHatchPartMachine(IMachineBlockEntity holder) {
         super(holder, GTValues.MAX, IO.IN);

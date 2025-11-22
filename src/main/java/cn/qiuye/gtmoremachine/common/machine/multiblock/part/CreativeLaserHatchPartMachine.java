@@ -60,7 +60,7 @@ public class CreativeLaserHatchPartMachine extends TieredIOPartMachine implement
     @Getter
     private int amps = 1;
     @Persisted
-    private int setTier = GTValues.IV;
+    private int setTier = GTValues.VNF.length - 1;
 
     public static final String[] VNF = new String[] {
             BLUE + "IV",

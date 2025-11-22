@@ -19,7 +19,7 @@ import com.lowdragmc.lowdraglib.gui.util.ClickData;
 import com.lowdragmc.lowdraglib.gui.widget.DraggableScrollableWidgetGroup;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
+import com.lowdragmc.lowdraglib.syncdata.annotation.DropSaved;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
@@ -37,11 +37,11 @@ import static cn.qiuye.gtmoremachine.common.machine.electric.WirelessEnergyMonit
 
 public class WirelessEnergyTerminalBehavior implements IItemUIFactory {
 
-    @Persisted
+    @DropSaved
     private Statistics statistics = Statistics.Team;
-    @Persisted
+    @DropSaved
     private Format format = Format.Unit;
-    @Persisted
+    @DropSaved
     private PowerStatus powerStatus = PowerStatus.All;
 
     //////////////////////////////////////
