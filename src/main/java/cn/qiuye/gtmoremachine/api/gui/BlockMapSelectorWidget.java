@@ -21,10 +21,15 @@ import java.util.List;
 import java.util.function.BiConsumer;
 
 import static net.minecraft.network.chat.Component.translatable;
+import static net.minecraft.network.chat.FormattedText.composite;
 
 public class BlockMapSelectorWidget extends WidgetGroup {
 
     public static final Component COIL = translatable("item.gtmoremachine.advanced_terminal.setting.coil");
+    public static final Component COMP = translatable("item.gtmoremachine.advanced_terminal.setting.comp");
+    public static final Component CLEA = translatable("item.gtmoremachine.advanced_terminal.setting.clea");
+    public static final Component LAMP = translatable("item.gtmoremachine.advanced_terminal.setting.lamp");
+    public static final Component BORLAMP = translatable("item.gtmoremachine.advanced_terminal.setting.borlamp");
 
     private final BiConsumer<String, Integer> onChanged;
     private List<Block> blocks;
@@ -39,6 +44,9 @@ public class BlockMapSelectorWidget extends WidgetGroup {
     public static Component getBlock(String string) {
         return switch (string) {
             case "coil" -> COIL;
+            case "comp" -> COMP;
+            case "clea" -> CLEA;
+            case "lamp" -> LAMP;
             default -> throw new IllegalStateException("Unexpected value: " + string);
         };
     }

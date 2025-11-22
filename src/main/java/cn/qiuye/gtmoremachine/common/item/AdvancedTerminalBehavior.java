@@ -144,7 +144,7 @@ public class AdvancedTerminalBehavior implements IItemUIFactory {
                 tag.putInt("Tier", i);
                 handItem.setTag(tag);
                 blockLabel.setComponent(Component.literal(" (").append(getBlock(s))
-                        .append(Component.literal(":"))
+                        .append(Component.literal(" : "))
                         .append(tierBlockMap.get(s).get()[i].getName())
                         .append(Component.literal(")")));
             }
@@ -164,7 +164,7 @@ public class AdvancedTerminalBehavior implements IItemUIFactory {
             if (!block.isEmpty()) {
                 int tier = tag.getInt("Tier");
                 return Component.literal("(").append(getBlock(block))
-                        .append(Component.literal(":"))
+                        .append(Component.literal(" : "))
                         .append(tierBlockMap.get(block).get()[tier].getName())
                         .append(Component.literal(")"));
             }
@@ -202,7 +202,6 @@ public class AdvancedTerminalBehavior implements IItemUIFactory {
         if (tag == null) tag = new CompoundTag();
         tag.putBoolean("NoHatchMode", isBuildHatches);
         itemStack.setTag(tag);
-        GTmm.LOGGER.info(tag);
     }
 
     private boolean getReplaceMode(ItemStack itemStack) {
