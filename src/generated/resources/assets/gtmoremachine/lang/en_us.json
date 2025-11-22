@@ -229,11 +229,12 @@
   "block.gtmoremachine.zpm_65536a_wireless_laser_source_hatch": "§cZPM 65,536A Laser Source Hatch",
   "block.gtmoremachine.zpm_65536a_wireless_laser_target_hatch": "§cZPM 65,536A Laser Target Hatch",
   "config.gtmoremachine.option.isWirelessRateEnable": "isWirelessRateEnable",
+  "item.gtmoremachine.advanced_terminal": "§bAdvanced Terminal",
   "item.gtmoremachine.creative_energy_cover": "Creative Energy Cover",
   "item.gtmoremachine.creative_fluid_cell": "Creative Fluid Cell",
   "item.gtmoremachine.wireless_energy_binding_tool": "Wireless Energy Binding Tool",
   "item.gtmoremachine.wireless_energy_terminal": "Wireless Energy Terminal",
-  "itemGroup.gtmoremachine.creative": "GTMoreMachine",
-  "itemGroup.gtmoremachine.more_machines": "GTMoreMachine",
-  "itemGroup.gtmoremachine.wireless": "GTMoreMachine"
+  "itemGroup.gtmoremachine.creative": "Creative Things",
+  "itemGroup.gtmoremachine.more_machines": "More Machines",
+  "itemGroup.gtmoremachine.wireless": "Gregtech Wireless"
 }

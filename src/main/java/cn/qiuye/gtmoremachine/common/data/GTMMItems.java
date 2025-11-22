@@ -1,6 +1,7 @@
 package cn.qiuye.gtmoremachine.common.data;
 
 import cn.qiuye.gtmoremachine.GTmm;
+import cn.qiuye.gtmoremachine.common.item.AdvancedTerminalBehavior;
 import cn.qiuye.gtmoremachine.common.item.WirelessEnergyBindingToolBehavior;
 import cn.qiuye.gtmoremachine.common.item.WirelessEnergyTerminalBehavior;
 
@@ -23,14 +24,23 @@ public class GTMMItems {
         return !GTmm.isClientSide() ? NonNullConsumer.noop() : (item) -> item.attachComponents(customRenderer);
     }
 
+    public static ItemEntry<ComponentItem> ADVANCED_TERMINAL = GTMMREGISTRATE
+            .item("advanced_terminal", ComponentItem::create)
+            .lang("§bAdvanced Terminal")
+            .properties(p -> p.stacksTo(1))
+            .onRegister(attach(new AdvancedTerminalBehavior()))
+            .register();
+
     public static ItemEntry<ComponentItem> WIRELESS_ENERGY_BINDING_TOOL = GTMMREGISTRATE
             .item("wireless_energy_binding_tool", ComponentItem::create)
+            .lang("Wireless Energy Binding Tool")
             .properties(p -> p.stacksTo(1))
             .onRegister(attach(new WirelessEnergyBindingToolBehavior()))
             .register();
 
     public static ItemEntry<ComponentItem> WIRELESS_ENERGY_TERMINAL = GTMMREGISTRATE
             .item("wireless_energy_terminal", ComponentItem::create)
+            .lang("Wireless Energy Terminal")
             .properties(p -> p.stacksTo(1))
             .onRegister(attach(new WirelessEnergyTerminalBehavior()))
             .onRegister(attach(new WirelessEnergyBindingToolBehavior())).register();

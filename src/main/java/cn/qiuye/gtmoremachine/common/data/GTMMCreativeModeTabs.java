@@ -20,7 +20,7 @@ public class GTMMCreativeModeTabs {
     public static final RegistryEntry<CreativeModeTab> CREATIVE_TAB = GTMMREGISTRATE
             .defaultCreativeTab("creative", builder -> builder
                     .displayItems(new GTCreativeModeTabs.RegistrateDisplayItemsGenerator("creative", GTMMREGISTRATE))
-                    .title(GTMMREGISTRATE.addLang("itemGroup", GTmm.id("creative"), GTmm.MOD_NAME))
+                    .title(GTMMREGISTRATE.addLang("itemGroup", GTmm.id("creative"), "Creative Things"))
                     .icon(GTMachines.CREATIVE_ENERGY::asStack)
                     .build())
             .register();
@@ -28,7 +28,7 @@ public class GTMMCreativeModeTabs {
     public static final RegistryEntry<CreativeModeTab> WIRELESS_TAB = GTMMREGISTRATE
             .defaultCreativeTab("wireless", builder -> builder
                     .displayItems(new GTCreativeModeTabs.RegistrateDisplayItemsGenerator("wireless", GTMMREGISTRATE))
-                    .title(GTMMREGISTRATE.addLang("itemGroup", GTmm.id("wireless"), GTmm.MOD_NAME))
+                    .title(GTMMREGISTRATE.addLang("itemGroup", GTmm.id("wireless"), "Gregtech Wireless"))
                     .icon(WirelessMachines.WIRELESS_ENERGY_INPUT_HATCH[GTCEuAPI.isHighTier() ? GTValues.MAX : GTValues.UHV - 1]::asStack)
                     .build())
             .register();
@@ -36,7 +36,7 @@ public class GTMMCreativeModeTabs {
     public static final RegistryEntry<CreativeModeTab> MORE_MACHINES = GTMMREGISTRATE
             .defaultCreativeTab("more_machines", builder -> builder
                     .displayItems(new GTCreativeModeTabs.RegistrateDisplayItemsGenerator("more_machines", GTMMREGISTRATE))
-                    .title(GTMMREGISTRATE.addLang("itemGroup", GTmm.id("more_machines"), GTmm.MOD_NAME))
+                    .title(GTMMREGISTRATE.addLang("itemGroup", GTmm.id("more_machines"), "More Machines"))
                     .icon(GTBlocks.BATTERY_EMPTY_TIER_II::asStack)
                     .build())
             .register();

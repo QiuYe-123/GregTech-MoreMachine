@@ -3,7 +3,6 @@ package cn.qiuye.gtmoremachine.common;
 import cn.qiuye.gtmoremachine.GTmm;
 import cn.qiuye.gtmoremachine.common.data.GTMMCovers;
 import cn.qiuye.gtmoremachine.common.data.GTMMCreativeModeTabs;
-import cn.qiuye.gtmoremachine.common.data.GTMMItems;
 import cn.qiuye.gtmoremachine.common.data.machines.CreativeMachines;
 import cn.qiuye.gtmoremachine.common.data.machines.CustomMachines;
 import cn.qiuye.gtmoremachine.common.data.machines.WirelessMachines;
@@ -55,6 +54,5 @@ public class CommonProxy {
 
     private void registerCovers(GTCEuAPI.RegisterEvent<ResourceLocation, CoverDefinition> event) {
         GTMMCovers.init();
-        GTMMItems.init();
     }
 }
