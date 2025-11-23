@@ -5,8 +5,8 @@ import cn.qiuye.gtmoremachine.api.gui.monitor.PowerStatus;
 import cn.qiuye.gtmoremachine.api.gui.monitor.Statistics;
 import cn.qiuye.gtmoremachine.api.gui.widget.AlignComponentPanelWidget;
 import cn.qiuye.gtmoremachine.api.gui.widget.AlignLabelWidget;
-import cn.qiuye.gtmoremachine.api.misc.IWirelessMonitor;
-import cn.qiuye.gtmoremachine.api.misc.WirelessEnergyContainer;
+import cn.qiuye.gtmoremachine.api.misc.wireless.energy.IWirelessMonitor;
+import cn.qiuye.gtmoremachine.api.misc.wireless.energy.WirelessEnergyContainer;
 
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;

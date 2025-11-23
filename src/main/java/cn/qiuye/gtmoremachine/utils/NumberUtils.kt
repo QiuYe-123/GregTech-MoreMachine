@@ -7,8 +7,21 @@ import net.minecraft.network.chat.MutableComponent
 
 import java.math.BigDecimal
 import java.math.BigInteger
+import kotlin.String
 
 object NumberUtils {
+
+    @JvmStatic
+    fun formatInt(number: Int): String = FormattingUtil.formatNumber(number.toDouble())
+
+    @JvmStatic
+    fun formatInt(number: Int, format: Format): String = if (format ==
+        Format.Unit
+    ) {
+        FormattingUtil.formatNumber(number.toDouble())
+    } else {
+        FormattingUtil.DECIMAL_FORMAT_SIC.format(number)
+    }
 
     @JvmStatic
     fun formatLong(number: Long): String = FormattingUtil.formatNumber(number.toDouble())

@@ -1,4 +1,4 @@
-package cn.qiuye.gtmoremachine.api.misc;
+package cn.qiuye.gtmoremachine.api.misc.wireless.energy;
 
 import cn.qiuye.gtmoremachine.api.gui.monitor.Format;
 import cn.qiuye.gtmoremachine.utils.FormattingUtil;
@@ -33,7 +33,7 @@ public interface ITransferData {
                 .withStyle(Style.EMPTY.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
                         Component.translatable("recipe.condition.dimension.tooltip",
                                 machine.getLevel().dimension().location()).append(" [").append(pos).append("] ")
-                                .append(Component.translatable("gtmoremachine.machine.wireless_energy_monitor.tooltip.0",
+                                .append(Component.translatable("gtmoremachine.machine.wireles_monitor.tooltip.0",
                                         TeamUtils.getName(machine.getLevel(), UUID()))))))
                 .append((eut.compareTo(BigDecimal.ZERO) > 0 ? " +" : " ") + NumberUtils.formatBigDecimalNumberOrSic(eut, format))
                 .append(" EU/t (")

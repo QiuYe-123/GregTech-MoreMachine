@@ -1,6 +1,6 @@
 package cn.qiuye.gtmoremachine.common.item;
 
-import cn.qiuye.gtmoremachine.api.misc.WirelessEnergyContainer;
+import cn.qiuye.gtmoremachine.api.misc.wireless.energy.WirelessEnergyContainer;
 import cn.qiuye.gtmoremachine.config.GTMMConfig;
 
 import com.gregtechceu.gtceu.api.GTValues;

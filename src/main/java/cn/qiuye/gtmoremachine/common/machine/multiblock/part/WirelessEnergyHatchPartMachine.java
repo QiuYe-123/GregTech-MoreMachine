@@ -1,7 +1,7 @@
 package cn.qiuye.gtmoremachine.common.machine.multiblock.part;
 
 import cn.qiuye.gtmoremachine.api.machine.IWirelessEnergyContainerHolder;
-import cn.qiuye.gtmoremachine.api.misc.WirelessEnergyContainer;
+import cn.qiuye.gtmoremachine.api.misc.wireless.energy.WirelessEnergyContainer;
 import cn.qiuye.gtmoremachine.utils.TeamUtils;
 
 import com.gregtechceu.gtceu.api.GTValues;

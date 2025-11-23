@@ -1,4 +1,4 @@
-package cn.qiuye.gtmoremachine.api.misc;
+package cn.qiuye.gtmoremachine.api.misc.wireless.energy;
 
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 

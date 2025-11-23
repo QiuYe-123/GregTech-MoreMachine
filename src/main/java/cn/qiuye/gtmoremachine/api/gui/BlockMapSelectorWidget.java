@@ -46,6 +46,7 @@ public class BlockMapSelectorWidget extends WidgetGroup {
             case "comp" -> COMP;
             case "clea" -> CLEA;
             case "lamp" -> LAMP;
+            case "borlamp" -> BORLAMP;
             default -> throw new IllegalStateException("Unexpected value: " + string);
         };
     }
