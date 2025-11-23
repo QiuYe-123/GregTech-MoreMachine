@@ -4,6 +4,7 @@ import cn.qiuye.gtmoremachine.GTmm;
 import cn.qiuye.gtmoremachine.common.data.GTMMCreativeModeTabs;
 import cn.qiuye.gtmoremachine.common.machine.electric.WirelessEnergyInterface;
 import cn.qiuye.gtmoremachine.common.machine.electric.WirelessEnergyMonitor;
+import cn.qiuye.gtmoremachine.common.machine.multiblock.part.WirelessCWUHatchMachine;
 
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.GTValues;
@@ -11,6 +12,8 @@ import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.data.RotationState;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
+
+import net.minecraft.network.chat.Component;
 
 import static cn.qiuye.gtmoremachine.common.data.machines.WirelessMachinesUtils.registerWirelessEnergyHatch;
 import static cn.qiuye.gtmoremachine.common.data.machines.WirelessMachinesUtils.registerWirelessLaserHatch;
@@ -39,6 +42,28 @@ public class WirelessMachines {
             .rotationState(RotationState.ALL)
             .overlayTieredHullModel("energy_input_hatch")
             .tier(GTValues.IV)
+            .register();
+
+    public static final MachineDefinition WIRELESS_COMPUTATION_HATCH_TRANSMITTER = GTMMREGISTRATE
+            .machine("wireless_computation_transmitter_hatch", (holder) -> new WirelessCWUHatchMachine(holder, true))
+            .langValue("Wireless Computation Data Reception Hatch")
+            .overlayTieredHullModel("computation_data_hatch")
+            .tooltips(Component.translatable("gtmoremachine.machine.wireless_computation_transmitter_hatch.tooltip.1"),
+                    Component.translatable("gtmoremachine.machine.wireless_computation_transmitter_hatch.tooltip.2"))
+            .rotationState(RotationState.ALL)
+            .abilities(PartAbility.COMPUTATION_DATA_TRANSMISSION)
+            .tier(GTValues.UV)
+            .register();
+
+    public static final MachineDefinition WIRELESS_COMPUTATION_HATCH_RECEIVER = GTMMREGISTRATE
+            .machine("wireless_computation_receiver_hatch", (holder) -> new WirelessCWUHatchMachine(holder, false))
+            .langValue("Wireless Computation Data Transmission Hatch")
+            .overlayTieredHullModel("computation_data_hatch")
+            .tooltips(Component.translatable("gtmoremachine.machine.wireless_computation_transmitter_hatch.tooltip.1"),
+                    Component.translatable("gtmoremachine.machine.wireless_computation_transmitter_hatch.tooltip.2"))
+            .rotationState(RotationState.ALL)
+            .abilities(PartAbility.COMPUTATION_DATA_RECEPTION)
+            .tier(GTValues.UV)
             .register();
 
     public static final MachineDefinition[] WIRELESS_ENERGY_INPUT_HATCH = registerWirelessEnergyHatch(IO.IN, 2, PartAbility.INPUT_ENERGY, ALL_TIERS);

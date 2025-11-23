@@ -1,6 +1,6 @@
-package cn.qiuye.gtmoremachine.data.wirelessenergy;
+package cn.qiuye.gtmoremachine.data.wireless.energy;
 
-import cn.qiuye.gtmoremachine.api.misc.WirelessEnergyContainer;
+import cn.qiuye.gtmoremachine.api.misc.wireless.energy.WirelessEnergyContainer;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;

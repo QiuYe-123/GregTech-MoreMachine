@@ -31,6 +31,7 @@ public class FormattingUtil {
 
     public static final DecimalFormat DECIMAL_FORMAT_1F = new DecimalFormat("#,##0.#");
     public static final DecimalFormat DECIMAL_FORMAT_2F = new DecimalFormat("#,##0.##");
+    public static final DecimalFormat DECIMAL_FORMAT_SIC = new DecimalFormat("0E0");
     public static final DecimalFormat DECIMAL_FORMAT_SIC_2F = new DecimalFormat("0.00E00");
 
     /**

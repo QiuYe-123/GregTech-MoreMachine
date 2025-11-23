@@ -1,9 +1,9 @@
 package cn.qiuye.gtmoremachine.forge;
 
 import cn.qiuye.gtmoremachine.GTmm;
-import cn.qiuye.gtmoremachine.api.misc.WirelessEnergyContainer;
+import cn.qiuye.gtmoremachine.api.misc.wireless.energy.WirelessEnergyContainer;
 import cn.qiuye.gtmoremachine.common.item.WirelessEnergyBindingToolBehavior;
-import cn.qiuye.gtmoremachine.data.wirelessenergy.WirelessEnergySavaedData;
+import cn.qiuye.gtmoremachine.data.wireless.energy.WirelessEnergySavaedData;
 
 import net.minecraft.core.GlobalPos;
 import net.minecraft.server.level.ServerLevel;

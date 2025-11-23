@@ -1,7 +1,7 @@
-package cn.qiuye.gtmoremachine.api.misc;
+package cn.qiuye.gtmoremachine.api.misc.wireless.energy;
 
 import cn.qiuye.gtmoremachine.config.GTMMConfig;
-import cn.qiuye.gtmoremachine.data.wirelessenergy.WirelessEnergySavaedData;
+import cn.qiuye.gtmoremachine.data.wireless.energy.WirelessEnergySavaedData;
 import cn.qiuye.gtmoremachine.utils.BigIntegerUtils;
 import cn.qiuye.gtmoremachine.utils.TeamUtils;
 

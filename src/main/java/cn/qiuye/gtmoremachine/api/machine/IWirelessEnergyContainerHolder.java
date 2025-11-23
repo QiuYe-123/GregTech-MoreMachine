@@ -1,7 +1,7 @@
 package cn.qiuye.gtmoremachine.api.machine;
 
 import cn.qiuye.gtmoremachine.api.capability.IBindable;
-import cn.qiuye.gtmoremachine.api.misc.WirelessEnergyContainer;
+import cn.qiuye.gtmoremachine.api.misc.wireless.energy.WirelessEnergyContainer;
 
 import javax.annotation.Nullable;
 
