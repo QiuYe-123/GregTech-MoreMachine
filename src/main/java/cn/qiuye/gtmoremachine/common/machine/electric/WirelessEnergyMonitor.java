@@ -60,14 +60,11 @@ public class WirelessEnergyMonitor extends MetaMachine implements IFancyUIMachin
     private List<Component> textListCache;
 
     @Persisted
-    @DropSaved
-    private Statistics statistics;
+    private Statistics statistics = Statistics.Team;
     @Persisted
-    @DropSaved
-    private Format format;
+    private Format format = Format.Unit;
     @Persisted
-    @DropSaved
-    private PowerStatus powerStatus;
+    private PowerStatus powerStatus = PowerStatus.All;
 
     //////////////////////////////////////
     // *********** GUI ***********//
