@@ -14,27 +14,34 @@ import java.util.function.Supplier;
 
 public interface BlockMap {
 
-    Object2ObjectOpenHashMap<String, Lazy<Block[]>> tierBlockMap = new Object2ObjectOpenHashMap<>(1);
+    Object2ObjectOpenHashMap<String, Lazy<Block[]>> tierBlockMap = new Object2ObjectOpenHashMap<>(50);
 
     Int2ObjectOpenHashMap<Supplier<?>> rotMap = new Int2ObjectOpenHashMap<>(11);
 
+    String COIL = "item.gtmoremachine.advanced_terminal.setting.coil";
+    String COMP = "item.gtmoremachine.advanced_terminal.setting.comp";
+    String CLEA = "item.gtmoremachine.advanced_terminal.setting.clea";
+    String LAMP = "item.gtmoremachine.advanced_terminal.setting.lamp";
+    String BORLAMP = "item.gtmoremachine.advanced_terminal.setting.borlamp";
+    String ROTOR = "item.gtmoremachine.advanced_terminal.setting.rotor";
+
     static void init() {
-        tierBlockMap.put("coil", Lazy.of(() -> GTCEuAPI.HEATING_COILS.entrySet().stream()
+        tierBlockMap.put(COIL, Lazy.of(() -> GTCEuAPI.HEATING_COILS.entrySet().stream()
                 .sorted(Comparator.comparingInt(e -> e.getKey().getCoilTemperature()))
                 .map(Map.Entry::getValue).map(Supplier::get).toArray(Block[]::new)));
-        tierBlockMap.put("comp", Lazy.of(() -> GTCEuAPI.PSS_BATTERIES.entrySet().stream()
+        tierBlockMap.put(COMP, Lazy.of(() -> GTCEuAPI.PSS_BATTERIES.entrySet().stream()
                 .sorted(Comparator.comparingInt(e -> e.getKey().getTier()))
                 .map(Map.Entry::getValue).map(Supplier::get).toArray(Block[]::new)));
-        tierBlockMap.put("clea", Lazy.of(() -> GTCEuAPI.CLEANROOM_FILTERS.entrySet().stream()
+        tierBlockMap.put(CLEA, Lazy.of(() -> GTCEuAPI.CLEANROOM_FILTERS.entrySet().stream()
                 .sorted(Comparator.comparingInt(e -> e.getKey().getCleanroomType().hashCode()))
                 .map(Map.Entry::getValue).map(Supplier::get).toArray(Block[]::new)));
-        tierBlockMap.put("lamp", Lazy.of(() -> GTBlocks.LAMPS.entrySet().stream()
+        tierBlockMap.put(LAMP, Lazy.of(() -> GTBlocks.LAMPS.entrySet().stream()
                 .sorted(Comparator.comparingInt(e -> e.getKey().getFireworkColor()))
                 .map(Map.Entry::getValue).map(Supplier::get).toArray(Block[]::new)));
-        tierBlockMap.put("borlamp", Lazy.of(() -> GTBlocks.BORDERLESS_LAMPS.entrySet().stream()
+        tierBlockMap.put(BORLAMP, Lazy.of(() -> GTBlocks.BORDERLESS_LAMPS.entrySet().stream()
                 .sorted(Comparator.comparingInt(e -> e.getKey().getFireworkColor()))
                 .map(Map.Entry::getValue).map(Supplier::get).toArray(Block[]::new)));
-        tierBlockMap.put("rotor", Lazy.of(() -> rotMap.int2ObjectEntrySet().stream()
+        tierBlockMap.put(ROTOR, Lazy.of(() -> rotMap.int2ObjectEntrySet().stream()
                 .sorted(Comparator.comparingInt(Int2ObjectMap.Entry::getIntKey))
                 .map(Int2ObjectMap.Entry::getValue).map(Supplier::get).toArray(Block[]::new)));
     }
