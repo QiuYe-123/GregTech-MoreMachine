@@ -1,5 +1,26 @@
 # ChangeLog
 
+## Version [v1.2.0](https://github.com/QiuYe-123/GTMoreMachine/compare/v1.1.0-1.20.1...v1.2.0-1.20.1)
+### Added
+
+- 添加无线算力仓 by @QiuYe-123 in [#28](https://github.com/QiuYe-123/GTMoreMachine/pull/28)
+- 添加更多可替换方块 by @QiuYe-123 in [#29](https://github.com/QiuYe-123/GTMoreMachine/pull/29)
+- 添加无线覆盖板 by @QiuYe-123 in [#30](https://github.com/QiuYe-123/GTMoreMachine/pull/30)
+- 添加巨型物品输入输出总线 巨型输入总成 by @QiuYe-123 in [#31](https://github.com/QiuYe-123/GTMoreMachine/pull/31)
+- 添加配方(GTMThings) 未进行整理 by @QiuYe-123 in [#34](https://github.com/QiuYe-123/GTMoreMachine/pull/34)
+
+### Fixed
+
+- 修复流体钻机与基岩矿石钻机的最大功率不统一 by @QiuYe-123 in [#26](https://github.com/QiuYe-123/GTMoreMachine/pull/26)
+- 添加无线覆盖板 by @QiuYe-123 in [#30](https://github.com/QiuYe-123/GTMoreMachine/pull/30)
+- 修复无线电网系统的问题 by @QiuYe-123 in [#32](https://github.com/QiuYe-123/GTMoreMachine/pull/32)
+- 高级终端修改 key和读取逻辑 by @QiuYe-123 in [#33](https://github.com/QiuYe-123/GTMoreMachine/pull/33)
+
+### Changed
+
+- 高级终端修改 key和读取逻辑 by @QiuYe-123 in [#33](https://github.com/QiuYe-123/GTMoreMachine/pull/33)
+
+ 
 ## Version [v1.1.0](https://github.com/QiuYe-123/GTMoreMachine/compare/v1.0.1-1.20.1...v1.1.0-1.20.1)
 ### Added
 
