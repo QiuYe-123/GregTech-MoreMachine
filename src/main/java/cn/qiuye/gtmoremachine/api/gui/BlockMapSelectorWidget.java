@@ -20,16 +20,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.BiConsumer;
 
+import static cn.qiuye.gtmoremachine.common.block.BlockMap.*;
 import static net.minecraft.network.chat.Component.translatable;
 
 public class BlockMapSelectorWidget extends WidgetGroup {
-
-    public static final Component COIL = translatable("item.gtmoremachine.advanced_terminal.setting.coil");
-    public static final Component COMP = translatable("item.gtmoremachine.advanced_terminal.setting.comp");
-    public static final Component CLEA = translatable("item.gtmoremachine.advanced_terminal.setting.clea");
-    public static final Component LAMP = translatable("item.gtmoremachine.advanced_terminal.setting.lamp");
-    public static final Component BORLAMP = translatable("item.gtmoremachine.advanced_terminal.setting.borlamp");
-    public static final Component ROTOR = translatable("item.gtmoremachine.advanced_terminal.setting.rotor");
 
     private final BiConsumer<String, Integer> onChanged;
     private List<Block> blocks;
@@ -43,12 +37,12 @@ public class BlockMapSelectorWidget extends WidgetGroup {
 
     public static Component getBlock(String string) {
         return switch (string) {
-            case "coil" -> COIL;
-            case "comp" -> COMP;
-            case "clea" -> CLEA;
-            case "lamp" -> LAMP;
-            case "borlamp" -> BORLAMP;
-            case "rotor" -> ROTOR;
+            case COIL -> translatable(COIL);
+            case COMP -> translatable(COMP);
+            case CLEA -> translatable(CLEA);
+            case LAMP -> translatable(LAMP);
+            case BORLAMP -> translatable(BORLAMP);
+            case ROTOR -> translatable(ROTOR);
             default -> throw new IllegalStateException("Unexpected value: " + string);
         };
     }
@@ -74,7 +68,7 @@ public class BlockMapSelectorWidget extends WidgetGroup {
             int y = 0;
             for (var key : BlockMap.tierBlockMap.keySet()) {
                 blockType.addWidget((new WidgetGroup(2, 2 + y, 66, 15))
-                        .addWidget(new ExtendLabelWidget(0, 0, getBlock(key)))
+                        .addWidget(new ExtendLabelWidget(0, 0, translatable(key)))
                         .addWidget(new ButtonWidget(0, 0, 64, 15, (cd) -> {
                             showTier(Arrays.stream(BlockMap.tierBlockMap.get(key).get()).toList());
                             currentType = key;

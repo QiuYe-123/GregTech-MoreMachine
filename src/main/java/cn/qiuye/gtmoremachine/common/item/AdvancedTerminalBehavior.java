@@ -37,8 +37,8 @@ import lombok.Setter;
 
 import java.util.*;
 
-import static cn.qiuye.gtmoremachine.api.gui.BlockMapSelectorWidget.getBlock;
 import static cn.qiuye.gtmoremachine.common.block.BlockMap.*;
+import static net.minecraft.network.chat.Component.translatable;
 
 @Getter
 @Setter
@@ -142,7 +142,7 @@ public class AdvancedTerminalBehavior implements IItemUIFactory {
                 tag.putString("blocks", s);
                 tag.putInt("Tier", i);
                 handItem.setTag(tag);
-                blockLabel.setComponent(Component.literal(" (").append(getBlock(s))
+                blockLabel.setComponent(Component.literal(" (").append(translatable(s))
                         .append(Component.literal(" : "))
                         .append(tierBlockMap.get(s).get()[i].getName())
                         .append(Component.literal(")")));
@@ -162,7 +162,7 @@ public class AdvancedTerminalBehavior implements IItemUIFactory {
             var block = tag.getString("blocks");
             if (!block.isEmpty()) {
                 int tier = tag.getInt("Tier");
-                return Component.literal("(").append(getBlock(block))
+                return Component.literal("(").append(translatable(block))
                         .append(Component.literal(" : "))
                         .append(tierBlockMap.get(block).get()[tier].getName())
                         .append(Component.literal(")"));
