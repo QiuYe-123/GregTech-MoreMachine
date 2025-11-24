@@ -4,10 +4,15 @@ import cn.qiuye.gtmoremachine.common.data.GTMMBlocks;
 import cn.qiuye.gtmoremachine.common.data.GTMMItems;
 import cn.qiuye.gtmoremachine.common.registry.GTMMRegistration;
 import cn.qiuye.gtmoremachine.data.GTMMDatagen;
+import cn.qiuye.gtmoremachine.data.recipes.GTMMRecipes;
 
 import com.gregtechceu.gtceu.api.addon.GTAddon;
 import com.gregtechceu.gtceu.api.addon.IGTAddon;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
+
+import net.minecraft.data.recipes.FinishedRecipe;
+
+import java.util.function.Consumer;
 
 @GTAddon
 public class GTMMGTAddon implements IGTAddon {
@@ -27,5 +32,10 @@ public class GTMMGTAddon implements IGTAddon {
         GTMMItems.init();
         GTMMBlocks.init();
         GTMMDatagen.initPost();
+    }
+
+    @Override
+    public void addRecipes(Consumer<FinishedRecipe> provider) {
+        GTMMRecipes.init(provider);
     }
 }
