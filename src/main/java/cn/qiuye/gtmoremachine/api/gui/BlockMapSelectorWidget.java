@@ -35,18 +35,6 @@ public class BlockMapSelectorWidget extends WidgetGroup {
         this.setVisible(false);
     }
 
-    public static Component getBlock(String string) {
-        return switch (string) {
-            case COIL -> translatable(COIL);
-            case COMP -> translatable(COMP);
-            case CLEA -> translatable(CLEA);
-            case LAMP -> translatable(LAMP);
-            case BORLAMP -> translatable(BORLAMP);
-            case ROTOR -> translatable(ROTOR);
-            default -> throw new IllegalStateException("Unexpected value: " + string);
-        };
-    }
-
     public void setInit(ItemStack itemStack) {
         var tag = itemStack.getOrCreateTag();
         var block = tag.getString("blocks");
