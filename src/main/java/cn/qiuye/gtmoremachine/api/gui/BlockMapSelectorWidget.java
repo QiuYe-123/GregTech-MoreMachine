@@ -29,6 +29,7 @@ public class BlockMapSelectorWidget extends WidgetGroup {
     public static final Component CLEA = translatable("item.gtmoremachine.advanced_terminal.setting.clea");
     public static final Component LAMP = translatable("item.gtmoremachine.advanced_terminal.setting.lamp");
     public static final Component BORLAMP = translatable("item.gtmoremachine.advanced_terminal.setting.borlamp");
+    public static final Component ROTOR = translatable("item.gtmoremachine.advanced_terminal.setting.rotor");
 
     private final BiConsumer<String, Integer> onChanged;
     private List<Block> blocks;
@@ -47,6 +48,7 @@ public class BlockMapSelectorWidget extends WidgetGroup {
             case "clea" -> CLEA;
             case "lamp" -> LAMP;
             case "borlamp" -> BORLAMP;
+            case "rotor" -> ROTOR;
             default -> throw new IllegalStateException("Unexpected value: " + string);
         };
     }

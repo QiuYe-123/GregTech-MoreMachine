@@ -16,6 +16,8 @@ public interface BlockMap {
 
     Object2ObjectOpenHashMap<String, Lazy<Block[]>> tierBlockMap = new Object2ObjectOpenHashMap<>(1);
 
+    Int2ObjectOpenHashMap<Supplier<?>> rotMap = new Int2ObjectOpenHashMap<>(11);
+
     static void init() {
         tierBlockMap.put("coil", Lazy.of(() -> GTCEuAPI.HEATING_COILS.entrySet().stream()
                 .sorted(Comparator.comparingInt(e -> e.getKey().getCoilTemperature()))
@@ -32,5 +34,8 @@ public interface BlockMap {
         tierBlockMap.put("borlamp", Lazy.of(() -> GTBlocks.BORDERLESS_LAMPS.entrySet().stream()
                 .sorted(Comparator.comparingInt(e -> e.getKey().getFireworkColor()))
                 .map(Map.Entry::getValue).map(Supplier::get).toArray(Block[]::new)));
+        tierBlockMap.put("rotor", Lazy.of(() -> rotMap.int2ObjectEntrySet().stream()
+                .sorted(Comparator.comparingInt(Int2ObjectMap.Entry::getIntKey))
+                .map(Int2ObjectMap.Entry::getValue).map(Supplier::get).toArray(Block[]::new)));
     }
 }
