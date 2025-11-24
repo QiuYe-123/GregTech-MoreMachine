@@ -17,6 +17,7 @@ import com.lowdragmc.lowdraglib.gui.util.ClickData;
 import com.lowdragmc.lowdraglib.gui.widget.DraggableScrollableWidgetGroup;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
+import com.lowdragmc.lowdraglib.syncdata.annotation.DropSaved;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
@@ -59,11 +60,14 @@ public class WirelessEnergyMonitor extends MetaMachine implements IFancyUIMachin
     private List<Component> textListCache;
 
     @Persisted
-    private Statistics statistics = Statistics.Team;
+    @DropSaved
+    private Statistics statistics;
     @Persisted
-    private Format format = Format.Unit;
+    @DropSaved
+    private Format format;
     @Persisted
-    private PowerStatus powerStatus = PowerStatus.All;
+    @DropSaved
+    private PowerStatus powerStatus;
 
     //////////////////////////////////////
     // *********** GUI ***********//

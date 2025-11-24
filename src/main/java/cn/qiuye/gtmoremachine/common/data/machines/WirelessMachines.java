@@ -69,7 +69,7 @@ public class WirelessMachines {
     public static final MachineDefinition[] WIRELESS_ENERGY_INPUT_HATCH = registerWirelessEnergyHatch(IO.IN, 2, PartAbility.INPUT_ENERGY, ALL_TIERS);
     public static final MachineDefinition[] WIRELESS_ENERGY_INPUT_HATCH_4A = registerWirelessEnergyHatch(IO.IN, 4, PartAbility.INPUT_ENERGY, ALL_TIERS);
     public static final MachineDefinition[] WIRELESS_ENERGY_INPUT_HATCH_16A = registerWirelessEnergyHatch(IO.IN, 16, PartAbility.INPUT_ENERGY, ALL_TIERS);
-    public static final MachineDefinition[] WIRELESS_ENERGY_INPUT_HATCH_64A = registerWirelessEnergyHatch(IO.IN, 64, PartAbility.INPUT_ENERGY, ALL_TIERS);
+    public static final MachineDefinition[] WIRELESS_ENERGY_INPUT_HATCH_64A = registerWirelessEnergyHatch(IO.IN, 64, PartAbility.INPUT_ENERGY, WIRELL_ENERGY_HIGH_TIERS);
     public static final MachineDefinition[] WIRELESS_ENERGY_INPUT_HATCH_256A = registerWirelessLaserHatch(IO.IN, 256, PartAbility.INPUT_LASER, WIRELL_ENERGY_HIGH_TIERS);
     public static final MachineDefinition[] WIRELESS_ENERGY_INPUT_HATCH_1024A = registerWirelessLaserHatch(IO.IN, 1024, PartAbility.INPUT_LASER, WIRELL_ENERGY_HIGH_TIERS);
     public static final MachineDefinition[] WIRELESS_ENERGY_INPUT_HATCH_4096A = registerWirelessLaserHatch(IO.IN, 4096, PartAbility.INPUT_LASER, WIRELL_ENERGY_HIGH_TIERS);
@@ -79,7 +79,7 @@ public class WirelessMachines {
     public static final MachineDefinition[] WIRELESS_ENERGY_OUTPUT_HATCH = registerWirelessEnergyHatch(IO.OUT, 2, PartAbility.OUTPUT_ENERGY, ALL_TIERS);
     public static final MachineDefinition[] WIRELESS_ENERGY_OUTPUT_HATCH_4A = registerWirelessEnergyHatch(IO.OUT, 4, PartAbility.OUTPUT_ENERGY, ALL_TIERS);
     public static final MachineDefinition[] WIRELESS_ENERGY_OUTPUT_HATCH_16A = registerWirelessEnergyHatch(IO.OUT, 16, PartAbility.OUTPUT_ENERGY, ALL_TIERS);
-    public static final MachineDefinition[] WIRELESS_ENERGY_OUTPUT_HATCH_64A = registerWirelessEnergyHatch(IO.OUT, 64, PartAbility.OUTPUT_ENERGY, ALL_TIERS);
+    public static final MachineDefinition[] WIRELESS_ENERGY_OUTPUT_HATCH_64A = registerWirelessEnergyHatch(IO.OUT, 64, PartAbility.OUTPUT_ENERGY, WIRELL_ENERGY_HIGH_TIERS);
     public static final MachineDefinition[] WIRELESS_ENERGY_OUTPUT_HATCH_256A = registerWirelessLaserHatch(IO.OUT, 256, PartAbility.OUTPUT_LASER, WIRELL_ENERGY_HIGH_TIERS);
     public static final MachineDefinition[] WIRELESS_ENERGY_OUTPUT_HATCH_1024A = registerWirelessLaserHatch(IO.OUT, 1024, PartAbility.OUTPUT_LASER, WIRELL_ENERGY_HIGH_TIERS);
     public static final MachineDefinition[] WIRELESS_ENERGY_OUTPUT_HATCH_4096A = registerWirelessLaserHatch(IO.OUT, 4096, PartAbility.OUTPUT_LASER, WIRELL_ENERGY_HIGH_TIERS);
