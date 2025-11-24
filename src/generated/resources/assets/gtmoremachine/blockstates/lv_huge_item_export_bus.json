@@ -1,0 +1,28 @@
+{
+  "variants": {
+    "facing=down": {
+      "model": "gtmoremachine:block/machine/lv_huge_item_export_bus",
+      "x": 90
+    },
+    "facing=east": {
+      "model": "gtmoremachine:block/machine/lv_huge_item_export_bus",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "gtmoremachine:block/machine/lv_huge_item_export_bus"
+    },
+    "facing=south": {
+      "model": "gtmoremachine:block/machine/lv_huge_item_export_bus",
+      "y": 180
+    },
+    "facing=up": {
+      "gtceu:z": 180,
+      "model": "gtmoremachine:block/machine/lv_huge_item_export_bus",
+      "x": 270
+    },
+    "facing=west": {
+      "model": "gtmoremachine:block/machine/lv_huge_item_export_bus",
+      "y": 270
+    }
+  }
+}
