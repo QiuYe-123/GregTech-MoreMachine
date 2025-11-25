@@ -119,19 +119,19 @@ public class AssemblerRecipe {
                 .EUt(GTValues.VA[GTValues.LV])
                 .save(provider);
 
-	    ASSEMBLER_RECIPES.recipeBuilder(GTmm.id("wireless_energy_terminal"))
-			    .inputItems(WirelessMachines.WIRELESS_ENERGY_MONITOR.asStack())
+        ASSEMBLER_RECIPES.recipeBuilder(GTmm.id("wireless_energy_terminal"))
+                .inputItems(WirelessMachines.WIRELESS_ENERGY_MONITOR.asStack())
                 .inputItems(GTMMItems.WIRELESS_ENERGY_BINDING_TOOL)
-			    .inputItems(GTItems.COVER_SCREEN)
-			    .inputItems(Items.ENDER_PEARL, 16)
-			    .inputItems(GTItems.TERMINAL)
-			    .inputItems(CustomTags.LV_CIRCUITS, 4)
-			    .inputItems(TagPrefix.foil, GTMaterials.Steel, 16)
-			    .inputFluids(GTMaterials.SolderingAlloy.getFluid(144))
-			    .outputItems(GTMMItems.WIRELESS_ENERGY_TERMINAL)
-			    .duration(400)
-			    .EUt(GTValues.VA[GTValues.LV])
-			    .save(provider);
+                .inputItems(GTItems.COVER_SCREEN)
+                .inputItems(Items.ENDER_PEARL, 16)
+                .inputItems(GTItems.TERMINAL)
+                .inputItems(CustomTags.LV_CIRCUITS, 4)
+                .inputItems(TagPrefix.foil, GTMaterials.Steel, 16)
+                .inputFluids(GTMaterials.SolderingAlloy.getFluid(144))
+                .outputItems(GTMMItems.WIRELESS_ENERGY_TERMINAL)
+                .duration(400)
+                .EUt(GTValues.VA[GTValues.LV])
+                .save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder(GTmm.id("wireless_energy_interface"))
                 .inputItems(GTMachines.ENERGY_INPUT_HATCH[1].asStack())
