@@ -41,6 +41,7 @@ public class CustomMachines {
                     .tooltips(Component.translatable("gtmoremachine.machine.huge_item_bus.import.tooltip"),
                             Component.translatable("gtceu.universal.tooltip.item_storage_capacity",
                                     (1 + tier) * HugeBusPartMachine.INV_MULTIPLE))
+                    .tooltips(Component.translatable("gtceu.part_sharing.enabled"))
                     .register(),
             ALL_TIERS);
 
@@ -56,6 +57,7 @@ public class CustomMachines {
                     .tooltips(Component.translatable("gtmoremachine.machine.huge_item_bus.export.tooltip"),
                             Component.translatable("gtceu.universal.tooltip.item_storage_capacity",
                                     (1 + tier) * INV_MULTIPLE))
+                    .tooltips(Component.translatable("gtceu.part_sharing.enabled"))
                     .register(),
             ALL_TIERS);
 
@@ -70,7 +72,8 @@ public class CustomMachines {
                 builder.tooltips(Component.translatable("gtceu.universal.tooltip.item_storage_capacity",
                         (1 + tier) * INV_MULTIPLE))
                         .tooltips(Component.translatable("gtceu.universal.tooltip.fluid_storage_capacity_mult",
-                                tier, FormattingUtil.formatNumbers(Integer.MAX_VALUE)));
+                                tier, FormattingUtil.formatNumbers(Integer.MAX_VALUE)))
+                        .tooltips(Component.translatable("gtceu.part_sharing.enabled"));
                 return builder.register();
             },
             ALL_TIERS);
