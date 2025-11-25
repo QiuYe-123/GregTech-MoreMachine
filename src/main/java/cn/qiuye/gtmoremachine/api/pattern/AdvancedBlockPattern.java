@@ -441,7 +441,7 @@ public class AdvancedBlockPattern extends BlockPattern {
                 var rt = getMatchStackWithHandler(candidates, stackCap, test, player, isUseAE);
                 if (rt != null) return rt;
             } else if (isUseAE && GTmm.Mods.isAE2Loaded()) {
-                GetMEStorage.Companion.getMEStorage(stack, player, candidates);
+                GetMEStorage.getMEStorage(stack, player, candidates);
             } else if (candidates.stream().anyMatch(candidate -> ItemStack.isSameItemSameTags(candidate, stack)) &&
                     !stack.isEmpty() && test.test(stack.getItem())) {
                         return IntObjectPair.of(i, handler);

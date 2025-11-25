@@ -1,11 +1,11 @@
 package cn.qiuye.gtmoremachine.common.data;
 
 import cn.qiuye.gtmoremachine.GTmm;
+import cn.qiuye.gtmoremachine.common.data.machines.CustomMachines;
 import cn.qiuye.gtmoremachine.common.data.machines.WirelessMachines;
 
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTCreativeModeTabs;
 import com.gregtechceu.gtceu.common.data.GTMachines;
 
@@ -37,7 +37,7 @@ public class GTMMCreativeModeTabs {
             .defaultCreativeTab("more_machines", builder -> builder
                     .displayItems(new GTCreativeModeTabs.RegistrateDisplayItemsGenerator("more_machines", GTMMREGISTRATE))
                     .title(GTMMREGISTRATE.addLang("itemGroup", GTmm.id("more_machines"), "More Machines"))
-                    .icon(GTBlocks.BATTERY_EMPTY_TIER_II::asStack)
+                    .icon(CustomMachines.HUGE_INPUT_DUAL_HATCH[GTCEuAPI.isHighTier() ? GTValues.MAX : GTValues.UHV - 1]::asStack)
                     .build())
             .register();
 

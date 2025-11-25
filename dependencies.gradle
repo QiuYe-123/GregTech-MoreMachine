@@ -5,6 +5,7 @@ dependencies {
 
     // kotlin-for-forge
     modApi(forge.kotlinforforge.get())
+    jarJar(forge.kotlinforforge)
 
     // Mixin (& Extras)
     annotationProcessor(variantOf(libs.mixin) { classifier("processor") })
