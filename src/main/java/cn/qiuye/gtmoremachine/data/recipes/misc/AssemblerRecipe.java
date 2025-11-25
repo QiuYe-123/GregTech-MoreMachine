@@ -5,6 +5,7 @@ import cn.qiuye.gtmoremachine.common.data.GTMMItems;
 import cn.qiuye.gtmoremachine.common.data.machines.CustomMachines;
 import cn.qiuye.gtmoremachine.common.data.machines.GTMMAEMachines;
 import cn.qiuye.gtmoremachine.common.data.machines.WirelessMachines;
+import cn.qiuye.gtmoremachine.integration.ae.item.GTMMAEItems;
 
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.GTValues;
@@ -18,8 +19,11 @@ import com.gregtechceu.gtceu.common.data.machines.GTResearchMachines;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 
 import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
+import appeng.core.definitions.AEBlocks;
+import appeng.core.definitions.AEItems;
 import com.tterrag.registrate.util.entry.ItemEntry;
 
 import java.util.List;
@@ -30,20 +34,83 @@ import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.ASSEMBLER_RECIPES;
 public class AssemblerRecipe {
 
     public static void init(Consumer<FinishedRecipe> provider) {
-        ASSEMBLER_RECIPES.recipeBuilder("cover_maintenance_detector")
+        if (GTmm.Mods.isAE2Loaded()) {
+            ASSEMBLER_RECIPES.recipeBuilder(GTmm.id("programmable_cover"))
+                    .inputItems(GTItems.ROBOT_ARM_LV.asStack(2))
+                    .inputItems(GTMMAEItems.VIRTUAL_ITEM_PROVIDER.asStack())
+                    .inputItems(CustomTags.MV_CIRCUITS, 2)
+                    .inputFluids(GTMaterials.SolderingAlloy.getFluid(144))
+                    .outputItems(GTMMAEItems.PROGRAMMABLE_COVER)
+                    .duration(200)
+                    .EUt(GTValues.VA[GTValues.LV])
+                    .save(provider);
+
+            ASSEMBLER_RECIPES.recipeBuilder(GTmm.id("virtual_item_provider"))
+                    .inputItems(GTItems.PROGRAMMED_CIRCUIT.asStack())
+                    .inputItems(new ItemStack(AEBlocks.QUARTZ_VIBRANT_GLASS.block().asItem()))
+                    .inputItems(TagPrefix.foil, GTMaterials.PolyvinylChloride, 8)
+                    .outputItems(GTMMAEItems.VIRTUAL_ITEM_PROVIDER.asStack())
+                    .EUt(480)
+                    .duration(200)
+                    .save(provider);
+
+            ASSEMBLER_RECIPES.recipeBuilder(GTmm.id("virtual_item_provider_cell"))
+                    .inputItems(new ItemStack(AEItems.ITEM_CELL_256K.asItem()))
+                    .inputItems(GTMMAEItems.VIRTUAL_ITEM_PROVIDER.asStack())
+                    .inputItems(GTItems.CONVEYOR_MODULE_HV.asStack(2))
+                    .inputFluids(GTMaterials.Polyethylene.getFluid(288))
+                    .outputItems(GTMMAEItems.VIRTUAL_ITEM_PROVIDER_CELL.asStack())
+                    .EUt(480)
+                    .duration(800)
+                    .save(provider);
+
+            ASSEMBLER_RECIPES.recipeBuilder(GTmm.id("me_export_buffer"))
+                    .inputItems(GTAEMachines.ITEM_EXPORT_BUS_ME.asStack())
+                    .inputItems(GTAEMachines.FLUID_EXPORT_HATCH_ME.asStack())
+                    .inputFluids(GTMaterials.SolderingAlloy.getFluid(144))
+                    .outputItems(GTMMAEMachines.ME_EXPORT_BUFFER.asStack())
+                    .duration(400)
+                    .EUt(GTValues.VA[GTValues.HV])
+                    .save(provider);
+
+            if (GTCEuAPI.isHighTier()) {
+                ASSEMBLER_RECIPES.recipeBuilder(GTmm.id("programmablec_hatch_" + GTValues.VN[GTValues.MAX].toLowerCase() + "_4a"))
+                        .inputItems(GTMachines.DUAL_IMPORT_HATCH[GTValues.MAX].asStack())
+                        .inputItems(GTMMAEItems.VIRTUAL_ITEM_PROVIDER.asStack())
+                        .inputItems(CustomTags.CIRCUITS_ARRAY[GTValues.MAX], 4)
+                        .inputFluids(GTMaterials.SolderingAlloy.getFluid(144))
+                        .outputItems(GTMMAEMachines.PROGRAMMABLEC_HATCH[GTValues.MAX].asStack())
+                        .duration(400)
+                        .EUt(GTValues.VA[GTValues.MAX])
+                        .save(provider);
+
+                ASSEMBLER_RECIPES.recipeBuilder(GTmm.id("programmablec_dualhatch_" + GTValues.VN[GTValues.MAX].toLowerCase() + "_4a"))
+                        .inputItems(CustomMachines.HUGE_INPUT_DUAL_HATCH[GTValues.MAX].asStack())
+                        .inputItems(GTMMAEItems.VIRTUAL_ITEM_PROVIDER.asStack())
+                        .inputItems(CustomTags.CIRCUITS_ARRAY[GTValues.MAX], 4)
+                        .inputFluids(GTMaterials.SolderingAlloy.getFluid(144))
+                        .outputItems(GTMMAEMachines.PROGRAMMABLEC_DUALHATCH[GTValues.MAX].asStack())
+                        .duration(400)
+                        .EUt(GTValues.VA[GTValues.MAX])
+                        .save(provider);
+            }
+        }
+
+        ASSEMBLER_RECIPES.recipeBuilder(GTmm.id("cover_maintenance_detector"))
                 .inputItems(GTItems.EMITTER_LV)
                 .inputItems(TagPrefix.plate, GTMaterials.Steel)
                 .circuitMeta(1)
                 .inputFluids(GTMaterials.SolderingAlloy.getFluid(72))
                 .outputItems(GTItems.COVER_MAINTENANCE_DETECTOR)
-                .EUt(16).duration(100)
+                .EUt(16)
+                .duration(100)
                 .save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder(GTmm.id("wireless_energy_monitor"))
                 .inputItems(GTMachines.HULL[1].asStack())
-                .inputItems(GTItems.COVER_SCREEN.asStack())
+                .inputItems(GTItems.COVER_SCREEN)
                 .inputItems(Items.ENDER_PEARL, 16)
-                .inputItems(GTItems.TERMINAL.asStack())
+                .inputItems(GTItems.TERMINAL)
                 .inputItems(CustomTags.LV_CIRCUITS, 4)
                 .inputItems(TagPrefix.foil, GTMaterials.Steel, 16)
                 .inputFluids(GTMaterials.SolderingAlloy.getFluid(144))
@@ -51,6 +118,20 @@ public class AssemblerRecipe {
                 .duration(400)
                 .EUt(GTValues.VA[GTValues.LV])
                 .save(provider);
+
+	    ASSEMBLER_RECIPES.recipeBuilder(GTmm.id("wireless_energy_terminal"))
+			    .inputItems(WirelessMachines.WIRELESS_ENERGY_MONITOR.asStack())
+                .inputItems(GTMMItems.WIRELESS_ENERGY_BINDING_TOOL)
+			    .inputItems(GTItems.COVER_SCREEN)
+			    .inputItems(Items.ENDER_PEARL, 16)
+			    .inputItems(GTItems.TERMINAL)
+			    .inputItems(CustomTags.LV_CIRCUITS, 4)
+			    .inputItems(TagPrefix.foil, GTMaterials.Steel, 16)
+			    .inputFluids(GTMaterials.SolderingAlloy.getFluid(144))
+			    .outputItems(GTMMItems.WIRELESS_ENERGY_TERMINAL)
+			    .duration(400)
+			    .EUt(GTValues.VA[GTValues.LV])
+			    .save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder(GTmm.id("wireless_energy_interface"))
                 .inputItems(GTMachines.ENERGY_INPUT_HATCH[1].asStack())
@@ -326,6 +407,27 @@ public class AssemblerRecipe {
         }
 
         for (int tier : GTValues.tiersBetween(GTValues.LV, GTCEuAPI.isHighTier() ? GTValues.OpV : GTValues.UV)) {
+            if (tier > GTValues.IV && GTmm.Mods.isAE2Loaded()) {
+                ASSEMBLER_RECIPES.recipeBuilder(GTmm.id("programmablec_hatch_" + GTValues.VN[tier].toLowerCase() + "_4a"))
+                        .inputItems(GTMachines.DUAL_IMPORT_HATCH[tier].asStack())
+                        .inputItems(GTMMAEItems.VIRTUAL_ITEM_PROVIDER.asStack())
+                        .inputItems(CustomTags.CIRCUITS_ARRAY[tier], 4)
+                        .inputFluids(GTMaterials.SolderingAlloy.getFluid(144))
+                        .outputItems(GTMMAEMachines.PROGRAMMABLEC_HATCH[tier].asStack())
+                        .duration(400)
+                        .EUt(GTValues.VA[tier])
+                        .save(provider);
+
+                ASSEMBLER_RECIPES.recipeBuilder(GTmm.id("programmablec_dualhatch_" + GTValues.VN[tier].toLowerCase() + "_4a"))
+                        .inputItems(CustomMachines.HUGE_INPUT_DUAL_HATCH[tier].asStack())
+                        .inputItems(GTMMAEItems.VIRTUAL_ITEM_PROVIDER.asStack())
+                        .inputItems(CustomTags.CIRCUITS_ARRAY[tier], 4)
+                        .inputFluids(GTMaterials.SolderingAlloy.getFluid(144))
+                        .outputItems(GTMMAEMachines.PROGRAMMABLEC_DUALHATCH[tier].asStack())
+                        .duration(400)
+                        .EUt(GTValues.VA[tier])
+                        .save(provider);
+            }
             ASSEMBLER_RECIPES.recipeBuilder(GTmm.id("wireless_energy_input_hatch_" + GTValues.VN[tier].toLowerCase()))
                     .inputItems(GTMachines.ENERGY_INPUT_HATCH[tier].asStack())
                     .inputItems(WIRELESS_ENERGY_RECEIVE_COVER.get(tier - 1).asStack())
@@ -491,17 +593,6 @@ public class AssemblerRecipe {
                     .outputItems(CustomMachines.HUGE_INPUT_DUAL_HATCH[tier].asStack())
                     .duration(200)
                     .EUt(GTValues.VA[tier])
-                    .save(provider);
-        }
-
-        if (GTmm.Mods.isAE2Loaded()) {
-            ASSEMBLER_RECIPES.recipeBuilder(GTmm.id("me_export_buffer"))
-                    .inputItems(GTAEMachines.ITEM_EXPORT_BUS_ME.asStack())
-                    .inputItems(GTAEMachines.FLUID_EXPORT_HATCH_ME.asStack())
-                    .inputFluids(GTMaterials.SolderingAlloy.getFluid(144))
-                    .outputItems(GTMMAEMachines.ME_EXPORT_BUFFER.asStack())
-                    .duration(400)
-                    .EUt(GTValues.VA[GTValues.HV])
                     .save(provider);
         }
 
