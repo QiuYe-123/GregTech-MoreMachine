@@ -11,6 +11,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.data.RotationState;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
+import com.gregtechceu.gtceu.common.data.machines.GTMachineUtils;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
 import net.minecraft.network.chat.Component;
@@ -18,7 +19,6 @@ import net.minecraft.network.chat.Component;
 import static cn.qiuye.gtmoremachine.common.data.machines.CustomMachinesUtils.registerTieredMachines;
 import static cn.qiuye.gtmoremachine.common.machine.multiblock.part.HugeBusPartMachine.INV_MULTIPLE;
 import static cn.qiuye.gtmoremachine.common.registry.GTMMRegistration.GTMMREGISTRATE;
-import static com.gregtechceu.gtceu.common.data.machines.GTMachineUtils.DUAL_INPUT_HATCH_ABILITIES;
 import static com.gregtechceu.gtceu.common.data.models.GTMachineModels.*;
 
 public class CustomMachines {
@@ -40,7 +40,7 @@ public class CustomMachines {
                     .colorOverlayTieredHullModel("overlay_pipe_in_emissive", "overlay_pipe", OVERLAY_ITEM_HATCH_INPUT)
                     .tooltips(Component.translatable("gtmoremachine.machine.huge_item_bus.import.tooltip"),
                             Component.translatable("gtceu.universal.tooltip.item_storage_capacity",
-                                    (1 + tier) * INV_MULTIPLE))
+                                    (1 + tier) * HugeBusPartMachine.INV_MULTIPLE))
                     .register(),
             ALL_TIERS);
 
@@ -65,7 +65,7 @@ public class CustomMachines {
                 builder.langValue(GTValues.VNF[tier] + " Huge Input Dual Hatch")
                         .rotationState(RotationState.ALL)
                         .overlayTieredHullModel("dual_input_hatch")
-                        .abilities(DUAL_INPUT_HATCH_ABILITIES)
+                        .abilities(GTMachineUtils.DUAL_INPUT_HATCH_ABILITIES)
                         .tooltips(Component.translatable("gtceu.machine.dual_hatch.import.tooltip"));
                 builder.tooltips(Component.translatable("gtceu.universal.tooltip.item_storage_capacity",
                         (1 + tier) * INV_MULTIPLE))

@@ -2,13 +2,22 @@ package cn.qiuye.gtmoremachine.common.data.machines;
 
 import cn.qiuye.gtmoremachine.GTmm;
 import cn.qiuye.gtmoremachine.integration.ae.machine.MEOutputPartMachine;
+import cn.qiuye.gtmoremachine.integration.ae.machine.ProgrammableDualHatchPartMachine;
+import cn.qiuye.gtmoremachine.integration.ae.machine.ProgrammableHatchPartMachine;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.data.RotationState;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
+import com.gregtechceu.gtceu.common.machine.multiblock.part.DualHatchPartMachine;
 
+import net.minecraft.network.chat.Component;
+
+import static cn.qiuye.gtmoremachine.common.data.machines.CustomMachinesUtils.registerTieredMachines;
 import static cn.qiuye.gtmoremachine.common.registry.GTMMRegistration.GTMMREGISTRATE;
+import static com.gregtechceu.gtceu.common.data.machines.GTMachineUtils.DUAL_HATCH_TIERS;
 
 public class GTMMAEMachines {
 
@@ -19,6 +28,34 @@ public class GTMMAEMachines {
             .colorOverlayTieredHullModel(GTmm.id("block/overlay/appeng/me_output_bus"))
             .tier(GTValues.LuV)
             .register();
+
+    public static final MachineDefinition[] PROGRAMMABLEC_HATCH = registerTieredMachines(
+            "programmablec_hatch", (holder, tier) -> new ProgrammableHatchPartMachine(holder, tier, IO.IN),
+            (tier, builder) -> builder
+                    .langValue("%s Programmablec Hatch".formatted(GTValues.VNF[tier]))
+                    .rotationState(RotationState.ALL)
+                    .abilities(PartAbility.IMPORT_ITEMS)
+                    .workableTieredHullModel(GTCEu.id("block/machine/part/dual_hatch.import"))
+                    .tooltips(Component.translatable("gtceu.machine.dual_hatch.import.tooltip"),
+                            Component.translatable("gtceu.universal.tooltip.item_storage_capacity", (int) Math.pow((tier - 4), 2)),
+                            Component.translatable("gtceu.universal.tooltip.fluid_storage_capacity_mult", (tier - 4), DualHatchPartMachine.getTankCapacity(DualHatchPartMachine.INITIAL_TANK_CAPACITY, tier)),
+                            Component.translatable("gtceu.part_sharing.enabled"))
+                    .register(),
+            DUAL_HATCH_TIERS);
+
+    public static final MachineDefinition[] PROGRAMMABLEC_DUALHATCH = registerTieredMachines(
+            "programmablec_dualhatch", (holder, tier) -> new ProgrammableDualHatchPartMachine(holder, tier, IO.IN),
+            (tier, builder) -> builder
+                    .langValue("%s Programmablec Dual Hatch".formatted(GTValues.VNF[tier]))
+                    .rotationState(RotationState.ALL)
+                    .abilities(PartAbility.IMPORT_ITEMS)
+                    .workableTieredHullModel(GTCEu.id("block/machine/part/dual_hatch.import"))
+                    .tooltips(Component.translatable("gtceu.machine.dual_hatch.import.tooltip"),
+                            Component.translatable("gtceu.universal.tooltip.item_storage_capacity", (int) Math.pow((tier - 4), 2)),
+                            Component.translatable("gtceu.universal.tooltip.fluid_storage_capacity_mult", (tier - 4), DualHatchPartMachine.getTankCapacity(DualHatchPartMachine.INITIAL_TANK_CAPACITY, tier)),
+                            Component.translatable("gtceu.part_sharing.enabled"))
+                    .register(),
+            DUAL_HATCH_TIERS);
 
     public static void init() {}
 }

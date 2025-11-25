@@ -4,6 +4,7 @@ import cn.qiuye.gtmoremachine.GTmm;
 import cn.qiuye.gtmoremachine.common.cover.CreativeEnergyCover;
 import cn.qiuye.gtmoremachine.common.cover.WirelessEnergyReceiveCover;
 import cn.qiuye.gtmoremachine.common.registry.GTMMRegistration;
+import cn.qiuye.gtmoremachine.integration.ae.item.GTMMAECovers;
 
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.GTValues;
@@ -38,7 +39,7 @@ public class GTMMCovers {
     }
 
     static {
-        GTMMREGISTRATE.creativeModeTab(() -> GTMMCreativeModeTabs.WIRELESS_TAB);
+        GTMMREGISTRATE.creativeModeTab(() -> GTMMCreativeModeTabs.MORE_MACHINES);
     }
 
     public final static CoverDefinition[] WIRELESS_ENERGY_RECEIVE = registerTieredWirelessCover(
@@ -56,5 +57,9 @@ public class GTMMCovers {
         }).toArray(CoverDefinition[]::new);
     }
 
-    public static void init() {}
+    public static void init() {
+        if (GTmm.Mods.isAE2Loaded()) {
+            GTMMAECovers.init();
+        }
+    }
 }
