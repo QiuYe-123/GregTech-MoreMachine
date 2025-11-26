@@ -57,6 +57,6 @@ object NumberUtils {
     ) {
         formatBigIntegerNumberOrSic(number)
     } else {
-        FormattingUtil.DECIMAL_FORMAT_SIC_2F.format(BigDecimal(number))
+        FormattingUtil.DECIMAL_FORMAT_SIC_2F.format(number)
     }
 }

@@ -1,7 +1,6 @@
-package cn.qiuye.gtmoremachine.api.misc.wireless.energy;
+package cn.qiuye.gtmoremachine.api.misc.wireless.cwu;
 
 import cn.qiuye.gtmoremachine.api.gui.monitor.Format;
-import cn.qiuye.gtmoremachine.utils.FormattingUtil;
 import cn.qiuye.gtmoremachine.utils.NumberUtils;
 import cn.qiuye.gtmoremachine.utils.TeamUtils;
 
@@ -13,21 +12,19 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.network.chat.Style;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.util.UUID;
 
 public interface ITransferData {
 
     UUID UUID();
 
-    BigInteger Throughput();
+    int Throughput();
 
     MetaMachine machine();
 
     default Component getInfo(Format format) {
         MetaMachine machine = machine();
-        BigDecimal eut = new BigDecimal(Throughput());
+        int cwu = Throughput();
         String pos = machine.getPos().toShortString();
         return Component.translatable(machine.getBlockState().getBlock().getDescriptionId())
                 .withStyle(Style.EMPTY.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
@@ -35,10 +32,7 @@ public interface ITransferData {
                                 machine.getLevel().dimension().location()).append(" [").append(pos).append("] ")
                                 .append(Component.translatable("gtmoremachine.machine.wireless_monitor.tooltip.0",
                                         TeamUtils.getName(machine.getLevel(), UUID()))))))
-                .append((eut.compareTo(BigDecimal.ZERO) > 0 ? " +" : " ") + NumberUtils.formatBigDecimalNumberOrSic(eut, format))
-                .append(" EU/t (")
-                .append(NumberUtils.formatBigDecimalNumberOrSic(FormattingUtil.voltageAmperage(eut), format) + " A ")
-                .append(FormattingUtil.voltageName(eut)).append(")")
+                .append((cwu > 0 ? " +" : " ") + NumberUtils.formatInt(cwu, format))
                 .append(ComponentPanelWidget.withButton(Component.literal(" [ ] "), pos));
     }
 }
