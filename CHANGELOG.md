@@ -1,5 +1,25 @@
 # ChangeLog
 
+## Version [v1.2.1](https://github.com/QiuYe-123/GTMoreMachine/compare/v1.2.0-1.20.1...v1.2.1-1.20.1)
+### Added
+
+- 添加可编程系列物品 by @QiuYe-123 in [#38](https://github.com/QiuYe-123/GTMoreMachine/pull/38)
+- 添加剩余配方 by @QiuYe-123 in [#40](https://github.com/QiuYe-123/GTMoreMachine/pull/40)
+- 完善高级终端，添加拆除模式 by @QiuYe-123 in [#41](https://github.com/QiuYe-123/GTMoreMachine/pull/41)
+- 无线传输覆盖版(流体，物品) by @QiuYe-123 in [#42](https://github.com/QiuYe-123/GTMoreMachine/pull/42)
+
+### Fixed
+
+- 修复无线电网监视器 by @QiuYe-123 in [#37](https://github.com/QiuYe-123/GTMoreMachine/pull/37)
+- 添加剩余配方 by @QiuYe-123 in [#40](https://github.com/QiuYe-123/GTMoreMachine/pull/40)
+- 完善高级终端，添加拆除模式 by @QiuYe-123 in [#41](https://github.com/QiuYe-123/GTMoreMachine/pull/41)
+- 添加en_us en_ud翻译 by @QiuYe-123 in [#43](https://github.com/QiuYe-123/GTMoreMachine/pull/43)
+
+### Changed
+
+- 添加en_us en_ud翻译 by @QiuYe-123 in [#43](https://github.com/QiuYe-123/GTMoreMachine/pull/43)
+
+ 
 ## Version [v1.2.0](https://github.com/QiuYe-123/GTMoreMachine/compare/v1.1.0-1.20.1...v1.2.0-1.20.1)
 ### Added
 
