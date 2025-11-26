@@ -15,12 +15,13 @@ import com.lowdragmc.lowdraglib.utils.BlockInfo;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.NonNullList;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.*;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -32,16 +33,12 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.ItemStackHandler;
 
-import appeng.api.config.Actionable;
-import appeng.api.networking.IGrid;
-import appeng.api.stacks.AEItemKey;
-import appeng.api.storage.MEStorage;
-import appeng.items.tools.powered.WirelessTerminalItem;
 import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.ints.IntObjectPair;
-import it.unimi.dsi.fastutil.objects.*;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import org.apache.commons.lang3.ArrayUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -49,10 +46,13 @@ import oshi.util.tuples.Triplet;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.*;
-import java.util.function.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.BiPredicate;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
 
-public class AdvancedBlockPattern extends BlockPattern {
+public class AdvancedBlockNoAEPattern extends BlockPattern {
 
     static Direction[] FACINGS = { Direction.SOUTH, Direction.NORTH, Direction.WEST, Direction.EAST, Direction.UP,
             Direction.DOWN };
@@ -66,7 +66,7 @@ public class AdvancedBlockPattern extends BlockPattern {
     protected final int palmLength; // x size
     protected final int[] centerOffset; // x, y, z, minZ, maxZ
 
-    public AdvancedBlockPattern(TraceabilityPredicate[][][] predicatesIn, RelativeDirection[] structureDir, int[][] aisleRepetitions, int[] centerOffset) {
+    public AdvancedBlockNoAEPattern(TraceabilityPredicate[][][] predicatesIn, RelativeDirection[] structureDir, int[][] aisleRepetitions, int[] centerOffset) {
         super(predicatesIn, structureDir, aisleRepetitions, centerOffset);
         this.blockMatches = predicatesIn;
         this.fingerLength = predicatesIn.length;
@@ -89,7 +89,7 @@ public class AdvancedBlockPattern extends BlockPattern {
         this.centerOffset = centerOffset;
     }
 
-    public static AdvancedBlockPattern getAdvancedBlockPattern(BlockPattern blockPattern) {
+    public static AdvancedBlockNoAEPattern getAdvancedBlockPattern(BlockPattern blockPattern) {
         try {
             Class<?> clazz = BlockPattern.class;
             // blockMatches
@@ -109,7 +109,7 @@ public class AdvancedBlockPattern extends BlockPattern {
             centerOffsetField.setAccessible(true);
             int[] centerOffset = (int[]) centerOffsetField.get(blockPattern);
 
-            return new AdvancedBlockPattern(blockMatches, structureDir, aisleRepetitions, centerOffset);
+            return new AdvancedBlockNoAEPattern(blockMatches, structureDir, aisleRepetitions, centerOffset);
         } catch (Exception ignored) {}
         return null;
     }
@@ -129,7 +129,6 @@ public class AdvancedBlockPattern extends BlockPattern {
         Direction facing = controller.self().getFrontFacing();
         Direction upwardsFacing = controller.self().getUpwardsFacing();
         boolean isUseMirror = autoBuildSetting.isUseMirror();
-        boolean isUseAE = autoBuildSetting.isUseAE();
 
         Object2IntOpenHashMap<SimplePredicate> cacheGlobal = new Object2IntOpenHashMap<>(worldState.getGlobalCount());
         Object2IntOpenHashMap<SimplePredicate> cacheLayer = new Object2IntOpenHashMap<>(worldState.getLayerCount());
@@ -226,7 +225,7 @@ public class AdvancedBlockPattern extends BlockPattern {
                             continue;
 
                         // check inventory
-                        Triplet<ItemStack, IItemHandler, Integer> result = foundItem(player, candidates, item -> item instanceof BlockItem, isUseAE);
+                        Triplet<ItemStack, IItemHandler, Integer> result = foundItem(player, candidates, item -> item instanceof BlockItem);
                         ItemStack found = result.getA();
                         IItemHandler handler = result.getB();
                         int foundSlot = result.getC();
@@ -294,7 +293,7 @@ public class AdvancedBlockPattern extends BlockPattern {
 
     /**
      * 自动拆除多方块结构
-     * 
+     *
      * @param player           执行拆除的玩家
      * @param worldState       多方块状态
      * @param autoBuildSetting 总参数
@@ -370,63 +369,39 @@ public class AdvancedBlockPattern extends BlockPattern {
 
         // 将收集的物品给予玩家
         if (!collectedItems.isEmpty()) {
-            giveItemsToPlayer(player, collectedItems, autoBuildSetting);
+            giveItemsToPlayer(player, collectedItems);
         }
     }
 
     /**
      * 将物品给予玩家，如果物品栏满了则掉落在地上
      */
-    private void giveItemsToPlayer(Player player, List<ItemStack> items, AdvancedTerminalBehavior.AutoBuildSetting autoBuildSetting) {
+    private void giveItemsToPlayer(Player player, List<ItemStack> items) {
         IItemHandler playerInventory = player.getCapability(ForgeCapabilities.ITEM_HANDLER).orElse(null);
-        boolean useAE = autoBuildSetting.isUseAE();
 
-        if (useAE) {
-            IItemHandler handler = player.getCapability(ForgeCapabilities.ITEM_HANDLER).resolve().orElse(null);
-            if (handler != null) {
-                for (int i = 0; i < handler.getSlots(); i++) {
-                    @NotNull
-                    ItemStack stack = handler.getStackInSlot(i);
-                    if (stack.isEmpty()) continue;
-                    if (stack.getItem() instanceof WirelessTerminalItem terminalItem && stack.hasTag() && stack.getTag().contains("accessPoint", 10)) {
-                        IGrid grid = terminalItem.getLinkedGrid(stack, player.level(), player);
-                        if (grid != null) {
-                            MEStorage storage = grid.getStorageService().getInventory();
-                            for (ItemStack candidate : items) {
-                                if (!candidate.isEmpty()) {
-                                    storage.insert(AEItemKey.of(candidate), candidate.getCount(), Actionable.MODULATE, null);
-                                }
-                            }
-                        }
-                    }
-                }
+        for (ItemStack stack : items) {
+            if (stack.isEmpty()) continue;
+            // 尝试将物品放入玩家物品栏
+            ItemStack remaining = stack.copy();
+            for (int slot = 0; slot < playerInventory.getSlots() && !remaining.isEmpty(); slot++) {
+                remaining = playerInventory.insertItem(slot, remaining, false);
             }
-        } else {
-            for (ItemStack stack : items) {
-                if (stack.isEmpty()) continue;
-                // 尝试将物品放入玩家物品栏
-                ItemStack remaining = stack.copy();
-                for (int slot = 0; slot < playerInventory.getSlots() && !remaining.isEmpty(); slot++) {
-                    remaining = playerInventory.insertItem(slot, remaining, false);
-                }
-                // 如果物品栏满了，掉落剩余物品在地上
-                if (!remaining.isEmpty()) {
-                    player.drop(remaining, false);
-                }
+            // 如果物品栏满了，掉落剩余物品在地上
+            if (!remaining.isEmpty()) {
+                player.drop(remaining, false);
             }
         }
     }
 
     public static Triplet<ItemStack, IItemHandler, Integer> foundItem(Player player,
                                                                       List<ItemStack> candidates,
-                                                                      Predicate<Item> test,
-                                                                      boolean isUseAE) {
+                                                                      Predicate<Item> test) {
         ItemStack found = null;
         IItemHandler handler = null;
         int foundSlot = -1;
         if (!player.isCreative()) {
             var foundHandler = getMatchStackWithHandler(candidates,
-                    player.getCapability(ForgeCapabilities.ITEM_HANDLER), test, player, isUseAE);
+                    player.getCapability(ForgeCapabilities.ITEM_HANDLER), test);
             if (foundHandler != null) {
                 foundSlot = foundHandler.firstInt();
                 handler = foundHandler.second();
@@ -561,9 +536,7 @@ public class AdvancedBlockPattern extends BlockPattern {
     @Nullable
     private static IntObjectPair<IItemHandler> getMatchStackWithHandler(List<ItemStack> candidates,
                                                                         LazyOptional<IItemHandler> cap,
-                                                                        Predicate<Item> test,
-                                                                        Player player,
-                                                                        boolean isUseAE) {
+                                                                        Predicate<Item> test) {
         IItemHandler handler = cap.resolve().orElse(null);
         if (handler == null) return null;
         for (int i = 0; i < handler.getSlots(); i++) {
@@ -574,21 +547,8 @@ public class AdvancedBlockPattern extends BlockPattern {
             @NotNull
             LazyOptional<IItemHandler> stackCap = stack.getCapability(ForgeCapabilities.ITEM_HANDLER);
             if (stackCap.isPresent()) {
-                var rt = getMatchStackWithHandler(candidates, stackCap, test, player, isUseAE);
+                var rt = getMatchStackWithHandler(candidates, stackCap, test);
                 if (rt != null) return rt;
-            } else if (isUseAE && stack.getItem() instanceof WirelessTerminalItem terminalItem && stack.hasTag() && stack.getTag().contains("accessPoint", 10)) {
-                IGrid grid = terminalItem.getLinkedGrid(stack, player.level(), player);
-                if (grid != null) {
-                    MEStorage storage = grid.getStorageService().getInventory();
-                    for (ItemStack candidate : candidates) {
-                        if (storage.extract(AEItemKey.of(candidate), 1, Actionable.MODULATE, null) > 0) {
-                            NonNullList<ItemStack> stacks = NonNullList.withSize(1, candidate);
-                            IItemHandler handler1 = new ItemStackHandler(stacks);
-                            return IntObjectPair.of(0, handler1);
-                        }
-                    }
-                }
-
             } else if (candidates.stream().anyMatch(candidate -> ItemStack.isSameItemSameTags(candidate, stack)) &&
                     !stack.isEmpty() && test.test(stack.getItem())) {
                         return IntObjectPair.of(i, handler);
