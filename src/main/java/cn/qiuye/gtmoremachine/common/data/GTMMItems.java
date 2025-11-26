@@ -4,6 +4,8 @@ import cn.qiuye.gtmoremachine.GTmm;
 import cn.qiuye.gtmoremachine.common.item.AdvancedTerminalBehavior;
 import cn.qiuye.gtmoremachine.common.item.WirelessEnergyBindingToolBehavior;
 import cn.qiuye.gtmoremachine.common.item.WirelessEnergyTerminalBehavior;
+import cn.qiuye.gtmoremachine.common.item.behaviour.WirelessTransferCoverPlaceBehavior;
+import cn.qiuye.gtmoremachine.common.item.behaviour.WirelessTransferCoverTooltipBehavior;
 import cn.qiuye.gtmoremachine.integration.ae.item.GTMMAEItems;
 
 import com.gregtechceu.gtceu.api.GTCEuAPI;
@@ -33,6 +35,52 @@ public class GTMMItems {
     public static <T extends ComponentItem> NonNullConsumer<T> attachRenderer(ICustomRenderer customRenderer) {
         return !GTmm.isClientSide() ? NonNullConsumer.noop() : (item) -> item.attachComponents(customRenderer);
     }
+
+    public static ItemEntry<ComponentItem> WIRELESS_ITEM_TRANSFER_COVER = GTMMREGISTRATE
+            .item("wireless_item_transfer_cover", ComponentItem::create)
+            .lang("Wireless Item Transfer Cover")
+            .onRegister(attach(new WirelessTransferCoverPlaceBehavior(GTMMCovers.WIRELESS_ITEM_TRANSFER),
+                    new CoverPlaceBehavior(GTMMCovers.WIRELESS_ITEM_TRANSFER),
+                    new WirelessTransferCoverTooltipBehavior(lines -> {
+                        lines.add(Component.translatable("item.gtmoremachine.wireless_transfer.item.tooltip.1"));
+                        lines.add(Component.translatable("item.gtmoremachine.wireless_transfer.tooltip.2"));
+                    })))
+            .register();
+
+    public static ItemEntry<ComponentItem> WIRELESS_FLUID_TRANSFER_COVER = GTMMREGISTRATE
+            .item("wireless_fluid_transfer_cover", ComponentItem::create)
+            .lang("Wireless Fluid Transfer Cover")
+            .onRegister(attach(new WirelessTransferCoverPlaceBehavior(GTMMCovers.WIRELESS_FLUID_TRANSFER),
+                    new CoverPlaceBehavior(GTMMCovers.WIRELESS_FLUID_TRANSFER),
+                    new WirelessTransferCoverTooltipBehavior(lines -> {
+                        lines.add(Component.translatable("item.gtmoremachine.wireless_transfer.fluid.tooltip.1"));
+                        lines.add(Component.translatable("item.gtmoremachine.wireless_transfer.tooltip.2"));
+                    })))
+            .register();
+
+    public static ItemEntry<ComponentItem> ADVANCED_WIRELESS_ITEM_TRANSFER_COVER = GTMMREGISTRATE
+            .item("advanced_wireless_item_transfer_cover", ComponentItem::create)
+            .lang("§bAdvanced Wireless Item Transfer Cover")
+            .onRegister(attach(new WirelessTransferCoverPlaceBehavior(GTMMCovers.ADVANCED_WIRELESS_ITEM_TRANSFER),
+                    new CoverPlaceBehavior(GTMMCovers.ADVANCED_WIRELESS_ITEM_TRANSFER),
+                    new WirelessTransferCoverTooltipBehavior(lines -> {
+                        lines.add(Component.translatable("item.gtmoremachine.wireless_transfer.item.tooltip.1"));
+                        lines.add(Component.translatable("item.gtmoremachine.advanced_wireless_transfer.tooltip.1"));
+                        lines.add(Component.translatable("item.gtmoremachine.wireless_transfer.tooltip.2"));
+                    })))
+            .register();
+
+    public static ItemEntry<ComponentItem> ADVANCED_WIRELESS_FLUID_TRANSFER_COVER = GTMMREGISTRATE
+            .item("advanced_wireless_fluid_transfer_cover", ComponentItem::create)
+            .lang("§bAdvanced Wireless Fluid Transfer Cover")
+            .onRegister(attach(new WirelessTransferCoverPlaceBehavior(GTMMCovers.ADVANCED_WIRELESS_FLUID_TRANSFER),
+                    new CoverPlaceBehavior(GTMMCovers.ADVANCED_WIRELESS_FLUID_TRANSFER),
+                    new WirelessTransferCoverTooltipBehavior(lines -> {
+                        lines.add(Component.translatable("item.gtmoremachine.wireless_transfer.fluid.tooltip.1"));
+                        lines.add(Component.translatable("item.gtmoremachine.advanced_wireless_transfer.tooltip.1"));
+                        lines.add(Component.translatable("item.gtmoremachine.wireless_transfer.tooltip.2"));
+                    })))
+            .register();
 
     public static ItemEntry<ComponentItem> ADVANCED_TERMINAL = GTMMREGISTRATE
             .item("advanced_terminal", ComponentItem::create)
