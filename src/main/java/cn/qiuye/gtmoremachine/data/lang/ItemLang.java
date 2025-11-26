@@ -12,5 +12,8 @@ public class ItemLang {
         provider.add("item.gtmoremachine.wireless_transfer.tooltip.2", "§7Right click the container with shift to bind container.Right click the air with shift to unbind.");
         provider.add("item.gtmoremachine.wireless_transfer.tooltip.bind.1", "Success bind to: %s (%s)");
         provider.add("item.gtmoremachine.wireless_transfer.tooltip.bind.2", "Success unbind.");
+        provider.add("item.gtmoremachine.wireless_transfer.item.tooltip.1", "§bTransfer Item§7 to §ebinded container§7 from the machine as §fCover§7.");
+        provider.add("item.gtmoremachine.wireless_transfer.fluid.tooltip.1", "§bTransfer Fluid§7 to §ebinded container§7 from the machine as §fCover§7.");
+        provider.add("item.gtmoremachine.advanced_wireless_transfer.tooltip.1", "§7Can use §f filter card");
     }
 }
