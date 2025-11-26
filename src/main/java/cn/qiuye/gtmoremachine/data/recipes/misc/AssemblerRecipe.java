@@ -96,6 +96,50 @@ public class AssemblerRecipe {
             }
         }
 
+        ASSEMBLER_RECIPES.recipeBuilder(GTmm.id("wireless_item_transfer_cover"))
+                .inputItems(GTItems.SENSOR_LV.asStack())
+                .inputItems(GTItems.EMITTER_LV.asStack())
+                .inputItems(GTItems.ROBOT_ARM_LV.asStack())
+                .inputItems(CustomTags.LV_CIRCUITS, 2)
+                .inputItems(TagPrefix.plate, GTMaterials.EnderPearl, 2)
+                .inputItems(TagPrefix.plateDouble, GTMaterials.Steel, 2)
+                .inputFluids(GTMaterials.Polyethylene.getFluid(288))
+                .outputItems(GTMMItems.WIRELESS_ITEM_TRANSFER_COVER.asStack())
+                .duration(200)
+                .EUt(GTValues.VA[GTValues.LV])
+                .save(provider);
+
+        ASSEMBLER_RECIPES.recipeBuilder(GTmm.id("wireless_fluid_transfer_cover"))
+                .inputItems(GTItems.SENSOR_LV.asStack())
+                .inputItems(GTItems.EMITTER_LV.asStack())
+                .inputItems(GTItems.FLUID_REGULATOR_LV.asStack())
+                .inputItems(CustomTags.LV_CIRCUITS, 2)
+                .inputItems(TagPrefix.plate, GTMaterials.EnderPearl, 2)
+                .inputItems(TagPrefix.plateDouble, GTMaterials.Steel, 2)
+                .inputFluids(GTMaterials.Polyethylene.getFluid(288))
+                .outputItems(GTMMItems.WIRELESS_FLUID_TRANSFER_COVER.asStack())
+                .duration(200)
+                .EUt(GTValues.VA[GTValues.LV])
+                .save(provider);
+
+        ASSEMBLER_RECIPES.recipeBuilder(GTmm.id("advanced_wireless_item_transfer_cover"))
+                .inputItems(GTMMItems.WIRELESS_ITEM_TRANSFER_COVER.asStack())
+                .inputItems(CustomTags.MV_CIRCUITS)
+                .outputItems(GTMMItems.ADVANCED_WIRELESS_ITEM_TRANSFER_COVER)
+                .inputFluids(GTMaterials.SolderingAlloy.getFluid(72))
+                .duration(100)
+                .EUt(GTValues.VA[GTValues.LV])
+                .save(provider);
+
+        ASSEMBLER_RECIPES.recipeBuilder(GTmm.id("advanced_wireless_fluid_transfer_cover"))
+                .inputItems(GTMMItems.WIRELESS_FLUID_TRANSFER_COVER.asStack())
+                .inputItems(CustomTags.MV_CIRCUITS)
+                .outputItems(GTMMItems.ADVANCED_WIRELESS_FLUID_TRANSFER_COVER)
+                .inputFluids(GTMaterials.SolderingAlloy.getFluid(72))
+                .duration(100)
+                .EUt(GTValues.VA[GTValues.LV])
+                .save(provider);
+
         ASSEMBLER_RECIPES.recipeBuilder(GTmm.id("cover_maintenance_detector"))
                 .inputItems(GTItems.EMITTER_LV)
                 .inputItems(TagPrefix.plate, GTMaterials.Steel)

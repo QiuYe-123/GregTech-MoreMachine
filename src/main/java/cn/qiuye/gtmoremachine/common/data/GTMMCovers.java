@@ -1,8 +1,10 @@
 package cn.qiuye.gtmoremachine.common.data;
 
 import cn.qiuye.gtmoremachine.GTmm;
+import cn.qiuye.gtmoremachine.common.cover.AdvancedWirelessTransferCover;
 import cn.qiuye.gtmoremachine.common.cover.CreativeEnergyCover;
 import cn.qiuye.gtmoremachine.common.cover.WirelessEnergyReceiveCover;
+import cn.qiuye.gtmoremachine.common.cover.WirelessTransferCover;
 import cn.qiuye.gtmoremachine.common.registry.GTMMRegistration;
 import cn.qiuye.gtmoremachine.integration.ae.item.GTMMAECovers;
 
@@ -37,6 +39,22 @@ public class GTMMCovers {
         GTRegistries.COVERS.register(GTmm.id(id), definition);
         return definition;
     }
+
+    public final static CoverDefinition WIRELESS_ITEM_TRANSFER = register("wireless_item_transfer",
+            (holder, coverable, side) -> new WirelessTransferCover(holder, coverable, side, WirelessTransferCover.TRANSFER_ITEM),
+            () -> () -> new SimpleCoverRenderer(GTmm.id("block/cover/overlay_wireless_item_transfer")));
+
+    public final static CoverDefinition WIRELESS_FLUID_TRANSFER = register("wireless_fluid_transfer",
+            (holder, coverable, side) -> new WirelessTransferCover(holder, coverable, side, WirelessTransferCover.TRANSFER_FLUID),
+            () -> () -> new SimpleCoverRenderer(GTmm.id("block/cover/overlay_wireless_fluid_transfer")));
+
+    public final static CoverDefinition ADVANCED_WIRELESS_ITEM_TRANSFER = register("advanced_wireless_item_transfer",
+            (holder, coverable, side) -> new AdvancedWirelessTransferCover(holder, coverable, side, WirelessTransferCover.TRANSFER_ITEM),
+            () -> () -> new SimpleCoverRenderer(GTmm.id("block/cover/overlay_wireless_item_transfer")));
+
+    public final static CoverDefinition ADVANCED_WIRELESS_FLUID_TRANSFER = register("advanced_wireless_fluid_transfer",
+            (holder, coverable, side) -> new AdvancedWirelessTransferCover(holder, coverable, side, WirelessTransferCover.TRANSFER_FLUID),
+            () -> () -> new SimpleCoverRenderer(GTmm.id("block/cover/overlay_wireless_fluid_transfer")));
 
     static {
         GTMMREGISTRATE.creativeModeTab(() -> GTMMCreativeModeTabs.MORE_MACHINES);

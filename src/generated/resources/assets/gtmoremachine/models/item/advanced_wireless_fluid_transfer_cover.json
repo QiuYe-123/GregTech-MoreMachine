@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "gtmoremachine:item/advanced_wireless_fluid_transfer_cover"
+  }
+}
