@@ -16,8 +16,8 @@ import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 
 import net.minecraft.network.chat.Component;
 
-import static cn.qiuye.gtmoremachine.common.data.machines.WirelessMachinesUtils.registerWirelessEnergyHatch;
-import static cn.qiuye.gtmoremachine.common.data.machines.WirelessMachinesUtils.registerWirelessLaserHatch;
+import static cn.qiuye.gtmoremachine.common.data.machines.utils.WirelessMachinesUtils.registerWirelessEnergyHatch;
+import static cn.qiuye.gtmoremachine.common.data.machines.utils.WirelessMachinesUtils.registerWirelessLaserHatch;
 import static cn.qiuye.gtmoremachine.common.registry.GTMMRegistration.GTMMREGISTRATE;
 
 public class WirelessMachines {

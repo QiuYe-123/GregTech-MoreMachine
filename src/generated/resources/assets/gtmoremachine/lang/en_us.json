@@ -158,6 +158,7 @@
   "block.gtmoremachine.max_programmablec_dualhatch": "§c§lMAX Programmablec Dual Hatch",
   "block.gtmoremachine.max_programmablec_hatch": "§c§lMAX Programmablec Hatch",
   "block.gtmoremachine.me_export_buffer": "Me Export Buffer",
+  "block.gtmoremachine.me_molecular_assembly_center": "ME Molecular Assembly Center",
   "block.gtmoremachine.mv_16a_wireless_energy_input_hatch": "§bMV 16 Energy Hatch",
   "block.gtmoremachine.mv_16a_wireless_energy_output_hatch": "§bMV 16 Dynamo Hatch",
   "block.gtmoremachine.mv_2a_wireless_energy_input_hatch": "§bMV 2 Energy Hatch",
