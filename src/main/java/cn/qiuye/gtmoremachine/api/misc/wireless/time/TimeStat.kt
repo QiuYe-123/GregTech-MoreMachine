@@ -1,10 +1,10 @@
-package cn.qiuye.gtmoremachine.api.misc.wireless.energy
+package cn.qiuye.gtmoremachine.api.misc.wireless.time
 
 import java.math.BigDecimal
 import java.math.BigInteger
 import java.math.RoundingMode
 
-class EnergyStat(windowStart: Int) {
+class TimeStat(windowStart: Int) {
     private val minute: TimeWheel = TimeWheel(TimeWheel.TIMESCALE.SECOND, 60, windowStart)
     private val hour: TimeWheel = TimeWheel(TimeWheel.TIMESCALE.MINUTE, 60, windowStart)
     private val day: TimeWheel = TimeWheel(TimeWheel.TIMESCALE.HOUR, 24, windowStart)

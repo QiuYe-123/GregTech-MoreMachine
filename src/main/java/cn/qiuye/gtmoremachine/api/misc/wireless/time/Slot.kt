@@ -1,4 +1,4 @@
-package cn.qiuye.gtmoremachine.api.misc.wireless.energy
+package cn.qiuye.gtmoremachine.api.misc.wireless.time
 
 import java.math.BigInteger
 
