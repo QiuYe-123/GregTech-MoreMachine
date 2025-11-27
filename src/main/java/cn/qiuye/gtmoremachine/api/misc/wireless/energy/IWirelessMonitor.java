@@ -159,8 +159,8 @@ public interface IWirelessMonitor extends IWirelessEnergyContainerHolder {
 
     private static int getStaticsclolor(Statistics statistics) {
         return switch (statistics) {
-            case Global -> 16777045;
-            case Team -> 16755200;
+            case Global -> ChatFormatting.YELLOW.getColor();
+            case Team -> ChatFormatting.GOLD.getColor();
         };
     }
 
@@ -173,8 +173,8 @@ public interface IWirelessMonitor extends IWirelessEnergyContainerHolder {
 
     private static int getFormatclolor(Format format) {
         return switch (format) {
-            case Science -> 5636095;
-            case Unit -> 16733525;
+            case Science -> ChatFormatting.AQUA.getColor();
+            case Unit -> ChatFormatting.RED.getColor();
         };
     }
 
@@ -188,9 +188,9 @@ public interface IWirelessMonitor extends IWirelessEnergyContainerHolder {
 
     private static int getPowerStatusclolor(PowerStatus powerStatus) {
         return switch (powerStatus) {
-            case All -> 5635925;
-            case In -> 5592575;
-            case Out -> 11141120;
+            case All -> ChatFormatting.GREEN.getColor();
+            case In -> ChatFormatting.BLUE.getColor();
+            case Out -> ChatFormatting.DARK_RED.getColor();
         };
     }
 }

@@ -3,6 +3,7 @@ package cn.qiuye.gtmoremachine.forge;
 import cn.qiuye.gtmoremachine.GTmm;
 import cn.qiuye.gtmoremachine.api.misc.wireless.energy.WirelessEnergyContainer;
 import cn.qiuye.gtmoremachine.common.item.WirelessEnergyBindingToolBehavior;
+import cn.qiuye.gtmoremachine.data.wireless.cwu.WirelessCWUSavaedData;
 import cn.qiuye.gtmoremachine.data.wireless.energy.WirelessEnergySavaedData;
 
 import net.minecraft.core.GlobalPos;
@@ -44,6 +45,8 @@ public class ForgeCommonEventListener {
             ServerLevel serverLevel = level.getServer().getLevel(Level.OVERWORLD);
             if (serverLevel == null) return;
             WirelessEnergySavaedData.INSTANCE = WirelessEnergySavaedData.getOrCreate(serverLevel);
+            WirelessEnergyContainer.server = event.getLevel().getServer();
+            WirelessCWUSavaedData.INSTANCE = WirelessCWUSavaedData.getOrCreate(serverLevel);
             WirelessEnergyContainer.server = event.getLevel().getServer();
         }
     }

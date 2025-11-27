@@ -1,0 +1,17 @@
+{
+  "parent": "minecraft:block/block",
+  "loader": "gtceu:machine",
+  "machine": "gtmoremachine:uxv_262144a_wireless_laser_source_hatch",
+  "variants": {
+    "": {
+      "model": {
+        "parent": "gtmoremachine:block/machine/part/wireless_laser_hatch",
+        "textures": {
+          "bottom": "gtceu:block/casings/voltage/uxv/bottom",
+          "side": "gtceu:block/casings/voltage/uxv/side",
+          "top": "gtceu:block/casings/voltage/uxv/top"
+        }
+      }
+    }
+  }
+}
