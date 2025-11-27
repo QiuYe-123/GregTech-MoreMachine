@@ -16,7 +16,7 @@ import com.gregtechceu.gtceu.utils.FormattingUtil;
 
 import net.minecraft.network.chat.Component;
 
-import static cn.qiuye.gtmoremachine.common.data.machines.CustomMachinesUtils.registerTieredMachines;
+import static cn.qiuye.gtmoremachine.common.data.machines.utils.CustomMachinesUtils.registerTieredMachines;
 import static cn.qiuye.gtmoremachine.common.machine.multiblock.part.HugeBusPartMachine.INV_MULTIPLE;
 import static cn.qiuye.gtmoremachine.common.registry.GTMMRegistration.GTMMREGISTRATE;
 import static com.gregtechceu.gtceu.common.data.models.GTMachineModels.*;

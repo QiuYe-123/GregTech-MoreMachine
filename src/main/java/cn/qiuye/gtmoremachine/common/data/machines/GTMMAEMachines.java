@@ -16,7 +16,7 @@ import com.gregtechceu.gtceu.utils.FormattingUtil;
 
 import net.minecraft.network.chat.Component;
 
-import static cn.qiuye.gtmoremachine.common.data.machines.CustomMachinesUtils.registerTieredMachines;
+import static cn.qiuye.gtmoremachine.common.data.machines.utils.CustomMachinesUtils.registerTieredMachines;
 import static cn.qiuye.gtmoremachine.common.machine.multiblock.part.HugeBusPartMachine.INV_MULTIPLE;
 import static cn.qiuye.gtmoremachine.common.registry.GTMMRegistration.GTMMREGISTRATE;
 import static com.gregtechceu.gtceu.common.data.machines.GTMachineUtils.DUAL_HATCH_TIERS;
@@ -60,5 +60,7 @@ public class GTMMAEMachines {
                     .register(),
             DUAL_HATCH_TIERS);
 
-    public static void init() {}
+    public static void init() {
+        GTMMAEMultiMachines.init();
+    }
 }
