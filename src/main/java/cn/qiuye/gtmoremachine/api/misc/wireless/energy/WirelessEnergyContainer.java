@@ -1,5 +1,6 @@
 package cn.qiuye.gtmoremachine.api.misc.wireless.energy;
 
+import cn.qiuye.gtmoremachine.api.misc.wireless.time.TimeStat;
 import cn.qiuye.gtmoremachine.config.GTMMConfig;
 import cn.qiuye.gtmoremachine.data.wireless.energy.WirelessEnergySavaedData;
 import cn.qiuye.gtmoremachine.utils.BigIntegerUtils;
@@ -37,21 +38,21 @@ public class WirelessEnergyContainer {
 
     private final UUID uuid;
 
-    private final EnergyStat energyStat;
+    private final TimeStat energyStat;
 
     public WirelessEnergyContainer(UUID uuid, BigInteger storage, long rate, GlobalPos bindPos) {
         this.storage = storage;
         this.rate = rate;
         this.bindPos = bindPos;
         this.uuid = uuid;
-        this.energyStat = new EnergyStat(0);
+        this.energyStat = new TimeStat(0);
     }
 
     private WirelessEnergyContainer(UUID uuid) {
         this.uuid = uuid;
         this.storage = BigInteger.ZERO;
         int currentTick = server.getTickCount();
-        this.energyStat = new EnergyStat(currentTick);
+        this.energyStat = new TimeStat(currentTick);
     }
 
     public long addEnergy(long energy, @Nullable MetaMachine machine) {
