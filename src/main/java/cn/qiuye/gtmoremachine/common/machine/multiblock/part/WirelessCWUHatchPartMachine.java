@@ -38,11 +38,11 @@ public class WirelessCWUHatchPartMachine extends MultiblockPartMachine implement
     @Setter
     private WirelessCWUContainer WirelessCWUContainerCache;
 
-	protected WirelessNotifiableCWUContainer computationContainer;
+    protected WirelessNotifiableCWUContainer computationContainer;
 
     public WirelessCWUHatchPartMachine(IMachineBlockEntity holder, boolean transmitter) {
         super(holder);
-	    this.computationContainer = createComputationContainer(transmitter);
+        this.computationContainer = createComputationContainer(transmitter);
     }
 
     protected WirelessNotifiableCWUContainer createComputationContainer(Object... args) {
@@ -65,5 +65,4 @@ public class WirelessCWUHatchPartMachine extends MultiblockPartMachine implement
     public boolean canShared() {
         return false;
     }
-
 }

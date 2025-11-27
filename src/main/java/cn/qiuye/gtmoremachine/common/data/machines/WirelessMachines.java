@@ -5,8 +5,8 @@ import cn.qiuye.gtmoremachine.common.data.GTMMCreativeModeTabs;
 import cn.qiuye.gtmoremachine.common.machine.electric.WirelessEnergyInterface;
 import cn.qiuye.gtmoremachine.common.machine.electric.WirelessEnergyMonitor;
 import cn.qiuye.gtmoremachine.common.machine.multiblock.part.WirelessCWUHatchMachine;
-
 import cn.qiuye.gtmoremachine.common.machine.multiblock.part.WirelessCWUHatchPartMachine;
+
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
