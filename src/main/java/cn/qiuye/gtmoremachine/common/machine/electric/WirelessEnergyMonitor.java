@@ -87,7 +87,7 @@ public class WirelessEnergyMonitor extends MetaMachine implements IFancyUIMachin
                 }
             }
         } else if (clickData.isRemote) {
-            p = 100;
+            p = 200;
             String[] parts = componentData.split(", ");
             pPos = new BlockPos(Integer.parseInt(parts[0]), Integer.parseInt(parts[1]), Integer.parseInt(parts[2]));
         }

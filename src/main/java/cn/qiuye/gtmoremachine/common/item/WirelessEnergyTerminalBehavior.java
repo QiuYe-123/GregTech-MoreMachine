@@ -21,6 +21,7 @@ import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DropSaved;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -37,6 +38,8 @@ import static cn.qiuye.gtmoremachine.common.machine.electric.WirelessEnergyMonit
 
 public class WirelessEnergyTerminalBehavior implements IItemUIFactory {
 
+    public static int p;
+    public static BlockPos pPos;
     @DropSaved
     private Statistics statistics = Statistics.Team;
     @DropSaved
@@ -48,27 +51,27 @@ public class WirelessEnergyTerminalBehavior implements IItemUIFactory {
     // *********** GUI ***********//
     //////////////////////////////////////
     private void handleDisplayClick(String componentData, ClickData clickData) {
-        switch (componentData) {
-            case "statistics" -> {
-                if (!clickData.isRemote) {
-                    statistics = (statistics == Statistics.Team) ? Statistics.Global : Statistics.Team;
+        if (componentData.equals("statistics")) {
+            if (!clickData.isRemote) {
+                statistics = (statistics == Statistics.Team) ? Statistics.Global : Statistics.Team;
+            }
+        } else if (componentData.equals("format")) {
+            if (!clickData.isRemote) {
+                format = (format == Format.Unit) ? Format.Science : Format.Unit;
+            }
+        } else if (componentData.equals("powerStatus")) {
+            if (!clickData.isRemote) {
+                // 循环切换PowerStatus：All -> In -> Out -> All
+                switch (powerStatus) {
+                    case All -> powerStatus = PowerStatus.In;
+                    case In -> powerStatus = PowerStatus.Out;
+                    case Out -> powerStatus = PowerStatus.All;
                 }
             }
-            case "format" -> {
-                if (!clickData.isRemote) {
-                    format = (format == Format.Unit) ? Format.Science : Format.Unit;
-                }
-            }
-            case "powerStatus" -> {
-                if (!clickData.isRemote) {
-                    // 循环切换PowerStatus：All -> In -> Out -> All
-                    switch (powerStatus) {
-                        case All -> powerStatus = PowerStatus.In;
-                        case In -> powerStatus = PowerStatus.Out;
-                        case Out -> powerStatus = PowerStatus.All;
-                    }
-                }
-            }
+        } else if (clickData.isRemote) {
+            p = 200;
+            String[] parts = componentData.split(", ");
+            pPos = new BlockPos(Integer.parseInt(parts[0]), Integer.parseInt(parts[1]), Integer.parseInt(parts[2]));
         }
     }
 
