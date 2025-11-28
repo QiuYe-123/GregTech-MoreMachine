@@ -1,5 +1,19 @@
 # ChangeLog
 
+## Version [v1.2.2](https://github.com/QiuYe-123/GTMoreMachine/compare/v1.2.1-1.20.1...v1.2.2-1.20.1)
+### Added
+
+- 添加更多无线能源仓 by @QiuYe-123 in [#48](https://github.com/QiuYe-123/GTMoreMachine/pull/48)
+- 修正无线能源监视器的世界显示 by @QiuYe-123 in [#50](https://github.com/QiuYe-123/GTMoreMachine/pull/50)
+- 添加算力网络 by @QiuYe-123 in [#51](https://github.com/QiuYe-123/GTMoreMachine/pull/51)
+
+### Fixed
+
+- 添加缺失语言本地化文件 by @QiuYe-123 in [#46](https://github.com/QiuYe-123/GTMoreMachine/pull/46)
+- 修复lang key引用错误 by @QiuYe-123 in [#47](https://github.com/QiuYe-123/GTMoreMachine/pull/47)
+- 修正无线能源监视器的世界显示 by @QiuYe-123 in [#50](https://github.com/QiuYe-123/GTMoreMachine/pull/50)
+
+ 
 ## Version [v1.2.1](https://github.com/QiuYe-123/GTMoreMachine/compare/v1.2.0-1.20.1...v1.2.1-1.20.1)
 ### Added
 
