@@ -10,7 +10,7 @@ class TimeStat(windowStart: Int) {
     private val day: TimeWheel = TimeWheel(TimeWheel.TIMESCALE.HOUR, 24, windowStart)
     private var lastChangedCache: BigInteger = BigInteger.ZERO
 
-    var avgEnergy: BigDecimal = BigDecimal.ZERO
+    var avg: BigDecimal = BigDecimal.ZERO
 
     fun tick() {
         if (minute.tock()) {
@@ -18,7 +18,7 @@ class TimeStat(windowStart: Int) {
                 day.tock()
             }
         }
-        avgEnergy =
+        avg =
             if (lastChangedCache.compareTo(BigInteger.ZERO) ==
                 0
             ) {

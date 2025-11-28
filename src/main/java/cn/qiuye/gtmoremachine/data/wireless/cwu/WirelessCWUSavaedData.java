@@ -43,22 +43,22 @@ public class WirelessCWUSavaedData extends SavedData {
 
     @Override
     public @NotNull CompoundTag save(@NotNull CompoundTag compoundTag) {
-        ListTag allEnergy = new ListTag();
+        ListTag allcwu = new ListTag();
         for (WirelessCWUContainer container : containerMap.values()) {
             CompoundTag engTag = toTag(container);
             if (engTag.isEmpty()) continue;
-            allEnergy.add(engTag);
+            allcwu.add(engTag);
         }
-        compoundTag.put("allCWU", allEnergy);
+        compoundTag.put("allCWU", allcwu);
         return compoundTag;
     }
 
     protected WirelessCWUContainer readTag(CompoundTag engTag) {
         UUID uuid = engTag.getUUID("uuid");
         String en = engTag.getString("cwu");
-        BigInteger energy = new BigInteger(en.isEmpty() ? "0" : en);
+        BigInteger cwu = new BigInteger(en.isEmpty() ? "0" : en);
         GlobalPos bindPos = readGlobalPos(engTag.getString("dimension"), engTag.getLong("pos"));
-        return new WirelessCWUContainer(uuid, energy, bindPos);
+        return new WirelessCWUContainer(uuid, cwu, bindPos);
     }
 
     protected CompoundTag toTag(WirelessCWUContainer container) {

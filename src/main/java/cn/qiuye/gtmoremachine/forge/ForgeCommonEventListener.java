@@ -1,6 +1,7 @@
 package cn.qiuye.gtmoremachine.forge;
 
 import cn.qiuye.gtmoremachine.GTmm;
+import cn.qiuye.gtmoremachine.api.misc.wireless.cwu.WirelessCWUContainer;
 import cn.qiuye.gtmoremachine.api.misc.wireless.energy.WirelessEnergyContainer;
 import cn.qiuye.gtmoremachine.common.item.WirelessEnergyBindingToolBehavior;
 import cn.qiuye.gtmoremachine.data.wireless.cwu.WirelessCWUSavaedData;
@@ -33,9 +34,15 @@ public class ForgeCommonEventListener {
                     }
                     container.getEnergyStat().tick();
                 }
+                for (WirelessCWUContainer container : WirelessCWUSavaedData.INSTANCE.containerMap.values()) {
+                    container.getAllCWUStat().tick();
+                    container.getInCWUStat().tick();
+                    container.getOutCWUStat().tick();
+                }
             }
         } else {
             WirelessEnergyContainer.observed = false;
+            WirelessCWUContainer.observed = false;
         }
     }
 
@@ -47,7 +54,7 @@ public class ForgeCommonEventListener {
             WirelessEnergySavaedData.INSTANCE = WirelessEnergySavaedData.getOrCreate(serverLevel);
             WirelessEnergyContainer.server = event.getLevel().getServer();
             WirelessCWUSavaedData.INSTANCE = WirelessCWUSavaedData.getOrCreate(serverLevel);
-            WirelessEnergyContainer.server = event.getLevel().getServer();
+            WirelessCWUContainer.server = event.getLevel().getServer();
         }
     }
 }

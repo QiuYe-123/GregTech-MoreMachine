@@ -1,8 +1,8 @@
 package cn.qiuye.gtmoremachine.api.misc.wireless.energy;
 
 import cn.qiuye.gtmoremachine.api.gui.monitor.Format;
-import cn.qiuye.gtmoremachine.api.gui.monitor.PowerStatus;
 import cn.qiuye.gtmoremachine.api.gui.monitor.Statistics;
+import cn.qiuye.gtmoremachine.api.gui.monitor.Status;
 import cn.qiuye.gtmoremachine.api.machine.IWirelessEnergyContainerHolder;
 import cn.qiuye.gtmoremachine.config.GTMMConfig;
 import cn.qiuye.gtmoremachine.utils.BigIntegerUtils;
@@ -27,7 +27,7 @@ import java.util.*;
 
 public interface IWirelessMonitor extends IWirelessEnergyContainerHolder {
 
-    default List<Component> getDisplayText(Statistics statistics, Format format, PowerStatus powerStatus) {
+    default List<Component> getDisplayText(Statistics statistics, Format format, Status powerStatus) {
         List<Component> textListCache = new ArrayList<>();
         WirelessEnergyContainer container = getWirelessEnergyContainer();
         if (container == null) return List.of();
@@ -65,7 +65,7 @@ public interface IWirelessMonitor extends IWirelessEnergyContainerHolder {
                 Component.literal(NumberUtils.formatBigDecimalNumberOrSic(FormattingUtil.voltageAmperage(avgDay), format)),
                 FormattingUtil.voltageName(avgDay)));
         // average useage
-        BigDecimal avgEnergy = stat.getAvgEnergy();
+        BigDecimal avgEnergy = stat.getAvg();
         textListCache.add(FormattingUtil.formatWithConstantWidth("gtmoremachine.machine.wireless_energy_monitor.tooltip.now",
                 Component.literal(NumberUtils.formatBigDecimalNumberOrSic(avgEnergy, format)).withStyle(ChatFormatting.DARK_PURPLE),
                 Component.literal(NumberUtils.formatBigDecimalNumberOrSic(FormattingUtil.voltageAmperage(avgEnergy), format)),
@@ -102,11 +102,11 @@ public interface IWirelessMonitor extends IWirelessEnergyContainerHolder {
             UUID uuid = m.getValue().UUID();
             BigInteger through = m.getValue().Throughput();
             if (statistics == Statistics.Global || uuid.equals(TeamUtils.getTeamUUID(this.getUUID()))) {
-                if (powerStatus == PowerStatus.All) {
+                if (powerStatus == Status.All) {
                     textListCache.add(m.getValue().getInfo(format));
-                } else if (powerStatus == PowerStatus.In && through.compareTo(BigInteger.ZERO) > 0) {
+                } else if (powerStatus == Status.In && through.compareTo(BigInteger.ZERO) > 0) {
                     textListCache.add(m.getValue().getInfo(format));
-                } else if (powerStatus == PowerStatus.Out && through.compareTo(BigInteger.ZERO) < 0) {
+                } else if (powerStatus == Status.Out && through.compareTo(BigInteger.ZERO) < 0) {
                     textListCache.add(m.getValue().getInfo(format));
                 }
             }
@@ -178,7 +178,7 @@ public interface IWirelessMonitor extends IWirelessEnergyContainerHolder {
         };
     }
 
-    private static Component getPowerStatusText(PowerStatus powerStatus) {
+    private static Component getPowerStatusText(Status powerStatus) {
         return switch (powerStatus) {
             case All -> Component.translatable("gtmoremachine.machine.wireless_energy_monitor.tooltip.power_all");
             case In -> Component.translatable("gtmoremachine.machine.wireless_energy_monitor.tooltip.power_in");
@@ -186,7 +186,7 @@ public interface IWirelessMonitor extends IWirelessEnergyContainerHolder {
         };
     }
 
-    private static int getPowerStatusclolor(PowerStatus powerStatus) {
+    private static int getPowerStatusclolor(Status powerStatus) {
         return switch (powerStatus) {
             case All -> ChatFormatting.GREEN.getColor();
             case In -> ChatFormatting.BLUE.getColor();

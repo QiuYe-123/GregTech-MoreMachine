@@ -385,6 +385,7 @@
   "block.gtmoremachine.uxv_programmablec_hatch": "§eUXV Programmablec Hatch",
   "block.gtmoremachine.wireless_computation_receiver_hatch": "Wireless Computation Data Transmission Hatch",
   "block.gtmoremachine.wireless_computation_transmitter_hatch": "Wireless Computation Data Reception Hatch",
+  "block.gtmoremachine.wireless_cwu_monitor": "Wireless CWU Monitor",
   "block.gtmoremachine.wireless_cwu_receiver_hatch": "Wireless Computation Data Transmission Hatch",
   "block.gtmoremachine.wireless_cwu_transmitter_hatch": "Wireless Computation Data Reception Hatch",
   "block.gtmoremachine.wireless_energy_interface": "Wireless Energy Interface",
