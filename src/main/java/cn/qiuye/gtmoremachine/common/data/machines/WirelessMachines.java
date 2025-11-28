@@ -2,6 +2,7 @@ package cn.qiuye.gtmoremachine.common.data.machines;
 
 import cn.qiuye.gtmoremachine.GTmm;
 import cn.qiuye.gtmoremachine.common.data.GTMMCreativeModeTabs;
+import cn.qiuye.gtmoremachine.common.machine.electric.WirelessCWUMonitor;
 import cn.qiuye.gtmoremachine.common.machine.electric.WirelessEnergyInterface;
 import cn.qiuye.gtmoremachine.common.machine.electric.WirelessEnergyMonitor;
 import cn.qiuye.gtmoremachine.common.machine.multiblock.part.WirelessCWUHatchMachine;
@@ -29,11 +30,19 @@ public class WirelessMachines {
         GTMMREGISTRATE.creativeModeTab(() -> GTMMCreativeModeTabs.WIRELESS_TAB);
     }
 
+    public static final MachineDefinition WIRELESS_CWU_MONITOR = GTMMREGISTRATE
+            .machine("wireless_cwu_monitor", WirelessCWUMonitor::new)
+            .langValue("Wireless CWU Monitor")
+            .rotationState(RotationState.NON_Y_AXIS)
+            .workableTieredHullModel(GTmm.id("block/machines/wireless_monitor"))
+            .tier(GTValues.IV)
+            .register();
+
     public static final MachineDefinition WIRELESS_ENERGY_MONITOR = GTMMREGISTRATE
             .machine("wireless_energy_monitor", WirelessEnergyMonitor::new)
             .langValue("Wireless Energy Monitor")
             .rotationState(RotationState.NON_Y_AXIS)
-            .workableTieredHullModel(GTmm.id("block/machines/wireless_energy_monitor"))
+            .workableTieredHullModel(GTmm.id("block/machines/wireless_monitor"))
             .tier(GTValues.IV)
             .register();
 

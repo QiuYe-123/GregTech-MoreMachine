@@ -5,8 +5,8 @@ import cn.qiuye.gtmoremachine.api.gui.monitor.Statistics;
 import cn.qiuye.gtmoremachine.api.gui.monitor.Status;
 import cn.qiuye.gtmoremachine.api.gui.widget.AlignComponentPanelWidget;
 import cn.qiuye.gtmoremachine.api.gui.widget.AlignLabelWidget;
-import cn.qiuye.gtmoremachine.api.misc.wireless.energy.IWirelessMonitor;
-import cn.qiuye.gtmoremachine.api.misc.wireless.energy.WirelessEnergyContainer;
+import cn.qiuye.gtmoremachine.api.misc.wireless.cwu.IWirelessMonitor;
+import cn.qiuye.gtmoremachine.api.misc.wireless.cwu.WirelessCWUContainer;
 
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
@@ -35,26 +35,20 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class WirelessEnergyMonitor extends MetaMachine implements IFancyUIMachine, IWirelessMonitor {
+public class WirelessCWUMonitor extends MetaMachine implements IFancyUIMachine, IWirelessMonitor {
 
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(WirelessEnergyMonitor.class,
-            MetaMachine.MANAGED_FIELD_HOLDER);
+    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(WirelessCWUMonitor.class, MetaMachine.MANAGED_FIELD_HOLDER);
 
     public static int p;
     public static BlockPos pPos;
 
-    public WirelessEnergyMonitor(IMachineBlockEntity holder) {
+    public WirelessCWUMonitor(IMachineBlockEntity holder) {
         super(holder);
-    }
-
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
     }
 
     @Getter
     @Setter
-    private WirelessEnergyContainer WirelessEnergyContainerCache;
+    private WirelessCWUContainer WirelessCWUContainerCache;
 
     private List<Component> textListCache;
 
@@ -63,7 +57,7 @@ public class WirelessEnergyMonitor extends MetaMachine implements IFancyUIMachin
     @Persisted
     private Format format = Format.Unit;
     @Persisted
-    private Status powerStatus = Status.All;
+    private Status CWUStatus = Status.All;
 
     //////////////////////////////////////
     // *********** GUI ***********//
@@ -77,13 +71,13 @@ public class WirelessEnergyMonitor extends MetaMachine implements IFancyUIMachin
             if (!clickData.isRemote) {
                 format = (format == Format.Unit) ? Format.Science : Format.Unit;
             }
-        } else if (componentData.equals("powerStatus")) {
+        } else if (componentData.equals("CWUStatus")) {
             if (!clickData.isRemote) {
                 // 循环切换PowerStatus：All -> In -> Out -> All
-                switch (powerStatus) {
-                    case All -> powerStatus = Status.In;
-                    case In -> powerStatus = Status.Out;
-                    case Out -> powerStatus = Status.All;
+                switch (CWUStatus) {
+                    case All -> CWUStatus = Status.In;
+                    case In -> CWUStatus = Status.Out;
+                    case Out -> CWUStatus = Status.All;
                 }
             }
         } else if (clickData.isRemote) {
@@ -112,7 +106,7 @@ public class WirelessEnergyMonitor extends MetaMachine implements IFancyUIMachin
     public void addDisplayText(List<Component> textList) {
         if (isRemote()) return;
         if (textListCache == null || getOffsetTimer() % 10 == 0) {
-            textListCache = getDisplayText(statistics, format, powerStatus);
+            textListCache = getDisplayText(statistics, format, CWUStatus);
         }
         textList.addAll(textListCache);
     }

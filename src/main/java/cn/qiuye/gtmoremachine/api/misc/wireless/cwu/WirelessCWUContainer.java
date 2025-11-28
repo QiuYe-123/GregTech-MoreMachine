@@ -2,6 +2,7 @@ package cn.qiuye.gtmoremachine.api.misc.wireless.cwu;
 
 import cn.qiuye.gtmoremachine.api.misc.wireless.time.TimeStat;
 import cn.qiuye.gtmoremachine.data.wireless.cwu.WirelessCWUSavaedData;
+import cn.qiuye.gtmoremachine.utils.BigIntegerUtils;
 import cn.qiuye.gtmoremachine.utils.TeamUtils;
 
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
@@ -10,6 +11,7 @@ import net.minecraft.core.GlobalPos;
 import net.minecraft.server.MinecraftServer;
 
 import lombok.Getter;
+import org.jetbrains.annotations.Nullable;
 
 import java.math.BigInteger;
 import java.util.UUID;
@@ -33,6 +35,8 @@ public class WirelessCWUContainer {
 
     private final UUID uuid;
 
+    private final TimeStat allCWUStat;
+
     private final TimeStat inCWUStat;
 
     private final TimeStat outCWUStat;
@@ -41,6 +45,7 @@ public class WirelessCWUContainer {
         this.storage = storage;
         this.bindPos = bindPos;
         this.uuid = uuid;
+        this.allCWUStat = new TimeStat(0);
         this.inCWUStat = new TimeStat(0);
         this.outCWUStat = new TimeStat(0);
     }
@@ -49,7 +54,46 @@ public class WirelessCWUContainer {
         this.uuid = uuid;
         this.storage = BigInteger.ZERO;
         int currentTick = server.getTickCount();
+        this.allCWUStat = new TimeStat(currentTick);
         this.inCWUStat = new TimeStat(currentTick);
         this.outCWUStat = new TimeStat(currentTick);
+    }
+
+    public void upload(int cwu, @Nullable MetaMachine machine) {
+        if (cwu <= 0) return;
+        if (machine != null) {
+            allCWUStat.update(BigInteger.valueOf(cwu), server.getTickCount());
+            inCWUStat.update(BigInteger.valueOf(cwu), server.getTickCount());
+        }
+        if (observed && machine != null) {
+            TRANSFER_DATA.put(machine, new BasicTransferData(uuid, cwu, machine));
+        }
+        storage = new BigInteger(String.valueOf(inCWUStat.getAvg())).add(new BigInteger(String.valueOf(outCWUStat.getAvg())));
+        WirelessCWUSavaedData.INSTANCE.setDirty(true);
+    }
+
+    public int download(int cwu, @Nullable MetaMachine machine) {
+        int change = Math.min(BigIntegerUtils.getIntValue(storage), cwu);
+        if (change <= 0) return 0;
+        if (machine != null) {
+            allCWUStat.update(BigInteger.valueOf(change).negate(), server.getTickCount());
+            outCWUStat.update(BigInteger.valueOf(change).negate(), server.getTickCount());
+        }
+        if (observed && machine != null) {
+            TRANSFER_DATA.put(machine, new BasicTransferData(uuid, -cwu, machine));
+        }
+        storage = new BigInteger(String.valueOf(inCWUStat.getAvg())).add(new BigInteger(String.valueOf(outCWUStat.getAvg())));
+        WirelessCWUSavaedData.INSTANCE.setDirty(true);
+        return change;
+    }
+
+    public void setStorage(BigInteger cwu) {
+        storage = cwu;
+        WirelessCWUSavaedData.INSTANCE.setDirty(true);
+    }
+
+    public void setBindPos(GlobalPos bindPos) {
+        this.bindPos = bindPos;
+        WirelessCWUSavaedData.INSTANCE.setDirty(true);
     }
 }

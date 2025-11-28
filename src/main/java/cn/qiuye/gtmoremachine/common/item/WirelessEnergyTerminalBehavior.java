@@ -2,8 +2,8 @@ package cn.qiuye.gtmoremachine.common.item;
 
 import cn.qiuye.gtmoremachine.GTmm;
 import cn.qiuye.gtmoremachine.api.gui.monitor.Format;
-import cn.qiuye.gtmoremachine.api.gui.monitor.PowerStatus;
 import cn.qiuye.gtmoremachine.api.gui.monitor.Statistics;
+import cn.qiuye.gtmoremachine.api.gui.monitor.Status;
 import cn.qiuye.gtmoremachine.api.gui.widget.AlignComponentPanelWidget;
 import cn.qiuye.gtmoremachine.api.gui.widget.AlignLabelWidget;
 import cn.qiuye.gtmoremachine.api.misc.wireless.energy.IWirelessMonitor;
@@ -42,7 +42,7 @@ public class WirelessEnergyTerminalBehavior implements IItemUIFactory {
     @DropSaved
     private Format format = Format.Unit;
     @DropSaved
-    private PowerStatus powerStatus = PowerStatus.All;
+    private Status powerStatus = Status.All;
 
     //////////////////////////////////////
     // *********** GUI ***********//
@@ -63,9 +63,9 @@ public class WirelessEnergyTerminalBehavior implements IItemUIFactory {
                 if (!clickData.isRemote) {
                     // 循环切换PowerStatus：All -> In -> Out -> All
                     switch (powerStatus) {
-                        case All -> powerStatus = PowerStatus.In;
-                        case In -> powerStatus = PowerStatus.Out;
-                        case Out -> powerStatus = PowerStatus.All;
+                        case All -> powerStatus = Status.In;
+                        case In -> powerStatus = Status.Out;
+                        case Out -> powerStatus = Status.All;
                     }
                 }
             }

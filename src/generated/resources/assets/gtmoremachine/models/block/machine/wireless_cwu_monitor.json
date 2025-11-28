@@ -1,7 +1,7 @@
 {
   "parent": "minecraft:block/block",
   "loader": "gtceu:machine",
-  "machine": "gtmoremachine:wireless_energy_monitor",
+  "machine": "gtmoremachine:wireless_cwu_monitor",
   "variants": {
     "recipe_logic_status=idle": {
       "model": {
