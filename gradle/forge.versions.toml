@@ -32,6 +32,7 @@ modernui = "6ksT8CWg" #3.12.0.1
 modernfix = "5.24.4+mc1.20.1"
 
 ## curseforge maven ##
+ar = "7196153"
 
 ## libs ##
 jech = "4.5.11-dev-shadow"
@@ -68,6 +69,8 @@ modernui            = { module = "maven.modrinth:modern-ui", version.ref = "mode
 sophisticatedcore  = { module = "maven.modrinth:nmoqTijg", version.ref = "sophisticated-core" }
 sophisticatedbackpacks = { module = "maven.modrinth:TyCTlI4b", version.ref = "sophisticated-backpacks" }
 sophisticatedstorage = { module = "maven.modrinth:hMlaZH8f", version.ref = "sophisticated-storage" }
+
+ar                  = { module = "curse.maven:accelerated-rendering-1314021", version.ref = "ar" }
 
 
 jecharacters        = { module = "dev:jecharacters-1.20.1-forge", version.ref = "jech" }

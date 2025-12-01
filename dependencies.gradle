@@ -73,6 +73,7 @@ dependencies {
     modClientLocalRuntime(forge.embeddium)
     modClientLocalRuntime(forge.oculus)
     modClientLocalRuntime(forge.modernui)
+    modClientLocalRuntime(forge.ar)
     renderNurseCfg(libs.renderNurse)
 
 //    // Mouse Tweaks
