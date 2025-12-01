@@ -70,6 +70,6 @@ public class WirelessCWUHatchPartMachine extends MultiblockPartMachine implement
 
     @Override
     public @Nullable UUID getUUID() {
-        return trait.getUUID();
+        return this.getTrait().getUUID();
     }
 }

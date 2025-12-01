@@ -57,7 +57,6 @@ public class WirelessCWUContainer {
     }
 
     public void upload(int cwu, @Nullable MetaMachine machine) {
-        GTmm.LOGGER.info(cwu);
         if (cwu <= 0) return;
         if (machine != null) {
             allCWUStat.update(BigInteger.valueOf(cwu), server.getTickCount());
@@ -70,10 +69,9 @@ public class WirelessCWUContainer {
         WirelessCWUSavaedData.INSTANCE.setDirty(true);
     }
 
-    public void download(int cwu, @Nullable MetaMachine machine) {
-        GTmm.LOGGER.info(cwu);
-        int change = Math.min(BigIntegerUtils.getIntValue(storage), cwu);
-        if (change <= 0) return;
+    public int download(int cwu, @Nullable MetaMachine machine) {
+        int change = Math.min(BigIntegerUtils.getIntValue(storage) / 10, cwu);
+        if (change <= 0) return 0;
         if (machine != null) {
             allCWUStat.update(BigInteger.valueOf(change).negate(), server.getTickCount());
             outCWUStat.update(BigInteger.valueOf(change).negate(), server.getTickCount());
@@ -83,10 +81,15 @@ public class WirelessCWUContainer {
         }
         storage = new BigInteger(String.valueOf(inCWUStat.getAvg())).add(new BigInteger(String.valueOf(outCWUStat.getAvg())));
         WirelessCWUSavaedData.INSTANCE.setDirty(true);
+        return change;
     }
 
     public void setStorage(BigInteger cwu) {
         storage = cwu;
         WirelessCWUSavaedData.INSTANCE.setDirty(true);
+    }
+
+    public int getfreeCWU() {
+        return BigIntegerUtils.getIntValue(storage) / 10;
     }
 }

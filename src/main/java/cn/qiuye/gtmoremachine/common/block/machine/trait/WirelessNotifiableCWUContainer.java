@@ -1,5 +1,6 @@
 package cn.qiuye.gtmoremachine.common.block.machine.trait;
 
+import cn.qiuye.gtmoremachine.GTmm;
 import cn.qiuye.gtmoremachine.api.machine.IWirelessCWUContainerHolder;
 import cn.qiuye.gtmoremachine.api.misc.wireless.cwu.WirelessCWUContainer;
 import cn.qiuye.gtmoremachine.common.machine.multiblock.part.WirelessCWUHatchPartMachine;
@@ -31,7 +32,7 @@ public class WirelessNotifiableCWUContainer extends NotifiableComputationContain
     private TickableSubscription holder;
 
     public WirelessNotifiableCWUContainer(MetaMachine machine, boolean transmitter) {
-        super(machine, IO.BOTH, transmitter);
+        super(machine, transmitter ? IO.OUT : IO.IN, transmitter);
         this.transmitter = transmitter;
     }
 
@@ -54,15 +55,15 @@ public class WirelessNotifiableCWUContainer extends NotifiableComputationContain
 
     private void tick() {
         MetaMachine machine = this.machine;
-        if (machine instanceof WirelessCWUHatchPartMachine wirelessmachine) {
+        if (machine instanceof WirelessCWUHatchPartMachine wirelessmachine && this.transmitter) {
             if (!wirelessmachine.isFormed()) {
                 return;
             }
             IMultiController controller = wirelessmachine.getControllers().first();
             if (controller instanceof IOpticalComputationProvider provider) {
-                WirelessCWUContainer var4 = this.getWirelessCWUContainer();
-                if (var4 != null && var4.getStorage().compareTo(BigInteger.ZERO) > 0) {
-                    var4.upload(provider.requestCWUt(BigIntegerUtils.getIntValue(var4.getStorage()), false), this.machine);
+                WirelessCWUContainer cwuContainer = this.getWirelessCWUContainer();
+                if (cwuContainer != null) {
+                    cwuContainer.upload(provider.requestCWUt(provider.getMaxCWUt(), false), this.machine);
                 }
             }
         } else if (this.holder != null) {
@@ -73,21 +74,21 @@ public class WirelessNotifiableCWUContainer extends NotifiableComputationContain
 
     @Override
     public int requestCWUt(int cwut, boolean simulate, Collection<IOpticalComputationProvider> seen) {
-        WirelessCWUContainer var1 = this.getWirelessCWUContainer();
-        if (var1 != null) {
-            int var2 = BigIntegerUtils.getIntValue(var1.getStorage());
-            int var3 = Math.min(cwut, var2);
-            if (simulate) {
-                var1.download(var2, this.machine);
-            }
-            return var3;
+        WirelessCWUContainer cwuContainer = this.getWirelessCWUContainer();
+        if (cwuContainer != null) {
+	        int finalcwu = 0;
+	        if (simulate) {
+                finalcwu = Math.min(cwut, this.getMaxCWUt());
+	        }
+            GTmm.LOGGER.info(finalcwu);
+	        return finalcwu;
         } else return 0;
     }
 
     @Override
     public int getMaxCWUt(Collection<IOpticalComputationProvider> seen) {
-        WirelessCWUContainer var1 = this.getWirelessCWUContainer();
-        return var1 != null ? BigIntegerUtils.getIntValue(var1.getStorage()) : 0;
+        WirelessCWUContainer cwuContainer = this.getWirelessCWUContainer();
+        return cwuContainer != null ? cwuContainer.download(cwuContainer.getfreeCWU(), this.machine) : 0;
     }
 
     @Override
@@ -102,7 +103,7 @@ public class WirelessNotifiableCWUContainer extends NotifiableComputationContain
 
     @Override
     public @Nullable UUID getUUID() {
-        return this.machine.getOwnerUUID();
+        return this.getMachine().getOwnerUUID();
     }
 
     @Override
