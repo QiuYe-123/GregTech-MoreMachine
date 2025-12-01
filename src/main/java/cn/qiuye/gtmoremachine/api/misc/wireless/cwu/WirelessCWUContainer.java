@@ -1,6 +1,5 @@
 package cn.qiuye.gtmoremachine.api.misc.wireless.cwu;
 
-import cn.qiuye.gtmoremachine.GTmm;
 import cn.qiuye.gtmoremachine.api.misc.wireless.time.TimeStat;
 import cn.qiuye.gtmoremachine.data.wireless.cwu.WirelessCWUSavaedData;
 import cn.qiuye.gtmoremachine.utils.BigIntegerUtils;

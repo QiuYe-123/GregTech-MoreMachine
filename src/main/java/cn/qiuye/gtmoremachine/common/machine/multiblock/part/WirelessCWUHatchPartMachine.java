@@ -4,6 +4,7 @@ import cn.qiuye.gtmoremachine.api.capability.IBindable;
 import cn.qiuye.gtmoremachine.common.block.machine.trait.WirelessNotifiableCWUContainer;
 import cn.qiuye.gtmoremachine.utils.TeamUtils;
 
+import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.feature.IInteractedMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
@@ -36,7 +37,18 @@ public class WirelessCWUHatchPartMachine extends MultiblockPartMachine implement
 
     public WirelessCWUHatchPartMachine(IMachineBlockEntity holder, boolean transmitter) {
         super(holder);
-        this.trait = new WirelessNotifiableCWUContainer(this, transmitter);
+        this.trait = createComputationContainer(transmitter);
+    }
+
+    protected WirelessNotifiableCWUContainer createComputationContainer(Object... args) {
+        IO io = IO.IN;
+        if (args.length > 1 && args[args.length - 2] instanceof IO newIo) {
+            io = newIo;
+        }
+        if (args.length > 0 && args[args.length - 1] instanceof Boolean transmitter) {
+            return new WirelessNotifiableCWUContainer(this, io, transmitter);
+        }
+        throw new IllegalArgumentException();
     }
 
     @Override
