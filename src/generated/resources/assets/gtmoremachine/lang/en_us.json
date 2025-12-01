@@ -390,6 +390,7 @@
   "block.gtmoremachine.wireless_cwu_transmitter_hatch": "Wireless Computation Data Reception Hatch",
   "block.gtmoremachine.wireless_energy_interface": "Wireless Energy Interface",
   "block.gtmoremachine.wireless_energy_monitor": "Wireless Energy Monitor",
+  "block.gtmoremachine.xxfdj": "Xxfdj",
   "block.gtmoremachine.zpm_1024a_wireless_laser_source_hatch": "§cZPM 1,024A Laser Source Hatch",
   "block.gtmoremachine.zpm_1024a_wireless_laser_target_hatch": "§cZPM 1,024A Laser Target Hatch",
   "block.gtmoremachine.zpm_1048576a_wireless_laser_source_hatch": "§cZPM 1,048,576A Laser Source Hatch",
