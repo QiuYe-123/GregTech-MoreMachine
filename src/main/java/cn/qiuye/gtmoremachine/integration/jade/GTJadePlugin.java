@@ -2,6 +2,7 @@ package cn.qiuye.gtmoremachine.integration.jade;
 
 import cn.qiuye.gtmoremachine.integration.jade.provider.WirelessEnergyHatchProvider;
 import cn.qiuye.gtmoremachine.integration.jade.provider.WirelessOpticalComputationHatchProvider;
+import cn.qiuye.gtmoremachine.integration.jade.provider.WrelessCWUProvider;
 
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
@@ -18,11 +19,13 @@ public class GTJadePlugin implements IWailaPlugin {
     public void register(IWailaCommonRegistration registration) {
         registration.registerBlockDataProvider(new WirelessEnergyHatchProvider(), MetaMachineBlockEntity.class);
         registration.registerBlockDataProvider(new WirelessOpticalComputationHatchProvider(), MetaMachineBlockEntity.class);
+        registration.registerBlockDataProvider(new WrelessCWUProvider(), MetaMachineBlockEntity.class);
     }
 
     @Override
     public void registerClient(IWailaClientRegistration registration) {
         registration.registerBlockComponent(new WirelessEnergyHatchProvider(), MetaMachineBlock.class);
         registration.registerBlockComponent(new WirelessOpticalComputationHatchProvider(), MetaMachineBlock.class);
+        registration.registerBlockComponent(new WrelessCWUProvider(), MetaMachineBlock.class);
     }
 }

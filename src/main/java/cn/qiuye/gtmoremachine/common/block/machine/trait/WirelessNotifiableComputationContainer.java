@@ -1,8 +1,8 @@
 package cn.qiuye.gtmoremachine.common.block.machine.trait;
 
+import cn.qiuye.gtmoremachine.GTmm;
 import cn.qiuye.gtmoremachine.common.machine.multiblock.part.WirelessCWUHatchMachine;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.IOpticalComputationProvider;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
@@ -57,11 +57,11 @@ public class WirelessNotifiableComputationContainer extends NotifiableComputatio
                             }
                         }
                     }
-                    GTCEu.LOGGER
+                    GTmm.LOGGER
                             .error("NotifiableComputationContainer could request CWU/t from its machine's controller!");
                     return 0;
                 } else {
-                    GTCEu.LOGGER.error("NotifiableComputationContainer could request CWU/t from its machine!");
+                    GTmm.LOGGER.error("NotifiableComputationContainer could request CWU/t from its machine!");
                     return 0;
                 }
             } else {
@@ -101,11 +101,11 @@ public class WirelessNotifiableComputationContainer extends NotifiableComputatio
                             }
                         }
                     }
-                    GTCEu.LOGGER.error(
+                    GTmm.LOGGER.error(
                             "NotifiableComputationContainer could not get maximum CWU/t from its machine's controller!");
                     return 0;
                 } else {
-                    GTCEu.LOGGER.error("NotifiableComputationContainer could not get maximum CWU/t from its machine!");
+                    GTmm.LOGGER.error("NotifiableComputationContainer could not get maximum CWU/t from its machine!");
                     return 0;
                 }
             } else {
@@ -144,11 +144,11 @@ public class WirelessNotifiableComputationContainer extends NotifiableComputatio
                             }
                         }
                     }
-                    GTCEu.LOGGER.error(
+                    GTmm.LOGGER.error(
                             "NotifiableComputationContainer could not test bridge status of its machine's controller!");
                     return false;
                 } else {
-                    GTCEu.LOGGER.error("NotifiableComputationContainer could not test bridge status of its machine!");
+                    GTmm.LOGGER.error("NotifiableComputationContainer could not test bridge status of its machine!");
                     return false;
                 }
             } else {
@@ -178,14 +178,10 @@ public class WirelessNotifiableComputationContainer extends NotifiableComputatio
                         if (machine instanceof IRecipeLogicMachine rlm) {
                             // first, remove the progress the recipe logic adds.
                             rlm.getRecipeLogic().setProgress(rlm.getRecipeLogic().getProgress() - 1 + drawn);
-                            // rlm.getRecipeLogic().progress -= 1;
-                            // rlm.getRecipeLogic().progress += drawn;
                         } else if (machine instanceof IMultiPart multiPart) {
                             for (IMultiController controller : multiPart.getControllers()) {
                                 if (controller instanceof IRecipeLogicMachine rlm) {
                                     rlm.getRecipeLogic().setProgress(rlm.getRecipeLogic().getProgress() - 1 + drawn);
-                                    // rlm.getRecipeLogic().progress -= 1;
-                                    // rlm.getRecipeLogic().progress += drawn;
                                 }
                             }
                         }

@@ -65,7 +65,6 @@ public class WirelessEnergyHatchProvider extends CapabilityBlockProvider<IWirele
     protected void addTooltip(CompoundTag capData, ITooltip tooltip, Player player, BlockAccessor block, BlockEntity blockEntity, IPluginConfig config) {
         if (!capData.getBoolean("isBindable")) return;
         boolean cover = capData.getBoolean("cover");
-        BigDecimal energy = new BigDecimal(capData.getString("energy"));
         if (!capData.hasUUID("uuid")) {
             if (cover) {
                 tooltip.add(Component.translatable("gtmoremachine.machine.wireless_energy_cover.tooltip.1"));
@@ -73,6 +72,7 @@ public class WirelessEnergyHatchProvider extends CapabilityBlockProvider<IWirele
                 tooltip.add(Component.translatable("gtmoremachine.machine.wireless_energy_hatch.tooltip.1"));
             }
         } else {
+            BigDecimal energy = new BigDecimal(capData.getString("energy"));
             UUID uuid = capData.getUUID("uuid");
             if (TeamUtils.hasOwner(block.getLevel(), uuid)) {
                 if (cover) {
