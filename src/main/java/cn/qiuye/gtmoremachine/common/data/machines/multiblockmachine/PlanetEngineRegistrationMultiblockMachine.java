@@ -1,6 +1,6 @@
 package cn.qiuye.gtmoremachine.common.data.machines.multiblockmachine;
 
-import cn.qiuye.gtmoremachine.common.data.machines.multiblock.xxfdj.xxfdj;
+import cn.qiuye.gtmoremachine.common.data.machines.multiblock.planetaryengine.PlanetaryEngineMultiblock;
 import cn.qiuye.gtmoremachine.utils.GetRegistries;
 
 import com.gregtechceu.gtceu.GTCEu;
@@ -20,11 +20,12 @@ import static com.gregtechceu.gtceu.common.data.GTBlocks.HIGH_POWER_CASING;
 
 public class PlanetEngineRegistrationMultiblockMachine {
 
-    public static final MultiblockMachineDefinition XXFDJ = GTMMREGISTRATE.multiblock("xxfdj", WorkableElectricMultiblockMachine::new)
+    public static final MultiblockMachineDefinition PlanetaryEngine = GTMMREGISTRATE.multiblock("planetaryengine", WorkableElectricMultiblockMachine::new)
+            .langValue("§cPlanetary Engine")
             .rotationState(RotationState.NON_Y_AXIS)
             .recipeTypes(GTRecipeTypes.ALLOY_SMELTER_RECIPES)
             .appearanceBlock(HIGH_POWER_CASING)
-            .pattern(definition -> xxfdj.PATTERN
+            .pattern(definition -> PlanetaryEngineMultiblock.PATTERN
                     .where('~', controller(blocks(definition.getBlock())))
                     .where(' ', any())
                     .where('A', blocks(Blocks.PRISMARINE)
