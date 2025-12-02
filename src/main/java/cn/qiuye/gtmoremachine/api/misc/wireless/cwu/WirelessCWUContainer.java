@@ -7,7 +7,6 @@ import cn.qiuye.gtmoremachine.utils.TeamUtils;
 
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 
-import net.minecraft.core.GlobalPos;
 import net.minecraft.server.MinecraftServer;
 
 import lombok.Getter;
@@ -31,9 +30,7 @@ public class WirelessCWUContainer {
 
     private BigInteger storage;
 
-    private GlobalPos bindPos;
-
-    private final UUID uuid;
+    private final UUID UUID;
 
     private final TimeStat allCWUStat;
 
@@ -41,17 +38,16 @@ public class WirelessCWUContainer {
 
     private final TimeStat outCWUStat;
 
-    public WirelessCWUContainer(UUID uuid, BigInteger storage, GlobalPos bindPos) {
+    public WirelessCWUContainer(UUID uuid, BigInteger storage) {
         this.storage = storage;
-        this.bindPos = bindPos;
-        this.uuid = uuid;
+        this.UUID = uuid;
         this.allCWUStat = new TimeStat(0);
         this.inCWUStat = new TimeStat(0);
         this.outCWUStat = new TimeStat(0);
     }
 
     private WirelessCWUContainer(UUID uuid) {
-        this.uuid = uuid;
+        this.UUID = uuid;
         this.storage = BigInteger.ZERO;
         int currentTick = server.getTickCount();
         this.allCWUStat = new TimeStat(currentTick);
@@ -66,21 +62,21 @@ public class WirelessCWUContainer {
             inCWUStat.update(BigInteger.valueOf(cwu), server.getTickCount());
         }
         if (observed && machine != null) {
-            TRANSFER_DATA.put(machine, new BasicTransferData(uuid, cwu, machine));
+            TRANSFER_DATA.put(machine, new BasicTransferData(UUID, cwu, machine));
         }
         storage = new BigInteger(String.valueOf(inCWUStat.getAvg())).add(new BigInteger(String.valueOf(outCWUStat.getAvg())));
         WirelessCWUSavaedData.INSTANCE.setDirty(true);
     }
 
     public int download(int cwu, @Nullable MetaMachine machine) {
-        int change = Math.min(BigIntegerUtils.getIntValue(storage), cwu);
+        int change = Math.min(BigIntegerUtils.getIntValue(storage) / 10, cwu);
         if (change <= 0) return 0;
         if (machine != null) {
             allCWUStat.update(BigInteger.valueOf(change).negate(), server.getTickCount());
             outCWUStat.update(BigInteger.valueOf(change).negate(), server.getTickCount());
         }
         if (observed && machine != null) {
-            TRANSFER_DATA.put(machine, new BasicTransferData(uuid, -cwu, machine));
+            TRANSFER_DATA.put(machine, new BasicTransferData(UUID, -cwu, machine));
         }
         storage = new BigInteger(String.valueOf(inCWUStat.getAvg())).add(new BigInteger(String.valueOf(outCWUStat.getAvg())));
         WirelessCWUSavaedData.INSTANCE.setDirty(true);
@@ -92,8 +88,7 @@ public class WirelessCWUContainer {
         WirelessCWUSavaedData.INSTANCE.setDirty(true);
     }
 
-    public void setBindPos(GlobalPos bindPos) {
-        this.bindPos = bindPos;
-        WirelessCWUSavaedData.INSTANCE.setDirty(true);
+    public int getfreeCWU() {
+        return BigIntegerUtils.getIntValue(storage) / 10;
     }
 }

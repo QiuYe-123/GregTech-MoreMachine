@@ -89,19 +89,19 @@ public class GTMMItems {
             .onRegister(attach(new AdvancedTerminalBehavior()))
             .register();
 
-    public static ItemEntry<ComponentItem> WIRELESS_ENERGY_BINDING_TOOL = GTMMREGISTRATE
-            .item("wireless_energy_binding_tool", ComponentItem::create)
-            .lang("Wireless Energy Binding Tool")
-            .properties(p -> p.stacksTo(1))
-            .onRegister(attach(new WirelessEnergyBindingToolBehavior()))
-            .register();
-
     public static ItemEntry<ComponentItem> WIRELESS_ENERGY_TERMINAL = GTMMREGISTRATE
             .item("wireless_energy_terminal", ComponentItem::create)
             .lang("Wireless Energy Terminal")
             .properties(p -> p.stacksTo(1))
             .onRegister(attach(new WirelessEnergyTerminalBehavior()))
             .onRegister(attach(new WirelessEnergyBindingToolBehavior())).register();
+
+    public static ItemEntry<ComponentItem> WIRELESS_ENERGY_BINDING_TOOL = GTMMREGISTRATE
+            .item("wireless_energy_binding_tool", ComponentItem::create)
+            .lang("Wireless Energy Binding Tool")
+            .properties(p -> p.stacksTo(1))
+            .onRegister(attach(new WirelessEnergyBindingToolBehavior()))
+            .register();
 
     public static ItemEntry<ComponentItem> WIRELESS_ENERGY_RECEIVE_COVER_LV = registerTieredCover(GTValues.LV, 1);
     public static ItemEntry<ComponentItem> WIRELESS_ENERGY_RECEIVE_COVER_MV = registerTieredCover(GTValues.MV, 1);

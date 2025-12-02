@@ -2,6 +2,7 @@ package cn.qiuye.gtmoremachine.client.forge;
 
 import cn.qiuye.gtmoremachine.GTmm;
 import cn.qiuye.gtmoremachine.common.item.WirelessEnergyTerminalBehavior;
+import cn.qiuye.gtmoremachine.common.machine.electric.WirelessCWUMonitor;
 import cn.qiuye.gtmoremachine.common.machine.electric.WirelessEnergyMonitor;
 
 import com.gregtechceu.gtceu.api.GTValues;
@@ -43,7 +44,7 @@ public class ForgeClientEventHandler {
                 Camera camera = event.getCamera();
                 BlockPos pose = WirelessEnergyMonitor.pPos;
                 if (pose == null) return;
-                highlightBlock(camera, poseStack, pose, pose);
+                highlightBlock(RGBAColor.RED, camera, poseStack, pose, pose);
             }
 
             if (WirelessEnergyTerminalBehavior.p > 0) {
@@ -54,12 +55,23 @@ public class ForgeClientEventHandler {
                 Camera camera = event.getCamera();
                 BlockPos pose = WirelessEnergyMonitor.pPos;
                 if (pose == null) return;
-                highlightBlock(camera, poseStack, pose, pose);
+                highlightBlock(RGBAColor.RED, camera, poseStack, pose, pose);
+            }
+
+            if (WirelessCWUMonitor.p > 0) {
+                if (GTValues.CLIENT_TIME % 20 == 0) {
+                    WirelessCWUMonitor.p--;
+                }
+                PoseStack poseStack = event.getPoseStack();
+                Camera camera = event.getCamera();
+                BlockPos pose = WirelessCWUMonitor.pPos;
+                if (pose == null) return;
+                highlightBlock(RGBAColor.ORANGE, camera, poseStack, pose, pose);
             }
         }
     }
 
-    private static void highlightBlock(Camera camera, PoseStack poseStack, BlockPos... poses) {
+    private static void highlightBlock(RGBAColor color, Camera camera, PoseStack poseStack, BlockPos... poses) {
         Vec3 pos = camera.getPosition();
         poseStack.pushPose();
         poseStack.translate(-pos.x, -pos.y, -pos.z);
@@ -71,12 +83,12 @@ public class ForgeClientEventHandler {
         BufferBuilder buffer = tesselator.getBuilder();
         buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
         RenderSystem.setShader(GameRenderer::getPositionColorShader);
-        RenderBufferUtils.renderCubeFace(poseStack, buffer, poses[0].getX(), poses[0].getY(), poses[0].getZ(), poses[1].getX() + 1, poses[1].getY() + 1, poses[1].getZ() + 1, 0.2f, 0.2f, 1.0f, 0.25f, true);
+        RenderBufferUtils.renderCubeFace(poseStack, buffer, poses[0].getX(), poses[0].getY(), poses[0].getZ(), poses[1].getX() + 1, poses[1].getY() + 1, poses[1].getZ() + 1, color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha(), true);
         tesselator.end();
         buffer.begin(VertexFormat.Mode.LINES, DefaultVertexFormat.POSITION_COLOR_NORMAL);
         RenderSystem.setShader(GameRenderer::getRendertypeLinesShader);
         RenderSystem.lineWidth(3);
-        RenderBufferUtils.drawCubeFrame(poseStack, buffer, poses[0].getX(), poses[0].getY(), poses[0].getZ(), poses[1].getX() + 1, poses[1].getY() + 1, poses[1].getZ() + 1, 0.0f, 0.0f, 1.0f, 0.5f);
+        RenderBufferUtils.drawCubeFrame(poseStack, buffer, poses[0].getX(), poses[0].getY(), poses[0].getZ(), poses[1].getX() + 1, poses[1].getY() + 1, poses[1].getZ() + 1, color.getFramered(), color.getFramegreen(), color.getFrameblue(), color.getFramealpha());
         tesselator.end();
         RenderSystem.enableCull();
         RenderSystem.disableBlend();

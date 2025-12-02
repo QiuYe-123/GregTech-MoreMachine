@@ -25,4 +25,12 @@ object BigIntegerUtils {
         }
         return bigInt.toInt()
     }
+
+    @JvmStatic
+    fun getStringValue(bigInt: BigInteger): String {
+        if (bigInt > BigInteger.ZERO) {
+            return bigInt.toString()
+        }
+        return BigInteger.ZERO.toString()
+    }
 }
