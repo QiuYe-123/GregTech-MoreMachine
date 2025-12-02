@@ -2,6 +2,7 @@ package cn.qiuye.gtmoremachine.client.forge;
 
 import cn.qiuye.gtmoremachine.GTmm;
 import cn.qiuye.gtmoremachine.common.item.WirelessEnergyTerminalBehavior;
+import cn.qiuye.gtmoremachine.common.machine.electric.WirelessCWUMonitor;
 import cn.qiuye.gtmoremachine.common.machine.electric.WirelessEnergyMonitor;
 
 import com.gregtechceu.gtceu.api.GTValues;
@@ -53,6 +54,17 @@ public class ForgeClientEventHandler {
                 PoseStack poseStack = event.getPoseStack();
                 Camera camera = event.getCamera();
                 BlockPos pose = WirelessEnergyMonitor.pPos;
+                if (pose == null) return;
+                highlightBlock(camera, poseStack, pose, pose);
+            }
+
+            if (WirelessCWUMonitor.p > 0) {
+                if (GTValues.CLIENT_TIME % 20 == 0) {
+                    WirelessCWUMonitor.p--;
+                }
+                PoseStack poseStack = event.getPoseStack();
+                Camera camera = event.getCamera();
+                BlockPos pose = WirelessCWUMonitor.pPos;
                 if (pose == null) return;
                 highlightBlock(camera, poseStack, pose, pose);
             }
