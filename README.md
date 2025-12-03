@@ -6,6 +6,6 @@
     <a href="https://discord.gg/VjH6qkt8rh"><img src="https://img.shields.io/discord/1440028239731888128?color=5464ec&label=Discord&style=for-the-badge" alt="Discord"></a>
     <br>
     <a href="https://www.curseforge.com/minecraft/mc-mods/gtmoremachine"><img src="https://cf.way2muchnoise.eu/1397216.svg?badge_style=for_the_badge" alt="CurseForge"></a>
-    <a href="https://modrinth.com/mod/GTMoreMachine"><img src="https://img.shields.io/modrinth/dt/GTMoreMachine?logo=modrinth&label=&suffix=%20&style=for-the-badge&color=2d2d2d&labelColor=5ca424&logoColor=1c1c1c" alt="Modrinth"></a>
+    <a href="https://modrinth.com/mod/gtmoremachine"><img src="https://img.shields.io/modrinth/dt/gtmoremachine?logo=modrinth&label=&suffix=%20&style=for-the-badge&color=2d2d2d&labelColor=5ca424&logoColor=1c1c1c" alt="Modrinth"></a>
     <a href="https://github.com/QiuYe-123/GTMoreMachine/releases"><img src="https://img.shields.io/github/downloads/QiuYe-123/GTMoreMachine/total?sort=semver&logo=github&label=&style=for-the-badge&color=2d2d2d&labelColor=545454&logoColor=FFFFFF" alt="GitHub"></a>
 </h1>
