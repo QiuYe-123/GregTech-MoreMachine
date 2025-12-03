@@ -13,6 +13,7 @@ import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.material.Fluids;
 
 import static cn.qiuye.gtmoremachine.common.registry.GTMMRegistration.GTMMREGISTRATE;
 import static com.gregtechceu.gtceu.api.pattern.Predicates.*;
@@ -51,7 +52,7 @@ public class PlanetEngineRegistrationMultiblockMachine {
                     .where('Q', blocks(GetRegistries.getBlock("gtlcore:hsss_reinforced_borosilicate_glass")))
                     .where('R', blocks(GetRegistries.getBlock("gtlcore:improved_superconductor_coil")))
                     .where('S', blocks(Blocks.IRON_BARS))
-                    .where('T', blocks(Blocks.LAVA))
+                    .where('T', fluids(Fluids.LAVA))
                     .where('U', blocks(GetRegistries.getBlock("gtlcore:hyper_core")))
                     .where('V', blocks(GTBlocks.CASING_TEMPERED_GLASS.get()))
                     .where('W', blocks(GetRegistries.getBlock("gtlcore:enhance_hyper_mechanical_casing")))
