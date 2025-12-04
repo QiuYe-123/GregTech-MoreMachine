@@ -24,7 +24,7 @@ import snownee.jade.api.config.IPluginConfig;
 public class WirelessOpticalComputationHatchProvider extends CapabilityBlockProvider<IGTMMJadeIF> {
 
     public WirelessOpticalComputationHatchProvider() {
-        super(ResourceLocation.tryBuild(GTmm.MOD_ID, FormattingUtil.toLowerCaseUnderscore("wireless_energy_hatch_provider")));
+        super(ResourceLocation.tryBuild(GTmm.MOD_ID, FormattingUtil.toLowerCaseUnderscore("wireless_optical_computation_hatch_provider")));
     }
 
     @Override
@@ -49,7 +49,7 @@ public class WirelessOpticalComputationHatchProvider extends CapabilityBlockProv
         if (!capData.getBoolean("isGTMMJadeIF")) return;
         if (capData.getBoolean("isBinded")) {
             if (capData.getBoolean("isTransmitter")) {
-                tooltip.add(Component.translatable("gtmoremachine.transmitter_hatch.bind", capData.getString("pos")));
+                tooltip.add(Component.translatable("gtmoremachine.machine.transmitter_hatch.bind", capData.getString("pos")));
             } else {
                 tooltip.add(Component.translatable("gtmoremachine.machine.receiver_hatch.bind", capData.getString("pos")));
             }

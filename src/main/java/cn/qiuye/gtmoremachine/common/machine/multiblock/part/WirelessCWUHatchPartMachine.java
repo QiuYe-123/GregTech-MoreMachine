@@ -1,6 +1,6 @@
 package cn.qiuye.gtmoremachine.common.machine.multiblock.part;
 
-import cn.qiuye.gtmoremachine.api.capability.IBindable;
+import cn.qiuye.gtmoremachine.api.capability.cwu.ICWUBindable;
 import cn.qiuye.gtmoremachine.common.block.machine.trait.WirelessNotifiableCWUContainer;
 import cn.qiuye.gtmoremachine.utils.TeamUtils;
 
@@ -30,7 +30,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
-public class WirelessCWUHatchPartMachine extends MultiblockPartMachine implements IInteractedMachine, IBindable {
+public class WirelessCWUHatchPartMachine extends MultiblockPartMachine implements IInteractedMachine, ICWUBindable {
 
     @Getter
     private WirelessNotifiableCWUContainer trait;

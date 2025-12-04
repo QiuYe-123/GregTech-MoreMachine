@@ -38,7 +38,7 @@ public interface IWirelessMonitor extends IWirelessEnergyContainerHolder {
                 Component.literal(NumberUtils.formatBigIntegerNumberOrSic(energyTotal, format)).withStyle(ChatFormatting.GOLD),
                 Component.literal(NumberUtils.formatBigDecimalNumberOrSic(FormattingUtil.voltageAmperage(new BigDecimal(energyTotal)), format)),
                 FormattingUtil.voltageName(new BigDecimal(energyTotal))));
-        if (GTMMConfig.INSTANCE.isWirelessRateEnable) {
+        if (GTMMConfig.getINSTANCE().isWirelessRateEnable) {
             long rate = container.getRate();
             textListCache.add(FormattingUtil.formatWithConstantWidth("gtmoremachine.machine.wireless_energy_monitor.tooltip.2",
                     Component.literal(NumberUtils.formatBigIntegerNumberOrSic(BigInteger.valueOf(rate), format)),
@@ -89,7 +89,7 @@ public interface IWirelessMonitor extends IWirelessEnergyContainerHolder {
                     getTimeToFillDrainText(energyTotal.divide(multiply))).withStyle(ChatFormatting.GRAY));
         }
 
-        if (GTMMConfig.INSTANCE.isWirelessRateEnable && container.getBindPos() != null) {
+        if (GTMMConfig.getINSTANCE().isWirelessRateEnable && container.getBindPos() != null) {
             String pos = container.getBindPos().pos().toShortString();
             textListCache.add(Component.translatable("gtmoremachine.machine.wireless_energy_hatch.tooltip.2",
                     Component.translatable("recipe.condition.dimension.tooltip", container.getBindPos().dimension().location().toString()).append(" [").append(pos).append("] ")).withStyle(ChatFormatting.GRAY));

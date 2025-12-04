@@ -1,16 +1,22 @@
-package cn.qiuye.gtmoremachine.data.recipes;
+package cn.qiuye.gtmoremachine.data.recipes
 
-import cn.qiuye.gtmoremachine.data.recipes.misc.AssemblerRecipe;
-import cn.qiuye.gtmoremachine.data.recipes.misc.VanillaRecipe;
+import cn.qiuye.gtmoremachine.GTmm
+import cn.qiuye.gtmoremachine.data.recipes.misc.AE2AssemblerRecipe
+import cn.qiuye.gtmoremachine.data.recipes.misc.AssemblerRecipe
+import cn.qiuye.gtmoremachine.data.recipes.misc.VanillaRecipe
 
-import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.FinishedRecipe
 
-import java.util.function.Consumer;
+import java.util.function.Consumer
 
-public class GTMMRecipes {
+object GTMMRecipes {
 
-    public static void init(Consumer<FinishedRecipe> provider) {
-        VanillaRecipe.init(provider);
-        AssemblerRecipe.init(provider);
+    @JvmStatic
+    fun init(provider: Consumer<FinishedRecipe>) {
+        if (GTmm.Mods.isAE2Loaded()) {
+            AE2AssemblerRecipe.init(provider)
+        }
+        AssemblerRecipe.init(provider)
+        VanillaRecipe.init(provider)
     }
 }

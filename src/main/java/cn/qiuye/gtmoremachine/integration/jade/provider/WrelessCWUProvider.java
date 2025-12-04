@@ -31,7 +31,7 @@ import java.util.UUID;
 public class WrelessCWUProvider extends CapabilityBlockProvider<WirelessCWUHatchPartMachine> {
 
     public WrelessCWUProvider() {
-        super(ResourceLocation.tryBuild(GTmm.MOD_ID, FormattingUtil.toLowerCaseUnderscore("wireless_energy_hatch_provider")));
+        super(ResourceLocation.tryBuild(GTmm.MOD_ID, FormattingUtil.toLowerCaseUnderscore("wireless_cwu_provider")));
     }
 
     @Override
@@ -62,11 +62,11 @@ public class WrelessCWUProvider extends CapabilityBlockProvider<WirelessCWUHatch
             UUID uuid = capData.getUUID("UUID");
             if (TeamUtils.hasOwner(block.getLevel(), uuid)) {
                 tooltip.add(Component.translatable("gtmoremachine.machine.wireless_energy_hatch.tooltip.2", TeamUtils.getName(block.getLevel(), uuid)));
-                tooltip.add(Component.translatable("gtmoremachine.machine.wireless_cwu_monitor.tooltip.1",
+                tooltip.add(Component.translatable("config.jade.plugin_gtmoremachine.wireless_cwu_hatch_provider.tooltip.1",
                         Component.literal(NumberUtils.formatBigDecimalNumberOrSic(cwu)).withStyle(ChatFormatting.GOLD)));
             } else {
                 tooltip.add(Component.translatable("gtmoremachine.machine.wireless_energy_hatch.tooltip.3", uuid));
-                tooltip.add(Component.translatable("gtmoremachine.machine.wireless_cwu_monitor.tooltip.1",
+                tooltip.add(Component.translatable("config.jade.plugin_gtmoremachine.wireless_cwu_hatch_provider.tooltip.1",
                         Component.literal(NumberUtils.formatBigDecimalNumberOrSic(cwu)).withStyle(ChatFormatting.GOLD)));
             }
         }

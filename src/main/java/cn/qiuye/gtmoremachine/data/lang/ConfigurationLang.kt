@@ -1,33 +1,32 @@
-package cn.qiuye.gtmoremachine.data.lang;
+package cn.qiuye.gtmoremachine.data.lang
 
-import cn.qiuye.gtmoremachine.GTmm;
-import cn.qiuye.gtmoremachine.config.GTMMConfig;
+import cn.qiuye.gtmoremachine.GTmm
+import cn.qiuye.gtmoremachine.config.GTMMConfig
 
-import com.tterrag.registrate.providers.RegistrateLangProvider;
-import dev.toma.configuration.Configuration;
-import dev.toma.configuration.config.format.ConfigFormats;
-import dev.toma.configuration.config.value.ConfigValue;
-import dev.toma.configuration.config.value.ObjectValue;
+import com.tterrag.registrate.providers.RegistrateLangProvider
+import dev.toma.configuration.Configuration
+import dev.toma.configuration.config.format.ConfigFormats
+import dev.toma.configuration.config.value.ConfigValue
+import dev.toma.configuration.config.value.ObjectValue
 
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+object ConfigurationLang {
 
-public class ConfigurationLang {
-
-    public static void init(RegistrateLangProvider provider) {
-        dfs(provider, new HashSet<>(),
-                Configuration.registerConfig(GTMMConfig.class, ConfigFormats.YAML).getValueMap());
+    fun init(provider: RegistrateLangProvider) {
+        dfs(
+            provider,
+            mutableSetOf(),
+            Configuration.registerConfig(GTMMConfig::class.java, ConfigFormats.YAML).valueMap,
+        )
     }
 
-    private static void dfs(RegistrateLangProvider provider, Set<String> added, Map<String, ConfigValue<?>> map) {
-        for (var entry : map.entrySet()) {
-            var id = entry.getValue().getId();
+    private fun dfs(provider: RegistrateLangProvider, added: MutableSet<String>, map: Map<String, ConfigValue<*>>) {
+        map.forEach { (_, value) ->
+            val id = value.id
             if (added.add(id)) {
-                provider.add(String.format("config.%s.option.%s", GTmm.MOD_ID, id), id);
+                provider.add("config.${GTmm.MOD_ID}.option.$id", id)
             }
-            if (entry.getValue() instanceof ObjectValue objectValue) {
-                dfs(provider, added, objectValue.get());
+            if (value is ObjectValue) {
+                dfs(provider, added, value.get())
             }
         }
     }

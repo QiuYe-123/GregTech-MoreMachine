@@ -65,7 +65,7 @@ public class WirelessEnergyContainer {
 
     public long addEnergy(long energy, @Nullable MetaMachine machine) {
         long change = energy;
-        if (GTMMConfig.INSTANCE.isWirelessRateEnable) change = Math.min(rate, energy);
+        if (GTMMConfig.getINSTANCE().isWirelessRateEnable) change = Math.min(rate, energy);
         if (change <= 0) return 0;
         storage = storage.add(BigInteger.valueOf(change));
         WirelessEnergySavaedData.INSTANCE.setDirty(true);
@@ -81,7 +81,7 @@ public class WirelessEnergyContainer {
 
     public long removeEnergy(long energy, @Nullable MetaMachine machine) {
         long change = Math.min(BigIntegerUtils.getLongValue(storage), energy);
-        if (GTMMConfig.INSTANCE.isWirelessRateEnable) change = Math.min(BigIntegerUtils.getLongValue(storage), Math.min(rate, energy));
+        if (GTMMConfig.getINSTANCE().isWirelessRateEnable) change = Math.min(BigIntegerUtils.getLongValue(storage), Math.min(rate, energy));
         if (change <= 0) return 0;
         storage = storage.subtract(BigInteger.valueOf(change));
         WirelessEnergySavaedData.INSTANCE.setDirty(true);

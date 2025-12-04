@@ -1,11 +1,11 @@
 package cn.qiuye.gtmoremachine.api.machine;
 
-import cn.qiuye.gtmoremachine.api.capability.IBindable;
+import cn.qiuye.gtmoremachine.api.capability.cwu.ICWUBindable;
 import cn.qiuye.gtmoremachine.api.misc.wireless.cwu.WirelessCWUContainer;
 
 import javax.annotation.Nullable;
 
-public interface IWirelessCWUContainerHolder extends IBindable {
+public interface IWirelessCWUContainerHolder extends ICWUBindable {
 
     void setWirelessCWUContainerCache(WirelessCWUContainer container);
 

@@ -30,7 +30,7 @@ import java.util.UUID;
 public class WirelessEnergyHatchProvider extends CapabilityBlockProvider<IWirelessEnergyContainerHolder> {
 
     public WirelessEnergyHatchProvider() {
-        super(ResourceLocation.tryBuild(GTmm.MOD_ID, FormattingUtil.toLowerCaseUnderscore("wireless_energy_hatch_provider")));
+        super(ResourceLocation.tryBuild(GTmm.MOD_ID, FormattingUtil.toLowerCaseUnderscore("wireless_energy_provider")));
     }
 
     @Override
@@ -54,7 +54,7 @@ public class WirelessEnergyHatchProvider extends CapabilityBlockProvider<IWirele
     @Override
     protected void write(CompoundTag data, IWirelessEnergyContainerHolder capability) {
         if (capability.getUUID() != null) {
-            data.putBoolean("isBindable", true);
+            data.putBoolean("isEnergyBindable", true);
             data.putUUID("uuid", capability.getUUID());
             data.putBoolean("cover", capability.cover());
             data.putString("energy", capability.getWirelessEnergyContainer().getStorage().toString());
@@ -63,7 +63,7 @@ public class WirelessEnergyHatchProvider extends CapabilityBlockProvider<IWirele
 
     @Override
     protected void addTooltip(CompoundTag capData, ITooltip tooltip, Player player, BlockAccessor block, BlockEntity blockEntity, IPluginConfig config) {
-        if (!capData.getBoolean("isBindable")) return;
+        if (!capData.getBoolean("isEnergyBindable")) return;
         boolean cover = capData.getBoolean("cover");
         if (!capData.hasUUID("uuid")) {
             if (cover) {

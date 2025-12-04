@@ -14,6 +14,7 @@ import net.minecraft.data.recipes.FinishedRecipe;
 
 import java.util.function.Consumer;
 
+@SuppressWarnings("unused")
 @GTAddon
 public class GTMMGTAddon implements IGTAddon {
 

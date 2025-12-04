@@ -35,7 +35,7 @@ public class CommonProxy {
 
     private static void init() {
         GTmm.LOGGER.info("GTMoreMachine common proxy init!");
-        GTMMConfig.init();
+        GTMMConfig.Companion.init();
     }
 
     private static void commonSetup(FMLCommonSetupEvent event) {}
