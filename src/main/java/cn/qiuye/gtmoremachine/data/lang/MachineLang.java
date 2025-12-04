@@ -19,6 +19,10 @@ public class MachineLang {
         provider.add("gui.gtmoremachine.me_export_buffer.item_status.full", "Item storage space is full.");
         provider.add("gui.gtmoremachine.me_export_buffer.fluid_status.full", "Fluid storage space is full.");
         provider.add("gtmoremachine.machine.wireless_monitor.tooltip.0", "Owner: %s");
+        provider.add("gtmoremachine.machine.wireless_monitor.tooltip.net_power", "Average Net Power: %s");
+        provider.add("gtmoremachine.machine.wireless_monitor.tooltip.net_cwu", "Average Net CWU: %s");
+        provider.add("gtmoremachine.machine.wireless_monitor.tooltip.statistics.energy", "Electricity Statistics：%s     Display Format：%s    Power status：%s");
+        provider.add("gtmoremachine.machine.wireless_monitor.tooltip.statistics.cwu", "CWU Statistics：%s     Display Format：%s    CWU status：%s");
         provider.add("gtmoremachine.machine.wireless_energy_hatch.tooltip.bind", "Bind to: %s");
         provider.add("gtmoremachine.machine.wireless_energy_hatch.tooltip.unbind", "Unbind!");
         provider.add("gtmoremachine.machine.wireless_energy_hatch.tooltip.1", "No owner.");
@@ -27,13 +31,11 @@ public class MachineLang {
         provider.add("gtmoremachine.machine.wireless_energy_monitor.tooltip", "You can monitor the total energy and useage.");
         provider.add("gtmoremachine.machine.wireless_energy_monitor.tooltip.1", "Total Energy: %s EU (%s A %s§r)");
         provider.add("gtmoremachine.machine.wireless_energy_monitor.tooltip.2", "Single Transfer Limit：%s EU/t (%s A %s§r)");
-        provider.add("gtmoremachine.machine.wireless_energy_monitor.tooltip.net_power", "Average Net Power: ");
         provider.add("gtmoremachine.machine.wireless_energy_monitor.tooltip.last_minute", "Last minute: §a%s EU/t (%s A %s§r)");
         provider.add("gtmoremachine.machine.wireless_energy_monitor.tooltip.last_hour", "Last hour: §a%s EU/t (%s A %s§r)");
         provider.add("gtmoremachine.machine.wireless_energy_monitor.tooltip.last_day", "Last day: §a%s EU/t (%s A %s§r)");
         provider.add("gtmoremachine.machine.wireless_energy_monitor.tooltip.now", "Now: §a%s EU/t (%sA %s§r)");
         provider.add("gtmoremachine.machine.wireless_energy_monitor.tooltip.time_to_fill", "You will never be satisfied with this for the rest of your life");
-        provider.add("gtmoremachine.machine.wireless_energy_monitor.tooltip.statistics", "Electricity Statistics：%s     Display Format：%s    Power status：%s");
         provider.add("gtmoremachine.machine.wireless_energy_monitor.tooltip.all", "Global");
         provider.add("gtmoremachine.machine.wireless_energy_monitor.tooltip.team", "Team");
         provider.add("gtmoremachine.machine.wireless_energy_monitor.tooltip.science", "Science");
@@ -41,6 +43,11 @@ public class MachineLang {
         provider.add("gtmoremachine.machine.wireless_energy_monitor.tooltip.power_all", "ALL");
         provider.add("gtmoremachine.machine.wireless_energy_monitor.tooltip.power_in", "IN");
         provider.add("gtmoremachine.machine.wireless_energy_monitor.tooltip.power_out", "OUT");
+        provider.add("gtmoremachine.machine.wireless_cwu_monitor.tooltip.1", "Total CWU: %s CWU");
+        provider.add("gtmoremachine.machine.wireless_cwu_monitor.tooltip.last_minute", "Last minute: %s CWU");
+        provider.add("gtmoremachine.machine.wireless_cwu_monitor.tooltip.last_hour", "Last hour: %s CWU");
+        provider.add("gtmoremachine.machine.wireless_cwu_monitor.tooltip.last_day", "Last day: %s CWU");
+        provider.add("gtmoremachine.machine.wireless_cwu_monitor.tooltip.now", "Now: %s CWU");
         provider.add("gtmoremachine.machine.wireless_energy_interface.tooltip", "Receives energy and sends it to the power network");
         provider.add("gtmoremachine.machine.wireless_energy_cover.tooltip.1", "The Wireless Energy Reciver unbind!");
         provider.add("gtmoremachine.machine.wireless_energy_cover.tooltip.2", "The Wireless Energy Reciver bind to: %s");

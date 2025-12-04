@@ -46,8 +46,16 @@ public interface IWirelessMonitor extends IWirelessEnergyContainerHolder {
                     Component.literal(GTValues.VNF[GTUtil.getFloorTierByVoltage(rate)])).withStyle(ChatFormatting.GRAY));
         }
 
-        var stat = container.getEnergyStat();
-        textListCache.add(Component.translatable("gtmoremachine.machine.wireless_energy_monitor.tooltip.net_power"));
+        var allstat = container.getAllEnergyStat();
+        var instat = container.getInEnergyStat();
+        var outstat = container.getOutEnergyStat();
+        var stat = switch (powerStatus) {
+            case All -> allstat;
+            case In -> instat;
+            case Out -> outstat;
+        };
+        textListCache.add(Component.translatable("gtmoremachine.machine.wireless_monitor.tooltip.net_power",
+                getPowerStatusText(powerStatus)));
 
         BigDecimal avgMinute = stat.getMinuteAvg();
         textListCache.add(FormattingUtil.formatWithConstantWidth("gtmoremachine.machine.wireless_energy_monitor.tooltip.last_minute",
@@ -86,7 +94,7 @@ public interface IWirelessMonitor extends IWirelessEnergyContainerHolder {
             textListCache.add(Component.translatable("gtmoremachine.machine.wireless_energy_hatch.tooltip.2",
                     Component.translatable("recipe.condition.dimension.tooltip", container.getBindPos().dimension().location().toString()).append(" [").append(pos).append("] ")).withStyle(ChatFormatting.GRAY));
         }
-        textListCache.add(Component.translatable("gtmoremachine.machine.wireless_energy_monitor.tooltip.statistics",
+        textListCache.add(Component.translatable("gtmoremachine.machine.wireless_monitor.tooltip.statistics.energy",
                 ComponentPanelWidget.withButton(getStatisticsText(statistics), "statistics", getStaticsclolor(statistics)),
                 ComponentPanelWidget.withButton(getFormatText(format), "format", getFormatclolor(format)),
                 ComponentPanelWidget.withButton(getPowerStatusText(powerStatus), "powerStatus", getPowerStatusclolor(powerStatus))));

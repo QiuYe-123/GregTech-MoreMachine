@@ -38,21 +38,29 @@ public class WirelessEnergyContainer {
 
     private final UUID uuid;
 
-    private final TimeStat energyStat;
+    private final TimeStat allEnergyStat;
+
+    private final TimeStat inEnergyStat;
+
+    private final TimeStat outEnergyStat;
 
     public WirelessEnergyContainer(UUID uuid, BigInteger storage, long rate, GlobalPos bindPos) {
         this.storage = storage;
         this.rate = rate;
         this.bindPos = bindPos;
         this.uuid = uuid;
-        this.energyStat = new TimeStat(0);
+        this.allEnergyStat = new TimeStat(0);
+        this.inEnergyStat = new TimeStat(0);
+        this.outEnergyStat = new TimeStat(0);
     }
 
     private WirelessEnergyContainer(UUID uuid) {
         this.uuid = uuid;
         this.storage = BigInteger.ZERO;
         int currentTick = server.getTickCount();
-        this.energyStat = new TimeStat(currentTick);
+        this.allEnergyStat = new TimeStat(currentTick);
+        this.inEnergyStat = new TimeStat(currentTick);
+        this.outEnergyStat = new TimeStat(currentTick);
     }
 
     public long addEnergy(long energy, @Nullable MetaMachine machine) {
@@ -62,7 +70,8 @@ public class WirelessEnergyContainer {
         storage = storage.add(BigInteger.valueOf(change));
         WirelessEnergySavaedData.INSTANCE.setDirty(true);
         if (machine != null) {
-            energyStat.update(BigInteger.valueOf(change), server.getTickCount());
+            allEnergyStat.update(BigInteger.valueOf(change), server.getTickCount());
+            inEnergyStat.update(BigInteger.valueOf(change), server.getTickCount());
         }
         if (observed && machine != null) {
             TRANSFER_DATA.put(machine, new BasicTransferData(uuid, new BigInteger(String.valueOf(change)), machine));
@@ -77,7 +86,8 @@ public class WirelessEnergyContainer {
         storage = storage.subtract(BigInteger.valueOf(change));
         WirelessEnergySavaedData.INSTANCE.setDirty(true);
         if (machine != null) {
-            energyStat.update(BigInteger.valueOf(change).negate(), server.getTickCount());
+            allEnergyStat.update(BigInteger.valueOf(change).negate(), server.getTickCount());
+            outEnergyStat.update(BigInteger.valueOf(change).negate(), server.getTickCount());
         }
         if (observed && machine != null) {
             TRANSFER_DATA.put(machine, new BasicTransferData(uuid, new BigInteger(String.valueOf(-change)), machine));
@@ -90,7 +100,8 @@ public class WirelessEnergyContainer {
         storage = storage.add(change);
         WirelessEnergySavaedData.INSTANCE.setDirty(true);
         if (machine != null) {
-            energyStat.update(change, server.getTickCount());
+            allEnergyStat.update(change, server.getTickCount());
+            inEnergyStat.update(change, server.getTickCount());
         }
         if (observed && machine != null) {
             TRANSFER_DATA.put(machine, new BasicTransferData(uuid, change, machine));
@@ -104,7 +115,8 @@ public class WirelessEnergyContainer {
         storage = storage.subtract(change);
         WirelessEnergySavaedData.INSTANCE.setDirty(true);
         if (machine != null) {
-            energyStat.update(change.negate(), server.getTickCount());
+            allEnergyStat.update(change.negate(), server.getTickCount());
+            outEnergyStat.update(change.negate(), server.getTickCount());
         }
         if (observed && machine != null) {
             TRANSFER_DATA.put(machine, new BasicTransferData(uuid, change.negate(), machine));

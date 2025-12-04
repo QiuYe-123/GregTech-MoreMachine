@@ -40,7 +40,7 @@ public interface IWirelessMonitor extends IWirelessCWUContainerHolder {
             case In -> instat;
             case Out -> outstat;
         };
-        textListCache.add(Component.translatable("gtmoremachine.machine.wireless_cwu_monitor.tooltip.net_power",
+        textListCache.add(Component.translatable("gtmoremachine.machine.wireless_monitor.tooltip.net_cwu",
                 getCWUStatusText(CWUStatus)));
 
         BigDecimal avgMinute = stat.getMinuteAvg();
@@ -57,7 +57,7 @@ public interface IWirelessMonitor extends IWirelessCWUContainerHolder {
         textListCache.add(FormattingUtil.formatWithConstantWidth("gtmoremachine.machine.wireless_cwu_monitor.tooltip.now",
                 Component.literal(NumberUtils.formatBigDecimalNumberOrSic(avgEnergy, format)).withStyle(ChatFormatting.DARK_PURPLE)));
 
-        textListCache.add(Component.translatable("gtmoremachine.machine.wireless_cwu_monitor.tooltip.statistics",
+        textListCache.add(Component.translatable("gtmoremachine.machine.wireless_monitor.tooltip.statistics.cwu",
                 ComponentPanelWidget.withButton(getStatisticsText(statistics), "statistics", getStaticsclolor(statistics)),
                 ComponentPanelWidget.withButton(getFormatText(format), "format", getFormatclolor(format)),
                 ComponentPanelWidget.withButton(getCWUStatusText(CWUStatus), "CWUStatus", getCWUStatusclolor(CWUStatus))));
