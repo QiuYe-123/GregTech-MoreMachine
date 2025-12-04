@@ -38,6 +38,7 @@ object FormattingUtil {
      * @param string the string to check
      * @return if the string has any uppercase characters.
      */
+    @JvmStatic
     fun hasUpperCase(string: String): Boolean {
         for (ch in string) {
             if (ch.isUpperCase()) return true
@@ -60,6 +61,7 @@ object FormattingUtil {
      * <br>`"MARAGING_STEEL_300" -> "maraging_steel_300"`
      * </pre>
      */
+    @JvmStatic
     fun toLowerCaseUnderscore(string: String): String {
         val result = StringBuilder()
         for (i in string.indices) {
@@ -75,6 +77,7 @@ object FormattingUtil {
         return result.toString()
     }
 
+    @JvmStatic
     fun formatWithConstantWidth(labelKey: String, body: Component, vararg appends: Component): MutableComponent {
         val a = arrayOfNulls<Component>(appends.size + 1)
         a[0] = body
@@ -88,6 +91,7 @@ object FormattingUtil {
         return Component.translatable(labelKey, *a)
     }
 
+    @JvmStatic
     fun voltageName(avgEnergy: BigDecimal): Component {
         val floorTier = GTUtil.getFloorTierByVoltage(
             avgEnergy.min(BigDecimal.valueOf(Long.MAX_VALUE)).abs().toLong(),
@@ -95,6 +99,7 @@ object FormattingUtil {
         return Component.literal(GTValues.VNF[floorTier])
     }
 
+    @JvmStatic
     fun voltageAmperage(avgEnergy: BigDecimal): BigDecimal {
         val floorTier = GTUtil.getFloorTierByVoltage(
             avgEnergy.min(BigDecimal.valueOf(Long.MAX_VALUE)).abs().toLong(),
@@ -124,6 +129,7 @@ object FormattingUtil {
         }
         ).toString()
 
+    @JvmStatic
     fun formatJustifyComponent(
         component: FormattedText,
         maxWidth: Int,
