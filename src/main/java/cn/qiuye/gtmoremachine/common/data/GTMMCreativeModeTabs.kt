@@ -1,45 +1,86 @@
-package cn.qiuye.gtmoremachine.common.data;
+package cn.qiuye.gtmoremachine.common.data
 
-import cn.qiuye.gtmoremachine.GTmm;
-import cn.qiuye.gtmoremachine.common.data.machines.CustomMachines;
-import cn.qiuye.gtmoremachine.common.data.machines.WirelessMachines;
+import cn.qiuye.gtmoremachine.GTmm
+import cn.qiuye.gtmoremachine.common.data.machines.CustomMachines
+import cn.qiuye.gtmoremachine.common.data.machines.WirelessMachines
+import cn.qiuye.gtmoremachine.common.registry.GTMMRegistration
 
-import com.gregtechceu.gtceu.api.GTCEuAPI;
-import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.common.data.GTCreativeModeTabs;
-import com.gregtechceu.gtceu.common.data.GTMachines;
+import com.gregtechceu.gtceu.api.GTCEuAPI
+import com.gregtechceu.gtceu.api.GTValues
+import com.gregtechceu.gtceu.common.data.GTCreativeModeTabs
+import com.gregtechceu.gtceu.common.data.GTMachines
 
-import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.CreativeModeTab
 
-import com.tterrag.registrate.util.entry.RegistryEntry;
+import com.tterrag.registrate.util.entry.RegistryEntry
 
-import static cn.qiuye.gtmoremachine.common.registry.GTMMRegistration.GTMMREGISTRATE;
+object GTMMCreativeModeTabs {
+    @JvmField
+    val CREATIVE_TAB: RegistryEntry<CreativeModeTab?> = GTMMRegistration.GTMMREGISTRATE
+        .defaultCreativeTab("creative") { builder: CreativeModeTab.Builder? ->
+            builder!!
+                .displayItems(
+                    GTCreativeModeTabs.RegistrateDisplayItemsGenerator(
+                        "creative",
+                        GTMMRegistration.GTMMREGISTRATE,
+                    ),
+                )
+                .title(GTMMRegistration.GTMMREGISTRATE.addLang("itemGroup", GTmm.id("creative"), "Creative Things"))
+                .icon { GTMachines.CREATIVE_ENERGY.asStack() }
+                .build()
+        }
+        .register()
 
-public class GTMMCreativeModeTabs {
+    @JvmField
+    val WIRELESS_TAB: RegistryEntry<CreativeModeTab?> = GTMMRegistration.GTMMREGISTRATE
+        .defaultCreativeTab("wireless") { builder: CreativeModeTab.Builder? ->
+            builder!!
+                .displayItems(
+                    GTCreativeModeTabs.RegistrateDisplayItemsGenerator(
+                        "wireless",
+                        GTMMRegistration.GTMMREGISTRATE,
+                    ),
+                )
+                .title(GTMMRegistration.GTMMREGISTRATE.addLang("itemGroup", GTmm.id("wireless"), "Gregtech Wireless"))
+                .icon {
+                    WirelessMachines.WIRELESS_ENERGY_INPUT_HATCH[
+                        if (GTCEuAPI.isHighTier()) {
+                            GTValues.MAX
+                        } else {
+                            GTValues.UHV -
+                                1
+                        },
+                    ].asStack()
+                }
+                .build()
+        }
+        .register()
 
-    public static final RegistryEntry<CreativeModeTab> CREATIVE_TAB = GTMMREGISTRATE
-            .defaultCreativeTab("creative", builder -> builder
-                    .displayItems(new GTCreativeModeTabs.RegistrateDisplayItemsGenerator("creative", GTMMREGISTRATE))
-                    .title(GTMMREGISTRATE.addLang("itemGroup", GTmm.id("creative"), "Creative Things"))
-                    .icon(GTMachines.CREATIVE_ENERGY::asStack)
-                    .build())
-            .register();
+    @JvmField
+    val MORE_MACHINES: RegistryEntry<CreativeModeTab?> = GTMMRegistration.GTMMREGISTRATE
+        .defaultCreativeTab("more_machines") { builder: CreativeModeTab.Builder? ->
+            builder!!
+                .displayItems(
+                    GTCreativeModeTabs.RegistrateDisplayItemsGenerator(
+                        "more_machines",
+                        GTMMRegistration.GTMMREGISTRATE,
+                    ),
+                )
+                .title(GTMMRegistration.GTMMREGISTRATE.addLang("itemGroup", GTmm.id("more_machines"), "More Machines"))
+                .icon {
+                    CustomMachines.HUGE_INPUT_DUAL_HATCH[
+                        if (GTCEuAPI.isHighTier()) {
+                            GTValues.MAX
+                        } else {
+                            GTValues.UHV -
+                                1
+                        },
+                    ].asStack()
+                }
+                .build()
+        }
+        .register()
 
-    public static final RegistryEntry<CreativeModeTab> WIRELESS_TAB = GTMMREGISTRATE
-            .defaultCreativeTab("wireless", builder -> builder
-                    .displayItems(new GTCreativeModeTabs.RegistrateDisplayItemsGenerator("wireless", GTMMREGISTRATE))
-                    .title(GTMMREGISTRATE.addLang("itemGroup", GTmm.id("wireless"), "Gregtech Wireless"))
-                    .icon(WirelessMachines.WIRELESS_ENERGY_INPUT_HATCH[GTCEuAPI.isHighTier() ? GTValues.MAX : GTValues.UHV - 1]::asStack)
-                    .build())
-            .register();
-
-    public static final RegistryEntry<CreativeModeTab> MORE_MACHINES = GTMMREGISTRATE
-            .defaultCreativeTab("more_machines", builder -> builder
-                    .displayItems(new GTCreativeModeTabs.RegistrateDisplayItemsGenerator("more_machines", GTMMREGISTRATE))
-                    .title(GTMMREGISTRATE.addLang("itemGroup", GTmm.id("more_machines"), "More Machines"))
-                    .icon(CustomMachines.HUGE_INPUT_DUAL_HATCH[GTCEuAPI.isHighTier() ? GTValues.MAX : GTValues.UHV - 1]::asStack)
-                    .build())
-            .register();
-
-    public static void init() {}
+    @JvmStatic
+    fun init() {}
 }

@@ -8,6 +8,7 @@ import cn.qiuye.gtmoremachine.common.data.machines.CustomMachines;
 import cn.qiuye.gtmoremachine.common.data.machines.WirelessMachines;
 import cn.qiuye.gtmoremachine.common.registry.GTMMRegistration;
 import cn.qiuye.gtmoremachine.config.GTMMConfig;
+import cn.qiuye.gtmoremachine.data.GTMMDatagen;
 
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
@@ -36,6 +37,7 @@ public class CommonProxy {
     private static void init() {
         GTmm.LOGGER.info("GTMoreMachine common proxy init!");
         GTMMConfig.Companion.init();
+        GTMMDatagen.initPost();
     }
 
     private static void commonSetup(FMLCommonSetupEvent event) {}
