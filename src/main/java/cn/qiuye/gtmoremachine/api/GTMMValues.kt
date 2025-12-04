@@ -1,7 +1,6 @@
-package cn.qiuye.gtmoremachine.api;
+package cn.qiuye.gtmoremachine.api
 
-public class GTMMValues {
-
-    public static final String MODID_APPENG = "ae2",
-            MODID_FTB_TEAMS = "ftbteams";
+object GTMMValues {
+    const val MODID_APPENG: String = "ae2"
+    const val MODID_FTB_TEAMS: String = "ftbteams"
 }

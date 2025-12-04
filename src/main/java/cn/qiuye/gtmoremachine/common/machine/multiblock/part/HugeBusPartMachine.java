@@ -46,7 +46,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 
 import lombok.Getter;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -222,7 +221,7 @@ public class HugeBusPartMachine extends TieredIOPartMachine implements IDistinct
         }
     }
 
-    public void exportToNearby(NotifiableItemStackHandler handler, @NotNull Direction... facings) {
+    public void exportToNearby(NotifiableItemStackHandler handler, Direction... facings) {
         if (handler.isEmpty()) return;
         var level = getLevel();
         var pos = getPos();

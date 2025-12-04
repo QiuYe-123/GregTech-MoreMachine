@@ -1,25 +1,24 @@
-package cn.qiuye.gtmoremachine.api.pattern;
+package cn.qiuye.gtmoremachine.api.pattern
 
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
-import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
-import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity
+import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine
+import com.gregtechceu.gtceu.api.registry.GTRegistries
 
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.block.Block;
+import net.minecraft.core.BlockPos
+import net.minecraft.world.level.block.Block
 
-import java.util.HashSet;
-import java.util.Set;
+object Hatch {
 
-public final class Hatch {
-
-    public static final Set<Block> Set = new HashSet<>();
-
-    static {
-        GTRegistries.MACHINES.forEach(d -> {
-            var block = d.getBlock();
-            if (d.createMetaMachine((IMachineBlockEntity) d.getBlockEntityType().create(BlockPos.ZERO, block.defaultBlockState())) instanceof MultiblockPartMachine) {
-                Set.add(block);
+    @JvmStatic
+    val BlockSet: Set<Block> = HashSet<Block>().apply {
+        GTRegistries.MACHINES.forEach { d ->
+            val block = d.block
+            val machine = d.createMetaMachine(
+                d.blockEntityType.create(BlockPos.ZERO, block.defaultBlockState()) as IMachineBlockEntity,
+            )
+            if (machine is MultiblockPartMachine) {
+                add(block)
             }
-        });
+        }
     }
 }
