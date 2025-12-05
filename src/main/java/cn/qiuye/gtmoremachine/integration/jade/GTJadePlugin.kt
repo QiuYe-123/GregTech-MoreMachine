@@ -1,31 +1,33 @@
-package cn.qiuye.gtmoremachine.integration.jade;
+package cn.qiuye.gtmoremachine.integration.jade
 
-import cn.qiuye.gtmoremachine.integration.jade.provider.WirelessEnergyHatchProvider;
-import cn.qiuye.gtmoremachine.integration.jade.provider.WirelessOpticalComputationHatchProvider;
-import cn.qiuye.gtmoremachine.integration.jade.provider.WrelessCWUProvider;
+import cn.qiuye.gtmoremachine.integration.jade.provider.WirelessEnergyProvider
+import cn.qiuye.gtmoremachine.integration.jade.provider.WirelessOpticalComputationHatchProvider
+import cn.qiuye.gtmoremachine.integration.jade.provider.WrelessCWUProvider
 
-import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
-import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
+import com.gregtechceu.gtceu.api.block.MetaMachineBlock
+import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity
 
-import snownee.jade.api.IWailaClientRegistration;
-import snownee.jade.api.IWailaCommonRegistration;
-import snownee.jade.api.IWailaPlugin;
-import snownee.jade.api.WailaPlugin;
+import snownee.jade.api.IWailaClientRegistration
+import snownee.jade.api.IWailaCommonRegistration
+import snownee.jade.api.IWailaPlugin
+import snownee.jade.api.WailaPlugin
 
+@Suppress("unused")
 @WailaPlugin
-public class GTJadePlugin implements IWailaPlugin {
+class GTJadePlugin : IWailaPlugin {
 
-    @Override
-    public void register(IWailaCommonRegistration registration) {
-        registration.registerBlockDataProvider(new WirelessEnergyHatchProvider(), MetaMachineBlockEntity.class);
-        registration.registerBlockDataProvider(new WirelessOpticalComputationHatchProvider(), MetaMachineBlockEntity.class);
-        registration.registerBlockDataProvider(new WrelessCWUProvider(), MetaMachineBlockEntity.class);
+    override fun register(registration: IWailaCommonRegistration) {
+        registration.registerBlockDataProvider(WirelessEnergyProvider(), MetaMachineBlockEntity::class.java)
+        registration.registerBlockDataProvider(
+            WirelessOpticalComputationHatchProvider(),
+            MetaMachineBlockEntity::class.java,
+        )
+        registration.registerBlockDataProvider(WrelessCWUProvider(), MetaMachineBlockEntity::class.java)
     }
 
-    @Override
-    public void registerClient(IWailaClientRegistration registration) {
-        registration.registerBlockComponent(new WirelessEnergyHatchProvider(), MetaMachineBlock.class);
-        registration.registerBlockComponent(new WirelessOpticalComputationHatchProvider(), MetaMachineBlock.class);
-        registration.registerBlockComponent(new WrelessCWUProvider(), MetaMachineBlock.class);
+    override fun registerClient(registration: IWailaClientRegistration) {
+        registration.registerBlockComponent(WirelessEnergyProvider(), MetaMachineBlock::class.java)
+        registration.registerBlockComponent(WirelessOpticalComputationHatchProvider(), MetaMachineBlock::class.java)
+        registration.registerBlockComponent(WrelessCWUProvider(), MetaMachineBlock::class.java)
     }
 }
