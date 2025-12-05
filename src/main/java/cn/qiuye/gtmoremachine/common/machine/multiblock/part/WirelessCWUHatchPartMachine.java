@@ -33,7 +33,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class WirelessCWUHatchPartMachine extends MultiblockPartMachine implements IInteractedMachine, ICWUBindable {
 
     @Getter
-    private WirelessNotifiableCWUContainer trait;
+    private final WirelessNotifiableCWUContainer trait;
 
     public WirelessCWUHatchPartMachine(IMachineBlockEntity holder, boolean transmitter) {
         super(holder);
