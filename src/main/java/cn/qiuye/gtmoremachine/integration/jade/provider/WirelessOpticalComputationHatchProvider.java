@@ -24,7 +24,7 @@ import snownee.jade.api.config.IPluginConfig;
 public class WirelessOpticalComputationHatchProvider extends CapabilityBlockProvider<IGTMMJadeIF> {
 
     public WirelessOpticalComputationHatchProvider() {
-        super(ResourceLocation.tryBuild(GTmm.MOD_ID, FormattingUtil.toLowerCaseUnderscore("wireless_energy_hatch_provider")));
+        super(ResourceLocation.tryBuild(GTmm.MOD_ID, FormattingUtil.toLowerCaseUnderscore("wireless_optical_computation_hatch_provider")));
     }
 
     @Override

@@ -30,7 +30,7 @@ import java.util.UUID;
 public class WirelessEnergyProvider extends CapabilityBlockProvider<IWirelessEnergyContainerHolder> {
 
     public WirelessEnergyProvider() {
-        super(ResourceLocation.tryBuild(GTmm.MOD_ID, FormattingUtil.toLowerCaseUnderscore("wireless_energy_hatch_provider")));
+        super(ResourceLocation.tryBuild(GTmm.MOD_ID, FormattingUtil.toLowerCaseUnderscore("wireless_energy_provider")));
     }
 
     @Override
