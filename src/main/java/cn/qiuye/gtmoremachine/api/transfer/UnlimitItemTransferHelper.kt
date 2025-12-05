@@ -57,7 +57,6 @@ object UnlimitItemTransferHelper {
         }
     }
 
-    @JvmStatic
     fun insertItem(handler: IItemHandler?, stack: ItemStack, simulate: Boolean): ItemStack {
         var stack = stack
         if (handler == null || stack.isEmpty) {
@@ -83,7 +82,9 @@ object UnlimitItemTransferHelper {
             }
         }
 
-        for (slot in emptySlots) {
+        val iterator = emptySlots.intIterator()
+        while (iterator.hasNext()) {
+            val slot = iterator.nextInt()
             stack = handler.insertItem(slot, stack, simulate)
             if (stack.isEmpty) {
                 return ItemStack.EMPTY
