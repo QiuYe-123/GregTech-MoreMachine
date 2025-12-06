@@ -1,20 +1,33 @@
 package cn.qiuye.gtmoremachine.common.block.machine.trait;
 
+import cn.qiuye.gtmoremachine.GTmm;
 import cn.qiuye.gtmoremachine.api.machine.IWirelessCWUContainerHolder;
 import cn.qiuye.gtmoremachine.api.misc.wireless.cwu.WirelessCWUContainer;
 
+import com.gregtechceu.gtceu.api.capability.IOpticalComputationHatch;
 import com.gregtechceu.gtceu.api.capability.IOpticalComputationProvider;
+import com.gregtechceu.gtceu.api.capability.IOpticalComputationReceiver;
+import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
+import com.gregtechceu.gtceu.api.capability.recipe.CWURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
+import com.gregtechceu.gtceu.api.capability.recipe.IRecipeCapabilityHolder;
+import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.api.machine.trait.NotifiableComputationContainer;
+import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
+import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
+import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
+import com.gregtechceu.gtceu.api.machine.trait.NotifiableRecipeHandlerTrait;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
+import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.core.Direction;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
+import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -22,91 +35,67 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class WirelessNotifiableCWUContainer extends NotifiableComputationContainer implements IOpticalComputationProvider, IWirelessCWUContainerHolder {
+public class WirelessNotifiableCWUContainer extends NotifiableRecipeHandlerTrait<Integer> implements IOpticalComputationHatch, IOpticalComputationReceiver, IWirelessCWUContainerHolder {
 
     private WirelessCWUContainer container;
+    @Getter
+    protected IO handlerIO;
+    @Getter
+    protected boolean transmitter;
+
+    protected long lastTimeStamp;
+    private int currentOutputCwu = 0, lastOutputCwu = 0;
 
     public WirelessNotifiableCWUContainer(MetaMachine machine, IO handlerIO, boolean transmitter) {
-        super(machine, handlerIO, transmitter);
+        super(machine);
+        this.handlerIO = handlerIO;
+        this.transmitter = transmitter;
+
+        this.lastTimeStamp = Long.MIN_VALUE;
     }
 
-    /**
-     * 获取或创建无线容器
-     */
-    private WirelessCWUContainer getOrCreateContainer() {
-        UUID currentUUID = getUUID();
-        // 检查是否需要更新容器缓存
-        if (currentUUID != null && (this.container == null || !currentUUID.equals(this.getUUID()))) {
-            this.container = WirelessCWUContainer.getOrCreateContainer(currentUUID);
-        }
-        return this.container;
-    }
-
-    /**
-     * 上传算力到无线网络
-     * 
-     * @param cwu      要上传的算力量
-     * @param simulate 是否为模拟操作
-     * @return 实际上传的算力量
-     */
-    public int upload(int cwu, boolean simulate) {
-        if (cwu <= 0) return 0;
-
-        WirelessCWUContainer container = getOrCreateContainer();
-
-        if (!simulate) {
-            // 实际操作：调用容器上传方法
-            container.upload(cwu, getMachine());
-        }
-        return cwu;
-    }
-
-    /**
-     * 从无线网络下载算力
-     * 
-     * @param cwu      请求的算力量
-     * @param simulate 是否为模拟操作
-     * @return 实际下载的算力量
-     */
-    public int download(int cwu, boolean simulate) {
-        if (cwu <= 0) return 0;
-
-        WirelessCWUContainer container = getOrCreateContainer();
-
-        if (simulate) {
-            // 模拟操作：返回可用的算力量，不超过请求量
-            int freeCWU = container.getfreeCWU();
-            return Math.min(freeCWU, cwu);
-        } else {
-            // 实际操作：调用容器下载方法
-            return container.download(cwu, getMachine());
-        }
-    }
-
-    /**
-     * 获取可用的无线算力（用于模拟）
-     * 
-     * @return 可用算力量
-     */
-    public int getfreeCWU() {
-        WirelessCWUContainer container = getOrCreateContainer();
-        return container.getfreeCWU();
-    }
-
-    /**
-     * 重写：处理算力请求（针对输入仓）
-     */
     @Override
     public int requestCWUt(int cwut, boolean simulate, Collection<IOpticalComputationProvider> seen) {
-        seen.add(this);
-
-        if (!isTransmitter()) {
-            // 接收器仓：从无线网络下载算力
-            return download(cwut, simulate);
-        } else {
-            // 发射器仓：对于网络请求，无线发射器不提供算力
-            return 0;
+        var latestTimeStamp = getMachine().getOffsetTimer();
+        if (lastTimeStamp < latestTimeStamp) {
+            lastOutputCwu = currentOutputCwu;
+            currentOutputCwu = 0;
+            lastTimeStamp = latestTimeStamp;
         }
+        seen.add(this);
+        if (handlerIO == IO.IN) {
+            if (isTransmitter()) {
+                // Ask the Multiblock controller, which *should* be an IOpticalComputationProvider
+                if (machine instanceof IOpticalComputationProvider provider) {
+                    return provider.requestCWUt(cwut, simulate, seen);
+                } else if (machine instanceof IMultiPart part) {
+                    if (!part.isFormed()) {
+                        return 0;
+                    }
+                    for (IMultiController controller : part.getControllers()) {
+                        if (controller instanceof IOpticalComputationProvider provider) {
+                            return provider.requestCWUt(cwut, simulate, seen);
+                        }
+                        for (MachineTrait trait : controller.self().getTraits()) {
+                            if (trait instanceof IOpticalComputationProvider provider) {
+                                return provider.requestCWUt(cwut, simulate, seen);
+                            }
+                        }
+                    }
+                    GTmm.LOGGER
+                            .error("NotifiableComputationContainer could request CWU/t from its machine's controller!");
+                    return 0;
+                } else {
+                    GTmm.LOGGER.error("NotifiableComputationContainer could request CWU/t from its machine!");
+                    return 0;
+                }
+            } else {}
+        } else {
+            lastOutputCwu = lastOutputCwu - cwut;
+            return Math.min(lastOutputCwu, cwut);
+        }
+
+        return 0;
     }
 
     /**
@@ -115,45 +104,40 @@ public class WirelessNotifiableCWUContainer extends NotifiableComputationContain
     @Override
     public int getMaxCWUt(Collection<IOpticalComputationProvider> seen) {
         seen.add(this);
-
-        if (!isTransmitter()) {
-            // 接收器仓：返回无线网络可用算力
-            return getfreeCWU();
-        } else {
-            // 发射器仓：不提供算力给网络
-            return 0;
-        }
-    }
-
-    /**
-     * 重写：处理配方中的算力输入输出
-     */
-    @Override
-    public List<Integer> handleRecipeInner(IO io, GTRecipe recipe, List<Integer> left, boolean simulate) {
-        if (left.isEmpty()) return left;
-
-        int total = left.stream().mapToInt(Integer::intValue).sum();
-        int processed = 0;
-
-        if (io == IO.IN) {
-            // 输入处理：接收器仓从无线网络下载算力
-            if (!isTransmitter()) {
-                processed = download(total, simulate);
-            }
-        } else if (io == IO.OUT) {
-            // 输出处理：发射器仓上传算力到无线网络
+        if (handlerIO == IO.IN) {
             if (isTransmitter()) {
-                processed = upload(total, simulate);
-            }
-        }
-
-        // 计算剩余未处理的算力
-        int remaining = total - processed;
-        if (remaining <= 0) {
-            return null; // 全部处理完成
+                // Ask the Multiblock controller, which *should* be an IOpticalComputationProvider
+                if (machine instanceof IOpticalComputationProvider provider) {
+                    return provider.getMaxCWUt(seen);
+                } else if (machine instanceof IMultiPart part) {
+                    if (!part.isFormed()) {
+                        return 0;
+                    }
+                    for (IMultiController controller : part.getControllers()) {
+                        if (!controller.isFormed()) {
+                            continue;
+                        }
+                        if (controller instanceof IOpticalComputationProvider provider) {
+                            return provider.getMaxCWUt(seen);
+                        }
+                        for (MachineTrait trait : controller.self().getTraits()) {
+                            if (trait instanceof IOpticalComputationProvider provider) {
+                                return provider.getMaxCWUt(seen);
+                            }
+                        }
+                    }
+                    GTmm.LOGGER.error(
+                            "NotifiableComputationContainer could not get maximum CWU/t from its machine's controller!");
+                    return 0;
+                } else {
+                    GTmm.LOGGER.error("NotifiableComputationContainer could not get maximum CWU/t from its machine!");
+                    return 0;
+                }
+            } else {}
         } else {
-            return Collections.singletonList(remaining);
+            return lastOutputCwu;
         }
+        return 0;
     }
 
     @Override
@@ -163,8 +147,56 @@ public class WirelessNotifiableCWUContainer extends NotifiableComputationContain
     }
 
     @Override
-    public IO getHandlerIO() {
-        return this.transmitter ? IO.NONE : IO.IN;
+    public List<Integer> handleRecipeInner(IO io, GTRecipe recipe, List<Integer> left, boolean simulate) {
+        return left;
+    }
+
+    @Override
+    public List<Object> getContents() {
+        return List.of(lastOutputCwu);
+    }
+
+    @Override
+    public double getTotalContentAmount() {
+        return lastOutputCwu;
+    }
+
+    @Override
+    public RecipeCapability<Integer> getCapability() {
+        return CWURecipeCapability.CAP;
+    }
+
+    @Override
+    public @Nullable IOpticalComputationProvider getComputationProvider() {
+        if (this.handlerIO.support(IO.OUT)) {
+            return this;
+        }
+        if (machine instanceof IOpticalComputationReceiver receiver) {
+            return receiver.getComputationProvider();
+        } else if (machine instanceof IOpticalComputationProvider provider) {
+            return provider;
+        } else if (machine instanceof IRecipeCapabilityHolder recipeCapabilityHolder) {
+            var cwuCap = recipeCapabilityHolder.getCapabilitiesFlat(IO.IN, CWURecipeCapability.CAP);
+            if (!cwuCap.isEmpty()) {
+                var provider = (IOpticalComputationProvider) cwuCap.get(0);
+                if (provider != this) {
+                    return provider;
+                }
+            }
+        }
+        for (Direction direction : GTUtil.DIRECTIONS) {
+            BlockEntity blockEntity = machine.getLevel().getBlockEntity(machine.getPos().relative(direction));
+            if (blockEntity == null) continue;
+
+            // noinspection DataFlowIssue can be null just fine.
+            IOpticalComputationProvider provider = blockEntity
+                    .getCapability(GTCapability.CAPABILITY_COMPUTATION_PROVIDER, direction.getOpposite()).orElse(null);
+            // noinspection ConstantValue can be null because above.
+            if (provider != null && provider != this) {
+                return provider;
+            }
+        }
+        return null;
     }
 
     @Override
