@@ -1,6 +1,5 @@
 package cn.qiuye.gtmoremachine.common.data.machines.utils;
 
-import cn.qiuye.gtmoremachine.GTmm;
 import cn.qiuye.gtmoremachine.common.machine.multiblock.part.WirelessEnergyHatchPartMachine;
 
 import com.gregtechceu.gtceu.api.GTValues;
@@ -49,7 +48,7 @@ public class WirelessMachinesUtils {
                                         FormattingUtil
                                                 .formatNumbers(EnergyHatchPartMachine.getHatchEnergyCapacity(tier, amperage))))
                         .modelProperty(GTMachineModelProperties.IS_FORMED, false)
-                        .tieredHullModel(GTmm.id(finalRender))
+                        .overlayTieredHullModel(finalRender)
                         .register(),
                 tiers);
     }
@@ -75,19 +74,19 @@ public class WirelessMachinesUtils {
                                                 .formatNumbers(
                                                         EnergyHatchPartMachine.getHatchEnergyCapacity(tier, amperage))))
                         .modelProperty(GTMachineModelProperties.IS_FORMED, false)
-                        .tieredHullModel(GTmm.id(finalRender))
+                        .overlayTieredHullModel(finalRender)
                         .register(),
                 tiers);
     }
 
     private static @NotNull String getRender(int amperage) {
-        String render = "block/machine/part/wireless_energy_hatch";
+        String render = "wireless_energy_hatch";
         render = switch (amperage) {
             case 2 -> render;
             case 4 -> render + "_4a";
             case 16 -> render + "_16a";
             case 64 -> render + "_64a";
-            default -> "block/machine/part/wireless_laser_hatch";
+            default -> "wireless_laser_hatch";
         };
         return render;
     }

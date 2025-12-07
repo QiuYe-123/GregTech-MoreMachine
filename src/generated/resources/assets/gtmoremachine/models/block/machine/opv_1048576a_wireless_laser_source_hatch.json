@@ -2,6 +2,11 @@
   "parent": "minecraft:block/block",
   "loader": "gtceu:machine",
   "machine": "gtmoremachine:opv_1048576a_wireless_laser_source_hatch",
+  "replaceable_textures": [
+    "bottom",
+    "top",
+    "side"
+  ],
   "variants": {
     "is_formed=false": {
       "model": {
