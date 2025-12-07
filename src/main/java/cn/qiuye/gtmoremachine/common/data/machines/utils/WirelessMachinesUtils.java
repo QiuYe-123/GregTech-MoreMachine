@@ -10,6 +10,7 @@ import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
+import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.EnergyHatchPartMachine;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
@@ -34,7 +35,7 @@ public class WirelessMachinesUtils {
         String name = voltage + "put";
         String finalRender = getRender(amperage);
         return registerTieredMachines(amperage + "a_wireless_energy_" + name + "_hatch",
-                (holder, tier) -> new WirelessEnergyHatchPartMachine(holder, tier, io, amperage),
+                (holder, tier) -> new WirelessEnergyHatchPartMachine(holder, tier, io, amperage, false),
                 (tier, builder) -> builder
                         .langValue(GTValues.VNF[tier] + " " + FormattingUtil.formatNumbers(amperage) + (io == IO.IN ? " Energy Hatch" : " Dynamo Hatch"))
                         .rotationState(RotationState.ALL)
@@ -47,6 +48,7 @@ public class WirelessMachinesUtils {
                                 Component.translatable("gtceu.universal.tooltip.energy_storage_capacity",
                                         FormattingUtil
                                                 .formatNumbers(EnergyHatchPartMachine.getHatchEnergyCapacity(tier, amperage))))
+                        .modelProperty(GTMachineModelProperties.IS_FORMED, false)
                         .tieredHullModel(GTmm.id(finalRender))
                         .register(),
                 tiers);
@@ -57,7 +59,7 @@ public class WirelessMachinesUtils {
         var name = io == IO.IN ? "target" : "source";
         String finalRender = getRender(amperage);
         return registerTieredMachines(amperage + "a_wireless_laser_" + name + "_hatch",
-                (holder, tier) -> new WirelessEnergyHatchPartMachine(holder, tier, io, amperage),
+                (holder, tier) -> new WirelessEnergyHatchPartMachine(holder, tier, io, amperage, true),
                 (tier, builder) -> builder
                         .langValue(GTValues.VNF[tier] + " " + FormattingUtil.formatNumbers(amperage) + "A Laser " +
                                 FormattingUtil.toEnglishName(name) + " Hatch")
@@ -72,6 +74,7 @@ public class WirelessMachinesUtils {
                                         FormattingUtil
                                                 .formatNumbers(
                                                         EnergyHatchPartMachine.getHatchEnergyCapacity(tier, amperage))))
+                        .modelProperty(GTMachineModelProperties.IS_FORMED, false)
                         .tieredHullModel(GTmm.id(finalRender))
                         .register(),
                 tiers);

@@ -61,17 +61,20 @@ public class WirelessEnergyHatchPartMachine extends TieredIOPartMachine implemen
     public final NotifiableEnergyContainer energyContainer;
     @Getter
     protected int amperage;
+    @Getter
+    private final boolean leaser;
     private TickableSubscription updEnergySubs;
 
-    public WirelessEnergyHatchPartMachine(IMachineBlockEntity holder, int tier, IO io, int amperage, Object... args) {
+    public WirelessEnergyHatchPartMachine(IMachineBlockEntity holder, int tier, IO io, int amperage,boolean isleaser, Object... args) {
         super(holder, tier, io);
         this.amperage = amperage;
+        this.leaser = isleaser;
         this.energyContainer = createEnergyContainer(args);
     }
 
     protected NotifiableEnergyContainer createEnergyContainer(Object... args) {
         NotifiableEnergyContainer container;
-        if (io == IO.OUT) {
+        if (isLeaser()) {
             container = NotifiableEnergyContainer.emitterContainer(this, GTValues.VEX[tier] * 64L * amperage,
                     GTValues.VEX[tier], amperage);
         } else {
