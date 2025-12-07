@@ -128,20 +128,6 @@ public interface IWirelessMonitor extends IWirelessEnergyContainerHolder {
         return textListCache;
     }
 
-    private List<Map.Entry<MetaMachine, ITransferData>> getEntryList(Sorting sorting) {
-        List<Map.Entry<MetaMachine, ITransferData>> entryList = new ArrayList<>(WirelessEnergyContainer.TRANSFER_DATA.entrySet());
-        entryList.sort((entry1, entry2) -> {
-            BigInteger throughput1 = entry1.getValue().Throughput();
-            BigInteger throughput2 = entry2.getValue().Throughput();
-            if (sorting == Sorting.Ascending) {
-                return throughput1.compareTo(throughput2);
-            } else {
-                return throughput2.compareTo(throughput1);
-            }
-        });
-        return entryList;
-    }
-
     Level getLevel();
 
     private static Component getTimeToFillDrainText(BigInteger timeToFillSeconds) {
@@ -172,6 +158,20 @@ public interface IWirelessMonitor extends IWirelessEnergyContainerHolder {
         }
 
         return Component.translatable(key, NumberUtils.formatLong(fillTime));
+    }
+
+    private List<Map.Entry<MetaMachine, ITransferData>> getEntryList(Sorting sorting) {
+        List<Map.Entry<MetaMachine, ITransferData>> entryList = new ArrayList<>(WirelessEnergyContainer.TRANSFER_DATA.entrySet());
+        entryList.sort((entry1, entry2) -> {
+            BigInteger throughput1 = entry1.getValue().Throughput();
+            BigInteger throughput2 = entry2.getValue().Throughput();
+            if (sorting == Sorting.Ascending) {
+                return throughput1.compareTo(throughput2);
+            } else {
+                return throughput2.compareTo(throughput1);
+            }
+        });
+        return entryList;
     }
 
     private static Component getStatisticsText(Statistics statistics) {
