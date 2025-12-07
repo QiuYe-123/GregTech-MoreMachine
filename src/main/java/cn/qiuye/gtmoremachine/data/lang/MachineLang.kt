@@ -35,7 +35,7 @@ object MachineLang {
         provider.add("gtmoremachine.machine.wireless_monitor.tooltip.net_cwu", "Average Net CWU: %s")
         provider.add(
             "gtmoremachine.machine.wireless_monitor.tooltip.statistics.energy",
-            "Electricity Statistics：%s     Display Format：%s    Power status：%s",
+            "Electricity Statistics：%s     Display Format：%s    Power status：%s\nSorting rules：%s",
         )
         provider.add(
             "gtmoremachine.machine.wireless_monitor.tooltip.statistics.cwu",
@@ -79,6 +79,8 @@ object MachineLang {
         provider.add("gtmoremachine.machine.wireless_energy_monitor.tooltip.power_all", "ALL")
         provider.add("gtmoremachine.machine.wireless_energy_monitor.tooltip.power_in", "IN")
         provider.add("gtmoremachine.machine.wireless_energy_monitor.tooltip.power_out", "OUT")
+        provider.add("gtmoremachine.machine.wireless_energy_monitor.tooltip.ascending", "Ascending")
+        provider.add("gtmoremachine.machine.wireless_energy_monitor.tooltip.descendingorder", "Descendingorder")
         provider.add("gtmoremachine.machine.wireless_cwu_monitor.tooltip.1", "Total CWU: %s CWU")
         provider.add("gtmoremachine.machine.wireless_cwu_monitor.tooltip.last_minute", "Last minute: %s CWU")
         provider.add("gtmoremachine.machine.wireless_cwu_monitor.tooltip.last_hour", "Last hour: %s CWU")

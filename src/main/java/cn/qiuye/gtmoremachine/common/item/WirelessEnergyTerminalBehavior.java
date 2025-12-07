@@ -2,6 +2,7 @@ package cn.qiuye.gtmoremachine.common.item;
 
 import cn.qiuye.gtmoremachine.GTmm;
 import cn.qiuye.gtmoremachine.api.gui.monitor.Format;
+import cn.qiuye.gtmoremachine.api.gui.monitor.Sorting;
 import cn.qiuye.gtmoremachine.api.gui.monitor.Statistics;
 import cn.qiuye.gtmoremachine.api.gui.monitor.Status;
 import cn.qiuye.gtmoremachine.api.gui.widget.AlignComponentPanelWidget;
@@ -21,6 +22,7 @@ import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DropSaved;
 
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
@@ -33,9 +35,13 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.UUID;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
 import static cn.qiuye.gtmoremachine.api.gui.widget.AlignLabelWidget.ALIGN_CENTER;
 import static cn.qiuye.gtmoremachine.common.machine.electric.WirelessEnergyMonitor.DISPLAY_TEXT_WIDTH;
 
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public class WirelessEnergyTerminalBehavior implements IItemUIFactory {
 
     public static int p;
@@ -46,6 +52,8 @@ public class WirelessEnergyTerminalBehavior implements IItemUIFactory {
     private Format format = Format.Unit;
     @DropSaved
     private Status powerStatus = Status.All;
+    @DropSaved
+    private Sorting sortingrules = Sorting.Ascending;
 
     //////////////////////////////////////
     // *********** GUI ***********//
@@ -67,6 +75,10 @@ public class WirelessEnergyTerminalBehavior implements IItemUIFactory {
                     case In -> powerStatus = Status.Out;
                     case Out -> powerStatus = Status.All;
                 }
+            }
+        } else if (componentData.equals("sortingrules")) {
+            if (!clickData.isRemote) {
+                sortingrules = (sortingrules == Sorting.Ascending) ? Sorting.Descendingorder : Sorting.Ascending;
             }
         } else if (clickData.isRemote) {
             p = 200;
@@ -101,7 +113,7 @@ public class WirelessEnergyTerminalBehavior implements IItemUIFactory {
     private void addDisplayText(List<Component> textList, WirelessMonitor monitor) {
         if (monitor.isRemote()) return;
         if (monitor.displayTextCache == null || monitor.level.getServer().getTickCount() % 10 == 0) {
-            monitor.displayTextCache = monitor.getDisplayText(statistics, format, powerStatus);
+            monitor.displayTextCache = monitor.getDisplayText(statistics, format, powerStatus, sortingrules);
         }
         textList.addAll(monitor.displayTextCache);
     }
