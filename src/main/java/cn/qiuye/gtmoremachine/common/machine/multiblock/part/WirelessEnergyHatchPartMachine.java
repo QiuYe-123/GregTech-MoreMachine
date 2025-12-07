@@ -1,5 +1,6 @@
 package cn.qiuye.gtmoremachine.common.machine.multiblock.part;
 
+import cn.qiuye.gtmoremachine.GTmm;
 import cn.qiuye.gtmoremachine.api.machine.IWirelessEnergyContainerHolder;
 import cn.qiuye.gtmoremachine.api.misc.wireless.energy.WirelessEnergyContainer;
 import cn.qiuye.gtmoremachine.utils.TeamUtils;
@@ -146,16 +147,20 @@ public class WirelessEnergyHatchPartMachine extends TieredIOPartMachine implemen
     @Override
     public InteractionResult onUse(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
         if (isRemote()) return InteractionResult.PASS;
-        ItemStack is = player.getItemInHand(hand);
-        if (is.isEmpty()) return InteractionResult.PASS;
-        if (is.is(GTItems.TOOL_DATA_STICK.asItem())) {
+        ItemStack item = player.getItemInHand(hand);
+        if (item.isEmpty()) return InteractionResult.PASS;
+        if (item.is(GTItems.TOOL_DATA_STICK.asItem())) {
             setOwnerUUID(player.getUUID());
             setWirelessEnergyContainerCache(null);
             player.sendSystemMessage(Component.translatable("gtmoremachine.machine.wireless_energy_hatch.tooltip.bind", TeamUtils.getName(player)));
             updateEnergySubscription();
             return InteractionResult.SUCCESS;
-        } else if (is.is(Items.STICK)) {
-            if (io == IO.OUT) energyContainer.setEnergyStored(GTValues.VEX[tier] * 64L * amperage);
+        } else if (GTmm.isDev() && item.is(Items.STICK)) {
+            if (io == IO.OUT) {
+                energyContainer.setEnergyStored(GTValues.VEX[tier] * 64L * amperage);
+            } else if (io == IO.IN) {
+                energyContainer.setEnergyStored(-(GTValues.VEX[tier] * 64L * amperage));
+            }
             return InteractionResult.SUCCESS;
         }
         return InteractionResult.PASS;
