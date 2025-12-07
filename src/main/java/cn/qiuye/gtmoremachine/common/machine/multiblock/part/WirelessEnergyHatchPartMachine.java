@@ -65,7 +65,7 @@ public class WirelessEnergyHatchPartMachine extends TieredIOPartMachine implemen
     private final boolean leaser;
     private TickableSubscription updEnergySubs;
 
-    public WirelessEnergyHatchPartMachine(IMachineBlockEntity holder, int tier, IO io, int amperage,boolean isleaser, Object... args) {
+    public WirelessEnergyHatchPartMachine(IMachineBlockEntity holder, int tier, IO io, int amperage, boolean isleaser, Object... args) {
         super(holder, tier, io);
         this.amperage = amperage;
         this.leaser = isleaser;
