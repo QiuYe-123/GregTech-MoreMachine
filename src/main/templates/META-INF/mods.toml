@@ -9,8 +9,9 @@ version="${version}"
 displayName="${mod_name}"
 authors = "QiuYe"
 description = "${mod_description}"
+logoFile = "icon.png"
 displayURL = "${mod_url}"
-credits = ""
+credits = "QiuYe ,Original Project by liansishen"
 
 
 [[dependencies.${ mod_id }]]
@@ -57,4 +58,36 @@ modId = "gtceu"
 mandatory = false
 versionRange = "[7,)"
 ordering = "BEFORE"
+side = "BOTH"
+[dependencies.${ mod_id }.mc-publish]
+ignore = false
+modrinth = "gregtechceu-modern"
+curseforge = "gregtechceu-modern"
+
+[[dependencies.${mod_id}]]
+modId = "jei"
+mandatory = false
+versionRange = "[${jei_version},)"
+ordering = "AFTER"
+side = "BOTH"
+
+[[dependencies.${mod_id}]]
+modId = "emi"
+mandatory = false
+versionRange = "[${emi_version},)"
+ordering = "AFTER"
+side = "BOTH"
+
+[[dependencies.${mod_id}]]
+modId = "jade"
+mandatory = false
+versionRange = "[${jade_version},)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.${mod_id}]]
+modId = "ae2"
+mandatory = false
+versionRange = "[${ae2_version},)"
+ordering = "AFTER"
 side = "BOTH"
