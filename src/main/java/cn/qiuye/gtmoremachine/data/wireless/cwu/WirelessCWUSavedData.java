@@ -16,19 +16,19 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 
-public class WirelessCWUSavaedData extends SavedData {
+public class WirelessCWUSavedData extends SavedData {
 
-    public static WirelessCWUSavaedData INSTANCE;
+    public static WirelessCWUSavedData INSTANCE;
 
-    public static WirelessCWUSavaedData getOrCreate(ServerLevel serverLevel) {
-        return serverLevel.getDataStorage().computeIfAbsent(WirelessCWUSavaedData::new, WirelessCWUSavaedData::new, "gtceu_wireless_cwu");
+    public static WirelessCWUSavedData getOrCreate(ServerLevel serverLevel) {
+        return serverLevel.getDataStorage().computeIfAbsent(WirelessCWUSavedData::new, WirelessCWUSavedData::new, "gtceu_wireless_cwu");
     }
 
     public final Map<UUID, WirelessCWUContainer> containerMap = new HashMap<>();
 
-    public WirelessCWUSavaedData() {}
+    public WirelessCWUSavedData() {}
 
-    public WirelessCWUSavaedData(CompoundTag tag) {
+    public WirelessCWUSavedData(CompoundTag tag) {
         ListTag allCWU = tag.getList("allCWU", Tag.TAG_COMPOUND);
         for (int i = 0; i < allCWU.size(); i++) {
             WirelessCWUContainer container = readTag(allCWU.getCompound(i));

@@ -2,7 +2,7 @@ package cn.qiuye.gtmoremachine.api.misc.wireless.energy;
 
 import cn.qiuye.gtmoremachine.api.misc.wireless.time.TimeStat;
 import cn.qiuye.gtmoremachine.config.GTMMConfig;
-import cn.qiuye.gtmoremachine.data.wireless.energy.WirelessEnergySavaedData;
+import cn.qiuye.gtmoremachine.data.wireless.energy.WirelessEnergySavedData;
 import cn.qiuye.gtmoremachine.utils.BigIntegerUtils;
 import cn.qiuye.gtmoremachine.utils.TeamUtils;
 
@@ -27,7 +27,7 @@ public class WirelessEnergyContainer {
     public static MinecraftServer server;
 
     public static WirelessEnergyContainer getOrCreateContainer(UUID uuid) {
-        return WirelessEnergySavaedData.INSTANCE.containerMap.computeIfAbsent(TeamUtils.getTeamUUID(uuid), WirelessEnergyContainer::new);
+        return WirelessEnergySavedData.INSTANCE.containerMap.computeIfAbsent(TeamUtils.getTeamUUID(uuid), WirelessEnergyContainer::new);
     }
 
     private BigInteger storage;
@@ -68,7 +68,7 @@ public class WirelessEnergyContainer {
         if (GTMMConfig.getINSTANCE().isWirelessRateEnable) change = Math.min(rate, energy);
         if (change <= 0) return 0;
         storage = storage.add(BigInteger.valueOf(change));
-        WirelessEnergySavaedData.INSTANCE.setDirty(true);
+        WirelessEnergySavedData.INSTANCE.setDirty(true);
         if (machine != null) {
             allEnergyStat.update(BigInteger.valueOf(change), server.getTickCount());
             inEnergyStat.update(BigInteger.valueOf(change), server.getTickCount());
@@ -84,7 +84,7 @@ public class WirelessEnergyContainer {
         if (GTMMConfig.getINSTANCE().isWirelessRateEnable) change = Math.min(BigIntegerUtils.getLongValue(storage), Math.min(rate, energy));
         if (change <= 0) return 0;
         storage = storage.subtract(BigInteger.valueOf(change));
-        WirelessEnergySavaedData.INSTANCE.setDirty(true);
+        WirelessEnergySavedData.INSTANCE.setDirty(true);
         if (machine != null) {
             allEnergyStat.update(BigInteger.valueOf(change).negate(), server.getTickCount());
             outEnergyStat.update(BigInteger.valueOf(change).negate(), server.getTickCount());
@@ -98,7 +98,7 @@ public class WirelessEnergyContainer {
     public BigInteger addEnergy(BigInteger change, @Nullable MetaMachine machine) {
         if (change.compareTo(BigInteger.ZERO) <= 0) return BigInteger.ZERO;
         storage = storage.add(change);
-        WirelessEnergySavaedData.INSTANCE.setDirty(true);
+        WirelessEnergySavedData.INSTANCE.setDirty(true);
         if (machine != null) {
             allEnergyStat.update(change, server.getTickCount());
             inEnergyStat.update(change, server.getTickCount());
@@ -113,7 +113,7 @@ public class WirelessEnergyContainer {
         BigInteger change = storage.min(energy);
         if (change.compareTo(BigInteger.ZERO) <= 0) return BigInteger.ZERO;
         storage = storage.subtract(change);
-        WirelessEnergySavaedData.INSTANCE.setDirty(true);
+        WirelessEnergySavedData.INSTANCE.setDirty(true);
         if (machine != null) {
             allEnergyStat.update(change.negate(), server.getTickCount());
             outEnergyStat.update(change.negate(), server.getTickCount());
@@ -126,17 +126,17 @@ public class WirelessEnergyContainer {
 
     public void setStorage(BigInteger energy) {
         storage = energy;
-        WirelessEnergySavaedData.INSTANCE.setDirty(true);
+        WirelessEnergySavedData.INSTANCE.setDirty(true);
     }
 
     public void setRate(long rate) {
         this.rate = rate;
-        WirelessEnergySavaedData.INSTANCE.setDirty(true);
+        WirelessEnergySavedData.INSTANCE.setDirty(true);
     }
 
     public void setBindPos(GlobalPos bindPos) {
         this.bindPos = bindPos;
-        WirelessEnergySavaedData.INSTANCE.setDirty(true);
+        WirelessEnergySavedData.INSTANCE.setDirty(true);
     }
 
     public BigInteger getCapacity() {

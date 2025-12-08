@@ -21,19 +21,19 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 
-public class WirelessEnergySavaedData extends SavedData {
+public class WirelessEnergySavedData extends SavedData {
 
-    public static WirelessEnergySavaedData INSTANCE;
+    public static WirelessEnergySavedData INSTANCE;
 
-    public static WirelessEnergySavaedData getOrCreate(ServerLevel serverLevel) {
-        return serverLevel.getDataStorage().computeIfAbsent(WirelessEnergySavaedData::new, WirelessEnergySavaedData::new, "gtceu_wireless_energy");
+    public static WirelessEnergySavedData getOrCreate(ServerLevel serverLevel) {
+        return serverLevel.getDataStorage().computeIfAbsent(WirelessEnergySavedData::new, WirelessEnergySavedData::new, "gtceu_wireless_energy");
     }
 
     public final Map<UUID, WirelessEnergyContainer> containerMap = new HashMap<>();
 
-    public WirelessEnergySavaedData() {}
+    public WirelessEnergySavedData() {}
 
-    public WirelessEnergySavaedData(CompoundTag tag) {
+    public WirelessEnergySavedData(CompoundTag tag) {
         ListTag allEnergy = tag.getList("allEnergy", Tag.TAG_COMPOUND);
         for (int i = 0; i < allEnergy.size(); i++) {
             WirelessEnergyContainer container = readTag(allEnergy.getCompound(i));

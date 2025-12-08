@@ -1,5 +1,6 @@
 package cn.qiuye.gtmoremachine.utils
 
+import java.math.BigDecimal
 import java.math.BigInteger
 
 object BigIntegerUtils {
@@ -29,8 +30,14 @@ object BigIntegerUtils {
     @JvmStatic
     fun getStringValue(bigInt: BigInteger): String {
         if (bigInt > BigInteger.ZERO) {
-            return bigInt.toString()
+            return bigInt.toString(16)
         }
         return BigInteger.ZERO.toString()
     }
+
+    @JvmStatic
+    fun setBigIntegerValue(defaultValue: String): BigInteger = BigInteger(defaultValue, 16)
+
+    @JvmStatic
+    fun setBigDecimalValue(defaultValue: String): BigDecimal = BigDecimal(BigInteger(defaultValue, 16))
 }

@@ -25,7 +25,7 @@ import snownee.jade.api.BlockAccessor;
 import snownee.jade.api.ITooltip;
 import snownee.jade.api.config.IPluginConfig;
 
-import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.UUID;
 
 public class WrelessCWUProvider extends CapabilityBlockProvider<WirelessCWUHatchPartMachine> {
@@ -58,16 +58,16 @@ public class WrelessCWUProvider extends CapabilityBlockProvider<WirelessCWUHatch
         if (!capData.hasUUID("UUID")) {
             tooltip.add(Component.translatable("gtmoremachine.machine.wireless_energy_hatch.tooltip.1"));
         } else {
-            BigDecimal cwu = new BigDecimal(capData.getString("cwu"));
+            BigInteger cwu = BigIntegerUtils.setBigIntegerValue(capData.getString("cwu"));
             UUID uuid = capData.getUUID("UUID");
             if (TeamUtils.hasOwner(block.getLevel(), uuid)) {
                 tooltip.add(Component.translatable("gtmoremachine.machine.wireless_energy_hatch.tooltip.2", TeamUtils.getName(block.getLevel(), uuid)));
                 tooltip.add(Component.translatable("gtmoremachine.machine.wireless_cwu_monitor.tooltip.1",
-                        Component.literal(NumberUtils.formatBigDecimalNumberOrSic(cwu)).withStyle(ChatFormatting.GOLD)));
+                        Component.literal(NumberUtils.formatBigIntegerNumberOrSic(cwu)).withStyle(ChatFormatting.GOLD)));
             } else {
                 tooltip.add(Component.translatable("gtmoremachine.machine.wireless_energy_hatch.tooltip.3", uuid));
                 tooltip.add(Component.translatable("gtmoremachine.machine.wireless_cwu_monitor.tooltip.1",
-                        Component.literal(NumberUtils.formatBigDecimalNumberOrSic(cwu)).withStyle(ChatFormatting.GOLD)));
+                        Component.literal(NumberUtils.formatBigIntegerNumberOrSic(cwu)).withStyle(ChatFormatting.GOLD)));
             }
         }
     }

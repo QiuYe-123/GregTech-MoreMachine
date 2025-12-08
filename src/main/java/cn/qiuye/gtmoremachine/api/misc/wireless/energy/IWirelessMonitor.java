@@ -106,9 +106,7 @@ public interface IWirelessMonitor extends IWirelessEnergyContainerHolder {
                 ComponentPanelWidget.withButton(getPowerStatusText(powerStatus), "powerStatus", getPowerStatusclolor(powerStatus)),
                 ComponentPanelWidget.withButton(getSortingRulesText(sorting), "sortingrules", getSortingRulescolor(sorting))));
 
-        List<Map.Entry<MetaMachine, ITransferData>> entryList = getEntryList(sorting);
-
-        for (Map.Entry<MetaMachine, ITransferData> m : entryList) {
+        for (Map.Entry<MetaMachine, ITransferData> m : getEntryList(sorting)) {
             UUID uuid = m.getValue().UUID();
             BigInteger through = m.getValue().Throughput();
             if (statistics == Statistics.Global || uuid.equals(TeamUtils.getTeamUUID(this.getUUID()))) {
