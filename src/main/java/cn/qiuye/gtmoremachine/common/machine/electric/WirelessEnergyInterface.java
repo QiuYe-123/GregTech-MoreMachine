@@ -116,13 +116,11 @@ public class WirelessEnergyInterface extends TieredIOPartMachine implements IInt
 
     @Override
     public InteractionResult onUse(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
-        if (isRemote()) return InteractionResult.PASS;
-        ItemStack is = player.getItemInHand(hand);
-        if (is.isEmpty()) return InteractionResult.PASS;
-        if (is.is(GTItems.TOOL_DATA_STICK.asItem())) {
+        if (player.getItemInHand(hand).is(GTItems.TOOL_DATA_STICK.asItem())) {
             setOwnerUUID(player.getUUID());
-            setWirelessEnergyContainerCache(null);
-            player.sendSystemMessage(Component.translatable("gtmoremachine.machine.wireless_energy_hatch.tooltip.bind", TeamUtils.getName(player)));
+            if (isRemote()) {
+                player.sendSystemMessage(Component.translatable("gtmoremachine.machine.wireless_energy_hatch.tooltip.bind", TeamUtils.getName(player)));
+            }
             updateEnergySubscription();
             return InteractionResult.SUCCESS;
         }
@@ -131,13 +129,12 @@ public class WirelessEnergyInterface extends TieredIOPartMachine implements IInt
 
     @Override
     public boolean onLeftClick(Player player, Level world, InteractionHand hand, BlockPos pos, Direction direction) {
-        if (isRemote()) return false;
-        ItemStack is = player.getItemInHand(hand);
-        if (is.isEmpty()) return false;
-        if (is.is(GTItems.TOOL_DATA_STICK.asItem())) {
+        if (player.getItemInHand(hand).is(GTItems.TOOL_DATA_STICK.asItem())) {
             setOwnerUUID(null);
             setWirelessEnergyContainerCache(null);
-            player.sendSystemMessage(Component.translatable("gtmoremachine.machine.wireless_energy_hatch.tooltip.unbind"));
+            if (isRemote()) {
+                player.sendSystemMessage(Component.translatable("gtmoremachine.machine.wireless_energy_hatch.tooltip.unbind"));
+            }
             updateEnergySubscription();
             return true;
         }

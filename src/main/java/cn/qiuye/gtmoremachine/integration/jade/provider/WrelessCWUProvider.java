@@ -31,7 +31,7 @@ import java.util.UUID;
 public class WrelessCWUProvider extends CapabilityBlockProvider<WirelessCWUHatchPartMachine> {
 
     public WrelessCWUProvider() {
-        super(ResourceLocation.tryBuild(GTmm.MOD_ID, FormattingUtil.toLowerCaseUnderscore("wireless_energy_hatch_provider")));
+        super(ResourceLocation.tryBuild(GTmm.MOD_ID, FormattingUtil.toLowerCaseUnderscore("wireless_cwu_provider")));
     }
 
     @Override

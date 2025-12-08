@@ -3,7 +3,6 @@ package cn.qiuye.gtmoremachine;
 import cn.qiuye.gtmoremachine.common.data.GTMMBlocks;
 import cn.qiuye.gtmoremachine.common.data.GTMMItems;
 import cn.qiuye.gtmoremachine.common.registry.GTMMRegistration;
-import cn.qiuye.gtmoremachine.data.GTMMDatagen;
 import cn.qiuye.gtmoremachine.data.recipes.GTMMRecipes;
 
 import com.gregtechceu.gtceu.api.addon.GTAddon;
@@ -14,6 +13,7 @@ import net.minecraft.data.recipes.FinishedRecipe;
 
 import java.util.function.Consumer;
 
+@SuppressWarnings("unused")
 @GTAddon
 public class GTMMGTAddon implements IGTAddon {
 
@@ -31,7 +31,6 @@ public class GTMMGTAddon implements IGTAddon {
     public void initializeAddon() {
         GTMMItems.init();
         GTMMBlocks.init();
-        GTMMDatagen.initPost();
     }
 
     @Override

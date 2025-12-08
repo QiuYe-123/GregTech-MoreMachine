@@ -317,7 +317,7 @@ public class AdvancedTerminalBehavior implements IItemUIFactory {
             if (blockInfos != null && blockInfos.length > 0) {
                 var blockInfo = blockInfos[0];
                 return !(blockInfo.getBlockState().getBlock() instanceof MetaMachineBlock machineBlock) ||
-                        !Hatch.Set.contains(machineBlock);
+                        !Hatch.getBlockSet().contains(machineBlock);
             }
             return true;
         }

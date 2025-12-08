@@ -32,7 +32,9 @@ public class ForgeCommonEventListener {
                         }
                         container.setRate(rate);
                     }
-                    container.getEnergyStat().tick();
+                    container.getAllEnergyStat().tick();
+                    container.getInEnergyStat().tick();
+                    container.getOutEnergyStat().tick();
                 }
                 for (WirelessCWUContainer container : WirelessCWUSavaedData.INSTANCE.containerMap.values()) {
                     container.getAllCWUStat().tick();

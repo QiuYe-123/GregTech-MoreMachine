@@ -53,7 +53,7 @@ public class ForgeClientEventHandler {
                 }
                 PoseStack poseStack = event.getPoseStack();
                 Camera camera = event.getCamera();
-                BlockPos pose = WirelessEnergyMonitor.pPos;
+                BlockPos pose = WirelessEnergyTerminalBehavior.pPos;
                 if (pose == null) return;
                 highlightBlock(RGBAColor.RED, camera, poseStack, pose, pose);
             }

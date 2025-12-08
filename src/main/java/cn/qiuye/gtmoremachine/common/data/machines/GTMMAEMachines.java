@@ -11,6 +11,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.data.RotationState;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
+import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.DualHatchPartMachine;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
@@ -37,7 +38,8 @@ public class GTMMAEMachines {
             (tier, builder) -> builder
                     .langValue("%s Programmablec Hatch".formatted(GTValues.VNF[tier]))
                     .rotationState(RotationState.ALL)
-                    .abilities(PartAbility.IMPORT_ITEMS)
+                    .abilities(PartAbility.IMPORT_ITEMS, PartAbility.IMPORT_FLUIDS)
+                    .modelProperty(GTMachineModelProperties.IS_FORMED, false)
                     .workableTieredHullModel(GTCEu.id("block/machine/part/dual_hatch.import"))
                     .tooltips(Component.translatable("gtceu.machine.dual_hatch.import.tooltip"),
                             Component.translatable("gtceu.universal.tooltip.item_storage_capacity", (int) Math.pow((tier - 4), 2)),
@@ -51,7 +53,8 @@ public class GTMMAEMachines {
             (tier, builder) -> builder
                     .langValue("%s Programmablec Dual Hatch".formatted(GTValues.VNF[tier]))
                     .rotationState(RotationState.ALL)
-                    .abilities(PartAbility.IMPORT_ITEMS)
+                    .abilities(PartAbility.IMPORT_ITEMS, PartAbility.IMPORT_FLUIDS)
+                    .modelProperty(GTMachineModelProperties.IS_FORMED, false)
                     .workableTieredHullModel(GTCEu.id("block/machine/part/dual_hatch.import"))
                     .tooltips(Component.translatable("gtceu.machine.dual_hatch.import.tooltip"),
                             Component.translatable("gtceu.universal.tooltip.item_storage_capacity", (1 + tier) * INV_MULTIPLE),

@@ -1,11 +1,11 @@
 package cn.qiuye.gtmoremachine.api.machine;
 
-import cn.qiuye.gtmoremachine.api.capability.IBindable;
+import cn.qiuye.gtmoremachine.api.capability.energy.IEnergyBindable;
 import cn.qiuye.gtmoremachine.api.misc.wireless.energy.WirelessEnergyContainer;
 
 import javax.annotation.Nullable;
 
-public interface IWirelessEnergyContainerHolder extends IBindable {
+public interface IWirelessEnergyContainerHolder extends IEnergyBindable {
 
     void setWirelessEnergyContainerCache(WirelessEnergyContainer container);
 

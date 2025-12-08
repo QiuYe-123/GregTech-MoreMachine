@@ -1,6 +1,7 @@
 package cn.qiuye.gtmoremachine.common.machine.electric;
 
 import cn.qiuye.gtmoremachine.api.gui.monitor.Format;
+import cn.qiuye.gtmoremachine.api.gui.monitor.Sorting;
 import cn.qiuye.gtmoremachine.api.gui.monitor.Statistics;
 import cn.qiuye.gtmoremachine.api.gui.monitor.Status;
 import cn.qiuye.gtmoremachine.api.gui.widget.AlignComponentPanelWidget;
@@ -64,6 +65,8 @@ public class WirelessEnergyMonitor extends MetaMachine implements IFancyUIMachin
     private Format format = Format.Unit;
     @Persisted
     private Status powerStatus = Status.All;
+    @Persisted
+    private Sorting sortingrules = Sorting.Ascending;
 
     //////////////////////////////////////
     // *********** GUI ***********//
@@ -86,6 +89,10 @@ public class WirelessEnergyMonitor extends MetaMachine implements IFancyUIMachin
                     case Out -> powerStatus = Status.All;
                 }
             }
+        } else if (componentData.equals("sortingrules")) {
+            if (!clickData.isRemote) {
+                sortingrules = (sortingrules == Sorting.Ascending) ? Sorting.Descendingorder : Sorting.Ascending;
+            }
         } else if (clickData.isRemote) {
             p = 200;
             String[] parts = componentData.split(", ");
@@ -97,9 +104,9 @@ public class WirelessEnergyMonitor extends MetaMachine implements IFancyUIMachin
 
     @Override
     public Widget createUIWidget() {
-        var group = new WidgetGroup(0, 0, DISPLAY_TEXT_WIDTH + 8 + 8, 117 + 8);
+        var group = new WidgetGroup(0, 0, DISPLAY_TEXT_WIDTH + 8 + 8, 127 + 8);
 
-        group.addWidget(new DraggableScrollableWidgetGroup(4, 4, DISPLAY_TEXT_WIDTH + 8, 117).setBackground(GuiTextures.DISPLAY)
+        group.addWidget(new DraggableScrollableWidgetGroup(4, 4, DISPLAY_TEXT_WIDTH + 8, 127).setBackground(GuiTextures.DISPLAY)
                 .addWidget(new AlignLabelWidget(DISPLAY_TEXT_WIDTH / 2 + 4, 5, self().getBlockState().getBlock().getDescriptionId()).setTextAlign(AlignLabelWidget.ALIGN_CENTER))
                 .addWidget(new AlignComponentPanelWidget(4, 17, this::addDisplayText)
                         .setMaxWidthLimit(DISPLAY_TEXT_WIDTH)
@@ -112,7 +119,7 @@ public class WirelessEnergyMonitor extends MetaMachine implements IFancyUIMachin
     public void addDisplayText(List<Component> textList) {
         if (isRemote()) return;
         if (textListCache == null || getOffsetTimer() % 10 == 0) {
-            textListCache = getDisplayText(statistics, format, powerStatus);
+            textListCache = getDisplayText(statistics, format, powerStatus, sortingrules);
         }
         textList.addAll(textListCache);
     }

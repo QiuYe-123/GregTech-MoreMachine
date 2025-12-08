@@ -27,10 +27,10 @@ import snownee.jade.api.config.IPluginConfig;
 import java.math.BigDecimal;
 import java.util.UUID;
 
-public class WirelessEnergyHatchProvider extends CapabilityBlockProvider<IWirelessEnergyContainerHolder> {
+public class WirelessEnergyProvider extends CapabilityBlockProvider<IWirelessEnergyContainerHolder> {
 
-    public WirelessEnergyHatchProvider() {
-        super(ResourceLocation.tryBuild(GTmm.MOD_ID, FormattingUtil.toLowerCaseUnderscore("wireless_energy_hatch_provider")));
+    public WirelessEnergyProvider() {
+        super(ResourceLocation.tryBuild(GTmm.MOD_ID, FormattingUtil.toLowerCaseUnderscore("wireless_energy_provider")));
     }
 
     @Override

@@ -203,7 +203,7 @@ public class WirelessNotifiableComputationContainer extends NotifiableComputatio
 
     @Nullable
     private IOpticalComputationProvider getOpticalNetProvider() {
-        if (machine instanceof WirelessCWUHatchMachine woc && woc.getTransmitterPos() != null) {
+        if (machine instanceof WirelessCWUHatchMachine woc) {
             var transmitterMachine = MetaMachine.getMachine(machine.getLevel(), woc.getTransmitterPos());
             if (transmitterMachine instanceof WirelessCWUHatchMachine transmitter) {
                 return transmitter.getComputationContainer();

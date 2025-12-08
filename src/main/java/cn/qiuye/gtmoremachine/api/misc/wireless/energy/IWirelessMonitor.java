@@ -1,6 +1,7 @@
 package cn.qiuye.gtmoremachine.api.misc.wireless.energy;
 
 import cn.qiuye.gtmoremachine.api.gui.monitor.Format;
+import cn.qiuye.gtmoremachine.api.gui.monitor.Sorting;
 import cn.qiuye.gtmoremachine.api.gui.monitor.Statistics;
 import cn.qiuye.gtmoremachine.api.gui.monitor.Status;
 import cn.qiuye.gtmoremachine.api.machine.IWirelessEnergyContainerHolder;
@@ -17,6 +18,7 @@ import com.gregtechceu.gtceu.utils.GTUtil;
 import com.lowdragmc.lowdraglib.gui.widget.ComponentPanelWidget;
 
 import net.minecraft.ChatFormatting;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.Level;
 
@@ -25,9 +27,13 @@ import java.math.BigInteger;
 import java.time.Duration;
 import java.util.*;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public interface IWirelessMonitor extends IWirelessEnergyContainerHolder {
 
-    default List<Component> getDisplayText(Statistics statistics, Format format, Status powerStatus) {
+    default List<Component> getDisplayText(Statistics statistics, Format format, Status powerStatus, Sorting sorting) {
         List<Component> textListCache = new ArrayList<>();
         WirelessEnergyContainer container = getWirelessEnergyContainer();
         if (container == null) return List.of();
@@ -38,7 +44,7 @@ public interface IWirelessMonitor extends IWirelessEnergyContainerHolder {
                 Component.literal(NumberUtils.formatBigIntegerNumberOrSic(energyTotal, format)).withStyle(ChatFormatting.GOLD),
                 Component.literal(NumberUtils.formatBigDecimalNumberOrSic(FormattingUtil.voltageAmperage(new BigDecimal(energyTotal)), format)),
                 FormattingUtil.voltageName(new BigDecimal(energyTotal))));
-        if (GTMMConfig.INSTANCE.isWirelessRateEnable) {
+        if (GTMMConfig.getINSTANCE().isWirelessRateEnable) {
             long rate = container.getRate();
             textListCache.add(FormattingUtil.formatWithConstantWidth("gtmoremachine.machine.wireless_energy_monitor.tooltip.2",
                     Component.literal(NumberUtils.formatBigIntegerNumberOrSic(BigInteger.valueOf(rate), format)),
@@ -46,8 +52,16 @@ public interface IWirelessMonitor extends IWirelessEnergyContainerHolder {
                     Component.literal(GTValues.VNF[GTUtil.getFloorTierByVoltage(rate)])).withStyle(ChatFormatting.GRAY));
         }
 
-        var stat = container.getEnergyStat();
-        textListCache.add(Component.translatable("gtmoremachine.machine.wireless_energy_monitor.tooltip.net_power"));
+        var allstat = container.getAllEnergyStat();
+        var instat = container.getInEnergyStat();
+        var outstat = container.getOutEnergyStat();
+        var stat = switch (powerStatus) {
+            case All -> allstat;
+            case In -> instat;
+            case Out -> outstat;
+        };
+        textListCache.add(Component.translatable("gtmoremachine.machine.wireless_monitor.tooltip.net_power",
+                getPowerStatusText(powerStatus)));
 
         BigDecimal avgMinute = stat.getMinuteAvg();
         textListCache.add(FormattingUtil.formatWithConstantWidth("gtmoremachine.machine.wireless_energy_monitor.tooltip.last_minute",
@@ -81,22 +95,18 @@ public interface IWirelessMonitor extends IWirelessEnergyContainerHolder {
                     getTimeToFillDrainText(energyTotal.divide(multiply))).withStyle(ChatFormatting.GRAY));
         }
 
-        if (GTMMConfig.INSTANCE.isWirelessRateEnable && container.getBindPos() != null) {
+        if (GTMMConfig.getINSTANCE().isWirelessRateEnable && container.getBindPos() != null) {
             String pos = container.getBindPos().pos().toShortString();
             textListCache.add(Component.translatable("gtmoremachine.machine.wireless_energy_hatch.tooltip.2",
                     Component.translatable("recipe.condition.dimension.tooltip", container.getBindPos().dimension().location().toString()).append(" [").append(pos).append("] ")).withStyle(ChatFormatting.GRAY));
         }
-        textListCache.add(Component.translatable("gtmoremachine.machine.wireless_energy_monitor.tooltip.statistics",
-                ComponentPanelWidget.withButton(getStatisticsText(statistics), "statistics", getStaticsclolor(statistics)),
-                ComponentPanelWidget.withButton(getFormatText(format), "format", getFormatclolor(format)),
-                ComponentPanelWidget.withButton(getPowerStatusText(powerStatus), "powerStatus", getPowerStatusclolor(powerStatus))));
+        textListCache.add(Component.translatable("gtmoremachine.machine.wireless_monitor.tooltip.statistics.energy",
+                ComponentPanelWidget.withButton(getStatisticsText(statistics), "statistics", getStaticscolor(statistics)),
+                ComponentPanelWidget.withButton(getFormatText(format), "format", getFormatcolor(format)),
+                ComponentPanelWidget.withButton(getPowerStatusText(powerStatus), "powerStatus", getPowerStatusclolor(powerStatus)),
+                ComponentPanelWidget.withButton(getSortingRulesText(sorting), "sortingrules", getSortingRulescolor(sorting))));
 
-        List<Map.Entry<MetaMachine, ITransferData>> entryList = new ArrayList<>(WirelessEnergyContainer.TRANSFER_DATA.entrySet());
-        entryList.sort((entry1, entry2) -> {
-            BigInteger throughput1 = entry1.getValue().Throughput();
-            BigInteger throughput2 = entry2.getValue().Throughput();
-            return throughput1.compareTo(throughput2);
-        });
+        List<Map.Entry<MetaMachine, ITransferData>> entryList = getEntryList(sorting);
 
         for (Map.Entry<MetaMachine, ITransferData> m : entryList) {
             UUID uuid = m.getValue().UUID();
@@ -150,6 +160,20 @@ public interface IWirelessMonitor extends IWirelessEnergyContainerHolder {
         return Component.translatable(key, NumberUtils.formatLong(fillTime));
     }
 
+    private List<Map.Entry<MetaMachine, ITransferData>> getEntryList(Sorting sorting) {
+        List<Map.Entry<MetaMachine, ITransferData>> entryList = new ArrayList<>(WirelessEnergyContainer.TRANSFER_DATA.entrySet());
+        entryList.sort((entry1, entry2) -> {
+            BigInteger throughput1 = entry1.getValue().Throughput();
+            BigInteger throughput2 = entry2.getValue().Throughput();
+            if (sorting == Sorting.Ascending) {
+                return throughput1.compareTo(throughput2);
+            } else {
+                return throughput2.compareTo(throughput1);
+            }
+        });
+        return entryList;
+    }
+
     private static Component getStatisticsText(Statistics statistics) {
         return switch (statistics) {
             case Global -> Component.translatable("gtmoremachine.machine.wireless_energy_monitor.tooltip.all");
@@ -157,7 +181,7 @@ public interface IWirelessMonitor extends IWirelessEnergyContainerHolder {
         };
     }
 
-    private static int getStaticsclolor(Statistics statistics) {
+    private static int getStaticscolor(Statistics statistics) {
         return switch (statistics) {
             case Global -> ChatFormatting.YELLOW.getColor();
             case Team -> ChatFormatting.GOLD.getColor();
@@ -171,7 +195,7 @@ public interface IWirelessMonitor extends IWirelessEnergyContainerHolder {
         };
     }
 
-    private static int getFormatclolor(Format format) {
+    private static int getFormatcolor(Format format) {
         return switch (format) {
             case Science -> ChatFormatting.AQUA.getColor();
             case Unit -> ChatFormatting.RED.getColor();
@@ -191,6 +215,20 @@ public interface IWirelessMonitor extends IWirelessEnergyContainerHolder {
             case All -> ChatFormatting.GREEN.getColor();
             case In -> ChatFormatting.BLUE.getColor();
             case Out -> ChatFormatting.DARK_RED.getColor();
+        };
+    }
+
+    private static Component getSortingRulesText(Sorting sorting) {
+        return switch (sorting) {
+            case Ascending -> Component.translatable("gtmoremachine.machine.wireless_energy_monitor.tooltip.ascending");
+            case Descendingorder -> Component.translatable("gtmoremachine.machine.wireless_energy_monitor.tooltip.descendingorder");
+        };
+    }
+
+    private static int getSortingRulescolor(Sorting sorting) {
+        return switch (sorting) {
+            case Ascending -> ChatFormatting.GREEN.getColor();
+            case Descendingorder -> ChatFormatting.RED.getColor();
         };
     }
 }
