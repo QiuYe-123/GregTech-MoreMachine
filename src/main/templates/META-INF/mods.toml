@@ -9,8 +9,9 @@ version="${version}"
 displayName="${mod_name}"
 authors = "QiuYe"
 description = "${mod_description}"
+logoFile = "icon.png"
 displayURL = "${mod_url}"
-credits = ""
+credits = "QiuYe ,Original Project by liansishen"
 
 
 [[dependencies.${ mod_id }]]
@@ -58,3 +59,7 @@ mandatory = false
 versionRange = "[7,)"
 ordering = "BEFORE"
 side = "BOTH"
+[dependencies.${ mod_id }.mc-publish]
+ignore = false
+modrinth = "gregtechceu-modern"
+curseforge = "gregtechceu-modern"

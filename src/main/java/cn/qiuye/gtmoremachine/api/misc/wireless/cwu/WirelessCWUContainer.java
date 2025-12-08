@@ -55,8 +55,8 @@ public class WirelessCWUContainer {
         this.outCWUStat = new TimeStat(currentTick);
     }
 
-    public void upload(int cwu, @Nullable MetaMachine machine) {
-        if (cwu <= 0) return;
+    public int upload(int cwu, @Nullable MetaMachine machine) {
+        if (cwu <= 0) return 0;
         if (machine != null) {
             allCWUStat.update(BigInteger.valueOf(cwu), server.getTickCount());
             inCWUStat.update(BigInteger.valueOf(cwu), server.getTickCount());
@@ -66,6 +66,7 @@ public class WirelessCWUContainer {
         }
         storage = new BigInteger(String.valueOf(inCWUStat.getAvg())).add(new BigInteger(String.valueOf(outCWUStat.getAvg())));
         WirelessCWUSavaedData.INSTANCE.setDirty(true);
+        return 0;
     }
 
     public int download(int cwu, @Nullable MetaMachine machine) {

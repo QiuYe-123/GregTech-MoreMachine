@@ -96,7 +96,7 @@ public class WirelessNotifiableCWUContainer extends NotifiableRecipeHandlerTrait
                 // Ask the attached Transmitter hatch, if it exists
                 IOpticalComputationProvider provider = getOpticalNetProvider();
                 if (provider == null) return 0;
-                return this.container.getfreeCWU();
+                return provider.requestCWUt(cwut, simulate, seen);
             }
         } else {
             lastOutputCwu = lastOutputCwu - cwut;
@@ -143,7 +143,7 @@ public class WirelessNotifiableCWUContainer extends NotifiableRecipeHandlerTrait
                 // Ask the attached Transmitter hatch, if it exists
                 IOpticalComputationProvider provider = getOpticalNetProvider();
                 if (provider == null) return 0;
-                return this.container.getfreeCWU();
+                return provider.getMaxCWUt(seen);
             }
         } else {
             return lastOutputCwu;
@@ -189,6 +189,7 @@ public class WirelessNotifiableCWUContainer extends NotifiableRecipeHandlerTrait
             if (!simulate) {
                 this.currentOutputCwu = Math.min(canInput, sum);
             }
+            canInput = this.container.upload(canInput, this.machine);
             sum = sum - canInput;
         }
         return sum <= 0 ? null : Collections.singletonList(sum);
