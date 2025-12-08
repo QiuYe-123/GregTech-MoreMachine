@@ -3,9 +3,8 @@ package cn.qiuye.gtmoremachine.common.block.machine.trait;
 import cn.qiuye.gtmoremachine.GTmm;
 import cn.qiuye.gtmoremachine.api.machine.IWirelessCWUContainerHolder;
 import cn.qiuye.gtmoremachine.api.misc.wireless.cwu.WirelessCWUContainer;
-
-import cn.qiuye.gtmoremachine.common.machine.multiblock.part.WirelessCWUHatchMachine;
 import cn.qiuye.gtmoremachine.common.machine.multiblock.part.WirelessCWUHatchPartMachine;
+
 import com.gregtechceu.gtceu.api.capability.IOpticalComputationHatch;
 import com.gregtechceu.gtceu.api.capability.IOpticalComputationProvider;
 import com.gregtechceu.gtceu.api.capability.IOpticalComputationReceiver;
