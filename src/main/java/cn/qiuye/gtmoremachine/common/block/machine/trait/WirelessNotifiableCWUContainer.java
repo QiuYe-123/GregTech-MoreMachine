@@ -14,6 +14,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.IRecipeCapabilityHolder;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
@@ -29,6 +30,7 @@ import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -94,7 +96,7 @@ public class WirelessNotifiableCWUContainer extends NotifiableRecipeHandlerTrait
                 // Ask the attached Transmitter hatch, if it exists
                 IOpticalComputationProvider provider = getOpticalNetProvider();
                 if (provider == null) return 0;
-                return provider.requestCWUt(cwut, simulate, seen);
+                return this.container.getfreeCWU();
             }
         } else {
             lastOutputCwu = lastOutputCwu - cwut;
@@ -141,7 +143,7 @@ public class WirelessNotifiableCWUContainer extends NotifiableRecipeHandlerTrait
                 // Ask the attached Transmitter hatch, if it exists
                 IOpticalComputationProvider provider = getOpticalNetProvider();
                 if (provider == null) return 0;
-                return provider.getMaxCWUt(seen);
+                return this.container.getfreeCWU();
             }
         } else {
             return lastOutputCwu;
@@ -155,8 +157,41 @@ public class WirelessNotifiableCWUContainer extends NotifiableRecipeHandlerTrait
     }
 
     @Override
-    public List<Integer> handleRecipeInner(IO io, GTRecipe recipe, List<Integer> left, boolean simulate) {
-        return left;
+    public @Nullable List<Integer> handleRecipeInner(IO io, GTRecipe recipe, List<Integer> left, boolean simulate) {
+        IOpticalComputationProvider provider = getOpticalNetProvider();
+        if (provider == null) return left;
+
+        int sum = left.stream().mapToInt(Integer::intValue).sum();
+        if (io == IO.IN) {
+            int availableCWUt = requestCWUt(Integer.MAX_VALUE, true);
+            if (availableCWUt >= sum) {
+                if (recipe.data.getBoolean("duration_is_total_cwu")) {
+                    int drawn = this.container.download(provider.requestCWUt(availableCWUt, simulate), this.machine);
+                    if (!simulate) {
+                        if (machine instanceof IRecipeLogicMachine rlm) {
+                            // first, remove the progress the recipe logic adds.
+                            rlm.getRecipeLogic().setProgress(rlm.getRecipeLogic().getProgress() - 1 + drawn);
+                        } else if (machine instanceof IMultiPart multiPart) {
+                            for (IMultiController controller : multiPart.getControllers()) {
+                                if (controller instanceof IRecipeLogicMachine rlm) {
+                                    rlm.getRecipeLogic().setProgress(rlm.getRecipeLogic().getProgress() - 1 + drawn);
+                                }
+                            }
+                        }
+                    }
+                    sum -= drawn;
+                } else {
+                    sum -= provider.requestCWUt(sum, simulate);
+                }
+            }
+        } else if (io == IO.OUT) {
+            int canInput = this.getMaxCWUt() - this.lastOutputCwu;
+            if (!simulate) {
+                this.currentOutputCwu = Math.min(canInput, sum);
+            }
+            sum = sum - canInput;
+        }
+        return sum <= 0 ? null : Collections.singletonList(sum);
     }
 
     @Override
