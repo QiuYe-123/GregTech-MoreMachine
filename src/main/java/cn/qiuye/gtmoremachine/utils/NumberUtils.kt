@@ -27,10 +27,28 @@ object NumberUtils {
     fun formatLong(number: Long): String = FormattingUtil.formatNumber(number.toDouble())
 
     @JvmStatic
+    fun formatLong(number: Long, format: Format): String = if (format ==
+        Format.Unit
+    ) {
+        FormattingUtil.formatNumber(number.toDouble())
+    } else {
+        FormattingUtil.DECIMAL_FORMAT_SIC.format(number)
+    }
+
+    @JvmStatic
     fun longnumberText(number: Long): MutableComponent = Component.literal(formatLong(number))
 
     @JvmStatic
     fun formatDouble(number: Double): String = FormattingUtil.formatNumber(number)
+
+    @JvmStatic
+    fun formatDouble(number: Double, format: Format): String = if (format ==
+        Format.Unit
+    ) {
+        FormattingUtil.formatNumber(number)
+    } else {
+        FormattingUtil.DECIMAL_FORMAT_SIC.format(number)
+    }
 
     @JvmStatic
     fun doublenumberText(number: Double): MutableComponent = Component.literal(formatDouble(number))

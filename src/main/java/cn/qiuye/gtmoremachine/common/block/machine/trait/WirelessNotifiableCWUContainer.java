@@ -3,7 +3,6 @@ package cn.qiuye.gtmoremachine.common.block.machine.trait;
 import cn.qiuye.gtmoremachine.GTmm;
 import cn.qiuye.gtmoremachine.api.machine.IWirelessCWUContainerHolder;
 import cn.qiuye.gtmoremachine.api.misc.wireless.cwu.WirelessCWUContainer;
-import cn.qiuye.gtmoremachine.common.machine.multiblock.part.WirelessCWUHatchPartMachine;
 
 import com.gregtechceu.gtceu.api.capability.IOpticalComputationHatch;
 import com.gregtechceu.gtceu.api.capability.IOpticalComputationProvider;
@@ -157,7 +156,8 @@ public class WirelessNotifiableCWUContainer extends NotifiableRecipeHandlerTrait
     }
 
     @Override
-    public @Nullable List<Integer> handleRecipeInner(IO io, GTRecipe recipe, List<Integer> left, boolean simulate) {
+    public @Nullable List<Integer> handleRecipeInner(IO io, GTRecipe recipe, List<Integer> left,
+                                                     boolean simulate) {
         IOpticalComputationProvider provider = getOpticalNetProvider();
         if (provider == null) return left;
 
@@ -166,7 +166,7 @@ public class WirelessNotifiableCWUContainer extends NotifiableRecipeHandlerTrait
             int availableCWUt = requestCWUt(Integer.MAX_VALUE, true);
             if (availableCWUt >= sum) {
                 if (recipe.data.getBoolean("duration_is_total_cwu")) {
-                    int drawn = this.container.download(provider.requestCWUt(availableCWUt, simulate), this.machine);
+                    int drawn = provider.requestCWUt(availableCWUt, simulate);
                     if (!simulate) {
                         if (machine instanceof IRecipeLogicMachine rlm) {
                             // first, remove the progress the recipe logic adds.
@@ -189,7 +189,6 @@ public class WirelessNotifiableCWUContainer extends NotifiableRecipeHandlerTrait
             if (!simulate) {
                 this.currentOutputCwu = Math.min(canInput, sum);
             }
-            canInput = this.container.upload(canInput, this.machine);
             sum = sum - canInput;
         }
         return sum <= 0 ? null : Collections.singletonList(sum);
@@ -260,12 +259,6 @@ public class WirelessNotifiableCWUContainer extends NotifiableRecipeHandlerTrait
 
     @Nullable
     private IOpticalComputationProvider getOpticalNetProvider() {
-        if (machine instanceof WirelessCWUHatchPartMachine woc) {
-            var transmitterMachine = MetaMachine.getMachine(machine.getLevel(), woc.getPos());
-            if (transmitterMachine instanceof WirelessCWUHatchPartMachine transmitter) {
-                return transmitter.getTrait();
-            }
-        }
         return null;
     }
 }
