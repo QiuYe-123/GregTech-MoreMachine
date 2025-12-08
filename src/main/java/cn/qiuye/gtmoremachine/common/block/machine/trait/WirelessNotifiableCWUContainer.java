@@ -4,6 +4,8 @@ import cn.qiuye.gtmoremachine.GTmm;
 import cn.qiuye.gtmoremachine.api.machine.IWirelessCWUContainerHolder;
 import cn.qiuye.gtmoremachine.api.misc.wireless.cwu.WirelessCWUContainer;
 
+import cn.qiuye.gtmoremachine.common.machine.multiblock.part.WirelessCWUHatchMachine;
+import cn.qiuye.gtmoremachine.common.machine.multiblock.part.WirelessCWUHatchPartMachine;
 import com.gregtechceu.gtceu.api.capability.IOpticalComputationHatch;
 import com.gregtechceu.gtceu.api.capability.IOpticalComputationProvider;
 import com.gregtechceu.gtceu.api.capability.IOpticalComputationReceiver;
@@ -89,13 +91,16 @@ public class WirelessNotifiableCWUContainer extends NotifiableRecipeHandlerTrait
                     GTmm.LOGGER.error("NotifiableComputationContainer could request CWU/t from its machine!");
                     return 0;
                 }
-            } else {}
+            } else {
+                // Ask the attached Transmitter hatch, if it exists
+                IOpticalComputationProvider provider = getOpticalNetProvider();
+                if (provider == null) return 0;
+                return provider.requestCWUt(cwut, simulate, seen);
+            }
         } else {
             lastOutputCwu = lastOutputCwu - cwut;
             return Math.min(lastOutputCwu, cwut);
         }
-
-        return 0;
     }
 
     /**
@@ -133,11 +138,15 @@ public class WirelessNotifiableCWUContainer extends NotifiableRecipeHandlerTrait
                     GTmm.LOGGER.error("NotifiableComputationContainer could not get maximum CWU/t from its machine!");
                     return 0;
                 }
-            } else {}
+            } else {
+                // Ask the attached Transmitter hatch, if it exists
+                IOpticalComputationProvider provider = getOpticalNetProvider();
+                if (provider == null) return 0;
+                return provider.getMaxCWUt(seen);
+            }
         } else {
             return lastOutputCwu;
         }
-        return 0;
     }
 
     @Override
@@ -212,5 +221,16 @@ public class WirelessNotifiableCWUContainer extends NotifiableRecipeHandlerTrait
     @Override
     public WirelessCWUContainer getWirelessCWUContainerCache() {
         return this.container;
+    }
+
+    @Nullable
+    private IOpticalComputationProvider getOpticalNetProvider() {
+        if (machine instanceof WirelessCWUHatchPartMachine woc) {
+            var transmitterMachine = MetaMachine.getMachine(machine.getLevel(), woc.getPos());
+            if (transmitterMachine instanceof WirelessCWUHatchPartMachine transmitter) {
+                return transmitter.getTrait();
+            }
+        }
+        return null;
     }
 }
