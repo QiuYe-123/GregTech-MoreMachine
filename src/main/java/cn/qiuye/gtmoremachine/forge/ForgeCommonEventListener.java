@@ -15,6 +15,8 @@ import net.minecraftforge.event.level.LevelEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
+import java.math.BigInteger;
+
 @Mod.EventBusSubscriber(modid = GTmm.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class ForgeCommonEventListener {
 
@@ -25,10 +27,10 @@ public class ForgeCommonEventListener {
                 boolean refreshBinding = event.getServer().getTickCount() % 200 == 0;
                 for (WirelessEnergyContainer container : WirelessEnergySavedData.INSTANCE.containerMap.values()) {
                     if (refreshBinding) {
-                        long rate = 0;
+                        BigInteger rate = BigInteger.ZERO;
                         GlobalPos pos = container.getBindPos();
                         if (pos != null) {
-                            rate = WirelessEnergyBindingToolBehavior.getRate(event.getServer().getLevel(pos.dimension()), pos.pos());
+                            rate = WirelessEnergyBindingToolBehavior.Companion.getRate(event.getServer().getLevel(pos.dimension()), pos.pos());
                         }
                         container.setRate(rate);
                     }

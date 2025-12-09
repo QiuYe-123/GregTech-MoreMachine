@@ -32,7 +32,7 @@ public class WirelessEnergyContainer {
 
     private BigInteger storage;
 
-    private long rate;
+    private BigInteger rate;
 
     private GlobalPos bindPos;
 
@@ -44,7 +44,7 @@ public class WirelessEnergyContainer {
 
     private final TimeStat outEnergyStat;
 
-    public WirelessEnergyContainer(UUID uuid, BigInteger storage, long rate, GlobalPos bindPos) {
+    public WirelessEnergyContainer(UUID uuid, BigInteger storage, BigInteger rate, GlobalPos bindPos) {
         this.storage = storage;
         this.rate = rate;
         this.bindPos = bindPos;
@@ -65,7 +65,7 @@ public class WirelessEnergyContainer {
 
     public long addEnergy(long energy, @Nullable MetaMachine machine) {
         long change = energy;
-        if (GTMMConfig.getINSTANCE().isWirelessRateEnable) change = Math.min(rate, energy);
+        if (GTMMConfig.getINSTANCE().isWirelessRateEnable) change = Math.min(BigIntegerUtils.getLongValue(rate), energy);
         if (change <= 0) return 0;
         storage = storage.add(BigInteger.valueOf(change));
         WirelessEnergySavedData.INSTANCE.setDirty(true);
@@ -81,7 +81,7 @@ public class WirelessEnergyContainer {
 
     public long removeEnergy(long energy, @Nullable MetaMachine machine) {
         long change = Math.min(BigIntegerUtils.getLongValue(storage), energy);
-        if (GTMMConfig.getINSTANCE().isWirelessRateEnable) change = Math.min(BigIntegerUtils.getLongValue(storage), Math.min(rate, energy));
+        if (GTMMConfig.getINSTANCE().isWirelessRateEnable) change = Math.min(BigIntegerUtils.getLongValue(storage), Math.min(BigIntegerUtils.getLongValue(rate), energy));
         if (change <= 0) return 0;
         storage = storage.subtract(BigInteger.valueOf(change));
         WirelessEnergySavedData.INSTANCE.setDirty(true);
@@ -129,7 +129,7 @@ public class WirelessEnergyContainer {
         WirelessEnergySavedData.INSTANCE.setDirty(true);
     }
 
-    public void setRate(long rate) {
+    public void setRate(BigInteger rate) {
         this.rate = rate;
         WirelessEnergySavedData.INSTANCE.setDirty(true);
     }
