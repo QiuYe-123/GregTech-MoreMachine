@@ -425,6 +425,8 @@
   "block.gtmoremachine.zpm_huge_item_import_bus": "snᗺ ʇnduI WԀZɔ§",
   "block.gtmoremachine.zpm_programmablec_dualhatch": "ɥɔʇɐH ןɐnᗡ ɔǝןqɐɯɯɐɹboɹԀ WԀZɔ§",
   "block.gtmoremachine.zpm_programmablec_hatch": "ɥɔʇɐH ɔǝןqɐɯɯɐɹboɹԀ WԀZɔ§",
+  "config.gtmoremachine.option.isWirelessCapacitylimitEnable": "ǝןqɐuƎʇıɯıןʎʇıɔɐdɐƆssǝןǝɹıMsı",
+  "config.gtmoremachine.option.isWirelessDimensionRateEnable": "ǝןqɐuƎǝʇɐᴚuoısuǝɯıᗡssǝןǝɹıMsı",
   "config.gtmoremachine.option.isWirelessRateEnable": "ǝןqɐuƎǝʇɐᴚssǝןǝɹıMsı",
   "config.jade.plugin_gtmoremachine.wireless_cwu_hatch_provider.tooltip.1": "∩MƆ %s :∩MƆ ןɐʇo⟘",
   "config.jade.plugin_gtmoremachine.wireless_cwu_provider": "ɹoʇıuoW ∩MƆ ssǝןǝɹıM ]ǝuıɥɔɐWǝɹoW⟘⅁[",

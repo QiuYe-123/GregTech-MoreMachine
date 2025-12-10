@@ -87,7 +87,10 @@ public interface IWirelessMonitor extends IWirelessEnergyContainerHolder {
         BigInteger multiply = avgEnergy.abs().toBigInteger().multiply(BigInteger.valueOf(20));
         if (compare > 0) {
             textListCache.add(Component.translatable("gtceu.multiblock.power_substation.time_to_fill",
-                    container.getCapacity() == null ? Component.translatable("gtmoremachine.machine.wireless_energy_monitor.tooltip.time_to_fill") : getTimeToFillDrainText((container.getCapacity().subtract(energyTotal)).divide(multiply))).withStyle(ChatFormatting.GRAY));
+                    GTMMConfig.getINSTANCE().isWirelessCapacitylimitEnable ?
+                            getTimeToFillDrainText((container.getCapacity().subtract(energyTotal)).divide(multiply)) :
+                            Component.translatable("gtmoremachine.machine.wireless_energy_monitor.tooltip.time_to_fill"))
+                    .withStyle(ChatFormatting.GRAY));
         } else if (compare < 0) {
             textListCache.add(Component.translatable("gtceu.multiblock.power_substation.time_to_drain",
                     getTimeToFillDrainText(energyTotal.divide(multiply))).withStyle(ChatFormatting.GRAY));

@@ -5,6 +5,7 @@ import cn.qiuye.gtmoremachine.GTmm
 import dev.toma.configuration.Configuration
 import dev.toma.configuration.config.Config
 import dev.toma.configuration.config.Configurable
+import dev.toma.configuration.config.UpdateRestrictions
 import dev.toma.configuration.config.format.ConfigFormats
 
 @Config(id = GTmm.MOD_ID)
@@ -17,6 +18,24 @@ class GTMMConfig {
     )
     @JvmField
     var isWirelessRateEnable: Boolean = true
+
+    @Configurable
+    @Configurable.UpdateRestriction(UpdateRestrictions.GAME_RESTART)
+    @Configurable.Comment(
+        "如果启用，则每个维度需要放置维度电网传输装置来绑定维度",
+        "If enabled, a Dimensional Grid Transmission Device must be placed in each dimension to bind it.",
+    )
+    @JvmField
+    var isWirelessDimensionRateEnable: Boolean = false
+
+    @Configurable
+    @Configurable.UpdateRestriction(UpdateRestrictions.GAME_RESTART)
+    @Configurable.Comment(
+        "如果启用，则需要放置电网存储系统，可以放置多台提高总容量",
+        "If enabled, Grid Storage Systems must be placed; multiple units can be installed to increase total capacity.",
+    )
+    @JvmField
+    var isWirelessCapacitylimitEnable: Boolean = false
 
     companion object {
         @JvmStatic

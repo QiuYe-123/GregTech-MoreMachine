@@ -171,6 +171,8 @@
   "config.jade.plugin_gtmoremachine.wireless_cwu_provider": "[GTMoreMachine] 无线CWU监视器",
   "config.jade.plugin_gtmoremachine.wireless_cwu_hatch_provider.tooltip.1": "CWU总量：%s CWU",
   "config.gtmoremachine.option.isWirelessRateEnable": "是否启用无线能源传输限制。",
+  "config.gtmoremachine.option.isWirelessDimensionRateEnable": "是否启用无线能源维度限制。",
+  "config.gtmoremachine.option.isWirelessCapacitylimitEnable": "是否启用无线能源容量限制。",
   "gtmoremachine.machine.energy_hatch.input.tooltip": "为多方块结构输入能量",
   "gtmoremachine.machine.energy_hatch.output.tooltip": "为多方块结构输出能量",
   "gtmoremachine.machine.energy_hatch.target.tooltip": "为多方块结构输入大量能量",

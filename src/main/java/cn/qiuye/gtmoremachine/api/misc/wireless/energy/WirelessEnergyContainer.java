@@ -7,9 +7,11 @@ import cn.qiuye.gtmoremachine.utils.BigIntegerUtils;
 import cn.qiuye.gtmoremachine.utils.TeamUtils;
 
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.core.GlobalPos;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.world.level.Level;
 
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
@@ -24,6 +26,8 @@ public class WirelessEnergyContainer {
     public static boolean observed;
 
     public static final WeakHashMap<MetaMachine, ITransferData> TRANSFER_DATA = new WeakHashMap<>();
+    public static final WeakHashMap<MetaMachine, IDimensionTransferData> DIMENSIONAL_TRANSFER_DATA = new WeakHashMap<>();
+    public static final WeakHashMap<MetaMachine, ICapacitylimitData> CAPACITY_STORAGE_DATA = new WeakHashMap<>();
     public static MinecraftServer server;
 
     public static WirelessEnergyContainer getOrCreateContainer(UUID uuid) {
@@ -36,6 +40,8 @@ public class WirelessEnergyContainer {
 
     private GlobalPos bindPos;
 
+    private BigInteger capacity;
+
     private final UUID uuid;
 
     private final TimeStat allEnergyStat;
@@ -44,10 +50,11 @@ public class WirelessEnergyContainer {
 
     private final TimeStat outEnergyStat;
 
-    public WirelessEnergyContainer(UUID uuid, BigInteger storage, BigInteger rate, GlobalPos bindPos) {
+    public WirelessEnergyContainer(UUID uuid, BigInteger storage, BigInteger rate, GlobalPos bindPos, BigInteger capacity) {
         this.storage = storage;
         this.rate = rate;
         this.bindPos = bindPos;
+        this.capacity = capacity;
         this.uuid = uuid;
         this.allEnergyStat = new TimeStat(0);
         this.inEnergyStat = new TimeStat(0);
@@ -57,6 +64,8 @@ public class WirelessEnergyContainer {
     private WirelessEnergyContainer(UUID uuid) {
         this.uuid = uuid;
         this.storage = BigInteger.ZERO;
+        this.rate = BigInteger.ZERO;
+        this.capacity = BigInteger.ZERO;
         int currentTick = server.getTickCount();
         this.allEnergyStat = new TimeStat(currentTick);
         this.inEnergyStat = new TimeStat(currentTick);
@@ -66,6 +75,8 @@ public class WirelessEnergyContainer {
     public long addEnergy(long energy, @Nullable MetaMachine machine) {
         long change = energy;
         if (GTMMConfig.getINSTANCE().isWirelessRateEnable) change = Math.min(BigIntegerUtils.getLongValue(rate), energy);
+        if (GTMMConfig.getINSTANCE().isWirelessDimensionRateEnable && isDimensionBound(change, machine)) return 0;
+        if (GTMMConfig.getINSTANCE().isWirelessCapacitylimitEnable && storage.add(BigInteger.valueOf(change)).compareTo(capacity) > 0) change = BigIntegerUtils.getLongValue(capacity.subtract(storage));
         if (change <= 0) return 0;
         storage = storage.add(BigInteger.valueOf(change));
         WirelessEnergySavedData.INSTANCE.setDirty(true);
@@ -82,6 +93,7 @@ public class WirelessEnergyContainer {
     public long removeEnergy(long energy, @Nullable MetaMachine machine) {
         long change = Math.min(BigIntegerUtils.getLongValue(storage), energy);
         if (GTMMConfig.getINSTANCE().isWirelessRateEnable) change = Math.min(BigIntegerUtils.getLongValue(storage), Math.min(BigIntegerUtils.getLongValue(rate), energy));
+        if (GTMMConfig.getINSTANCE().isWirelessDimensionRateEnable && isDimensionBound(change, machine)) return 0;
         if (change <= 0) return 0;
         storage = storage.subtract(BigInteger.valueOf(change));
         WirelessEnergySavedData.INSTANCE.setDirty(true);
@@ -95,7 +107,9 @@ public class WirelessEnergyContainer {
         return change;
     }
 
-    public BigInteger addEnergy(BigInteger change, @Nullable MetaMachine machine) {
+    public BigInteger addEnergy(BigInteger energy, @Nullable MetaMachine machine) {
+        BigInteger change = energy;
+        if (GTMMConfig.getINSTANCE().isWirelessCapacitylimitEnable && storage.add(change).compareTo(capacity) > 0) change = capacity.subtract(storage);
         if (change.compareTo(BigInteger.ZERO) <= 0) return BigInteger.ZERO;
         storage = storage.add(change);
         WirelessEnergySavedData.INSTANCE.setDirty(true);
@@ -139,7 +153,34 @@ public class WirelessEnergyContainer {
         WirelessEnergySavedData.INSTANCE.setDirty(true);
     }
 
-    public BigInteger getCapacity() {
-        return null;
+    public void setCapacity(BigInteger StorageCapacity, boolean Bind, MetaMachine machine) {
+        if (Bind) {
+            if (machine != null) CAPACITY_STORAGE_DATA.put(machine, new CapacityStorageData(uuid, StorageCapacity, machine));
+            this.capacity = this.capacity.add(StorageCapacity);
+        } else {
+            if (machine != null) CAPACITY_STORAGE_DATA.remove(machine);
+            this.capacity = this.capacity.subtract(StorageCapacity);
+        }
+        WirelessEnergySavedData.INSTANCE.setDirty(true);
+    }
+
+    public void setDimensional(Level level, int Voltagelevel, boolean Bind, MetaMachine machine) {
+        if (Bind) {
+            if (machine != null) DIMENSIONAL_TRANSFER_DATA.put(machine, new DimensionBoundData(uuid, level, Voltagelevel, machine));
+        } else {
+            if (machine != null) DIMENSIONAL_TRANSFER_DATA.remove(machine);
+        }
+        WirelessEnergySavedData.INSTANCE.setDirty(true);
+    }
+
+    private boolean isDimensionBound(long energy, MetaMachine machine) {
+        boolean bound = true;
+        for (IDimensionTransferData data : DIMENSIONAL_TRANSFER_DATA.values()) {
+            if ((data.level() == machine.getLevel()) && (data.Voltagelevel() >= GTUtil.getFloorTierByVoltage(energy))) {
+                bound = false;
+                break;
+            }
+        }
+        return bound;
     }
 }
