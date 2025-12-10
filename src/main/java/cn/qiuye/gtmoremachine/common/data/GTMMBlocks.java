@@ -7,6 +7,7 @@ import cn.qiuye.gtmoremachine.common.block.CapacityComponentBlock;
 import cn.qiuye.gtmoremachine.common.data.models.GTMMModels;
 import cn.qiuye.gtmoremachine.config.GTMMConfig;
 
+import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 
@@ -40,7 +41,7 @@ public class GTMMBlocks {
         var CapacityComponentBlock = GTMMConfig.getINSTANCE().isWirelessCapacitylimitEnable ? GTMMREGISTRATE
                 .block("%s_capacity_component".formatted(CapacityComponentData.getCapacityComponentName()),
                         p -> new CapacityComponentBlock(p, CapacityComponentData))
-                .lang("%s Wireless Energy Capacity Component".formatted(CapacityComponentData.getUpperCapacityComponentName()))
+                .lang("%s Wireless Energy Capacity Component".formatted(CapacityComponentData.getTier() == -1 ? "Empty tier" : GTValues.VNF[CapacityComponentData.getTier()]))
                 .initialProperties(() -> Blocks.IRON_BLOCK)
                 .properties(p -> p.isValidSpawn((state, level, pos, entityType) -> false))
                 .blockstate(GTMMModels.createCapacityComponentBlockModel(CapacityComponentData))

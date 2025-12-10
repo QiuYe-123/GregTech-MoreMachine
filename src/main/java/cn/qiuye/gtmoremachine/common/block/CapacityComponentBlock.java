@@ -111,11 +111,6 @@ public class CapacityComponentBlock extends Block {
         }
 
         @Override
-        public String getUpperCapacityComponentName() {
-            return name().toUpperCase(Locale.ROOT);
-        }
-
-        @Override
         public String getSerializedName() {
             return getCapacityComponentName();
         }

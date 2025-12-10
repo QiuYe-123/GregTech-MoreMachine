@@ -150,7 +150,7 @@ public class AdvancedTerminalBehavior implements IItemUIFactory {
                         .setPressed(getUseDemolish(handItem))
                         .setTexture(new GuiTextureGroup(GuiTextures.BUTTON, new TextTexture("OFF")),
                                 new GuiTextureGroup(GuiTextures.BUTTON, new TextTexture("ON"))));
-        var blockLabel = new ExtendLabelWidget(47, 21, getBlockComponent(handItem));
+        var blockLabel = new ExtendLabelWidget(40, 21, getBlockComponent(handItem));
         var blockMap = new BlockMapSelectorWidget(group.getSizeHeight() + 4, contain.getSizeWidth(), (s, i) -> {
             if (s != null && i != null) {
                 var tag = handItem.getOrCreateTag();
