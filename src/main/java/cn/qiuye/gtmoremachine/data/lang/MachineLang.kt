@@ -7,6 +7,15 @@ object MachineLang {
     fun init(provider: RegistrateLangProvider) {
         provider.add("gtmoremachine.universal.disabled", "Multiblock Sharing §4Disabled")
         provider.add(
+            "block.gtmoremachine.capacity_component.tooltip_empty",
+            "§7For filling structural gaps in the Wireless Energy Storage Module",
+        )
+        provider.add("block.gtmoremachine.capacity_component.tooltip_filled", "§cCapacity component capacity: §f%d EU")
+        provider.add(
+            "block.gtmoremachine.capacity_component.tooltip_passive_drain",
+            "§cCapacity component passive energy consumption: §f%d EU",
+        )
+        provider.add(
             "gtmoremachine.machine.huge_item_bus.import.tooltip",
             "Inputs items for multiblock structures, with each slot able to store up to 2^31-1 items.",
         )

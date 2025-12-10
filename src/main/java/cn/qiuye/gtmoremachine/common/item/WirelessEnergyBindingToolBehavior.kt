@@ -50,8 +50,9 @@ class WirelessEnergyBindingToolBehavior : IInteractionItem {
             return when (machine) {
                 is BatteryBufferMachine -> calculateBatteryRate(machine)
                 is PowerSubstationMachine -> if (machine.isFormed) {
+                    // TODO 等实现电力网落全部组件及多变电站时应改为比4096更大的数值
                     machine.energyInfo.capacity() /
-                        BigInteger.valueOf(4096)
+                        BigInteger.valueOf(160)
                 } else {
                     BigInteger.ZERO
                 }

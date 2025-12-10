@@ -1,0 +1,19 @@
+{
+  "values": [
+    "gtmoremachine:empty_tier_component",
+    "gtmoremachine:lv_capacity_component",
+    "gtmoremachine:mv_capacity_component",
+    "gtmoremachine:hv_capacity_component",
+    "gtmoremachine:ev_capacity_component",
+    "gtmoremachine:iv_capacity_component",
+    "gtmoremachine:luv_capacity_component",
+    "gtmoremachine:zpm_capacity_component",
+    "gtmoremachine:uv_capacity_component",
+    "gtmoremachine:uhv_capacity_component",
+    "gtmoremachine:uev_capacity_component",
+    "gtmoremachine:uiv_capacity_component",
+    "gtmoremachine:uxv_capacity_component",
+    "gtmoremachine:opv_capacity_component",
+    "gtmoremachine:max_capacity_component"
+  ]
+}

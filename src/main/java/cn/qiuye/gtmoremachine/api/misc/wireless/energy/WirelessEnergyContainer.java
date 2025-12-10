@@ -156,11 +156,14 @@ public class WirelessEnergyContainer {
     public void setCapacity(BigInteger StorageCapacity, boolean Bind, MetaMachine machine) {
         if (Bind) {
             if (machine != null) CAPACITY_STORAGE_DATA.put(machine, new CapacityStorageData(uuid, StorageCapacity, machine));
-            this.capacity = this.capacity.add(StorageCapacity);
         } else {
             if (machine != null) CAPACITY_STORAGE_DATA.remove(machine);
-            this.capacity = this.capacity.subtract(StorageCapacity);
         }
+        BigInteger change = BigInteger.ZERO;
+        for (ICapacitylimitData data : CAPACITY_STORAGE_DATA.values()) {
+            change = change.add(data.StorageCapacity());
+        }
+        this.capacity = change;
         WirelessEnergySavedData.INSTANCE.setDirty(true);
     }
 
