@@ -18,6 +18,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import lombok.Setter;
+
 import java.util.Objects;
 import java.util.function.Supplier;
 
@@ -28,18 +30,16 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 public class AlignLabelWidget extends Widget implements IConfigurableWidget {
 
+    @Setter
     protected Supplier<String> textSupplier;
     @Nullable
     protected Component component;
-    @Configurable(
-                  name = "ldlib.gui.editor.name.text")
+    @Configurable(name = "ldlib.gui.editor.name.text")
     private String lastTextValue;
-    @Configurable(
-                  name = "ldlib.gui.editor.name.color")
+    @Configurable(name = "ldlib.gui.editor.name.color")
     @NumberColor
     private int color;
-    @Configurable(
-                  name = "ldlib.gui.editor.name.isShadow")
+    @Configurable(name = "ldlib.gui.editor.name.isShadow")
     private boolean dropShadow;
 
     public static String ALIGN_LEFT = "left";
@@ -53,7 +53,7 @@ public class AlignLabelWidget extends Widget implements IConfigurableWidget {
     }
 
     public AlignLabelWidget(int xPosition, int yPosition, String text) {
-        this(xPosition, yPosition, (Supplier) (() -> text));
+        this(xPosition, yPosition, (() -> text));
     }
 
     public AlignLabelWidget(int xPosition, int yPosition, Component component) {
@@ -74,8 +74,7 @@ public class AlignLabelWidget extends Widget implements IConfigurableWidget {
         this.textAlign = ALIGN_LEFT;
     }
 
-    @ConfigSetter(
-                  field = "lastTextValue")
+    @ConfigSetter(field = "lastTextValue")
     public void setText(String text) {
         this.textSupplier = () -> text;
         if (this.isRemote()) {
@@ -255,14 +254,6 @@ public class AlignLabelWidget extends Widget implements IConfigurableWidget {
             return true;
         } else {
             return IConfigurableWidget.super.handleDragging(dragging);
-        }
-    }
-
-    public void setTextSupplier(Supplier<String> textSupplier) {
-        if (textSupplier == null) {
-            throw new NullPointerException("textSupplier is marked non-null but is null");
-        } else {
-            this.textSupplier = textSupplier;
         }
     }
 }

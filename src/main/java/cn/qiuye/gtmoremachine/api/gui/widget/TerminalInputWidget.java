@@ -14,7 +14,7 @@ import java.util.function.Supplier;
 public class TerminalInputWidget extends WidgetGroup {
 
     @Getter
-    private Supplier<Integer> valueSupplier;
+    private final Supplier<Integer> valueSupplier;
     @Getter
     private Integer min = defaultMin();
     @Getter
