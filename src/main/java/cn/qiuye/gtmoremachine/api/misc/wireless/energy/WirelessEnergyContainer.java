@@ -26,7 +26,7 @@ public class WirelessEnergyContainer {
     public static boolean observed;
 
     public static final WeakHashMap<MetaMachine, ITransferData> TRANSFER_DATA = new WeakHashMap<>();
-    public static final WeakHashMap<MetaMachine, IDimensionTransferData> DIMENSIONAL_TRANSFER_DATA = new WeakHashMap<>();
+    public static final WeakHashMap<Level, IDimensionTransferData> DIMENSIONAL_TRANSFER_DATA = new WeakHashMap<>();
     public static final WeakHashMap<MetaMachine, ICapacitylimitData> CAPACITY_STORAGE_DATA = new WeakHashMap<>();
     public static MinecraftServer server;
 
@@ -164,23 +164,23 @@ public class WirelessEnergyContainer {
         WirelessEnergySavedData.INSTANCE.setDirty(true);
     }
 
-    public void setDimensional(Level level, int Voltagelevel, boolean Bind, MetaMachine machine) {
+    public void setDimensional(int Voltagelevel, boolean Bind, MetaMachine machine) {
         if (Bind) {
-            if (machine != null) DIMENSIONAL_TRANSFER_DATA.put(machine, new DimensionBoundData(uuid, level, Voltagelevel, machine));
+            if (machine != null) DIMENSIONAL_TRANSFER_DATA.put(machine.getLevel(), new DimensionBoundData(uuid, machine.getLevel(), Voltagelevel, machine));
         } else {
-            if (machine != null) DIMENSIONAL_TRANSFER_DATA.remove(machine);
+            if (machine != null) DIMENSIONAL_TRANSFER_DATA.remove(machine.getLevel());
         }
         WirelessEnergySavedData.INSTANCE.setDirty(true);
     }
 
     private boolean isDimensionBound(long energy, MetaMachine machine) {
-        boolean bound = true;
+        if (machine == null) return true;
+        int voltageTier = GTUtil.getFloorTierByVoltage(energy);
         for (IDimensionTransferData data : DIMENSIONAL_TRANSFER_DATA.values()) {
-            if ((data.level() == machine.getLevel()) && (data.Voltagelevel() >= GTUtil.getFloorTierByVoltage(energy))) {
-                bound = false;
-                break;
+            if (data.level() == machine.getLevel() && data.Voltagelevel() >= voltageTier) {
+                return false;
             }
         }
-        return bound;
+        return true;
     }
 }
