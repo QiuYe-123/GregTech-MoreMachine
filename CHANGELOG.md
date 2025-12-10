@@ -1,5 +1,17 @@
 # ChangeLog
 
+## Version [v1.3.0](https://github.com/QiuYe-123/GTMoreMachine/compare/v1.2.2-1.20.1...v1.3.0-1.20.1)
+### Added
+
+- 算力网络修复 by @QiuYe-123 in [#54](https://github.com/QiuYe-123/GTMoreMachine/pull/54)
+- 无线网络修复 by @QiuYe-123 in [#58](https://github.com/QiuYe-123/GTMoreMachine/pull/58)
+
+### Fixed
+
+- 算力网络修复 by @QiuYe-123 in [#54](https://github.com/QiuYe-123/GTMoreMachine/pull/54)
+- 无线网络修复 by @QiuYe-123 in [#58](https://github.com/QiuYe-123/GTMoreMachine/pull/58)
+
+ 
 ## Version [v1.2.2](https://github.com/QiuYe-123/GTMoreMachine/compare/v1.2.1-1.20.1...v1.2.2-1.20.1)
 ### Added
 
