@@ -123,6 +123,7 @@
   "item.gtmoremachine.advanced_terminal.setting.lamp": "灯",
   "item.gtmoremachine.advanced_terminal.setting.borlamp": "无框灯",
   "item.gtmoremachine.advanced_terminal.setting.rotor": "转子支架",
+  "item.gtmoremachine.advanced_terminal.setting.wecc": "电网容量组件",
   "item.gtmoremachine.advanced_terminal.setting.1.tooltip": "设置优先自动放置的等级方块(点击打开)。",
   "item.gtmoremachine.advanced_terminal.setting.2": "重复结构次数",
   "item.gtmoremachine.advanced_terminal.setting.2.tooltip": "用于设置可重复结构(蒸馏塔、装配线等)的重复部分放置次数",

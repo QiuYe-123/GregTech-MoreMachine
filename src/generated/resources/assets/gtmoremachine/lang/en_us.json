@@ -542,6 +542,7 @@
   "item.gtmoremachine.advanced_terminal.setting.lamp": "Lamp",
   "item.gtmoremachine.advanced_terminal.setting.rotor": "Rotor Holder",
   "item.gtmoremachine.advanced_terminal.setting.title": "§bAdvanced Terminal",
+  "item.gtmoremachine.advanced_terminal.setting.wecc": "Wireless Energy Capacity Component",
   "item.gtmoremachine.advanced_wireless_fluid_transfer_cover": "§bAdvanced Wireless Fluid Transfer Cover",
   "item.gtmoremachine.advanced_wireless_item_transfer_cover": "§bAdvanced Wireless Item Transfer Cover",
   "item.gtmoremachine.advanced_wireless_transfer.tooltip.1": "§7Can use §f filter card",
