@@ -21,19 +21,19 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 
-public class WirelessEnergySavaedData extends SavedData {
+public class WirelessEnergySavedData extends SavedData {
 
-    public static WirelessEnergySavaedData INSTANCE;
+    public static WirelessEnergySavedData INSTANCE;
 
-    public static WirelessEnergySavaedData getOrCreate(ServerLevel serverLevel) {
-        return serverLevel.getDataStorage().computeIfAbsent(WirelessEnergySavaedData::new, WirelessEnergySavaedData::new, "gtceu_wireless_energy");
+    public static WirelessEnergySavedData getOrCreate(ServerLevel serverLevel) {
+        return serverLevel.getDataStorage().computeIfAbsent(WirelessEnergySavedData::new, WirelessEnergySavedData::new, "gtceu_wireless_energy");
     }
 
     public final Map<UUID, WirelessEnergyContainer> containerMap = new HashMap<>();
 
-    public WirelessEnergySavaedData() {}
+    public WirelessEnergySavedData() {}
 
-    public WirelessEnergySavaedData(CompoundTag tag) {
+    public WirelessEnergySavedData(CompoundTag tag) {
         ListTag allEnergy = tag.getList("allEnergy", Tag.TAG_COMPOUND);
         for (int i = 0; i < allEnergy.size(); i++) {
             WirelessEnergyContainer container = readTag(allEnergy.getCompound(i));
@@ -56,21 +56,28 @@ public class WirelessEnergySavaedData extends SavedData {
     protected WirelessEnergyContainer readTag(CompoundTag engTag) {
         UUID uuid = engTag.getUUID("uuid");
         String en = engTag.getString("energy");
-        BigInteger energy = new BigInteger(en.isEmpty() ? "0" : en);
-        long rate = engTag.getLong("rate");
+        String ra = engTag.getString("rate");
+        String ca = engTag.getString("capacity");
+        BigInteger energy = new BigInteger(en.isEmpty() ? "0" : en, 16);
+        BigInteger rate = new BigInteger(ra.isEmpty() ? "0" : ra, 16);
+        BigInteger capacity = new BigInteger(ca.isEmpty() ? "0" : ca, 16);
         GlobalPos bindPos = readGlobalPos(engTag.getString("dimension"), engTag.getLong("pos"));
-        return new WirelessEnergyContainer(uuid, energy, rate, bindPos);
+        return new WirelessEnergyContainer(uuid, energy, rate, bindPos, capacity);
     }
 
     protected CompoundTag toTag(WirelessEnergyContainer container) {
         CompoundTag engTag = new CompoundTag();
         BigInteger storage = container.getStorage();
         if (!Objects.equals(storage, BigInteger.ZERO)) {
-            engTag.putString("energy", storage.toString());
+            engTag.putString("energy", storage.toString(16));
         }
-        long rate = container.getRate();
-        if (rate != 0) {
-            engTag.putLong("rate", rate);
+        BigInteger rate = container.getRate();
+        if (!Objects.equals(rate, BigInteger.ZERO)) {
+            engTag.putString("rate", rate.toString(16));
+        }
+        BigInteger capacity = container.getCapacity();
+        if (!Objects.equals(capacity, BigInteger.ZERO)) {
+            engTag.putString("capacity", capacity.toString(16));
         }
         GlobalPos bindPos = container.getBindPos();
         if (bindPos != null) {

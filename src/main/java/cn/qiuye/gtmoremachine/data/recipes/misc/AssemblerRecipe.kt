@@ -463,6 +463,22 @@ object AssemblerRecipe {
 
             GTRecipeTypes.ASSEMBLER_RECIPES.recipeBuilder(
                 GTmm.id(
+                    "wireless_energy_input_hatch_" + GTValues.VN[tier].lowercase(
+                        Locale.getDefault(),
+                    ) + "_64a",
+                ),
+            )
+                .inputItems(GTMachines.SUBSTATION_ENERGY_INPUT_HATCH[tier].asStack())
+                .inputItems(wirelessEnergyReceiveCover4A[tier - 1].asStack(4))
+                .inputItems(GTItems.COVER_ENERGY_DETECTOR_ADVANCED.asStack(2))
+                .inputFluids(GTMaterials.SolderingAlloy.getFluid(144))
+                .outputItems(WirelessMachines.WIRELESS_ENERGY_INPUT_HATCH_64A[tier].asStack())
+                .duration(200)
+                .EUt(GTValues.VA[tier].toLong())
+                .save(provider)
+
+            GTRecipeTypes.ASSEMBLER_RECIPES.recipeBuilder(
+                GTmm.id(
                     "wireless_energy_output_hatch_" + GTValues.VN[tier].lowercase(
                         Locale.getDefault(),
                     ) + "_4a",
@@ -489,6 +505,22 @@ object AssemblerRecipe {
                 .inputItems(GTItems.COVER_ENERGY_DETECTOR_ADVANCED.asStack(1))
                 .inputFluids(GTMaterials.SolderingAlloy.getFluid(144))
                 .outputItems(WirelessMachines.WIRELESS_ENERGY_OUTPUT_HATCH_16A[tier].asStack())
+                .duration(200)
+                .EUt(GTValues.VA[tier].toLong())
+                .save(provider)
+
+            GTRecipeTypes.ASSEMBLER_RECIPES.recipeBuilder(
+                GTmm.id(
+                    "wireless_energy_output_hatch_" + GTValues.VN[tier].lowercase(
+                        Locale.getDefault(),
+                    ) + "_64a",
+                ),
+            )
+                .inputItems(GTMachines.SUBSTATION_ENERGY_OUTPUT_HATCH[tier].asStack())
+                .inputItems(wirelessEnergyReceiveCover4A[tier - 1].asStack(4))
+                .inputItems(GTItems.COVER_ENERGY_DETECTOR_ADVANCED.asStack(2))
+                .inputFluids(GTMaterials.SolderingAlloy.getFluid(144))
+                .outputItems(WirelessMachines.WIRELESS_ENERGY_OUTPUT_HATCH_64A[tier].asStack())
                 .duration(200)
                 .EUt(GTValues.VA[tier].toLong())
                 .save(provider)

@@ -312,11 +312,6 @@ public class AdvancedBlockNoAEPattern extends BlockPattern {
         Direction upwardsFacing = controller.self().getUpwardsFacing();
         boolean isUseMirror = autoBuildSetting.isUseMirror();
 
-        // 如果控制器已形成，先标记为未形成
-        if (controller.isFormed()) {
-            controller.onStructureInvalid();
-        }
-
         // 使用与构建逻辑相同的重复次数计算方式
         int[] repeat = new int[this.fingerLength];
         for (int h = 0; h < this.fingerLength; h++) {
@@ -329,10 +324,7 @@ public class AdvancedBlockNoAEPattern extends BlockPattern {
             }
         }
 
-        // 收集所有拆除的物品
         List<ItemStack> collectedItems = new ArrayList<>();
-
-        // 遍历结构中的所有位置并拆除
         for (int c = 0, z = minZ++, r; c < this.fingerLength; c++) {
             for (r = 0; r < repeat[c]; r++) {
                 for (int b = 0, y = -centerOffset[1]; b < this.thumbLength; b++, y++) {
@@ -342,22 +334,17 @@ public class AdvancedBlockNoAEPattern extends BlockPattern {
 
                         BlockPos pos = setActualRelativeOffset(x, y, z, facing, upwardsFacing, isUseMirror)
                                 .offset(centerPos.getX(), centerPos.getY(), centerPos.getZ());
-
                         // 跳过控制器位置，不拆除控制器
                         if (pos.equals(centerPos)) {
                             continue;
                         }
-
                         // 拆除方块并收集物品
                         if (!world.isEmptyBlock(pos)) {
                             BlockState blockState = world.getBlockState(pos);
-
                             // 获取方块的掉落物
                             List<ItemStack> drops = Block.getDrops(blockState, (ServerLevel) world, pos, world.getBlockEntity(pos));
-
                             // 将掉落物添加到收集列表
                             collectedItems.addAll(drops);
-
                             // 移除方块，false表示不生成掉落物（因为我们已经手动收集了）
                             world.removeBlock(pos, false);
                         }
@@ -371,6 +358,8 @@ public class AdvancedBlockNoAEPattern extends BlockPattern {
         if (!collectedItems.isEmpty()) {
             giveItemsToPlayer(player, collectedItems);
         }
+
+        controller.checkPattern();
     }
 
     /**
