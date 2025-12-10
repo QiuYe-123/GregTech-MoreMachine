@@ -11,11 +11,11 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "gtmoremachine:empty_tier_component"
+          "name": "gtmoremachine:empty_tier_capacity_component"
         }
       ],
       "rolls": 1.0
     }
   ],
-  "random_sequence": "gtmoremachine:blocks/empty_tier_component"
+  "random_sequence": "gtmoremachine:blocks/empty_tier_capacity_component"
 }

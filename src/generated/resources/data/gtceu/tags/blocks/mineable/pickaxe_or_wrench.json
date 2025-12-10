@@ -1,6 +1,6 @@
 {
   "values": [
-    "gtmoremachine:empty_tier_component",
+    "gtmoremachine:empty_tier_capacity_component",
     "gtmoremachine:lv_capacity_component",
     "gtmoremachine:mv_capacity_component",
     "gtmoremachine:hv_capacity_component",

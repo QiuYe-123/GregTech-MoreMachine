@@ -14,4 +14,7 @@ public interface ICapacityComponentData {
 
     @NotNull
     String getCapacityComponentName();
+
+    @NotNull
+    String getUpperCapacityComponentName();
 }

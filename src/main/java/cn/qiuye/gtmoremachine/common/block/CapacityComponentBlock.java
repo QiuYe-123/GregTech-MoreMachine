@@ -2,6 +2,7 @@ package cn.qiuye.gtmoremachine.common.block;
 
 import cn.qiuye.gtmoremachine.api.machine.multiblock.ICapacityComponentData;
 
+import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -20,8 +21,6 @@ import java.util.List;
 import java.util.Locale;
 
 import javax.annotation.ParametersAreNonnullByDefault;
-
-import static com.gregtechceu.gtceu.api.GTValues.*;
 
 @ParametersAreNonnullByDefault
 public class CapacityComponentBlock extends Block {
@@ -52,20 +51,20 @@ public class CapacityComponentBlock extends Block {
     public enum CapacityComponentBlockPartType implements StringRepresentable, ICapacityComponentData {
 
         EMPTY_TIER,
-        LV_CAPACITY(LV, 0),
-        MV_CAPACITY(MV, 0),
-        HV_CAPACITY(HV, 0),
-        EV_CAPACITY(EV, 0),
-        IV_CAPACITY(IV, 0),
-        LuV_CAPACITY(LuV, 0),
-        ZPM_CAPACITY(ZPM, 0),
-        UV_CAPACITY(UV, 0),
-        UHV_CAPACITY(UHV, 0),
-        UEV_CAPACITY(UEV, 0),
-        UIV_CAPACITY(UIV, 0),
-        UXV_CAPACITY(UXV, 0),
-        OpV_CAPACITY(OpV, 0),
-        MAX_CAPACITY(MAX, 0);
+        LV(GTValues.LV, 0),
+        MV(GTValues.MV, 0),
+        HV(GTValues.HV, 0),
+        EV(GTValues.EV, 0),
+        IV(GTValues.IV, 0),
+        LuV(GTValues.LuV, 0),
+        ZPM(GTValues.ZPM, 0),
+        UV(GTValues.UV, 0),
+        UHV(GTValues.UHV, 0),
+        UEV(GTValues.UEV, 0),
+        UIV(GTValues.UIV, 0),
+        UXV(GTValues.UXV, 0),
+        OpV(GTValues.OpV, 0),
+        MAX(GTValues.MAX, 0);
 
         private final int tier;
         private final BigInteger capacity;
@@ -109,6 +108,11 @@ public class CapacityComponentBlock extends Block {
         @Override
         public String getCapacityComponentName() {
             return name().toLowerCase(Locale.ROOT);
+        }
+
+        @Override
+        public String getUpperCapacityComponentName() {
+            return name().toUpperCase(Locale.ROOT);
         }
 
         @Override

@@ -58,6 +58,5 @@ public interface BlockMap {
                     })
                     .map(Map.Entry::getValue).map(Supplier::get).toArray(Block[]::new)));
         }
-        if (GTMMConfig.getINSTANCE().isWirelessDimensionRateEnable) {}
     }
 }
