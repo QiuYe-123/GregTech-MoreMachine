@@ -20,6 +20,10 @@ import static cn.qiuye.gtmoremachine.common.registry.GTMMRegistration.GTMMREGIST
 
 public class GTMMBlocks {
 
+    static {
+        GTMMREGISTRATE.creativeModeTab(() -> GTMMCreativeModeTabs.WIRELESS_TAB);
+    }
+
     // WECC
     public static final BlockEntry<CapacityComponentBlock> CAPACITYCOMPONENT_EMPTY_TIER = createCapacityComponentBlock(CapacityComponentBlock.CapacityComponentBlockPartType.EMPTY_TIER);
     public static final BlockEntry<CapacityComponentBlock> CAPACITYCOMPONENT_LV = createCapacityComponentBlock(CapacityComponentBlock.CapacityComponentBlockPartType.LV);
@@ -49,7 +53,7 @@ public class GTMMBlocks {
                 .item(BlockItem::new)
                 .build()
                 .register() : null;
-        if (GTMMConfig.getINSTANCE().isWirelessCapacitylimitEnable && CapacityComponentBlock != null) {
+        if (CapacityComponentBlock != null) {
             GTMMAPI.WECC.put(CapacityComponentData, CapacityComponentBlock);
         }
         return CapacityComponentBlock;
