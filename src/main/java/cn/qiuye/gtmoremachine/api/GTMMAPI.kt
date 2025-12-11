@@ -14,7 +14,7 @@ import java.math.BigInteger
 import java.util.function.Supplier
 
 object GTMMAPI {
-    /** Will always be available  */
+
     lateinit var instance: GTmm
 
     @JvmField
@@ -23,9 +23,6 @@ object GTMMAPI {
     @JvmField
     val ECU = HashMap<Int, Supplier<Block>>()
 
-    /**
-     * Initializes High-Tier. Internal use only, do not attempt to call this.
-     */
     @ApiStatus.Internal
     @JvmStatic
     fun capacityComponentBlock(tier: Int, isapacity: Boolean): BigInteger {
