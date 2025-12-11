@@ -1,6 +1,5 @@
 {
   "values": [
-    "gtmoremachine:ulv_energy_communication_unit",
     "gtmoremachine:lv_energy_communication_unit",
     "gtmoremachine:mv_energy_communication_unit",
     "gtmoremachine:hv_energy_communication_unit",

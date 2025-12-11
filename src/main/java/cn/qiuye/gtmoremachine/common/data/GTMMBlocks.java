@@ -28,7 +28,6 @@ public class GTMMBlocks {
     }
 
     // ECU
-    public static final BlockEntry<Block> ENERGY_COMMUNICATION_UNIT_ULV = createEnergyCommunicationUnitBlock(GTValues.ULV);
     public static final BlockEntry<Block> ENERGY_COMMUNICATION_UNIT_LV = createEnergyCommunicationUnitBlock(GTValues.LV);
     public static final BlockEntry<Block> ENERGY_COMMUNICATION_UNIT_MV = createEnergyCommunicationUnitBlock(GTValues.MV);
     public static final BlockEntry<Block> ENERGY_COMMUNICATION_UNIT_HV = createEnergyCommunicationUnitBlock(GTValues.HV);

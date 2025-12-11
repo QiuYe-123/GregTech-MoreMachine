@@ -225,7 +225,6 @@
   "block.gtmoremachine.uxv_capacity_component": "无线电网容量组件 (§eUXV§r)",
   "block.gtmoremachine.opv_capacity_component": "无线电网容量组件 (§9§lOpV§r)",
   "block.gtmoremachine.max_capacity_component": "无线电网容量组件 (§c§lMAX§r)",
-  "block.gtmoremachine.ulv_energy_communication_unit": "能源通讯单元 (§8ULV§r)",
   "block.gtmoremachine.lv_energy_communication_unit": " 能源通讯单元 (§7LV§r)",
   "block.gtmoremachine.mv_energy_communication_unit": "能源通讯单元 (§bMV§r)",
   "block.gtmoremachine.hv_energy_communication_unit": "能源通讯单元 (§6HV§r)",
