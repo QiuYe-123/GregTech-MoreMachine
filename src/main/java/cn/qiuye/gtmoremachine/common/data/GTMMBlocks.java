@@ -93,7 +93,7 @@ public class GTMMBlocks {
                 .item(BlockItem::new)
                 .build()
                 .register() : null;
-        if (GTMMConfig.getINSTANCE().isWirelessCapacitylimitEnable && CapacityComponentBlock != null) {
+        if (CapacityComponentBlock != null) {
             GTMMAPI.WECC.put(CapacityComponentData, CapacityComponentBlock);
         }
         return CapacityComponentBlock;
