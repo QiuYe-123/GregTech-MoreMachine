@@ -1,5 +1,6 @@
 package cn.qiuye.gtmoremachine.common.block;
 
+import cn.qiuye.gtmoremachine.api.GTMMAPI;
 import cn.qiuye.gtmoremachine.api.machine.multiblock.ICapacityComponentData;
 
 import com.gregtechceu.gtceu.api.GTValues;
@@ -51,20 +52,20 @@ public class CapacityComponentBlock extends Block {
     public enum CapacityComponentBlockPartType implements StringRepresentable, ICapacityComponentData {
 
         EMPTY_TIER,
-        LV(GTValues.LV, 0),
-        MV(GTValues.MV, 0),
-        HV(GTValues.HV, 0),
-        EV(GTValues.EV, 0),
-        IV(GTValues.IV, 0),
-        LuV(GTValues.LuV, 0),
-        ZPM(GTValues.ZPM, 0),
-        UV(GTValues.UV, 0),
-        UHV(GTValues.UHV, 0),
-        UEV(GTValues.UEV, 0),
-        UIV(GTValues.UIV, 0),
-        UXV(GTValues.UXV, 0),
-        OpV(GTValues.OpV, 0),
-        MAX(GTValues.MAX, 0);
+        LV(GTValues.LV),
+        MV(GTValues.MV),
+        HV(GTValues.HV),
+        EV(GTValues.EV),
+        IV(GTValues.IV),
+        LuV(GTValues.LuV),
+        ZPM(GTValues.ZPM),
+        UV(GTValues.UV),
+        UHV(GTValues.UHV),
+        UEV(GTValues.UEV),
+        UIV(GTValues.UIV),
+        UXV(GTValues.UXV),
+        OpV(GTValues.OpV),
+        MAX(GTValues.MAX);
 
         private final int tier;
         private final BigInteger capacity;
@@ -76,18 +77,10 @@ public class CapacityComponentBlock extends Block {
             this.lossEnergy = BigInteger.ZERO;
         }
 
-        CapacityComponentBlockPartType(int tier, int lossFactor) {
+        CapacityComponentBlockPartType(int tier) {
             this.tier = tier;
-            BigInteger pow = BigInteger.valueOf(Long.MAX_VALUE);
-            this.capacity = pow.multiply(BigInteger.valueOf((long) tier * tier));
-            if (lossFactor != 0) {
-                BigInteger baseLoss = BigInteger.valueOf(2).pow(lossFactor - 1);
-                BigInteger multiplier = BigInteger.valueOf(lossFactor).pow(4);
-
-                this.lossEnergy = baseLoss.multiply(multiplier);
-            } else {
-                this.lossEnergy = BigInteger.ZERO;
-            }
+            this.capacity = GTMMAPI.capacityComponentBlock(tier, true);
+            this.lossEnergy = GTMMAPI.capacityComponentBlock(tier, false);
         }
 
         @Override
