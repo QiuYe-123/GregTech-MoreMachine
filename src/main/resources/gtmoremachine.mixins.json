@@ -8,8 +8,7 @@
   ],
   "mixins": [
     "gtm.api.machine.SimpleTieredMachineMixin",
-    "gtm.api.machine.multiblock.MultiblockDisplayText$BuilderMixin",
-    "gtm.common.machine.multiblock.electric.CleanroomMachineMixin"
+    "gtm.api.machine.multiblock.MultiblockDisplayText$BuilderMixin"
   ],
   "injectors": {
     "defaultRequire": 1,
