@@ -24,7 +24,7 @@ import static cn.qiuye.gtmoremachine.common.registry.GTMMRegistration.GTMMREGIST
 public class GTMMBlocks {
 
     static {
-        GTMMREGISTRATE.creativeModeTab(() -> GTMMCreativeModeTabs.CREATIVE_TAB);
+        GTMMREGISTRATE.creativeModeTab(() -> GTMMCreativeModeTabs.MORE_MACHINES);
     }
 
     // ECU
