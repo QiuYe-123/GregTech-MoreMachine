@@ -12,13 +12,57 @@ import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 
 import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 
 import com.tterrag.registrate.util.entry.BlockEntry;
 
+import java.util.Locale;
+
 import static cn.qiuye.gtmoremachine.common.registry.GTMMRegistration.GTMMREGISTRATE;
 
 public class GTMMBlocks {
+
+    static {
+        GTMMREGISTRATE.creativeModeTab(() -> GTMMCreativeModeTabs.CREATIVE_TAB);
+    }
+
+    // ECU
+    public static final BlockEntry<Block> ENERGY_COMMUNICATION_UNIT_ULV = createEnergyCommunicationUnitBlock(GTValues.ULV);
+    public static final BlockEntry<Block> ENERGY_COMMUNICATION_UNIT_LV = createEnergyCommunicationUnitBlock(GTValues.LV);
+    public static final BlockEntry<Block> ENERGY_COMMUNICATION_UNIT_MV = createEnergyCommunicationUnitBlock(GTValues.MV);
+    public static final BlockEntry<Block> ENERGY_COMMUNICATION_UNIT_HV = createEnergyCommunicationUnitBlock(GTValues.HV);
+    public static final BlockEntry<Block> ENERGY_COMMUNICATION_UNIT_EV = createEnergyCommunicationUnitBlock(GTValues.EV);
+    public static final BlockEntry<Block> ENERGY_COMMUNICATION_UNIT_IV = createEnergyCommunicationUnitBlock(GTValues.IV);
+    public static final BlockEntry<Block> ENERGY_COMMUNICATION_UNIT_LUV = createEnergyCommunicationUnitBlock(GTValues.LuV);
+    public static final BlockEntry<Block> ENERGY_COMMUNICATION_UNIT_ZPM = createEnergyCommunicationUnitBlock(GTValues.ZPM);
+    public static final BlockEntry<Block> ENERGY_COMMUNICATION_UNIT_UV = createEnergyCommunicationUnitBlock(GTValues.UV);
+    public static final BlockEntry<Block> ENERGY_COMMUNICATION_UNIT_UHV = createEnergyCommunicationUnitBlock(GTValues.UHV);
+    public static final BlockEntry<Block> ENERGY_COMMUNICATION_UNIT_UEV = createEnergyCommunicationUnitBlock(GTValues.UEV);
+    public static final BlockEntry<Block> ENERGY_COMMUNICATION_UNIT_UIV = createEnergyCommunicationUnitBlock(GTValues.UIV);
+    public static final BlockEntry<Block> ENERGY_COMMUNICATION_UNIT_UXV = createEnergyCommunicationUnitBlock(GTValues.UXV);
+    public static final BlockEntry<Block> ENERGY_COMMUNICATION_UNIT_OPV = createEnergyCommunicationUnitBlock(GTValues.OpV);
+    public static final BlockEntry<Block> ENERGY_COMMUNICATION_UNIT_MAX = createEnergyCommunicationUnitBlock(GTValues.MAX);
+
+    private static BlockEntry<Block> createEnergyCommunicationUnitBlock(int tier) {
+        String tierName = GTValues.VN[tier].toLowerCase(Locale.ROOT);
+        var entry = GTMMREGISTRATE
+                .block("%s_energy_communication_unit".formatted(tierName), Block::new)
+                .lang("%s Energy Communication Unit".formatted(GTValues.VNF[tier]))
+                .initialProperties(() -> Blocks.IRON_BLOCK)
+                .properties(p -> p.isValidSpawn((state, level, pos, ent) -> false))
+                .blockstate(GTMMModels.createEnergyCommunicationUnitModel(tierName))
+                .tag(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WRENCH)
+                .item(BlockItem::new)
+                .build()
+                .register();
+        GTMMAPI.ECU.put(tier, entry);
+        return entry;
+    }
+
+    static {
+        GTMMREGISTRATE.creativeModeTab(() -> GTMMCreativeModeTabs.WIRELESS_TAB);
+    }
 
     // WECC
     public static final BlockEntry<CapacityComponentBlock> CAPACITYCOMPONENT_EMPTY_TIER = createCapacityComponentBlock(CapacityComponentBlock.CapacityComponentBlockPartType.EMPTY_TIER);

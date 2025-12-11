@@ -29,6 +29,7 @@ public interface BlockMap {
     String BORLAMP = "item.gtmoremachine.advanced_terminal.setting.borlamp";
     String ROTOR = "item.gtmoremachine.advanced_terminal.setting.rotor";
     String WECC = "item.gtmoremachine.advanced_terminal.setting.wecc";
+    String ECU = "item.gtmoremachine.advanced_terminal.setting.ecu";
 
     static void init() {
         tierBlockMap.put(COIL, Lazy.of(() -> GTCEuAPI.HEATING_COILS.entrySet().stream()
@@ -45,6 +46,9 @@ public interface BlockMap {
                 .map(Map.Entry::getValue).map(Supplier::get).toArray(Block[]::new)));
         tierBlockMap.put(BORLAMP, Lazy.of(() -> GTBlocks.BORDERLESS_LAMPS.entrySet().stream()
                 .sorted(Comparator.comparingInt(e -> e.getKey().getFireworkColor()))
+                .map(Map.Entry::getValue).map(Supplier::get).toArray(Block[]::new)));
+        tierBlockMap.put(ECU, Lazy.of(() -> GTMMAPI.ECU.entrySet().stream()
+                .sorted(Comparator.comparingInt(Map.Entry::getKey))
                 .map(Map.Entry::getValue).map(Supplier::get).toArray(Block[]::new)));
         tierBlockMap.put(ROTOR, Lazy.of(() -> rotMap.int2ObjectEntrySet().stream()
                 .sorted(Comparator.comparingInt(Int2ObjectMap.Entry::getIntKey))

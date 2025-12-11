@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "gtmoremachine:block/max_energy_communication_unit"
+    }
+  }
+}
