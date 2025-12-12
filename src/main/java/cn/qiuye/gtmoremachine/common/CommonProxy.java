@@ -42,9 +42,6 @@ public class CommonProxy {
             GTMMConfig.getINSTANCE().isWirelessCapacitylimitEnable = true;
         }
         GTMMDatagen.initPost();
-        if (GTmm.isDataGen()) {
-            GTMMConfig.isWirelessRateEnable = true;
-        }
     }
 
     private static void commonSetup(FMLCommonSetupEvent event) {}
