@@ -40,4 +40,30 @@ object GTMMPredicates {
         }
             .addTooltips(Component.translatable("gtceu.multiblock.pattern.error.filters"))
     }
+
+    @JvmStatic
+    fun WirelessEnergyCapacityComponent(): TraceabilityPredicate {
+        return TraceabilityPredicate(
+            Predicate { blockWorldState: MultiblockState ->
+                val blockState = blockWorldState.getBlockState()
+                for (entry in GTMMAPI.WECC.entries) {
+                    if (blockState.`is`(entry.value.get())) {
+                        val stats = entry.key
+                        val currentFilter = blockWorldState.matchContext.getOrPut("WECCType", stats)
+                        if (currentFilter != stats) {
+                            blockWorldState.setError(PatternStringError("gtceu.multiblock.pattern.error.filters"))
+                            return@Predicate false
+                        }
+                        return@Predicate true
+                    }
+                }
+                false
+            },
+        ) {
+            GTMMAPI.WECC.values.stream()
+                .map { blockSupplier -> BlockInfo.fromBlockState(blockSupplier.get().defaultBlockState()) }
+                .toArray { size -> arrayOfNulls<BlockInfo>(size) }
+        }
+            .addTooltips(Component.translatable("gtceu.multiblock.pattern.error.filters"))
+    }
 }

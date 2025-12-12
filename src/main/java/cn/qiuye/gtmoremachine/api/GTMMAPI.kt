@@ -18,10 +18,10 @@ object GTMMAPI {
     lateinit var instance: GTmm
 
     @JvmField
-    val WECC = HashMap<ICapacityComponentData, Supplier<CapacityComponentBlock>>()
+    val ECU = HashMap<Int, Supplier<Block>>()
 
     @JvmField
-    val ECU = HashMap<Int, Supplier<Block>>()
+    val WECC = HashMap<ICapacityComponentData, Supplier<CapacityComponentBlock>>()
 
     @ApiStatus.Internal
     @JvmStatic

@@ -30,7 +30,7 @@ object AddonFinder {
             return cache
         }
 
-    fun getAddon(modId: String?): IGTMMAddon? = modIdMap[modId]
+    fun getAddon(modId: String): IGTMMAddon? = modIdMap[modId]
 
     private fun <T> getInstances(annotationClass: Class<*>, instanceClass: Class<T>): MutableList<T> {
         val annotationType = Type.getType(annotationClass)
