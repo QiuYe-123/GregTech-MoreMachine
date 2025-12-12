@@ -1,5 +1,8 @@
 package cn.qiuye.gtmoremachine.common.block;
 
+import cn.qiuye.gtmoremachine.api.GTMMAPI;
+import cn.qiuye.gtmoremachine.config.GTMMConfig;
+
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 
@@ -9,6 +12,7 @@ import net.minecraftforge.common.util.Lazy;
 import it.unimi.dsi.fastutil.ints.*;
 import it.unimi.dsi.fastutil.objects.*;
 
+import java.math.BigInteger;
 import java.util.*;
 import java.util.function.Supplier;
 
@@ -24,6 +28,7 @@ public interface BlockMap {
     String LAMP = "item.gtmoremachine.advanced_terminal.setting.lamp";
     String BORLAMP = "item.gtmoremachine.advanced_terminal.setting.borlamp";
     String ROTOR = "item.gtmoremachine.advanced_terminal.setting.rotor";
+    String WECC = "item.gtmoremachine.advanced_terminal.setting.wecc";
 
     static void init() {
         tierBlockMap.put(COIL, Lazy.of(() -> GTCEuAPI.HEATING_COILS.entrySet().stream()
@@ -44,5 +49,14 @@ public interface BlockMap {
         tierBlockMap.put(ROTOR, Lazy.of(() -> rotMap.int2ObjectEntrySet().stream()
                 .sorted(Comparator.comparingInt(Int2ObjectMap.Entry::getIntKey))
                 .map(Int2ObjectMap.Entry::getValue).map(Supplier::get).toArray(Block[]::new)));
+        if (GTMMConfig.getINSTANCE().isWirelessCapacitylimitEnable) {
+            tierBlockMap.put(WECC, Lazy.of(() -> GTMMAPI.WECC.entrySet().stream()
+                    .sorted((entry1, entry2) -> {
+                        BigInteger throughput1 = entry1.getValue().get().getData().getCapacity();
+                        BigInteger throughput2 = entry2.getValue().get().getData().getCapacity();
+                        return throughput1.compareTo(throughput2);
+                    })
+                    .map(Map.Entry::getValue).map(Supplier::get).toArray(Block[]::new)));
+        }
     }
 }

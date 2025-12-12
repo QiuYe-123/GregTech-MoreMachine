@@ -1,7 +1,7 @@
 package cn.qiuye.gtmoremachine.api.misc.wireless.cwu;
 
 import cn.qiuye.gtmoremachine.api.misc.wireless.time.TimeStat;
-import cn.qiuye.gtmoremachine.data.wireless.cwu.WirelessCWUSavaedData;
+import cn.qiuye.gtmoremachine.data.wireless.cwu.WirelessCWUSavedData;
 import cn.qiuye.gtmoremachine.utils.BigIntegerUtils;
 import cn.qiuye.gtmoremachine.utils.TeamUtils;
 
@@ -25,7 +25,7 @@ public class WirelessCWUContainer {
     public static MinecraftServer server;
 
     public static WirelessCWUContainer getOrCreateContainer(UUID uuid) {
-        return WirelessCWUSavaedData.INSTANCE.containerMap.computeIfAbsent(TeamUtils.getTeamUUID(uuid), WirelessCWUContainer::new);
+        return WirelessCWUSavedData.INSTANCE.containerMap.computeIfAbsent(TeamUtils.getTeamUUID(uuid), WirelessCWUContainer::new);
     }
 
     private BigInteger storage;
@@ -65,7 +65,7 @@ public class WirelessCWUContainer {
             TRANSFER_DATA.put(machine, new BasicTransferData(UUID, cwu, machine));
         }
         storage = new BigInteger(String.valueOf(inCWUStat.getAvg())).add(new BigInteger(String.valueOf(outCWUStat.getAvg())));
-        WirelessCWUSavaedData.INSTANCE.setDirty(true);
+        WirelessCWUSavedData.INSTANCE.setDirty(true);
         return 0;
     }
 
@@ -80,13 +80,13 @@ public class WirelessCWUContainer {
             TRANSFER_DATA.put(machine, new BasicTransferData(UUID, -cwu, machine));
         }
         storage = new BigInteger(String.valueOf(inCWUStat.getAvg())).add(new BigInteger(String.valueOf(outCWUStat.getAvg())));
-        WirelessCWUSavaedData.INSTANCE.setDirty(true);
+        WirelessCWUSavedData.INSTANCE.setDirty(true);
         return change;
     }
 
     public void setStorage(BigInteger cwu) {
         storage = cwu;
-        WirelessCWUSavaedData.INSTANCE.setDirty(true);
+        WirelessCWUSavedData.INSTANCE.setDirty(true);
     }
 
     public int getfreeCWU() {

@@ -2,6 +2,7 @@ package cn.qiuye.gtmoremachine.integration.jade.provider;
 
 import cn.qiuye.gtmoremachine.GTmm;
 import cn.qiuye.gtmoremachine.api.machine.IWirelessEnergyContainerHolder;
+import cn.qiuye.gtmoremachine.utils.BigIntegerUtils;
 import cn.qiuye.gtmoremachine.utils.FormattingUtil;
 import cn.qiuye.gtmoremachine.utils.NumberUtils;
 import cn.qiuye.gtmoremachine.utils.TeamUtils;
@@ -57,7 +58,7 @@ public class WirelessEnergyProvider extends CapabilityBlockProvider<IWirelessEne
             data.putBoolean("isBindable", true);
             data.putUUID("uuid", capability.getUUID());
             data.putBoolean("cover", capability.cover());
-            data.putString("energy", capability.getWirelessEnergyContainer().getStorage().toString());
+            data.putString("energy", BigIntegerUtils.getStringValue(capability.getWirelessEnergyContainer().getStorage()));
         }
     }
 
@@ -72,7 +73,7 @@ public class WirelessEnergyProvider extends CapabilityBlockProvider<IWirelessEne
                 tooltip.add(Component.translatable("gtmoremachine.machine.wireless_energy_hatch.tooltip.1"));
             }
         } else {
-            BigDecimal energy = new BigDecimal(capData.getString("energy"));
+            BigDecimal energy = BigIntegerUtils.setBigDecimalValue(capData.getString("energy"));
             UUID uuid = capData.getUUID("uuid");
             if (TeamUtils.hasOwner(block.getLevel(), uuid)) {
                 if (cover) {

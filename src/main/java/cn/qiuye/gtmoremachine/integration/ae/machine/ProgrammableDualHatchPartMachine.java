@@ -21,7 +21,7 @@ public class ProgrammableDualHatchPartMachine extends HugeDualHatchPartMachine {
     }
 
     @Override
-    protected @NotNull NotifiableItemStackHandler createCircuitItemHandler(Object... args) {
+    protected @NotNull NotifiableItemStackHandler createCircuitItemHandler(Object @NotNull... args) {
         if (args.length > 0 && args[0] instanceof IO io && io == IO.IN) {
             return new ProgrammableCircuitHandler(this);
         } else {

@@ -19,7 +19,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.BiConsumer;
 
-import static cn.qiuye.gtmoremachine.common.block.BlockMap.*;
 import static net.minecraft.network.chat.Component.translatable;
 
 public class BlockMapSelectorWidget extends WidgetGroup {

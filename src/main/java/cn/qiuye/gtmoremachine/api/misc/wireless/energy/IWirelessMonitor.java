@@ -11,9 +11,7 @@ import cn.qiuye.gtmoremachine.utils.FormattingUtil;
 import cn.qiuye.gtmoremachine.utils.NumberUtils;
 import cn.qiuye.gtmoremachine.utils.TeamUtils;
 
-import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.utils.GTUtil;
 
 import com.lowdragmc.lowdraglib.gui.widget.ComponentPanelWidget;
 
@@ -45,11 +43,11 @@ public interface IWirelessMonitor extends IWirelessEnergyContainerHolder {
                 Component.literal(NumberUtils.formatBigDecimalNumberOrSic(FormattingUtil.voltageAmperage(new BigDecimal(energyTotal)), format)),
                 FormattingUtil.voltageName(new BigDecimal(energyTotal))));
         if (GTMMConfig.getINSTANCE().isWirelessRateEnable) {
-            long rate = container.getRate();
+            BigInteger rate = container.getRate();
             textListCache.add(FormattingUtil.formatWithConstantWidth("gtmoremachine.machine.wireless_energy_monitor.tooltip.2",
-                    Component.literal(NumberUtils.formatBigIntegerNumberOrSic(BigInteger.valueOf(rate), format)),
-                    Component.literal(String.valueOf(rate / GTValues.VEX[GTUtil.getFloorTierByVoltage(rate)])),
-                    Component.literal(GTValues.VNF[GTUtil.getFloorTierByVoltage(rate)])).withStyle(ChatFormatting.GRAY));
+                    Component.literal(NumberUtils.formatBigIntegerNumberOrSic(rate, format)).withStyle(ChatFormatting.GRAY),
+                    Component.literal(NumberUtils.formatBigDecimalNumberOrSic(FormattingUtil.voltageAmperage(new BigDecimal(rate)), format)),
+                    FormattingUtil.voltageName(new BigDecimal(rate))));
         }
 
         var allstat = container.getAllEnergyStat();
@@ -89,7 +87,10 @@ public interface IWirelessMonitor extends IWirelessEnergyContainerHolder {
         BigInteger multiply = avgEnergy.abs().toBigInteger().multiply(BigInteger.valueOf(20));
         if (compare > 0) {
             textListCache.add(Component.translatable("gtceu.multiblock.power_substation.time_to_fill",
-                    container.getCapacity() == null ? Component.translatable("gtmoremachine.machine.wireless_energy_monitor.tooltip.time_to_fill") : getTimeToFillDrainText((container.getCapacity().subtract(energyTotal)).divide(multiply))).withStyle(ChatFormatting.GRAY));
+                    GTMMConfig.getINSTANCE().isWirelessCapacitylimitEnable ?
+                            getTimeToFillDrainText((container.getCapacity().subtract(energyTotal)).divide(multiply)) :
+                            Component.translatable("gtmoremachine.machine.wireless_energy_monitor.tooltip.time_to_fill"))
+                    .withStyle(ChatFormatting.GRAY));
         } else if (compare < 0) {
             textListCache.add(Component.translatable("gtceu.multiblock.power_substation.time_to_drain",
                     getTimeToFillDrainText(energyTotal.divide(multiply))).withStyle(ChatFormatting.GRAY));
@@ -106,9 +107,7 @@ public interface IWirelessMonitor extends IWirelessEnergyContainerHolder {
                 ComponentPanelWidget.withButton(getPowerStatusText(powerStatus), "powerStatus", getPowerStatusclolor(powerStatus)),
                 ComponentPanelWidget.withButton(getSortingRulesText(sorting), "sortingrules", getSortingRulescolor(sorting))));
 
-        List<Map.Entry<MetaMachine, ITransferData>> entryList = getEntryList(sorting);
-
-        for (Map.Entry<MetaMachine, ITransferData> m : entryList) {
+        for (Map.Entry<MetaMachine, ITransferData> m : getEntryList(sorting)) {
             UUID uuid = m.getValue().UUID();
             BigInteger through = m.getValue().Throughput();
             if (statistics == Statistics.Global || uuid.equals(TeamUtils.getTeamUUID(this.getUUID()))) {

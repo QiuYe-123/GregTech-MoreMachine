@@ -7,6 +7,7 @@ object LangHandler {
     fun init(provider: RegistrateLangProvider) {
         ConfigurationLang.init(provider)
         ItemLang.init(provider)
+        BlockLang.init(provider)
         MachineLang.init(provider)
         CreativeLang.init(provider)
         AdvancedTerminalLang.init(provider)

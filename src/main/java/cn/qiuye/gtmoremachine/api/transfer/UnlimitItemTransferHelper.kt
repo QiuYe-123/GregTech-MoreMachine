@@ -22,10 +22,10 @@ object UnlimitItemTransferHelper {
     fun exportToTarget(
         source: IItemHandler,
         maxAmount: Int,
-        predicate: Predicate<ItemStack?>,
+        predicate: Predicate<ItemStack>,
         level: Level,
         pos: BlockPos,
-        direction: Direction?,
+        direction: Direction,
     ) {
         var maxAmount = maxAmount
         if (level.getBlockState(pos).hasBlockEntity()) {

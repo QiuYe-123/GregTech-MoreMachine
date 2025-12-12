@@ -122,6 +122,7 @@ public class AdvancedBlockPattern extends BlockPattern {
             autoDemolish(player, worldState, autoBuildSetting);
             return; // 拆除完成后直接返回，不执行构建
         }
+
         int minZ = -centerOffset[4];
         clearWorldState(worldState);
         IMultiController controller = worldState.getController();
@@ -131,6 +132,7 @@ public class AdvancedBlockPattern extends BlockPattern {
         boolean isUseMirror = autoBuildSetting.isUseMirror();
         boolean isUseAE = autoBuildSetting.isUseAE();
 
+        if (controller.isFormed()) return;
         Object2IntOpenHashMap<SimplePredicate> cacheGlobal = new Object2IntOpenHashMap<>(worldState.getGlobalCount());
         Object2IntOpenHashMap<SimplePredicate> cacheLayer = new Object2IntOpenHashMap<>(worldState.getLayerCount());
         Object2ObjectOpenHashMap<BlockPos, Object> blocks = new Object2ObjectOpenHashMap<>();
@@ -310,10 +312,7 @@ public class AdvancedBlockPattern extends BlockPattern {
         Direction facing = controller.self().getFrontFacing();
         Direction upwardsFacing = controller.self().getUpwardsFacing();
         boolean isUseMirror = autoBuildSetting.isUseMirror();
-        // 如果控制器已形成，先标记为未形成
-        if (controller.isFormed()) {
-            controller.onStructureInvalid();
-        }
+
         // 使用与构建逻辑相同的重复次数计算方式
         int[] repeat = new int[this.fingerLength];
         for (int h = 0; h < this.fingerLength; h++) {
@@ -325,9 +324,8 @@ public class AdvancedBlockPattern extends BlockPattern {
                 repeat[h] = minH;
             }
         }
-        // 收集所有拆除的物品
+
         List<ItemStack> collectedItems = new ArrayList<>();
-        // 遍历结构中的所有位置并拆除
         for (int c = 0, z = minZ++, r; c < this.fingerLength; c++) {
             for (r = 0; r < repeat[c]; r++) {
                 for (int b = 0, y = -centerOffset[1]; b < this.thumbLength; b++, y++) {
@@ -360,6 +358,8 @@ public class AdvancedBlockPattern extends BlockPattern {
         if (!collectedItems.isEmpty()) {
             giveItemsToPlayer(player, collectedItems, autoBuildSetting);
         }
+
+        controller.checkPattern();
     }
 
     /**

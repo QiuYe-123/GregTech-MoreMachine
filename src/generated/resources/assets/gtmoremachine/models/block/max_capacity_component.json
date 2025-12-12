@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/cube_bottom_top",
+  "textures": {
+    "bottom": "gtmoremachine:block/casings/capacitycomponent/max/top",
+    "side": "gtmoremachine:block/casings/capacitycomponent/max/side",
+    "top": "gtmoremachine:block/casings/capacitycomponent/max/top"
+  }
+}
