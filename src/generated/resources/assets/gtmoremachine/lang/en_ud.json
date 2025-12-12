@@ -465,6 +465,7 @@
   "config.jade.plugin_gtmoremachine.wireless_energy_hatch_provider.tooltip.1": ")ɹ§%s Ɐ %s( ∩Ǝ %s :ʎbɹǝuƎ ןɐʇo⟘",
   "config.jade.plugin_gtmoremachine.wireless_energy_provider": "ɹoʇıuoW ʎbɹǝuƎ ssǝןǝɹıM ]ǝuıɥɔɐWǝɹoW⟘⅁[",
   "config.jade.plugin_gtmoremachine.wireless_optical_computation_hatch_provider": "uoıʇɐʇndɯoƆןɐɔıʇdO ssǝןǝɹıM ]ǝuıɥɔɐWǝɹoW⟘⅁[",
+  "curios.identifier.gtmoremachine_wet": "ןɐuıɯɹǝ⟘ ʎbɹǝuƎ",
   "gtmoremachine.creative_tooltip": "sıɥʇ ǝsn oʇ ㄥ§ǝpoW ǝʌıʇɐǝɹƆ pǝǝu ʇsnظ noʎㄥ§",
   "gtmoremachine.machine.energy_hatch.input.tooltip": "sʞɔoןqıʇןnW ɹoɟ ʇnduI ʎbɹǝuƎ",
   "gtmoremachine.machine.energy_hatch.output.tooltip": "sʞɔoןqıʇןnW ɹoɟ ʇndʇnO ʎbɹǝuƎ",

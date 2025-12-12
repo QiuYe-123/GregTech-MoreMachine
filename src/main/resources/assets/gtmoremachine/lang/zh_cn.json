@@ -167,6 +167,7 @@
   "gtmoremachine.machine.wireless_energy_cover.tooltip.3": "无线能源接收器已绑定至未知用户：%s",
   "item.gtmoremachine.wireless_energy_binding_tool": "无线能源绑定工具",
   "item.gtmoremachine.wireless_energy_terminal": "无线能源终端",
+  "curios.identifier.gtmoremachine_wet": "能源终端",
   "config.jade.plugin_gtmoremachine.wireless_energy_provider":"[GTMoreMachine] 无线能源监视器",
   "config.jade.plugin_gtmoremachine.wireless_energy_hatch_provider.tooltip.1": "能源总量: %s EU (%s A %s§r)",
   "config.jade.plugin_gtmoremachine.wireless_optical_computation_hatch_provider": "[GTMoreMachine] 无线光学算力仓",

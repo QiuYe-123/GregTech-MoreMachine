@@ -465,6 +465,7 @@
   "config.jade.plugin_gtmoremachine.wireless_energy_hatch_provider.tooltip.1": "Total Energy: %s EU (%s A %s§r)",
   "config.jade.plugin_gtmoremachine.wireless_energy_provider": "[GTMoreMachine] Wireless Energy Monitor",
   "config.jade.plugin_gtmoremachine.wireless_optical_computation_hatch_provider": "[GTMoreMachine] Wireless OpticalComputation",
+  "curios.identifier.gtmoremachine_wet": "Energy Terminal",
   "gtmoremachine.creative_tooltip": "§7You just need Creative Mode§7 to use this",
   "gtmoremachine.machine.energy_hatch.input.tooltip": "Energy Input for Multiblocks",
   "gtmoremachine.machine.energy_hatch.output.tooltip": "Energy Output for Multiblocks",
