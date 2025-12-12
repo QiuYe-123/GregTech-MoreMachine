@@ -101,8 +101,8 @@ class SyncedKeyMapping {
         listenerSet?.remove(listener)
     }
 
-    fun registerGlobalListener(listener: IKeyPressedListener?): SyncedKeyMapping {
-        globalListeners.add(listener!!)
+    fun registerGlobalListener(listener: IKeyPressedListener): SyncedKeyMapping {
+        globalListeners.add(listener)
         return this
     }
 
@@ -146,6 +146,7 @@ class SyncedKeyMapping {
             category: String = GTmm.MOD_NAME,
         ): SyncedKeyMapping = SyncedKeyMapping(nameKey, ctx, keyCode, category)
 
+        @JvmStatic
         fun onRegisterKeyBinds(event: RegisterKeyMappingsEvent) {
             for (value in KEYMAPPINGS.values) {
                 if (value.keyMappingGetter != null) {
@@ -187,6 +188,6 @@ class SyncedKeyMapping {
         }
 
         @ApiStatus.Internal
-        fun getFromSyncId(id: Int): SyncedKeyMapping? = KEYMAPPINGS.get(id)
+        fun getFromSyncId(id: Int): SyncedKeyMapping = KEYMAPPINGS.get(id)
     }
 }

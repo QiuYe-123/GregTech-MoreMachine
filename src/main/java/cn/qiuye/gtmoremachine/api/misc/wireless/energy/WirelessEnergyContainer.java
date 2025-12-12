@@ -180,9 +180,8 @@ public class WirelessEnergyContainer {
         if (machine == null) return true;
         int voltageTier = GTUtil.getFloorTierByVoltage(energy);
         for (IDimensionTransferData data : DIMENSIONAL_TRANSFER_DATA.values()) {
-            if (data.level() == machine.getLevel() && data.Voltagelevel() >= voltageTier) {
-                return false;
-            }
+            if (data.level() == machine.getLevel())
+                return data.Voltagelevel() < voltageTier;
         }
         return true;
     }
