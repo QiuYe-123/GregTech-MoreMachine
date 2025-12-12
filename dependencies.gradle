@@ -30,6 +30,9 @@ dependencies {
     // WAILA-likes
     modCompileOnly(forge.jade)
 
+    // Curios
+    modCompileOnly(variantOf(forge.curios) { classifier("api") })
+
     // AE2
     modCompileOnly(forge.ae2)
 
