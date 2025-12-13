@@ -31,13 +31,12 @@ public class ForgeCommonEventListener {
                     if (refreshBinding) {
                         BigInteger rate = BigInteger.ZERO;
                         GlobalPos pos = container.getBindPos();
-                        if (pos != null) {
-                            rate = WirelessEnergyBindingToolBehavior.Companion.getRate(event.getServer().getLevel(pos.dimension()), pos.pos());
+                        MetaMachine machine = WirelessEnergyBindingToolBehavior.Companion.getmachine(event.getServer().getLevel(pos.dimension()), pos.pos());
+                        if (machine != null) {
+                            rate = WirelessEnergyBindingToolBehavior.Companion.getRate(machine);
+                            container.setDimensional(14, rate.compareTo(BigInteger.ZERO) > 0, machine);
                         }
                         container.setRate(rate);
-                        if (pos != null) {
-                            container.setDimensional(14, rate.compareTo(BigInteger.ZERO) >= 0, MetaMachine.getMachine(event.getServer().getLevel(pos.dimension()), pos.pos()));
-                        }
                     }
                     container.getAllEnergyStat().tick();
                     container.getInEnergyStat().tick();
