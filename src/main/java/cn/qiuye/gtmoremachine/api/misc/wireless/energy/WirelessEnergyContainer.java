@@ -179,10 +179,15 @@ public class WirelessEnergyContainer {
     private boolean isDimensionBound(long energy, MetaMachine machine) {
         if (machine == null) return true;
         int voltageTier = GTUtil.getFloorTierByVoltage(energy);
-        for (IDimensionTransferData data : DIMENSIONAL_TRANSFER_DATA.values()) {
-            if (data.level() == machine.getLevel())
-                return data.Voltagelevel() < voltageTier;
+        IDimensionTransferData Dimension = DIMENSIONAL_TRANSFER_DATA.get(machine.getLevel());
+        if (Dimension != null) {
+            if (Dimension.Voltagelevel() >= 14) {
+                return false;
+            } else {
+                return Dimension.Voltagelevel() < voltageTier;
+            }
+        } else {
+            return true;
         }
-        return true;
     }
 }
