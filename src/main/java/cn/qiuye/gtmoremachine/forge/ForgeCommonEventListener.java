@@ -8,6 +8,7 @@ import cn.qiuye.gtmoremachine.data.wireless.cwu.WirelessCWUSavedData;
 import cn.qiuye.gtmoremachine.data.wireless.energy.WirelessEnergySavedData;
 
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
+
 import net.minecraft.core.GlobalPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
@@ -34,9 +35,9 @@ public class ForgeCommonEventListener {
                             rate = WirelessEnergyBindingToolBehavior.Companion.getRate(event.getServer().getLevel(pos.dimension()), pos.pos());
                         }
                         container.setRate(rate);
-	                    if (pos != null) {
-		                    container.setDimensional(14, rate.compareTo(BigInteger.ZERO) >= 0, MetaMachine.getMachine(event.getServer().getLevel(pos.dimension()), pos.pos()));
-	                    }
+                        if (pos != null) {
+                            container.setDimensional(14, rate.compareTo(BigInteger.ZERO) >= 0, MetaMachine.getMachine(event.getServer().getLevel(pos.dimension()), pos.pos()));
+                        }
                     }
                     container.getAllEnergyStat().tick();
                     container.getInEnergyStat().tick();
