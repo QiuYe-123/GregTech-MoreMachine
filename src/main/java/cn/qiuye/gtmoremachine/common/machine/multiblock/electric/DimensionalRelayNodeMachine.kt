@@ -1,5 +1,6 @@
 package cn.qiuye.gtmoremachine.common.machine.multiblock.electric
 
+import cn.qiuye.gtmoremachine.api.capability.energy.IEnergyBindable
 import cn.qiuye.gtmoremachine.api.machine.multiblock.ICapacityComponentData
 
 import com.gregtechceu.gtceu.api.gui.GuiTextures
@@ -21,11 +22,13 @@ import net.minecraft.network.chat.Component
 import net.minecraft.world.entity.player.Player
 
 import java.math.BigInteger
+import java.util.*
 
 open class DimensionalRelayNodeMachine(holder: IMachineBlockEntity) :
     WorkableMultiblockMachine(holder),
     IFancyUIMachine,
-    IDisplayUIMachine {
+    IDisplayUIMachine,
+    IEnergyBindable {
 
     companion object {
         const val CAPACITY_COMPONENT_HEADER = "DRNComponent_"
@@ -41,6 +44,18 @@ open class DimensionalRelayNodeMachine(holder: IMachineBlockEntity) :
 
     val totalPassiveDrain: BigInteger
         get() = capacityBank?.totalPassiveDrain ?: BigInteger.ZERO
+
+    init {
+        this.capacityBank = DimensionalRelayNodeBank(this, mutableListOf())
+    }
+
+    // ================= 无线电网 =================
+
+    override fun getUUID(): UUID? = ownerUUID
+
+    override fun display(): Boolean = false
+
+    override fun Capacity(): Boolean = true
 
     override fun onStructureFormed() {
         super.onStructureFormed()
@@ -61,7 +76,11 @@ open class DimensionalRelayNodeMachine(holder: IMachineBlockEntity) :
             onStructureInvalid()
             return
         }
-        this.capacityBank = DimensionalRelayNodeBank(this, components)
+        if (this.capacityBank == null) {
+            this.capacityBank = DimensionalRelayNodeBank(this, components)
+        } else {
+            this.capacityBank = capacityBank!!.rebuild(components)
+        }
     }
 
     override fun onStructureInvalid() {
@@ -123,6 +142,13 @@ open class DimensionalRelayNodeMachine(holder: IMachineBlockEntity) :
 
         val totalPassiveDrain: BigInteger = components.fold(BigInteger.ZERO) { acc, component ->
             acc.add(component.lossEnergy)
+        }
+
+        fun rebuild(component: MutableList<ICapacityComponentData>): DimensionalRelayNodeBank {
+            if (component.isEmpty()) {
+                throw IllegalArgumentException("Cannot rebuild bank with no batteries!")
+            }
+            return DimensionalRelayNodeBank(machine, component)
         }
 
         companion object {

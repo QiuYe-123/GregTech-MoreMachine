@@ -120,7 +120,7 @@ public class AdvancedBlockPattern extends BlockPattern {
         // 检查是否启用拆除模式
         if (autoBuildSetting.isUseDemolish()) {
             autoDemolish(player, worldState, autoBuildSetting);
-            return; // 拆除完成后直接返回，不执行构建
+            return;
         }
 
         int minZ = -centerOffset[4];
@@ -132,7 +132,6 @@ public class AdvancedBlockPattern extends BlockPattern {
         boolean isUseMirror = autoBuildSetting.isUseMirror();
         boolean isUseAE = autoBuildSetting.isUseAE();
 
-        if (controller.isFormed()) return;
         Object2IntOpenHashMap<SimplePredicate> cacheGlobal = new Object2IntOpenHashMap<>(worldState.getGlobalCount());
         Object2IntOpenHashMap<SimplePredicate> cacheLayer = new Object2IntOpenHashMap<>(worldState.getLayerCount());
         Object2ObjectOpenHashMap<BlockPos, Object> blocks = new Object2ObjectOpenHashMap<>();

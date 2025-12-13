@@ -1,0 +1,44 @@
+package cn.qiuye.gtmoremachine.api.pattern;
+
+import cn.qiuye.gtmoremachine.api.GTMMAPI;
+import cn.qiuye.gtmoremachine.api.machine.multiblock.ICapacityComponentData;
+import cn.qiuye.gtmoremachine.common.block.CapacityComponentBlock;
+import cn.qiuye.gtmoremachine.common.machine.multiblock.electric.DimensionalRelayNodeMachine;
+import cn.qiuye.gtmoremachine.common.machine.multiblock.electric.DimensionalRelayNodeMachine.ComponentMatchWrapper;
+
+import com.gregtechceu.gtceu.api.pattern.TraceabilityPredicate;
+
+import com.lowdragmc.lowdraglib.utils.BlockInfo;
+
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.level.block.state.BlockState;
+
+import java.math.BigInteger;
+import java.util.Comparator;
+import java.util.Map;
+import java.util.function.Supplier;
+
+public class GTMMPredicates {
+
+    public static TraceabilityPredicate WirelessEnergyCapacityComponent() {
+        return new TraceabilityPredicate(blockWorldState -> {
+            BlockState state = blockWorldState.getBlockState();
+            for (Map.Entry<ICapacityComponentData, Supplier<CapacityComponentBlock>> entry : GTMMAPI.WECC.entrySet()) {
+                if (state.is(entry.getValue().get())) {
+                    ICapacityComponentData battery = entry.getKey();
+                    if (battery.getTier() != -1 && battery.getCapacity().compareTo(BigInteger.ZERO) > 0) {
+                        String key = DimensionalRelayNodeMachine.CAPACITY_COMPONENT_HEADER + battery.getCapacityComponentName();
+                        ComponentMatchWrapper wrapper = blockWorldState.getMatchContext().get(key);
+                        if (wrapper == null) wrapper = new ComponentMatchWrapper(battery);
+                        blockWorldState.getMatchContext().set(key, wrapper.increment());
+                    }
+                    return true;
+                }
+            }
+            return false;
+        }, () -> GTMMAPI.WECC.entrySet().stream()
+                .sorted(Comparator.comparingInt(entry -> entry.getKey().getTier()))
+                .map(entry -> new BlockInfo(entry.getValue().get().defaultBlockState(), null))
+                .toArray(BlockInfo[]::new)).addTooltips(Component.translatable("gtceu.multiblock.pattern.error.batteries"));
+    }
+}
