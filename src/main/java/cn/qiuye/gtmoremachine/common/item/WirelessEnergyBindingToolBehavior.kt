@@ -32,6 +32,8 @@ class WirelessEnergyBindingToolBehavior : IInteractionItem {
         val container = WirelessEnergyContainer.getOrCreateContainer(context.player!!.uuid)
         container.setRate(rate)
         container.setBindPos(GlobalPos.of(context.level.dimension(), pos))
+        val machine = MetaMachine.getMachine(context.level, pos)
+        container.setDimensional(14, true, machine)
 
         context.player?.sendSystemMessage(
             Component.translatable(

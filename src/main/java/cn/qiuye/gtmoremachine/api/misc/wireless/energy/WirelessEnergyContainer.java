@@ -161,7 +161,7 @@ public class WirelessEnergyContainer {
         }
         BigInteger change = BigInteger.ZERO;
         for (ICapacitylimitData data : CAPACITY_STORAGE_DATA.values()) {
-            change = change.add(data.StorageCapacity());
+            if (data.StorageCapacity() != null) change = change.add(data.StorageCapacity());
         }
         this.capacity = change;
         WirelessEnergySavedData.INSTANCE.setDirty(true);

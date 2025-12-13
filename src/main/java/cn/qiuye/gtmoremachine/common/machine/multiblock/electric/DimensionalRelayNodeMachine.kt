@@ -1,25 +1,36 @@
 package cn.qiuye.gtmoremachine.common.machine.multiblock.electric
 
-import cn.qiuye.gtmoremachine.api.capability.energy.IEnergyBindable
+import cn.qiuye.gtmoremachine.api.machine.IWirelessEnergyContainerHolder
 import cn.qiuye.gtmoremachine.api.machine.multiblock.ICapacityComponentData
+import cn.qiuye.gtmoremachine.api.misc.wireless.energy.WirelessEnergyContainer
+import cn.qiuye.gtmoremachine.utils.TeamUtils.getName
 
 import com.gregtechceu.gtceu.api.gui.GuiTextures
 import com.gregtechceu.gtceu.api.gui.fancy.FancyMachineUIWidget
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity
 import com.gregtechceu.gtceu.api.machine.MetaMachine
+import com.gregtechceu.gtceu.api.machine.TickableSubscription
 import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IDisplayUIMachine
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic
+import com.gregtechceu.gtceu.common.data.GTItems
 
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI
 import com.lowdragmc.lowdraglib.gui.util.ClickData
 import com.lowdragmc.lowdraglib.gui.widget.*
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder
 
+import net.minecraft.core.BlockPos
+import net.minecraft.core.Direction
 import net.minecraft.network.chat.Component
+import net.minecraft.world.InteractionHand
+import net.minecraft.world.InteractionResult
 import net.minecraft.world.entity.player.Player
+import net.minecraft.world.level.Level
+import net.minecraft.world.level.block.state.BlockState
+import net.minecraft.world.phys.BlockHitResult
 
 import java.math.BigInteger
 import java.util.*
@@ -28,7 +39,7 @@ open class DimensionalRelayNodeMachine(holder: IMachineBlockEntity) :
     WorkableMultiblockMachine(holder),
     IFancyUIMachine,
     IDisplayUIMachine,
-    IEnergyBindable {
+    IWirelessEnergyContainerHolder {
 
     companion object {
         const val CAPACITY_COMPONENT_HEADER = "DRNComponent_"
@@ -38,6 +49,8 @@ open class DimensionalRelayNodeMachine(holder: IMachineBlockEntity) :
         )
     }
     private var capacityBank: DimensionalRelayNodeBank? = null
+    private var wirelessEnergyContainerCache: WirelessEnergyContainer? = null
+    private var updContainer: TickableSubscription? = null
 
     val totalCapacity: BigInteger
         get() = capacityBank?.totalCapacity ?: BigInteger.ZERO
@@ -56,6 +69,62 @@ open class DimensionalRelayNodeMachine(holder: IMachineBlockEntity) :
     override fun display(): Boolean = false
 
     override fun Capacity(): Boolean = true
+
+    override fun setWirelessEnergyContainerCache(container: WirelessEnergyContainer?) {
+        wirelessEnergyContainerCache = container
+    }
+
+    override fun getWirelessEnergyContainerCache(): WirelessEnergyContainer? = wirelessEnergyContainerCache
+
+    private fun tick() {
+        if (this.uuid == null) return
+    }
+
+    override fun onUse(
+        state: BlockState,
+        world: Level,
+        pos: BlockPos,
+        player: Player,
+        hand: InteractionHand,
+        hit: BlockHitResult,
+    ): InteractionResult {
+        if (isRemote) return InteractionResult.PASS
+        val item = player.getItemInHand(hand)
+        if (item.isEmpty) return InteractionResult.PASS
+        if (item.`is`(GTItems.TOOL_DATA_STICK.asItem())) {
+            ownerUUID = player.uuid
+            wirelessEnergyContainerCache = null
+            player.sendSystemMessage(
+                Component.translatable(
+                    "gtmoremachine.machine.wireless_energy_hatch.tooltip.bind",
+                    getName(player),
+                ),
+            )
+            return InteractionResult.SUCCESS
+        }
+        return InteractionResult.PASS
+    }
+
+    override fun onLeftClick(
+        player: Player,
+        world: Level,
+        hand: InteractionHand,
+        pos: BlockPos,
+        direction: Direction,
+    ): Boolean {
+        if (isRemote) return false
+        val item = player.getItemInHand(hand)
+        if (item.isEmpty) return false
+        if (item.`is`(GTItems.TOOL_DATA_STICK.asItem())) {
+            ownerUUID = null
+            wirelessEnergyContainerCache = null
+            player.sendSystemMessage(
+                Component.translatable("gtmoremachine.machine.wireless_energy_hatch.tooltip.unbind"),
+            )
+            return true
+        }
+        return false
+    }
 
     override fun onStructureFormed() {
         super.onStructureFormed()
@@ -81,10 +150,14 @@ open class DimensionalRelayNodeMachine(holder: IMachineBlockEntity) :
         } else {
             this.capacityBank = capacityBank!!.rebuild(components)
         }
+        val container = getWirelessEnergyContainer() ?: return
+        container.setCapacity(this.totalCapacity, true, this)
     }
 
     override fun onStructureInvalid() {
         capacityBank = null
+        val container = getWirelessEnergyContainer() ?: return
+        container.setCapacity(BigInteger.ZERO, false, this)
         super.onStructureInvalid()
     }
 
