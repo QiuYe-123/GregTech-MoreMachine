@@ -107,7 +107,7 @@ public interface IWirelessMonitor extends IWirelessEnergyContainerHolder {
                 ComponentPanelWidget.withButton(getPowerStatusText(powerStatus), "powerStatus", getPowerStatusclolor(powerStatus)),
                 ComponentPanelWidget.withButton(getSortingRulesText(sorting), "sortingrules", getSortingRulescolor(sorting))));
 
-        for (Map.Entry<MetaMachine, ITransferData> m : getEntryList(sorting)) {
+        for (Map.Entry<MetaMachine, ITransferData> m : getTransferList(sorting)) {
             UUID uuid = m.getValue().UUID();
             BigInteger through = m.getValue().Throughput();
             if (statistics == Statistics.Global || uuid.equals(TeamUtils.getTeamUUID(this.getUUID()))) {
@@ -159,18 +159,49 @@ public interface IWirelessMonitor extends IWirelessEnergyContainerHolder {
         return Component.translatable(key, NumberUtils.formatLong(fillTime));
     }
 
-    private List<Map.Entry<MetaMachine, ITransferData>> getEntryList(Sorting sorting) {
-        List<Map.Entry<MetaMachine, ITransferData>> entryList = new ArrayList<>(WirelessEnergyContainer.TRANSFER_DATA.entrySet());
-        entryList.sort((entry1, entry2) -> {
-            BigInteger throughput1 = entry1.getValue().Throughput();
-            BigInteger throughput2 = entry2.getValue().Throughput();
-            if (sorting == Sorting.Ascending) {
-                return throughput1.compareTo(throughput2);
-            } else {
-                return throughput2.compareTo(throughput1);
-            }
-        });
-        return entryList;
+    private List<Map.Entry<MetaMachine, ITransferData>> getTransferList(Sorting sorting) {
+        return WirelessEnergyContainer.TRANSFER_DATA.entrySet()
+                .stream()
+                .sorted((entry1, entry2) -> {
+                    BigInteger throughput1 = entry1.getValue().Throughput();
+                    BigInteger throughput2 = entry2.getValue().Throughput();
+                    if (sorting == Sorting.Ascending) {
+                        return throughput1.compareTo(throughput2);
+                    } else {
+                        return throughput2.compareTo(throughput1);
+                    }
+                })
+                .toList();
+    }
+
+    private List<Map.Entry<MetaMachine, ICapacitylimitData>> getCapacitylimitList(Sorting sorting) {
+        return WirelessEnergyContainer.CAPACITY_STORAGE_DATA.entrySet()
+                .stream()
+                .sorted((entry1, entry2) -> {
+                    BigInteger capacity1 = entry1.getValue().StorageCapacity();
+                    BigInteger capacity2 = entry2.getValue().StorageCapacity();
+                    if (sorting == Sorting.Ascending) {
+                        return capacity1.compareTo(capacity2);
+                    } else {
+                        return capacity2.compareTo(capacity1);
+                    }
+                })
+                .toList();
+    }
+
+    private List<Map.Entry<Level, IDimensionTransferData>> getDimensionTransferList(Sorting sorting) {
+        return WirelessEnergyContainer.DIMENSIONAL_TRANSFER_DATA.entrySet()
+                .stream()
+                .sorted((entry1, entry2) -> {
+                    int voltage1 = entry1.getValue().Voltagelevel();
+                    int voltage2 = entry2.getValue().Voltagelevel();
+                    if (sorting == Sorting.Ascending) {
+                        return Integer.compare(voltage1, voltage2);
+                    } else {
+                        return Integer.compare(voltage2, voltage1);
+                    }
+                })
+                .toList();
     }
 
     private static Component getStatisticsText(Statistics statistics) {

@@ -25,7 +25,6 @@ import com.lowdragmc.lowdraglib.gui.util.ClickData;
 import com.lowdragmc.lowdraglib.gui.widget.DraggableScrollableWidgetGroup;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-import com.lowdragmc.lowdraglib.syncdata.annotation.DropSaved;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.gui.GuiGraphics;
@@ -55,52 +54,44 @@ public class WirelessEnergyTerminalBehavior implements IItemUIFactory, IItemHUDP
 
     @OnlyIn(Dist.CLIENT)
     private HUD hud;
-    @DropSaved
     private UUID uuid;
     public static int p;
     public static BlockPos pPos;
-    @DropSaved
-    private Statistics statistics = Statistics.Team;
-    @DropSaved
-    private Format format = Format.Unit;
-    @DropSaved
-    private Status powerStatus = Status.All;
-    @DropSaved
-    private Sorting sortingrules = Sorting.Ascending;
     @Nullable
     @Getter
     @Setter
     private WirelessEnergyContainer WirelessEnergyContainerCache;
 
     public WirelessEnergyTerminalBehavior() {
-        if (GTCEu.isClientSide())
-            hud = new HUD();
+        if (GTCEu.isClientSide()) {
+            this.hud = new HUD();
+        }
     }
 
     //////////////////////////////////////
     // *********** GUI ***********//
     //////////////////////////////////////
-    private void handleDisplayClick(String componentData, ClickData clickData) {
+    private void handleDisplayClick(ItemStack stack, String componentData, ClickData clickData) {
         if (componentData.equals("statistics")) {
             if (!clickData.isRemote) {
-                statistics = (statistics == Statistics.Team) ? Statistics.Global : Statistics.Team;
+                setStatistics((getStatistics(stack) == Statistics.Team) ? Statistics.Global : Statistics.Team, stack);
             }
         } else if (componentData.equals("format")) {
             if (!clickData.isRemote) {
-                format = (format == Format.Unit) ? Format.Science : Format.Unit;
+                setFormat((getFormat(stack) == Format.Unit) ? Format.Science : Format.Unit, stack);
             }
         } else if (componentData.equals("powerStatus")) {
             if (!clickData.isRemote) {
                 // 循环切换PowerStatus：All -> In -> Out -> All
-                switch (powerStatus) {
-                    case All -> powerStatus = Status.In;
-                    case In -> powerStatus = Status.Out;
-                    case Out -> powerStatus = Status.All;
+                switch (getPowerStatus(stack)) {
+                    case All -> setPowerStatus(Status.In, stack);
+                    case In -> setPowerStatus(Status.Out, stack);
+                    case Out -> setPowerStatus(Status.All, stack);
                 }
             }
         } else if (componentData.equals("sortingrules")) {
             if (!clickData.isRemote) {
-                sortingrules = (sortingrules == Sorting.Ascending) ? Sorting.Descendingorder : Sorting.Ascending;
+                setSortingrules((getSortingrules(stack) == Sorting.Ascending) ? Sorting.Descendingorder : Sorting.Ascending, stack);
             }
         } else if (clickData.isRemote) {
             p = 200;
@@ -109,13 +100,74 @@ public class WirelessEnergyTerminalBehavior implements IItemUIFactory, IItemHUDP
         }
     }
 
-    @Override
-    public ModularUI createUI(HeldItemUIFactory.HeldItemHolder holder, Player entityPlayer) {
-        this.uuid = entityPlayer.getUUID();
-        return new ModularUI(DISPLAY_TEXT_WIDTH + 8 + 8, 117 + 8 + 8 + 8 + 17, holder, entityPlayer).widget(createWidget(holder.getHeld().getDescriptionId(), new WirelessMonitor(entityPlayer.getUUID(), entityPlayer.level())));
+    private void setStatistics(Statistics statistics, ItemStack stack) {
+        var tag = stack.getOrCreateTag();
+        tag.putString("statistics", statistics.toString());
+        stack.setTag(tag);
     }
 
-    private Widget createWidget(String descriptionId, WirelessMonitor monitor) {
+    private Statistics getStatistics(ItemStack stack) {
+        var tag = stack.getOrCreateTag();
+        if (!tag.isEmpty() && tag.contains("statistics")) {
+            return Statistics.valueOf(tag.getString("statistics"));
+        } else {
+            return Statistics.Team;
+        }
+    }
+
+    private void setFormat(Format format, ItemStack stack) {
+        var tag = stack.getOrCreateTag();
+        tag.putString("format", format.toString());
+        stack.setTag(tag);
+    }
+
+    private Format getFormat(ItemStack stack) {
+        var tag = stack.getOrCreateTag();
+        if (!tag.isEmpty() && tag.contains("format")) {
+            return Format.valueOf(tag.getString("format"));
+        } else {
+            return Format.Unit;
+        }
+    }
+
+    private void setPowerStatus(Status powerStatus, ItemStack stack) {
+        var tag = stack.getOrCreateTag();
+        tag.putString("powerStatus", powerStatus.toString());
+        stack.setTag(tag);
+    }
+
+    private Status getPowerStatus(ItemStack stack) {
+        var tag = stack.getOrCreateTag();
+        if (!tag.isEmpty() && tag.contains("powerStatus")) {
+            return Status.valueOf(tag.getString("powerStatus"));
+        } else {
+            return Status.All;
+        }
+    }
+
+    private void setSortingrules(Sorting sortingrules, ItemStack stack) {
+        var tag = stack.getOrCreateTag();
+        tag.putString("sortingrules", sortingrules.toString());
+        stack.setTag(tag);
+    }
+
+    private Sorting getSortingrules(ItemStack stack) {
+        var tag = stack.getOrCreateTag();
+        if (!tag.isEmpty() && tag.contains("sortingrules")) {
+            return Sorting.valueOf(tag.getString("sortingrules"));
+        } else {
+            return Sorting.Ascending;
+        }
+    }
+
+    @Override
+    public ModularUI createUI(HeldItemUIFactory.HeldItemHolder holder, Player entityPlayer) {
+        final var handItem = entityPlayer.getMainHandItem();
+        setUUID(entityPlayer.getUUID(), handItem);
+        return new ModularUI(DISPLAY_TEXT_WIDTH + 8 + 8, 117 + 8 + 8 + 8 + 17, holder, entityPlayer).widget(createWidget(handItem, holder.getHeld().getDescriptionId(), new WirelessMonitor(entityPlayer.getUUID(), entityPlayer.level())));
+    }
+
+    private Widget createWidget(ItemStack stack, String descriptionId, WirelessMonitor monitor) {
         var group = new WidgetGroup(0, 0, DISPLAY_TEXT_WIDTH + 8 + 8, 117 + 8 + 8 + 8 + 17);
         Widget label = new AlignLabelWidget(DISPLAY_TEXT_WIDTH / 2 + 4, 5, descriptionId).setTextAlign(ALIGN_CENTER);
         group.addWidget(
@@ -124,31 +176,32 @@ public class WirelessEnergyTerminalBehavior implements IItemUIFactory, IItemHUDP
                         .setYScrollBarWidth(2)
                         .setYBarStyle(null, ColorPattern.T_WHITE.rectTexture().setRadius(1))
                         .addWidget(label)
-                        .addWidget(new AlignComponentPanelWidget(4, 17, text -> addDisplayText(text, monitor))
+                        .addWidget(new AlignComponentPanelWidget(4, 17, text -> addDisplayText(text, monitor, stack))
                                 .setMaxWidthLimit(DISPLAY_TEXT_WIDTH)
-                                .clickHandler(this::handleDisplayClick)
+                                .clickHandler((componentData, clickData) -> handleDisplayClick(stack, componentData, clickData))
                                 .setSplitChar(".")));
 
         group.setBackground(GuiTextures.BACKGROUND_INVERSE);
         return group;
     }
 
-    private void addDisplayText(List<Component> textList, WirelessMonitor monitor) {
+    private void addDisplayText(List<Component> textList, WirelessMonitor monitor, ItemStack stack) {
         if (monitor.isRemote()) return;
         if (monitor.displayTextCache == null || monitor.level.getServer().getTickCount() % 10 == 0) {
-            monitor.displayTextCache = monitor.getDisplayText(statistics, format, powerStatus, sortingrules);
+            monitor.displayTextCache = monitor.getDisplayText(getStatistics(stack), getFormat(stack), getPowerStatus(stack), getSortingrules(stack));
         }
         textList.addAll(monitor.displayTextCache);
     }
 
     @Override
     public void drawHUD(ItemStack stack, GuiGraphics guiGraphics) {
-        if (getUUID() == null) {
+        if (getUUID(stack) == null) {
             this.hud.newString(Component.literal("0"));
             this.hud.newString(Component.literal("0"));
             this.hud.newString(Component.literal("0"));
             this.hud.newString(Component.literal("0"));
         } else {
+            this.uuid = getUUID(stack);
             var container = getWirelessEnergyContainer();
             this.hud.newString(Component.literal(NumberUtils.formatBigDecimalNumberOrSic(container.getAllEnergyStat().getAvg())));
             this.hud.newString(Component.literal(NumberUtils.formatBigDecimalNumberOrSic(container.getInEnergyStat().getAvg())));
@@ -162,6 +215,21 @@ public class WirelessEnergyTerminalBehavior implements IItemUIFactory, IItemHUDP
     @Override
     public @Nullable UUID getUUID() {
         return this.uuid;
+    }
+
+    private void setUUID(UUID uuid, ItemStack itemStack) {
+        var tag = itemStack.getOrCreateTag();
+        tag.putUUID("UUID", uuid);
+        itemStack.setTag(tag);
+    }
+
+    private @Nullable UUID getUUID(ItemStack itemStack) {
+        var tag = itemStack.getOrCreateTag();
+        if (!tag.isEmpty() && tag.contains("UUID")) {
+            return tag.getUUID("UUID");
+        } else {
+            return null;
+        }
     }
 
     private static class WirelessMonitor implements IWirelessMonitor {
