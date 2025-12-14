@@ -68,9 +68,17 @@ public class WirelessEnergyTerminalBehavior implements IItemUIFactory, IItemHUDP
         }
     }
 
-    //////////////////////////////////////
-    // *********** GUI ***********//
-    //////////////////////////////////////
+    // ==================== 构造函数和初始化 ====================
+
+    // ==================== GUI 相关 ====================
+
+    /**
+     * 处理显示界面的点击事件
+     * 
+     * @param stack         物品堆
+     * @param componentData 组件数据
+     * @param clickData     点击数据
+     */
     private void handleDisplayClick(ItemStack stack, String componentData, ClickData clickData) {
         if (componentData.equals("statistics")) {
             if (!clickData.isRemote) {
@@ -100,66 +108,13 @@ public class WirelessEnergyTerminalBehavior implements IItemUIFactory, IItemHUDP
         }
     }
 
-    private void setStatistics(Statistics statistics, ItemStack stack) {
-        var tag = stack.getOrCreateTag();
-        tag.putString("statistics", statistics.toString());
-        stack.setTag(tag);
-    }
-
-    private Statistics getStatistics(ItemStack stack) {
-        var tag = stack.getOrCreateTag();
-        if (!tag.isEmpty() && tag.contains("statistics")) {
-            return Statistics.valueOf(tag.getString("statistics"));
-        } else {
-            return Statistics.Team;
-        }
-    }
-
-    private void setFormat(Format format, ItemStack stack) {
-        var tag = stack.getOrCreateTag();
-        tag.putString("format", format.toString());
-        stack.setTag(tag);
-    }
-
-    private Format getFormat(ItemStack stack) {
-        var tag = stack.getOrCreateTag();
-        if (!tag.isEmpty() && tag.contains("format")) {
-            return Format.valueOf(tag.getString("format"));
-        } else {
-            return Format.Unit;
-        }
-    }
-
-    private void setPowerStatus(Status powerStatus, ItemStack stack) {
-        var tag = stack.getOrCreateTag();
-        tag.putString("powerStatus", powerStatus.toString());
-        stack.setTag(tag);
-    }
-
-    private Status getPowerStatus(ItemStack stack) {
-        var tag = stack.getOrCreateTag();
-        if (!tag.isEmpty() && tag.contains("powerStatus")) {
-            return Status.valueOf(tag.getString("powerStatus"));
-        } else {
-            return Status.All;
-        }
-    }
-
-    private void setSortingrules(Sorting sortingrules, ItemStack stack) {
-        var tag = stack.getOrCreateTag();
-        tag.putString("sortingrules", sortingrules.toString());
-        stack.setTag(tag);
-    }
-
-    private Sorting getSortingrules(ItemStack stack) {
-        var tag = stack.getOrCreateTag();
-        if (!tag.isEmpty() && tag.contains("sortingrules")) {
-            return Sorting.valueOf(tag.getString("sortingrules"));
-        } else {
-            return Sorting.Ascending;
-        }
-    }
-
+    /**
+     * 创建UI界面
+     * 
+     * @param holder       持有物品的UI工厂
+     * @param entityPlayer 玩家
+     * @return 模块化UI
+     */
     @Override
     public ModularUI createUI(HeldItemUIFactory.HeldItemHolder holder, Player entityPlayer) {
         final var handItem = entityPlayer.getMainHandItem();
@@ -167,6 +122,14 @@ public class WirelessEnergyTerminalBehavior implements IItemUIFactory, IItemHUDP
         return new ModularUI(DISPLAY_TEXT_WIDTH + 8 + 8, 117 + 8 + 8 + 8 + 17, holder, entityPlayer).widget(createWidget(handItem, holder.getHeld().getDescriptionId(), new WirelessMonitor(entityPlayer.getUUID(), entityPlayer.level())));
     }
 
+    /**
+     * 创建UI部件
+     * 
+     * @param stack         物品堆
+     * @param descriptionId 描述ID
+     * @param monitor       无线能量监视器
+     * @return UI部件组
+     */
     private Widget createWidget(ItemStack stack, String descriptionId, WirelessMonitor monitor) {
         var group = new WidgetGroup(0, 0, DISPLAY_TEXT_WIDTH + 8 + 8, 117 + 8 + 8 + 8 + 17);
         Widget label = new AlignLabelWidget(DISPLAY_TEXT_WIDTH / 2 + 4, 5, descriptionId).setTextAlign(ALIGN_CENTER);
@@ -185,6 +148,13 @@ public class WirelessEnergyTerminalBehavior implements IItemUIFactory, IItemHUDP
         return group;
     }
 
+    /**
+     * 添加显示文本到列表
+     * 
+     * @param textList 文本列表
+     * @param monitor  无线能量监视器
+     * @param stack    物品堆
+     */
     private void addDisplayText(List<Component> textList, WirelessMonitor monitor, ItemStack stack) {
         if (monitor.isRemote()) return;
         if (monitor.displayTextCache == null || monitor.level.getServer().getTickCount() % 10 == 0) {
@@ -193,6 +163,14 @@ public class WirelessEnergyTerminalBehavior implements IItemUIFactory, IItemHUDP
         textList.addAll(monitor.displayTextCache);
     }
 
+    // ==================== HUD 相关 ====================
+
+    /**
+     * 绘制HUD信息
+     * 
+     * @param stack       物品堆
+     * @param guiGraphics GUI图形对象
+     */
     @Override
     public void drawHUD(ItemStack stack, GuiGraphics guiGraphics) {
         if (getUUID(stack) == null) {
@@ -212,17 +190,146 @@ public class WirelessEnergyTerminalBehavior implements IItemUIFactory, IItemHUDP
         this.hud.reset();
     }
 
+    // ==================== 数据存储相关 (NBT) ====================
+
+    /**
+     * 设置统计模式
+     * 
+     * @param statistics 统计模式
+     * @param stack      物品堆
+     */
+    private void setStatistics(Statistics statistics, ItemStack stack) {
+        var tag = stack.getOrCreateTag();
+        tag.putString("statistics", statistics.toString());
+        stack.setTag(tag);
+    }
+
+    /**
+     * 获取统计模式
+     * 
+     * @param stack 物品堆
+     * @return 当前统计模式
+     */
+    private Statistics getStatistics(ItemStack stack) {
+        var tag = stack.getOrCreateTag();
+        if (!tag.isEmpty() && tag.contains("statistics")) {
+            return Statistics.valueOf(tag.getString("statistics"));
+        } else {
+            return Statistics.Team;
+        }
+    }
+
+    /**
+     * 设置数字格式
+     * 
+     * @param format 数字格式
+     * @param stack  物品堆
+     */
+    private void setFormat(Format format, ItemStack stack) {
+        var tag = stack.getOrCreateTag();
+        tag.putString("format", format.toString());
+        stack.setTag(tag);
+    }
+
+    /**
+     * 获取数字格式
+     * 
+     * @param stack 物品堆
+     * @return 当前数字格式
+     */
+    private Format getFormat(ItemStack stack) {
+        var tag = stack.getOrCreateTag();
+        if (!tag.isEmpty() && tag.contains("format")) {
+            return Format.valueOf(tag.getString("format"));
+        } else {
+            return Format.Unit;
+        }
+    }
+
+    /**
+     * 设置电力状态过滤
+     * 
+     * @param powerStatus 电力状态
+     * @param stack       物品堆
+     */
+    private void setPowerStatus(Status powerStatus, ItemStack stack) {
+        var tag = stack.getOrCreateTag();
+        tag.putString("powerStatus", powerStatus.toString());
+        stack.setTag(tag);
+    }
+
+    /**
+     * 获取电力状态过滤
+     * 
+     * @param stack 物品堆
+     * @return 当前电力状态
+     */
+    private Status getPowerStatus(ItemStack stack) {
+        var tag = stack.getOrCreateTag();
+        if (!tag.isEmpty() && tag.contains("powerStatus")) {
+            return Status.valueOf(tag.getString("powerStatus"));
+        } else {
+            return Status.All;
+        }
+    }
+
+    /**
+     * 设置排序规则
+     * 
+     * @param sortingrules 排序规则
+     * @param stack        物品堆
+     */
+    private void setSortingrules(Sorting sortingrules, ItemStack stack) {
+        var tag = stack.getOrCreateTag();
+        tag.putString("sortingrules", sortingrules.toString());
+        stack.setTag(tag);
+    }
+
+    /**
+     * 获取排序规则
+     * 
+     * @param stack 物品堆
+     * @return 当前排序规则
+     */
+    private Sorting getSortingrules(ItemStack stack) {
+        var tag = stack.getOrCreateTag();
+        if (!tag.isEmpty() && tag.contains("sortingrules")) {
+            return Sorting.valueOf(tag.getString("sortingrules"));
+        } else {
+            return Sorting.Ascending;
+        }
+    }
+
+    // ==================== UUID 相关 ====================
+
+    /**
+     * 获取UUID
+     * 
+     * @return UUID
+     */
     @Override
     public @Nullable UUID getUUID() {
         return this.uuid;
     }
 
+    /**
+     * 设置UUID到物品堆
+     * 
+     * @param uuid      UUID
+     * @param itemStack 物品堆
+     */
     private void setUUID(UUID uuid, ItemStack itemStack) {
         var tag = itemStack.getOrCreateTag();
         tag.putUUID("UUID", uuid);
         itemStack.setTag(tag);
     }
 
+    /**
+     * 从物品堆获取UUID
+     * 
+     * @param itemStack 物品堆
+     * @return UUID
+     */
     private @Nullable UUID getUUID(ItemStack itemStack) {
         var tag = itemStack.getOrCreateTag();
         if (!tag.isEmpty() && tag.contains("UUID")) {
@@ -232,6 +339,11 @@ public class WirelessEnergyTerminalBehavior implements IItemUIFactory, IItemHUDP
         }
     }
 
+    // ==================== 内部类 ====================
+
+    /**
+     * 无线能量监视器内部类
+     */
     private static class WirelessMonitor implements IWirelessMonitor {
 
         private WirelessMonitor(UUID uuid, Level level) {
@@ -239,6 +351,11 @@ public class WirelessEnergyTerminalBehavior implements IItemUIFactory, IItemHUDP
             this.level = level;
         }
 
+        /**
+         * 检查是否为客户端
+         * 
+         * @return 如果是客户端返回true
+         */
         private boolean isRemote() {
             return GTmm.isClientThread();
         }
@@ -253,7 +370,9 @@ public class WirelessEnergyTerminalBehavior implements IItemUIFactory, IItemHUDP
         private WirelessEnergyContainer WirelessEnergyContainerCache;
 
         /**
-         * @return cached uuid of player/team
+         * 获取缓存的玩家/团队UUID
+         * 
+         * @return UUID
          */
         @Override
         public @Nullable UUID getUUID() {
@@ -261,7 +380,9 @@ public class WirelessEnergyTerminalBehavior implements IItemUIFactory, IItemHUDP
         }
 
         /**
-         * @return false
+         * 是否显示
+         * 
+         * @return 返回false
          */
         @Override
         public boolean display() {
@@ -269,7 +390,9 @@ public class WirelessEnergyTerminalBehavior implements IItemUIFactory, IItemHUDP
         }
 
         /**
-         * @return level
+         * 获取当前世界
+         * 
+         * @return 世界
          */
         @Override
         public Level getLevel() {
