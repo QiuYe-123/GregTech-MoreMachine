@@ -30,7 +30,7 @@ public class ClientProxy extends CommonProxy {
     }
 
     public static void registerGuiOverlays(RegisterGuiOverlaysEvent event) {
-        event.registerAboveAll("hud", new GTmmHudGuiOverlay());
+        event.registerAboveAll("hud", new HudGuiOverlay());
     }
 
     private static void clientSetup(FMLClientSetupEvent event) {}

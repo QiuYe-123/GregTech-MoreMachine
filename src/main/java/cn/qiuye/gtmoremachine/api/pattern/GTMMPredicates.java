@@ -1,14 +1,11 @@
 package cn.qiuye.gtmoremachine.api.pattern;
 
 import cn.qiuye.gtmoremachine.api.GTMMAPI;
-import cn.qiuye.gtmoremachine.api.machine.multiblock.ICapacityComponentData;
-import cn.qiuye.gtmoremachine.api.machine.multiblock.IEnergyCommunicationUnitBlock;
-import cn.qiuye.gtmoremachine.common.block.CapacityComponentBlock;
-import cn.qiuye.gtmoremachine.common.block.EnergyCommunicationUnitBlock;
-import cn.qiuye.gtmoremachine.common.machine.multiblock.electric.DimensionalRelayNodeMachine;
-import cn.qiuye.gtmoremachine.common.machine.multiblock.electric.DimensionalRelayNodeMachine.ComponentMatchWrapper;
+import cn.qiuye.gtmoremachine.common.machine.multiblock.electric.DemodulationHubMachine;
+import cn.qiuye.gtmoremachine.common.machine.multiblock.electric.DemodulationHubMachine.ComponentMatchWrapper;
 
 import com.gregtechceu.gtceu.api.pattern.TraceabilityPredicate;
+import com.gregtechceu.gtceu.api.pattern.error.PatternStringError;
 
 import com.lowdragmc.lowdraglib.utils.BlockInfo;
 
@@ -17,19 +14,20 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import java.math.BigInteger;
 import java.util.Comparator;
-import java.util.Map;
-import java.util.function.Supplier;
 
 public class GTMMPredicates {
 
     public static TraceabilityPredicate EnergyCommunicationUnit() {
         return new TraceabilityPredicate(blockWorldState -> {
             BlockState state = blockWorldState.getBlockState();
-            for (Map.Entry<IEnergyCommunicationUnitBlock, Supplier<EnergyCommunicationUnitBlock>> entry : GTMMAPI.ECU.entrySet()) {
+            for (var entry : GTMMAPI.ECU.entrySet()) {
                 if (state.is(entry.getValue().get())) {
-                    IEnergyCommunicationUnitBlock ecu = entry.getKey();
-                    String key = ecu.getEnergyCommunicationUnitBlockName();
-                    blockWorldState.getMatchContext().set(key, true);
+                    var ecu = entry.getKey();
+                    Object currentCoil = blockWorldState.getMatchContext().getOrPut("ECUType", ecu);
+                    if (!currentCoil.equals(ecu)) {
+                        blockWorldState.setError(new PatternStringError("gtceu.multiblock.pattern.error.filters"));
+                        return false;
+                    }
                     return true;
                 }
             }
@@ -43,11 +41,11 @@ public class GTMMPredicates {
     public static TraceabilityPredicate WirelessEnergyCapacityComponent() {
         return new TraceabilityPredicate(blockWorldState -> {
             BlockState state = blockWorldState.getBlockState();
-            for (Map.Entry<ICapacityComponentData, Supplier<CapacityComponentBlock>> entry : GTMMAPI.WECC.entrySet()) {
+            for (var entry : GTMMAPI.WECC.entrySet()) {
                 if (state.is(entry.getValue().get())) {
-                    ICapacityComponentData wecc = entry.getKey();
+                    var wecc = entry.getKey();
                     if (wecc.getTier() != -1 && wecc.getCapacity().compareTo(BigInteger.ZERO) > 0) {
-                        String key = DimensionalRelayNodeMachine.CAPACITY_COMPONENT_HEADER + wecc.getCapacityComponentName();
+                        String key = DemodulationHubMachine.CAPACITY_COMPONENT_HEADER + wecc.getCapacityComponentName();
                         ComponentMatchWrapper wrapper = blockWorldState.getMatchContext().get(key);
                         if (wrapper == null) wrapper = new ComponentMatchWrapper(wecc);
                         blockWorldState.getMatchContext().set(key, wrapper.increment());

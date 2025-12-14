@@ -15,7 +15,7 @@ import net.minecraftforge.client.gui.overlay.IGuiOverlay
 import lombok.NoArgsConstructor
 
 @NoArgsConstructor
-class GTmmHudGuiOverlay : IGuiOverlay {
+class HudGuiOverlay : IGuiOverlay {
     override fun render(
         forgeGui: ForgeGui,
         guiGraphics: GuiGraphics,
