@@ -164,5 +164,9 @@ public class GTmm {
         public static boolean isFTBTeamsLoaded() {
             return isModLoaded(GTMMValues.MODID_FTB_TEAMS);
         }
+
+        public static boolean isCuriosLoaded() {
+            return isModLoaded(GTMMValues.MODID_CURIOS);
+        }
     }
 }

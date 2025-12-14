@@ -7,10 +7,15 @@ import cn.qiuye.gtmoremachine.api.gui.monitor.Statistics;
 import cn.qiuye.gtmoremachine.api.gui.monitor.Status;
 import cn.qiuye.gtmoremachine.api.gui.widget.AlignComponentPanelWidget;
 import cn.qiuye.gtmoremachine.api.gui.widget.AlignLabelWidget;
+import cn.qiuye.gtmoremachine.api.item.HUD;
+import cn.qiuye.gtmoremachine.api.machine.IWirelessEnergyContainerHolder;
 import cn.qiuye.gtmoremachine.api.misc.wireless.energy.IWirelessMonitor;
 import cn.qiuye.gtmoremachine.api.misc.wireless.energy.WirelessEnergyContainer;
+import cn.qiuye.gtmoremachine.utils.NumberUtils;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
+import com.gregtechceu.gtceu.api.item.component.IItemHUDProvider;
 import com.gregtechceu.gtceu.api.item.component.IItemUIFactory;
 
 import com.lowdragmc.lowdraglib.gui.editor.ColorPattern;
@@ -23,10 +28,14 @@ import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DropSaved;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -42,8 +51,12 @@ import static cn.qiuye.gtmoremachine.common.machine.electric.WirelessEnergyMonit
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class WirelessEnergyTerminalBehavior implements IItemUIFactory {
+public class WirelessEnergyTerminalBehavior implements IItemUIFactory, IItemHUDProvider, IWirelessEnergyContainerHolder {
 
+    @OnlyIn(Dist.CLIENT)
+    private HUD hud;
+    @DropSaved
+    private UUID uuid;
     public static int p;
     public static BlockPos pPos;
     @DropSaved
@@ -54,6 +67,15 @@ public class WirelessEnergyTerminalBehavior implements IItemUIFactory {
     private Status powerStatus = Status.All;
     @DropSaved
     private Sorting sortingrules = Sorting.Ascending;
+    @Nullable
+    @Getter
+    @Setter
+    private WirelessEnergyContainer WirelessEnergyContainerCache;
+
+    public WirelessEnergyTerminalBehavior() {
+        if (GTCEu.isClientSide())
+            hud = new HUD();
+    }
 
     //////////////////////////////////////
     // *********** GUI ***********//
@@ -89,6 +111,7 @@ public class WirelessEnergyTerminalBehavior implements IItemUIFactory {
 
     @Override
     public ModularUI createUI(HeldItemUIFactory.HeldItemHolder holder, Player entityPlayer) {
+        this.uuid = entityPlayer.getUUID();
         return new ModularUI(DISPLAY_TEXT_WIDTH + 8 + 8, 117 + 8 + 8 + 8 + 17, holder, entityPlayer).widget(createWidget(holder.getHeld().getDescriptionId(), new WirelessMonitor(entityPlayer.getUUID(), entityPlayer.level())));
     }
 
@@ -116,6 +139,29 @@ public class WirelessEnergyTerminalBehavior implements IItemUIFactory {
             monitor.displayTextCache = monitor.getDisplayText(statistics, format, powerStatus, sortingrules);
         }
         textList.addAll(monitor.displayTextCache);
+    }
+
+    @Override
+    public void drawHUD(ItemStack stack, GuiGraphics guiGraphics) {
+        if (getUUID() == null) {
+            this.hud.newString(Component.literal("0"));
+            this.hud.newString(Component.literal("0"));
+            this.hud.newString(Component.literal("0"));
+            this.hud.newString(Component.literal("0"));
+        } else {
+            var container = getWirelessEnergyContainer();
+            this.hud.newString(Component.literal(NumberUtils.formatBigDecimalNumberOrSic(container.getAllEnergyStat().getAvg())));
+            this.hud.newString(Component.literal(NumberUtils.formatBigDecimalNumberOrSic(container.getInEnergyStat().getAvg())));
+            this.hud.newString(Component.literal(NumberUtils.formatBigDecimalNumberOrSic(container.getOutEnergyStat().getAvg())));
+            this.hud.newString(Component.literal(NumberUtils.formatBigIntegerNumberOrSic(container.getStorage())));
+        }
+        this.hud.draw(guiGraphics);
+        this.hud.reset();
+    }
+
+    @Override
+    public @Nullable UUID getUUID() {
+        return this.uuid;
     }
 
     private static class WirelessMonitor implements IWirelessMonitor {
