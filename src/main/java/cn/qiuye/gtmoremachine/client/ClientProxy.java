@@ -8,7 +8,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.RegisterGuiOverlaysEvent;
 import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
@@ -20,18 +19,18 @@ public class ClientProxy extends CommonProxy {
         init();
         IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
         eventBus.addListener(ClientProxy::clientSetup);
+        eventBus.addListener(ClientProxy::registerKeyBindings);
+        eventBus.addListener(ClientProxy::registerGuiOverlays);
     }
 
     private static void init() {}
 
-    @SubscribeEvent
-    public void registerKeyBindings(RegisterKeyMappingsEvent event) {
+    public static void registerKeyBindings(RegisterKeyMappingsEvent event) {
         SyncedKeyMapping.onRegisterKeyBinds(event);
     }
 
-    @SubscribeEvent
-    public void onRegisterGuiOverlays(RegisterGuiOverlaysEvent event) {
-        event.registerAboveAll("gtmmhud", new HudGuiOverlay());
+    public static void registerGuiOverlays(RegisterGuiOverlaysEvent event) {
+        event.registerAboveAll("hud", new GTmmHudGuiOverlay());
     }
 
     private static void clientSetup(FMLClientSetupEvent event) {}

@@ -37,6 +37,11 @@ class GTMMConfig {
     @JvmField
     var isWirelessCapacitylimitEnable: Boolean = false
 
+    @Configurable
+    @Configurable.Range(min = 1, max = 6)
+    @JvmField
+    var wirelessAlign: Int = 1
+
     companion object {
         @JvmStatic
         val INSTANCE: GTMMConfig by lazy(LazyThreadSafetyMode.SYNCHRONIZED) {
