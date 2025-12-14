@@ -47,9 +47,9 @@ class HUD {
         val hudOffsetX = 0
         val hudOffsetY = 0
         val fontHeight = mc.font.lineHeight
-        val windowHeight = mc.getWindow().getGuiScaledHeight()
-        val windowWidth = mc.getWindow().getGuiScaledWidth()
-        val stringWidth = mc.font.width(stringList.get(index))
+        val windowHeight = mc.window.guiScaledHeight
+        val windowWidth = mc.window.guiScaledWidth
+        val stringWidth = mc.font.width(stringList[index])
         when (GTMMConfig.INSTANCE.wirelessAlign) {
             1 -> {
                 posX = 1 + hudOffsetX

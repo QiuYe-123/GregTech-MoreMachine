@@ -12,7 +12,6 @@ object CuriosUtils {
     fun getItemCuriosEquipped(player: Player, item: Item): ItemStack {
         if (GTmm.Mods.isCuriosLoaded()) {
             val curiosInventory = CuriosApi.getCuriosInventory(player)
-
             if (curiosInventory.isPresent && curiosInventory.resolve().isPresent) {
                 return curiosInventory.resolve().get().findFirstCurio(item).get().stack
             }

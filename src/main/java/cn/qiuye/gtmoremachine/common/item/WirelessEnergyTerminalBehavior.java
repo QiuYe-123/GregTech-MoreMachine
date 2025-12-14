@@ -1,10 +1,7 @@
 package cn.qiuye.gtmoremachine.common.item;
 
 import cn.qiuye.gtmoremachine.GTmm;
-import cn.qiuye.gtmoremachine.api.gui.monitor.Format;
-import cn.qiuye.gtmoremachine.api.gui.monitor.Sorting;
-import cn.qiuye.gtmoremachine.api.gui.monitor.Statistics;
-import cn.qiuye.gtmoremachine.api.gui.monitor.Status;
+import cn.qiuye.gtmoremachine.api.gui.monitor.*;
 import cn.qiuye.gtmoremachine.api.gui.widget.AlignComponentPanelWidget;
 import cn.qiuye.gtmoremachine.api.gui.widget.AlignLabelWidget;
 import cn.qiuye.gtmoremachine.api.item.HUD;
@@ -13,7 +10,6 @@ import cn.qiuye.gtmoremachine.api.misc.wireless.energy.IWirelessMonitor;
 import cn.qiuye.gtmoremachine.api.misc.wireless.energy.WirelessEnergyContainer;
 import cn.qiuye.gtmoremachine.utils.NumberUtils;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.item.component.IItemHUDProvider;
 import com.gregtechceu.gtceu.api.item.component.IItemUIFactory;
@@ -63,7 +59,7 @@ public class WirelessEnergyTerminalBehavior implements IItemUIFactory, IItemHUDP
     private WirelessEnergyContainer WirelessEnergyContainerCache;
 
     public WirelessEnergyTerminalBehavior() {
-        if (GTCEu.isClientSide()) {
+        if (GTmm.isClientSide() && !GTmm.isDataGen()) {
             this.hud = new HUD();
         }
     }
@@ -100,6 +96,14 @@ public class WirelessEnergyTerminalBehavior implements IItemUIFactory, IItemHUDP
         } else if (componentData.equals("sortingrules")) {
             if (!clickData.isRemote) {
                 setSortingrules((getSortingrules(stack) == Sorting.Ascending) ? Sorting.Descendingorder : Sorting.Ascending, stack);
+            }
+        } else if (componentData.equals("type")) {
+            if (!clickData.isRemote) {
+                switch (getType(stack)) {
+                    case PowerInteraction -> setType(Type.Capacitycomponent, stack);
+                    case Capacitycomponent -> setType(Type.RelayNode, stack);
+                    case RelayNode -> setType(Type.PowerInteraction, stack);
+                }
             }
         } else if (clickData.isRemote) {
             p = 200;
@@ -158,7 +162,7 @@ public class WirelessEnergyTerminalBehavior implements IItemUIFactory, IItemHUDP
     private void addDisplayText(List<Component> textList, WirelessMonitor monitor, ItemStack stack) {
         if (monitor.isRemote()) return;
         if (monitor.displayTextCache == null || monitor.level.getServer().getTickCount() % 10 == 0) {
-            monitor.displayTextCache = monitor.getDisplayText(getStatistics(stack), getFormat(stack), getPowerStatus(stack), getSortingrules(stack));
+            monitor.displayTextCache = monitor.getDisplayText(getStatistics(stack), getFormat(stack), getPowerStatus(stack), getSortingrules(stack), getType(stack));
         }
         textList.addAll(monitor.displayTextCache);
     }
@@ -300,6 +304,20 @@ public class WirelessEnergyTerminalBehavior implements IItemUIFactory, IItemHUDP
         }
     }
 
+    private void setType(Type type, ItemStack stack) {
+        var tag = stack.getOrCreateTag();
+        tag.putString("type", type.toString());
+        stack.setTag(tag);
+    }
+
+    private Type getType(ItemStack stack) {
+        var tag = stack.getOrCreateTag();
+        if (!tag.isEmpty() && tag.contains("type")) {
+            return Type.valueOf(tag.getString("type"));
+        } else {
+            return Type.Capacitycomponent;
+        }
+    }
     // ==================== UUID 相关 ====================
 
     /**
