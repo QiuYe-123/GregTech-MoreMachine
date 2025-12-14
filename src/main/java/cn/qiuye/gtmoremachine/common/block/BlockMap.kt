@@ -70,7 +70,7 @@ object BlockMap {
 
         tierBlockMap[ECU] = Lazy.of {
             GTMMAPI.ECU.entries
-                .sortedBy { it.key }
+                .sortedBy { it.key.tier }
                 .map { it.value.get() }
                 .toTypedArray()
         }

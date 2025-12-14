@@ -117,7 +117,6 @@ public class AdvancedBlockPattern extends BlockPattern {
     public void autoBuild(Player player, MultiblockState worldState,
                           AdvancedTerminalBehavior.AutoBuildSetting autoBuildSetting) {
         Level world = player.level();
-        // 检查是否启用拆除模式
         if (autoBuildSetting.isUseDemolish()) {
             autoDemolish(player, worldState, autoBuildSetting);
             return;
@@ -291,6 +290,7 @@ public class AdvancedBlockPattern extends BlockPattern {
                 }
             }
         }));
+        controller.checkPattern();
     }
 
     /**
@@ -337,14 +337,12 @@ public class AdvancedBlockPattern extends BlockPattern {
                         if (pos.equals(centerPos)) {
                             continue;
                         }
-                        // 拆除方块并收集物品
                         if (!world.isEmptyBlock(pos)) {
                             BlockState blockState = world.getBlockState(pos);
-                            // 获取方块的掉落物
-                            List<ItemStack> drops = Block.getDrops(blockState, (ServerLevel) world, pos, world.getBlockEntity(pos));
-                            // 将掉落物添加到收集列表
-                            collectedItems.addAll(drops);
-                            // 移除方块，false表示不生成掉落物（因为我们已经手动收集了）
+                            if (!player.isCreative()) {
+                                List<ItemStack> drops = Block.getDrops(blockState, (ServerLevel) world, pos, world.getBlockEntity(pos));
+                                collectedItems.addAll(drops);
+                            }
                             world.removeBlock(pos, false);
                         }
                     }
@@ -352,12 +350,9 @@ public class AdvancedBlockPattern extends BlockPattern {
                 z++;
             }
         }
-
-        // 将收集的物品给予玩家
-        if (!collectedItems.isEmpty()) {
+        if (!collectedItems.isEmpty() && !player.isCreative()) {
             giveItemsToPlayer(player, collectedItems, autoBuildSetting);
         }
-
         controller.checkPattern();
     }
 
@@ -365,10 +360,12 @@ public class AdvancedBlockPattern extends BlockPattern {
      * 将物品给予玩家，如果物品栏满了则掉落在地上
      */
     private void giveItemsToPlayer(Player player, List<ItemStack> items, AdvancedTerminalBehavior.AutoBuildSetting autoBuildSetting) {
-        IItemHandler playerInventory = player.getCapability(ForgeCapabilities.ITEM_HANDLER).orElse(null);
+        if (player.isCreative()) {
+            return;
+        }
         boolean useAE = autoBuildSetting.isUseAE();
-
         if (useAE) {
+            // 只在非创造模式下才尝试插入AE网络
             IItemHandler handler = player.getCapability(ForgeCapabilities.ITEM_HANDLER).resolve().orElse(null);
             if (handler != null) {
                 for (int i = 0; i < handler.getSlots(); i++) {
@@ -389,6 +386,7 @@ public class AdvancedBlockPattern extends BlockPattern {
                 }
             }
         } else {
+            IItemHandler playerInventory = player.getCapability(ForgeCapabilities.ITEM_HANDLER).orElse(null);
             for (ItemStack stack : items) {
                 if (stack.isEmpty()) continue;
                 // 尝试将物品放入玩家物品栏

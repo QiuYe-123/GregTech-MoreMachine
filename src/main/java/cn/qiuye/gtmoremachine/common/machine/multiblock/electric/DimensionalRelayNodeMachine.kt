@@ -7,9 +7,9 @@ import cn.qiuye.gtmoremachine.utils.TeamUtils.getName
 
 import com.gregtechceu.gtceu.api.gui.GuiTextures
 import com.gregtechceu.gtceu.api.gui.fancy.FancyMachineUIWidget
+import com.gregtechceu.gtceu.api.machine.ConditionalSubscriptionHandler
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity
 import com.gregtechceu.gtceu.api.machine.MetaMachine
-import com.gregtechceu.gtceu.api.machine.TickableSubscription
 import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IDisplayUIMachine
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine
@@ -48,9 +48,10 @@ open class DimensionalRelayNodeMachine(holder: IMachineBlockEntity) :
             MANAGED_FIELD_HOLDER,
         )
     }
+
     private var capacityBank: DimensionalRelayNodeBank? = null
     private var wirelessEnergyContainerCache: WirelessEnergyContainer? = null
-    private var updContainer: TickableSubscription? = null
+    private var tickSubscription: ConditionalSubscriptionHandler
 
     val totalCapacity: BigInteger
         get() = capacityBank?.totalCapacity ?: BigInteger.ZERO
@@ -60,6 +61,7 @@ open class DimensionalRelayNodeMachine(holder: IMachineBlockEntity) :
 
     init {
         this.capacityBank = DimensionalRelayNodeBank(this, mutableListOf())
+        this.tickSubscription = ConditionalSubscriptionHandler(this, this::updateMachineStatus) { this.isFormed }
     }
 
     // ================= 无线电网 =================
@@ -76,10 +78,6 @@ open class DimensionalRelayNodeMachine(holder: IMachineBlockEntity) :
 
     override fun getWirelessEnergyContainerCache(): WirelessEnergyContainer? = wirelessEnergyContainerCache
 
-    private fun tick() {
-        if (this.uuid == null) return
-    }
-
     override fun onUse(
         state: BlockState,
         world: Level,
@@ -94,6 +92,8 @@ open class DimensionalRelayNodeMachine(holder: IMachineBlockEntity) :
         if (item.`is`(GTItems.TOOL_DATA_STICK.asItem())) {
             ownerUUID = player.uuid
             wirelessEnergyContainerCache = null
+            val container = getWirelessEnergyContainer()
+            container?.setCapacity(this.totalCapacity, true, this)
             player.sendSystemMessage(
                 Component.translatable(
                     "gtmoremachine.machine.wireless_energy_hatch.tooltip.bind",
@@ -116,8 +116,9 @@ open class DimensionalRelayNodeMachine(holder: IMachineBlockEntity) :
         val item = player.getItemInHand(hand)
         if (item.isEmpty) return false
         if (item.`is`(GTItems.TOOL_DATA_STICK.asItem())) {
-            ownerUUID = null
             wirelessEnergyContainerCache = null
+            val container = getWirelessEnergyContainer()
+            container?.setCapacity(BigInteger.ZERO, false, this)
             player.sendSystemMessage(
                 Component.translatable("gtmoremachine.machine.wireless_energy_hatch.tooltip.unbind"),
             )
@@ -150,21 +151,22 @@ open class DimensionalRelayNodeMachine(holder: IMachineBlockEntity) :
         } else {
             this.capacityBank = capacityBank!!.rebuild(components)
         }
-        val container = getWirelessEnergyContainer() ?: return
-        container.setCapacity(this.totalCapacity, true, this)
+        tickSubscription.updateSubscription()
+        val container = getWirelessEnergyContainer()
+        container?.setCapacity(this.totalCapacity, true, this)
     }
 
     override fun onStructureInvalid() {
         capacityBank = null
-        val container = getWirelessEnergyContainer() ?: return
-        container.setCapacity(BigInteger.ZERO, false, this)
+        tickSubscription.updateSubscription()
+        val container = getWirelessEnergyContainer()
+        container?.setCapacity(BigInteger.ZERO, false, this)
         super.onStructureInvalid()
     }
 
     protected fun updateMachineStatus() {
         level?.isClientSide?.let {
             if (!it) {
-                // 更新机器状态（仅用于渲染）
                 if (isWorkingEnabled && isFormed) {
                     recipeLogic.status = RecipeLogic.Status.WORKING
                 }
