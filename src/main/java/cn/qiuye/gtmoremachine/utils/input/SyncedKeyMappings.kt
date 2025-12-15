@@ -26,7 +26,7 @@ object SyncedKeyMappings {
         .createFromMC { Supplier { Minecraft.getInstance().options.keyRight } }
     val OPEN_WET: SyncedKeyMapping = SyncedKeyMapping.createConfigurable(
         "key.gtmoremachine.bind.wet",
-        KeyConflictContext.UNIVERSAL,
+        KeyConflictContext.IN_GAME,
         InputConstants.KEY_Y,
     )
 
