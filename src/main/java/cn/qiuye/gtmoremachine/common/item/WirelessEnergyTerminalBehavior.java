@@ -58,6 +58,9 @@ public class WirelessEnergyTerminalBehavior implements IItemUIFactory, IItemHUDP
     @Setter
     private WirelessEnergyContainer WirelessEnergyContainerCache;
 
+    /**
+     * 构造函数，初始化HUD显示
+     */
     public WirelessEnergyTerminalBehavior() {
         if (GTmm.isClientSide() && !GTmm.isDataGen()) {
             this.hud = new HUD();
@@ -70,7 +73,7 @@ public class WirelessEnergyTerminalBehavior implements IItemUIFactory, IItemHUDP
 
     /**
      * 处理显示界面的点击事件
-     * 
+     *
      * @param stack         物品堆
      * @param componentData 组件数据
      * @param clickData     点击数据
@@ -114,7 +117,7 @@ public class WirelessEnergyTerminalBehavior implements IItemUIFactory, IItemHUDP
 
     /**
      * 创建UI界面
-     * 
+     *
      * @param holder       持有物品的UI工厂
      * @param entityPlayer 玩家
      * @return 模块化UI
@@ -128,7 +131,7 @@ public class WirelessEnergyTerminalBehavior implements IItemUIFactory, IItemHUDP
 
     /**
      * 创建UI部件
-     * 
+     *
      * @param stack         物品堆
      * @param descriptionId 描述ID
      * @param monitor       无线能量监视器
@@ -154,7 +157,7 @@ public class WirelessEnergyTerminalBehavior implements IItemUIFactory, IItemHUDP
 
     /**
      * 添加显示文本到列表
-     * 
+     *
      * @param textList 文本列表
      * @param monitor  无线能量监视器
      * @param stack    物品堆
@@ -171,7 +174,7 @@ public class WirelessEnergyTerminalBehavior implements IItemUIFactory, IItemHUDP
 
     /**
      * 绘制HUD信息
-     * 
+     *
      * @param stack       物品堆
      * @param guiGraphics GUI图形对象
      */
@@ -198,7 +201,7 @@ public class WirelessEnergyTerminalBehavior implements IItemUIFactory, IItemHUDP
 
     /**
      * 设置统计模式
-     * 
+     *
      * @param statistics 统计模式
      * @param stack      物品堆
      */
@@ -210,7 +213,7 @@ public class WirelessEnergyTerminalBehavior implements IItemUIFactory, IItemHUDP
 
     /**
      * 获取统计模式
-     * 
+     *
      * @param stack 物品堆
      * @return 当前统计模式
      */
@@ -225,7 +228,7 @@ public class WirelessEnergyTerminalBehavior implements IItemUIFactory, IItemHUDP
 
     /**
      * 设置数字格式
-     * 
+     *
      * @param format 数字格式
      * @param stack  物品堆
      */
@@ -237,7 +240,7 @@ public class WirelessEnergyTerminalBehavior implements IItemUIFactory, IItemHUDP
 
     /**
      * 获取数字格式
-     * 
+     *
      * @param stack 物品堆
      * @return 当前数字格式
      */
@@ -252,7 +255,7 @@ public class WirelessEnergyTerminalBehavior implements IItemUIFactory, IItemHUDP
 
     /**
      * 设置电力状态过滤
-     * 
+     *
      * @param powerStatus 电力状态
      * @param stack       物品堆
      */
@@ -264,7 +267,7 @@ public class WirelessEnergyTerminalBehavior implements IItemUIFactory, IItemHUDP
 
     /**
      * 获取电力状态过滤
-     * 
+     *
      * @param stack 物品堆
      * @return 当前电力状态
      */
@@ -279,7 +282,7 @@ public class WirelessEnergyTerminalBehavior implements IItemUIFactory, IItemHUDP
 
     /**
      * 设置排序规则
-     * 
+     *
      * @param sortingrules 排序规则
      * @param stack        物品堆
      */
@@ -291,7 +294,7 @@ public class WirelessEnergyTerminalBehavior implements IItemUIFactory, IItemHUDP
 
     /**
      * 获取排序规则
-     * 
+     *
      * @param stack 物品堆
      * @return 当前排序规则
      */
@@ -304,12 +307,24 @@ public class WirelessEnergyTerminalBehavior implements IItemUIFactory, IItemHUDP
         }
     }
 
+    /**
+     * 设置显示的设备类型
+     *
+     * @param type  设备类型
+     * @param stack 物品堆
+     */
     private void setType(Type type, ItemStack stack) {
         var tag = stack.getOrCreateTag();
         tag.putString("type", type.toString());
         stack.setTag(tag);
     }
 
+    /**
+     * 获取显示的设备类型
+     *
+     * @param stack 物品堆
+     * @return 当前显示的设备类型
+     */
     private Type getType(ItemStack stack) {
         var tag = stack.getOrCreateTag();
         if (!tag.isEmpty() && tag.contains("type")) {
@@ -318,11 +333,12 @@ public class WirelessEnergyTerminalBehavior implements IItemUIFactory, IItemHUDP
             return Type.Capacitycomponent;
         }
     }
+
     // ==================== UUID 相关 ====================
 
     /**
      * 获取UUID
-     * 
+     *
      * @return UUID
      */
     @Override
@@ -332,7 +348,7 @@ public class WirelessEnergyTerminalBehavior implements IItemUIFactory, IItemHUDP
 
     /**
      * 设置UUID到物品堆
-     * 
+     *
      * @param uuid      UUID
      * @param itemStack 物品堆
      */
@@ -344,7 +360,7 @@ public class WirelessEnergyTerminalBehavior implements IItemUIFactory, IItemHUDP
 
     /**
      * 从物品堆获取UUID
-     * 
+     *
      * @param itemStack 物品堆
      * @return UUID
      */
@@ -371,7 +387,7 @@ public class WirelessEnergyTerminalBehavior implements IItemUIFactory, IItemHUDP
 
         /**
          * 检查是否为客户端
-         * 
+         *
          * @return 如果是客户端返回true
          */
         private boolean isRemote() {
@@ -389,7 +405,7 @@ public class WirelessEnergyTerminalBehavior implements IItemUIFactory, IItemHUDP
 
         /**
          * 获取缓存的玩家/团队UUID
-         * 
+         *
          * @return UUID
          */
         @Override
@@ -399,7 +415,7 @@ public class WirelessEnergyTerminalBehavior implements IItemUIFactory, IItemHUDP
 
         /**
          * 是否显示
-         * 
+         *
          * @return 返回false
          */
         @Override
@@ -409,7 +425,7 @@ public class WirelessEnergyTerminalBehavior implements IItemUIFactory, IItemHUDP
 
         /**
          * 获取当前世界
-         * 
+         *
          * @return 世界
          */
         @Override
