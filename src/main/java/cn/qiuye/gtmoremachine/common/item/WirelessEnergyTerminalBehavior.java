@@ -4,7 +4,7 @@ import cn.qiuye.gtmoremachine.GTmm;
 import cn.qiuye.gtmoremachine.api.gui.monitor.*;
 import cn.qiuye.gtmoremachine.api.gui.widget.AlignComponentPanelWidget;
 import cn.qiuye.gtmoremachine.api.gui.widget.AlignLabelWidget;
-import cn.qiuye.gtmoremachine.api.item.WirelessEnergyHUD;
+import cn.qiuye.gtmoremachine.api.item.ModularHUD;
 import cn.qiuye.gtmoremachine.api.machine.IWirelessEnergyContainerHolder;
 import cn.qiuye.gtmoremachine.api.misc.wireless.energy.IWirelessMonitor;
 import cn.qiuye.gtmoremachine.api.misc.wireless.energy.WirelessEnergyContainer;
@@ -49,7 +49,7 @@ import static cn.qiuye.gtmoremachine.common.machine.electric.WirelessEnergyMonit
 public class WirelessEnergyTerminalBehavior implements IItemUIFactory, IItemHUDProvider, IWirelessEnergyContainerHolder {
 
     @OnlyIn(Dist.CLIENT)
-    private WirelessEnergyHUD hud;
+    private ModularHUD hud;
     private UUID uuid;
     public static int p;
     public static BlockPos pPos;
@@ -63,7 +63,7 @@ public class WirelessEnergyTerminalBehavior implements IItemUIFactory, IItemHUDP
      */
     public WirelessEnergyTerminalBehavior() {
         if (GTmm.isClientSide() && !GTmm.isDataGen()) {
-            this.hud = new WirelessEnergyHUD();
+            this.hud = new ModularHUD();
         }
     }
 
@@ -170,7 +170,7 @@ public class WirelessEnergyTerminalBehavior implements IItemUIFactory, IItemHUDP
         textList.addAll(monitor.displayTextCache);
     }
 
-    // ==================== WirelessEnergyHUD 相关 ====================
+    // ==================== ModularHUD 相关 ====================
 
     /**
      * 绘制HUD信息
