@@ -13,25 +13,21 @@ import it.unimi.dsi.fastutil.ints.IntIntPair
 import javax.annotation.Nonnull
 
 @OnlyIn(Dist.CLIENT)
-class HUD {
+class WirelessEnergyHUD {
     private var stringAmount: Byte = 0
-    private val stringList: MutableList<Component?>
+    private val stringList = ArrayList<Component>()
 
-    init {
-        this.stringList = ArrayList<Component?>()
-    }
-
-    fun newString(string: Component?) {
+    fun newString(string: Component) {
         this.stringAmount++
         this.stringList.add(string)
     }
 
     fun draw(poseStack: GuiGraphics) {
-        for (i in 0..<stringAmount) {
+        for (i in 0..stringAmount) {
             val coords = this.getStringCoord(i)
             poseStack.drawString(
                 mc.font,
-                stringList.get(i),
+                stringList[i],
                 coords.firstInt(),
                 coords.secondInt(),
                 0xFFFFFF,
