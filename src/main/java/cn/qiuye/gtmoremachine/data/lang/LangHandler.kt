@@ -12,5 +12,6 @@ object LangHandler {
         CreativeLang.init(provider)
         AdvancedTerminalLang.init(provider)
         JadeLang.init(provider)
+        CuriosLang.init(provider)
     }
 }

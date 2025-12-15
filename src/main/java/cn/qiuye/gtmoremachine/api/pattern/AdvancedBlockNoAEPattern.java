@@ -117,10 +117,9 @@ public class AdvancedBlockNoAEPattern extends BlockPattern {
     public void autoBuild(Player player, MultiblockState worldState,
                           AdvancedTerminalBehavior.AutoBuildSetting autoBuildSetting) {
         Level world = player.level();
-        // 检查是否启用拆除模式
         if (autoBuildSetting.isUseDemolish()) {
             autoDemolish(player, worldState, autoBuildSetting);
-            return; // 拆除完成后直接返回，不执行构建
+            return;
         }
         int minZ = -centerOffset[4];
         clearWorldState(worldState);
@@ -289,6 +288,7 @@ public class AdvancedBlockNoAEPattern extends BlockPattern {
                 }
             }
         }));
+        controller.checkPattern();
     }
 
     /**
@@ -334,18 +334,15 @@ public class AdvancedBlockNoAEPattern extends BlockPattern {
 
                         BlockPos pos = setActualRelativeOffset(x, y, z, facing, upwardsFacing, isUseMirror)
                                 .offset(centerPos.getX(), centerPos.getY(), centerPos.getZ());
-                        // 跳过控制器位置，不拆除控制器
                         if (pos.equals(centerPos)) {
                             continue;
                         }
-                        // 拆除方块并收集物品
                         if (!world.isEmptyBlock(pos)) {
                             BlockState blockState = world.getBlockState(pos);
-                            // 获取方块的掉落物
-                            List<ItemStack> drops = Block.getDrops(blockState, (ServerLevel) world, pos, world.getBlockEntity(pos));
-                            // 将掉落物添加到收集列表
-                            collectedItems.addAll(drops);
-                            // 移除方块，false表示不生成掉落物（因为我们已经手动收集了）
+                            if (!player.isCreative()) {
+                                List<ItemStack> drops = Block.getDrops(blockState, (ServerLevel) world, pos, world.getBlockEntity(pos));
+                                collectedItems.addAll(drops);
+                            }
                             world.removeBlock(pos, false);
                         }
                     }
@@ -353,12 +350,9 @@ public class AdvancedBlockNoAEPattern extends BlockPattern {
                 z++;
             }
         }
-
-        // 将收集的物品给予玩家
-        if (!collectedItems.isEmpty()) {
+        if (!collectedItems.isEmpty() && !player.isCreative()) {
             giveItemsToPlayer(player, collectedItems);
         }
-
         controller.checkPattern();
     }
 

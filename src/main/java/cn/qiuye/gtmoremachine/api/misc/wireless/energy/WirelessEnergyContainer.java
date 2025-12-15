@@ -161,7 +161,7 @@ public class WirelessEnergyContainer {
         }
         BigInteger change = BigInteger.ZERO;
         for (ICapacitylimitData data : CAPACITY_STORAGE_DATA.values()) {
-            change = change.add(data.StorageCapacity());
+            if (data.StorageCapacity() != null) change = change.add(data.StorageCapacity());
         }
         this.capacity = change;
         WirelessEnergySavedData.INSTANCE.setDirty(true);
@@ -179,11 +179,15 @@ public class WirelessEnergyContainer {
     private boolean isDimensionBound(long energy, MetaMachine machine) {
         if (machine == null) return true;
         int voltageTier = GTUtil.getFloorTierByVoltage(energy);
-        for (IDimensionTransferData data : DIMENSIONAL_TRANSFER_DATA.values()) {
-            if (data.level() == machine.getLevel() && data.Voltagelevel() >= voltageTier) {
+        IDimensionTransferData Dimension = DIMENSIONAL_TRANSFER_DATA.get(machine.getLevel());
+        if (Dimension != null) {
+            if (Dimension.Voltagelevel() >= 14) {
                 return false;
+            } else {
+                return Dimension.Voltagelevel() < voltageTier;
             }
+        } else {
+            return true;
         }
-        return true;
     }
 }

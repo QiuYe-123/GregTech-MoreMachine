@@ -1,9 +1,6 @@
 package cn.qiuye.gtmoremachine.api.misc.wireless.energy;
 
-import cn.qiuye.gtmoremachine.api.gui.monitor.Format;
-import cn.qiuye.gtmoremachine.api.gui.monitor.Sorting;
-import cn.qiuye.gtmoremachine.api.gui.monitor.Statistics;
-import cn.qiuye.gtmoremachine.api.gui.monitor.Status;
+import cn.qiuye.gtmoremachine.api.gui.monitor.*;
 import cn.qiuye.gtmoremachine.api.machine.IWirelessEnergyContainerHolder;
 import cn.qiuye.gtmoremachine.config.GTMMConfig;
 import cn.qiuye.gtmoremachine.utils.BigIntegerUtils;
@@ -31,7 +28,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 public interface IWirelessMonitor extends IWirelessEnergyContainerHolder {
 
-    default List<Component> getDisplayText(Statistics statistics, Format format, Status powerStatus, Sorting sorting) {
+    default List<Component> getDisplayText(Statistics statistics, Format format, Status powerStatus, Sorting sorting, Type type) {
         List<Component> textListCache = new ArrayList<>();
         WirelessEnergyContainer container = getWirelessEnergyContainer();
         if (container == null) return List.of();
@@ -104,25 +101,41 @@ public interface IWirelessMonitor extends IWirelessEnergyContainerHolder {
         textListCache.add(Component.translatable("gtmoremachine.machine.wireless_monitor.tooltip.statistics.energy",
                 ComponentPanelWidget.withButton(getStatisticsText(statistics), "statistics", getStaticscolor(statistics)),
                 ComponentPanelWidget.withButton(getFormatText(format), "format", getFormatcolor(format)),
-                ComponentPanelWidget.withButton(getPowerStatusText(powerStatus), "powerStatus", getPowerStatusclolor(powerStatus)),
-                ComponentPanelWidget.withButton(getSortingRulesText(sorting), "sortingrules", getSortingRulescolor(sorting))));
+                ComponentPanelWidget.withButton(getPowerStatusText(powerStatus), "powerStatus", getPowerStatuscolor(powerStatus)),
+                ComponentPanelWidget.withButton(getSortingRulesText(sorting), "sortingrules", getSortingRulescolor(sorting)),
+                ComponentPanelWidget.withButton(getTypeText(type), "type", getTypecolor(type))));
 
-        for (Map.Entry<MetaMachine, ITransferData> m : getEntryList(sorting)) {
-            UUID uuid = m.getValue().UUID();
-            BigInteger through = m.getValue().Throughput();
-            if (statistics == Statistics.Global || uuid.equals(TeamUtils.getTeamUUID(this.getUUID()))) {
-                if (powerStatus == Status.All) {
-                    textListCache.add(m.getValue().getInfo(format));
-                } else if (powerStatus == Status.In && through.compareTo(BigInteger.ZERO) > 0) {
-                    textListCache.add(m.getValue().getInfo(format));
-                } else if (powerStatus == Status.Out && through.compareTo(BigInteger.ZERO) < 0) {
+        if (type == Type.PowerInteraction) {
+            for (Map.Entry<MetaMachine, ITransferData> m : getTransferList(sorting)) {
+                UUID uuid = m.getValue().UUID();
+                BigInteger through = m.getValue().Throughput();
+                if (statistics == Statistics.Global || uuid.equals(TeamUtils.getTeamUUID(this.getUUID()))) {
+                    if (powerStatus == Status.All) {
+                        textListCache.add(m.getValue().getInfo(format));
+                    } else if (powerStatus == Status.In && through.compareTo(BigInteger.ZERO) > 0) {
+                        textListCache.add(m.getValue().getInfo(format));
+                    } else if (powerStatus == Status.Out && through.compareTo(BigInteger.ZERO) < 0) {
+                        textListCache.add(m.getValue().getInfo(format));
+                    }
+                }
+            }
+
+            WirelessEnergyContainer.observed = true;
+            WirelessEnergyContainer.TRANSFER_DATA.clear();
+        } else if (type == Type.Capacitycomponent) {
+            for (Map.Entry<MetaMachine, ICapacitylimitData> m : getCapacitylimitList(sorting)) {
+                UUID uuid = m.getValue().UUID();
+                if (statistics == Statistics.Global || uuid.equals(TeamUtils.getTeamUUID(this.getUUID()))) {
                     textListCache.add(m.getValue().getInfo(format));
                 }
             }
+        } else if (type == Type.RelayNode) {
+            for (Map.Entry<Level, IDimensionTransferData> m : getDimensionTransferList(sorting)) {
+                if (statistics == Statistics.Global || m.getKey().dimension().equals(this.getLevel().dimension())) {
+                    textListCache.add(m.getValue().getInfo());
+                }
+            }
         }
-
-        WirelessEnergyContainer.observed = true;
-        WirelessEnergyContainer.TRANSFER_DATA.clear();
 
         return textListCache;
     }
@@ -159,18 +172,49 @@ public interface IWirelessMonitor extends IWirelessEnergyContainerHolder {
         return Component.translatable(key, NumberUtils.formatLong(fillTime));
     }
 
-    private List<Map.Entry<MetaMachine, ITransferData>> getEntryList(Sorting sorting) {
-        List<Map.Entry<MetaMachine, ITransferData>> entryList = new ArrayList<>(WirelessEnergyContainer.TRANSFER_DATA.entrySet());
-        entryList.sort((entry1, entry2) -> {
-            BigInteger throughput1 = entry1.getValue().Throughput();
-            BigInteger throughput2 = entry2.getValue().Throughput();
-            if (sorting == Sorting.Ascending) {
-                return throughput1.compareTo(throughput2);
-            } else {
-                return throughput2.compareTo(throughput1);
-            }
-        });
-        return entryList;
+    private List<Map.Entry<MetaMachine, ITransferData>> getTransferList(Sorting sorting) {
+        return WirelessEnergyContainer.TRANSFER_DATA.entrySet()
+                .stream()
+                .sorted((entry1, entry2) -> {
+                    BigInteger throughput1 = entry1.getValue().Throughput();
+                    BigInteger throughput2 = entry2.getValue().Throughput();
+                    if (sorting == Sorting.Ascending) {
+                        return throughput1.compareTo(throughput2);
+                    } else {
+                        return throughput2.compareTo(throughput1);
+                    }
+                })
+                .toList();
+    }
+
+    private List<Map.Entry<MetaMachine, ICapacitylimitData>> getCapacitylimitList(Sorting sorting) {
+        return WirelessEnergyContainer.CAPACITY_STORAGE_DATA.entrySet()
+                .stream()
+                .sorted((entry1, entry2) -> {
+                    BigInteger capacity1 = entry1.getValue().StorageCapacity();
+                    BigInteger capacity2 = entry2.getValue().StorageCapacity();
+                    if (sorting == Sorting.Ascending) {
+                        return capacity1.compareTo(capacity2);
+                    } else {
+                        return capacity2.compareTo(capacity1);
+                    }
+                })
+                .toList();
+    }
+
+    private List<Map.Entry<Level, IDimensionTransferData>> getDimensionTransferList(Sorting sorting) {
+        return WirelessEnergyContainer.DIMENSIONAL_TRANSFER_DATA.entrySet()
+                .stream()
+                .sorted((entry1, entry2) -> {
+                    int voltage1 = entry1.getValue().Voltagelevel();
+                    int voltage2 = entry2.getValue().Voltagelevel();
+                    if (sorting == Sorting.Ascending) {
+                        return Integer.compare(voltage1, voltage2);
+                    } else {
+                        return Integer.compare(voltage2, voltage1);
+                    }
+                })
+                .toList();
     }
 
     private static Component getStatisticsText(Statistics statistics) {
@@ -209,7 +253,7 @@ public interface IWirelessMonitor extends IWirelessEnergyContainerHolder {
         };
     }
 
-    private static int getPowerStatusclolor(Status powerStatus) {
+    private static int getPowerStatuscolor(Status powerStatus) {
         return switch (powerStatus) {
             case All -> ChatFormatting.GREEN.getColor();
             case In -> ChatFormatting.BLUE.getColor();
@@ -228,6 +272,22 @@ public interface IWirelessMonitor extends IWirelessEnergyContainerHolder {
         return switch (sorting) {
             case Ascending -> ChatFormatting.GREEN.getColor();
             case Descendingorder -> ChatFormatting.RED.getColor();
+        };
+    }
+
+    private static Component getTypeText(Type type) {
+        return switch (type) {
+            case PowerInteraction -> Component.translatable("gtmoremachine.machine.wireless_energy_monitor.tooltip.powerinteraction");
+            case Capacitycomponent -> Component.translatable("gtmoremachine.machine.wireless_energy_monitor.tooltip.capacitycomponent");
+            case RelayNode -> Component.translatable("gtmoremachine.machine.wireless_energy_monitor.tooltip.relaynode");
+        };
+    }
+
+    private static int getTypecolor(Type type) {
+        return switch (type) {
+            case PowerInteraction -> ChatFormatting.GREEN.getColor();
+            case Capacitycomponent -> ChatFormatting.BLUE.getColor();
+            case RelayNode -> ChatFormatting.DARK_RED.getColor();
         };
     }
 }

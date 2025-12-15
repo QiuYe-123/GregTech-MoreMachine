@@ -1,9 +1,6 @@
 package cn.qiuye.gtmoremachine.common.machine.electric;
 
-import cn.qiuye.gtmoremachine.api.gui.monitor.Format;
-import cn.qiuye.gtmoremachine.api.gui.monitor.Sorting;
-import cn.qiuye.gtmoremachine.api.gui.monitor.Statistics;
-import cn.qiuye.gtmoremachine.api.gui.monitor.Status;
+import cn.qiuye.gtmoremachine.api.gui.monitor.*;
 import cn.qiuye.gtmoremachine.api.gui.widget.AlignComponentPanelWidget;
 import cn.qiuye.gtmoremachine.api.gui.widget.AlignLabelWidget;
 import cn.qiuye.gtmoremachine.api.misc.wireless.energy.IWirelessMonitor;
@@ -67,6 +64,8 @@ public class WirelessEnergyMonitor extends MetaMachine implements IFancyUIMachin
     private Status powerStatus = Status.All;
     @Persisted
     private Sorting sortingrules = Sorting.Ascending;
+    @Persisted
+    private Type type = Type.PowerInteraction;
 
     //////////////////////////////////////
     // *********** GUI ***********//
@@ -92,6 +91,14 @@ public class WirelessEnergyMonitor extends MetaMachine implements IFancyUIMachin
         } else if (componentData.equals("sortingrules")) {
             if (!clickData.isRemote) {
                 sortingrules = (sortingrules == Sorting.Ascending) ? Sorting.Descendingorder : Sorting.Ascending;
+            }
+        } else if (componentData.equals("type")) {
+            if (!clickData.isRemote) {
+                switch (type) {
+                    case PowerInteraction -> type = Type.Capacitycomponent;
+                    case Capacitycomponent -> type = Type.RelayNode;
+                    case RelayNode -> type = Type.PowerInteraction;
+                }
             }
         } else if (clickData.isRemote) {
             p = 200;
@@ -119,7 +126,7 @@ public class WirelessEnergyMonitor extends MetaMachine implements IFancyUIMachin
     public void addDisplayText(List<Component> textList) {
         if (isRemote()) return;
         if (textListCache == null || getOffsetTimer() % 10 == 0) {
-            textListCache = getDisplayText(statistics, format, powerStatus, sortingrules);
+            textListCache = getDisplayText(statistics, format, powerStatus, sortingrules, type);
         }
         textList.addAll(textListCache);
     }

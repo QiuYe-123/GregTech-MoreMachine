@@ -1,5 +1,6 @@
 package cn.qiuye.gtmoremachine;
 
+import cn.qiuye.gtmoremachine.api.GTMMAPI;
 import cn.qiuye.gtmoremachine.api.GTMMValues;
 import cn.qiuye.gtmoremachine.client.ClientProxy;
 import cn.qiuye.gtmoremachine.common.CommonProxy;
@@ -32,6 +33,7 @@ public class GTmm {
 
     public GTmm() {
         init();
+        GTMMAPI.instance = this;
         DistExecutor.unsafeRunForDist(() -> ClientProxy::new, () -> CommonProxy::new);
     }
 
@@ -161,6 +163,10 @@ public class GTmm {
 
         public static boolean isFTBTeamsLoaded() {
             return isModLoaded(GTMMValues.MODID_FTB_TEAMS);
+        }
+
+        public static boolean isCuriosLoaded() {
+            return isModLoaded(GTMMValues.MODID_CURIOS);
         }
     }
 }
