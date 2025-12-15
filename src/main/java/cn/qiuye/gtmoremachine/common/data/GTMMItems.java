@@ -36,7 +36,7 @@ public class GTMMItems {
         return !GTmm.isClientSide() ? NonNullConsumer.noop() : (item) -> item.attachComponents(customRenderer);
     }
 
-    public static ItemEntry<ComponentItem> WIRELESS_ITEM_TRANSFER_COVER = GTMMREGISTRATE
+    public final static ItemEntry<ComponentItem> WIRELESS_ITEM_TRANSFER_COVER = GTMMREGISTRATE
             .item("wireless_item_transfer_cover", ComponentItem::create)
             .lang("Wireless Item Transfer Cover")
             .onRegister(attach(new WirelessTransferCoverPlaceBehavior(GTMMCovers.WIRELESS_ITEM_TRANSFER),
@@ -47,7 +47,7 @@ public class GTMMItems {
                     })))
             .register();
 
-    public static ItemEntry<ComponentItem> WIRELESS_FLUID_TRANSFER_COVER = GTMMREGISTRATE
+    public final static ItemEntry<ComponentItem> WIRELESS_FLUID_TRANSFER_COVER = GTMMREGISTRATE
             .item("wireless_fluid_transfer_cover", ComponentItem::create)
             .lang("Wireless Fluid Transfer Cover")
             .onRegister(attach(new WirelessTransferCoverPlaceBehavior(GTMMCovers.WIRELESS_FLUID_TRANSFER),
@@ -58,7 +58,7 @@ public class GTMMItems {
                     })))
             .register();
 
-    public static ItemEntry<ComponentItem> ADVANCED_WIRELESS_ITEM_TRANSFER_COVER = GTMMREGISTRATE
+    public final static ItemEntry<ComponentItem> ADVANCED_WIRELESS_ITEM_TRANSFER_COVER = GTMMREGISTRATE
             .item("advanced_wireless_item_transfer_cover", ComponentItem::create)
             .lang("§bAdvanced Wireless Item Transfer Cover")
             .onRegister(attach(new WirelessTransferCoverPlaceBehavior(GTMMCovers.ADVANCED_WIRELESS_ITEM_TRANSFER),
@@ -70,7 +70,7 @@ public class GTMMItems {
                     })))
             .register();
 
-    public static ItemEntry<ComponentItem> ADVANCED_WIRELESS_FLUID_TRANSFER_COVER = GTMMREGISTRATE
+    public final static ItemEntry<ComponentItem> ADVANCED_WIRELESS_FLUID_TRANSFER_COVER = GTMMREGISTRATE
             .item("advanced_wireless_fluid_transfer_cover", ComponentItem::create)
             .lang("§bAdvanced Wireless Fluid Transfer Cover")
             .onRegister(attach(new WirelessTransferCoverPlaceBehavior(GTMMCovers.ADVANCED_WIRELESS_FLUID_TRANSFER),
@@ -82,63 +82,64 @@ public class GTMMItems {
                     })))
             .register();
 
-    public static ItemEntry<ComponentItem> ADVANCED_TERMINAL = GTMMREGISTRATE
+    public final static ItemEntry<ComponentItem> ADVANCED_TERMINAL = GTMMREGISTRATE
             .item("advanced_terminal", ComponentItem::create)
             .lang("§bAdvanced Terminal")
             .properties(p -> p.stacksTo(1))
             .onRegister(attach(new AdvancedTerminalBehavior()))
             .register();
 
-    public static ItemEntry<ComponentItem> WIRELESS_ENERGY_TERMINAL = GTMMREGISTRATE
+    public final static ItemEntry<ComponentItem> WIRELESS_ENERGY_TERMINAL = GTMMREGISTRATE
             .item("wireless_energy_terminal", ComponentItem::create)
             .lang("Wireless Energy Terminal")
             .properties(p -> p.stacksTo(1))
             .onRegister(attach(new WirelessEnergyTerminalBehavior()))
-            .onRegister(attach(new WirelessEnergyBindingToolBehavior())).register();
+            .onRegister(attach(new WirelessEnergyBindingToolBehavior()))
+            .register();
 
-    public static ItemEntry<ComponentItem> WIRELESS_ENERGY_BINDING_TOOL = GTMMREGISTRATE
+    public final static ItemEntry<ComponentItem> WIRELESS_ENERGY_BINDING_TOOL = GTMMREGISTRATE
             .item("wireless_energy_binding_tool", ComponentItem::create)
             .lang("Wireless Energy Binding Tool")
             .properties(p -> p.stacksTo(1))
             .onRegister(attach(new WirelessEnergyBindingToolBehavior()))
             .register();
 
-    public static ItemEntry<ComponentItem> WIRELESS_ENERGY_RECEIVE_COVER_LV = registerTieredCover(GTValues.LV, 1);
-    public static ItemEntry<ComponentItem> WIRELESS_ENERGY_RECEIVE_COVER_MV = registerTieredCover(GTValues.MV, 1);
-    public static ItemEntry<ComponentItem> WIRELESS_ENERGY_RECEIVE_COVER_HV = registerTieredCover(GTValues.HV, 1);
-    public static ItemEntry<ComponentItem> WIRELESS_ENERGY_RECEIVE_COVER_EV = registerTieredCover(GTValues.EV, 1);
-    public static ItemEntry<ComponentItem> WIRELESS_ENERGY_RECEIVE_COVER_IV = registerTieredCover(GTValues.IV, 1);
-    public static ItemEntry<ComponentItem> WIRELESS_ENERGY_RECEIVE_COVER_LUV = registerTieredCover(GTValues.LuV, 1);
-    public static ItemEntry<ComponentItem> WIRELESS_ENERGY_RECEIVE_COVER_ZPM = registerTieredCover(GTValues.ZPM, 1);
-    public static ItemEntry<ComponentItem> WIRELESS_ENERGY_RECEIVE_COVER_UV = registerTieredCover(GTValues.UV, 1);
-    public static ItemEntry<ComponentItem> WIRELESS_ENERGY_RECEIVE_COVER_UHV = GTCEuAPI.isHighTier() ?
+    public final static ItemEntry<ComponentItem> WIRELESS_ENERGY_RECEIVE_COVER_LV = registerTieredCover(GTValues.LV, 1);
+    public final static ItemEntry<ComponentItem> WIRELESS_ENERGY_RECEIVE_COVER_MV = registerTieredCover(GTValues.MV, 1);
+    public final static ItemEntry<ComponentItem> WIRELESS_ENERGY_RECEIVE_COVER_HV = registerTieredCover(GTValues.HV, 1);
+    public final static ItemEntry<ComponentItem> WIRELESS_ENERGY_RECEIVE_COVER_EV = registerTieredCover(GTValues.EV, 1);
+    public final static ItemEntry<ComponentItem> WIRELESS_ENERGY_RECEIVE_COVER_IV = registerTieredCover(GTValues.IV, 1);
+    public final static ItemEntry<ComponentItem> WIRELESS_ENERGY_RECEIVE_COVER_LUV = registerTieredCover(GTValues.LuV, 1);
+    public final static ItemEntry<ComponentItem> WIRELESS_ENERGY_RECEIVE_COVER_ZPM = registerTieredCover(GTValues.ZPM, 1);
+    public final static ItemEntry<ComponentItem> WIRELESS_ENERGY_RECEIVE_COVER_UV = registerTieredCover(GTValues.UV, 1);
+    public final static ItemEntry<ComponentItem> WIRELESS_ENERGY_RECEIVE_COVER_UHV = GTCEuAPI.isHighTier() ?
             registerTieredCover(GTValues.UHV, 1) : null;
-    public static ItemEntry<ComponentItem> WIRELESS_ENERGY_RECEIVE_COVER_UEV = GTCEuAPI.isHighTier() ?
+    public final static ItemEntry<ComponentItem> WIRELESS_ENERGY_RECEIVE_COVER_UEV = GTCEuAPI.isHighTier() ?
             registerTieredCover(GTValues.UEV, 1) : null;
-    public static ItemEntry<ComponentItem> WIRELESS_ENERGY_RECEIVE_COVER_UIV = GTCEuAPI.isHighTier() ?
+    public final static ItemEntry<ComponentItem> WIRELESS_ENERGY_RECEIVE_COVER_UIV = GTCEuAPI.isHighTier() ?
             registerTieredCover(GTValues.UIV, 1) : null;
-    public static ItemEntry<ComponentItem> WIRELESS_ENERGY_RECEIVE_COVER_UXV = GTCEuAPI.isHighTier() ?
+    public final static ItemEntry<ComponentItem> WIRELESS_ENERGY_RECEIVE_COVER_UXV = GTCEuAPI.isHighTier() ?
             registerTieredCover(GTValues.UXV, 1) : null;
-    public static ItemEntry<ComponentItem> WIRELESS_ENERGY_RECEIVE_COVER_OPV = GTCEuAPI.isHighTier() ?
+    public final static ItemEntry<ComponentItem> WIRELESS_ENERGY_RECEIVE_COVER_OPV = GTCEuAPI.isHighTier() ?
             registerTieredCover(GTValues.OpV, 1) : null;
 
-    public static ItemEntry<ComponentItem> WIRELESS_ENERGY_RECEIVE_COVER_LV_4A = registerTieredCover(GTValues.LV, 4);
-    public static ItemEntry<ComponentItem> WIRELESS_ENERGY_RECEIVE_COVER_MV_4A = registerTieredCover(GTValues.MV, 4);
-    public static ItemEntry<ComponentItem> WIRELESS_ENERGY_RECEIVE_COVER_HV_4A = registerTieredCover(GTValues.HV, 4);
-    public static ItemEntry<ComponentItem> WIRELESS_ENERGY_RECEIVE_COVER_EV_4A = registerTieredCover(GTValues.EV, 4);
-    public static ItemEntry<ComponentItem> WIRELESS_ENERGY_RECEIVE_COVER_IV_4A = registerTieredCover(GTValues.IV, 4);
-    public static ItemEntry<ComponentItem> WIRELESS_ENERGY_RECEIVE_COVER_LUV_4A = registerTieredCover(GTValues.LuV, 4);
-    public static ItemEntry<ComponentItem> WIRELESS_ENERGY_RECEIVE_COVER_ZPM_4A = registerTieredCover(GTValues.ZPM, 4);
-    public static ItemEntry<ComponentItem> WIRELESS_ENERGY_RECEIVE_COVER_UV_4A = registerTieredCover(GTValues.UV, 4);
-    public static ItemEntry<ComponentItem> WIRELESS_ENERGY_RECEIVE_COVER_UHV_4A = GTCEuAPI.isHighTier() ?
+    public final static ItemEntry<ComponentItem> WIRELESS_ENERGY_RECEIVE_COVER_LV_4A = registerTieredCover(GTValues.LV, 4);
+    public final static ItemEntry<ComponentItem> WIRELESS_ENERGY_RECEIVE_COVER_MV_4A = registerTieredCover(GTValues.MV, 4);
+    public final static ItemEntry<ComponentItem> WIRELESS_ENERGY_RECEIVE_COVER_HV_4A = registerTieredCover(GTValues.HV, 4);
+    public final static ItemEntry<ComponentItem> WIRELESS_ENERGY_RECEIVE_COVER_EV_4A = registerTieredCover(GTValues.EV, 4);
+    public final static ItemEntry<ComponentItem> WIRELESS_ENERGY_RECEIVE_COVER_IV_4A = registerTieredCover(GTValues.IV, 4);
+    public final static ItemEntry<ComponentItem> WIRELESS_ENERGY_RECEIVE_COVER_LUV_4A = registerTieredCover(GTValues.LuV, 4);
+    public final static ItemEntry<ComponentItem> WIRELESS_ENERGY_RECEIVE_COVER_ZPM_4A = registerTieredCover(GTValues.ZPM, 4);
+    public final static ItemEntry<ComponentItem> WIRELESS_ENERGY_RECEIVE_COVER_UV_4A = registerTieredCover(GTValues.UV, 4);
+    public final static ItemEntry<ComponentItem> WIRELESS_ENERGY_RECEIVE_COVER_UHV_4A = GTCEuAPI.isHighTier() ?
             registerTieredCover(GTValues.UHV, 4) : null;
-    public static ItemEntry<ComponentItem> WIRELESS_ENERGY_RECEIVE_COVER_UEV_4A = GTCEuAPI.isHighTier() ?
+    public final static ItemEntry<ComponentItem> WIRELESS_ENERGY_RECEIVE_COVER_UEV_4A = GTCEuAPI.isHighTier() ?
             registerTieredCover(GTValues.UEV, 4) : null;
-    public static ItemEntry<ComponentItem> WIRELESS_ENERGY_RECEIVE_COVER_UIV_4A = GTCEuAPI.isHighTier() ?
+    public final static ItemEntry<ComponentItem> WIRELESS_ENERGY_RECEIVE_COVER_UIV_4A = GTCEuAPI.isHighTier() ?
             registerTieredCover(GTValues.UIV, 4) : null;
-    public static ItemEntry<ComponentItem> WIRELESS_ENERGY_RECEIVE_COVER_UXV_4A = GTCEuAPI.isHighTier() ?
+    public final static ItemEntry<ComponentItem> WIRELESS_ENERGY_RECEIVE_COVER_UXV_4A = GTCEuAPI.isHighTier() ?
             registerTieredCover(GTValues.UXV, 4) : null;
-    public static ItemEntry<ComponentItem> WIRELESS_ENERGY_RECEIVE_COVER_OPV_4A = GTCEuAPI.isHighTier() ?
+    public final static ItemEntry<ComponentItem> WIRELESS_ENERGY_RECEIVE_COVER_OPV_4A = GTCEuAPI.isHighTier() ?
             registerTieredCover(GTValues.OpV, 4) : null;
 
     private static ItemEntry<ComponentItem> registerTieredCover(int tier, int amperage) {

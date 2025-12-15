@@ -7,6 +7,8 @@ import cn.qiuye.gtmoremachine.common.item.WirelessEnergyBindingToolBehavior;
 import cn.qiuye.gtmoremachine.data.wireless.cwu.WirelessCWUSavedData;
 import cn.qiuye.gtmoremachine.data.wireless.energy.WirelessEnergySavedData;
 
+import com.gregtechceu.gtceu.api.machine.MetaMachine;
+
 import net.minecraft.core.GlobalPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
@@ -29,8 +31,10 @@ public class ForgeCommonEventListener {
                     if (refreshBinding) {
                         BigInteger rate = BigInteger.ZERO;
                         GlobalPos pos = container.getBindPos();
-                        if (pos != null) {
-                            rate = WirelessEnergyBindingToolBehavior.Companion.getRate(event.getServer().getLevel(pos.dimension()), pos.pos());
+                        MetaMachine machine = WirelessEnergyBindingToolBehavior.Companion.getmachine(event.getServer().getLevel(pos.dimension()), pos.pos());
+                        if (machine != null) {
+                            rate = WirelessEnergyBindingToolBehavior.Companion.getRate(machine);
+                            container.setDimensional(14, rate.compareTo(BigInteger.ZERO) > 0, machine);
                         }
                         container.setRate(rate);
                     }

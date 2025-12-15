@@ -9,7 +9,7 @@ import net.minecraft.world.item.CreativeModeTab;
 
 public class GTMMRegistration {
 
-    public static GTRegistrate GTMMREGISTRATE = GTRegistrate.create(GTmm.MOD_ID);
+    public final static GTRegistrate GTMMREGISTRATE = GTRegistrate.create(GTmm.MOD_ID);
 
     static {
         GTMMRegistration.GTMMREGISTRATE.defaultCreativeTab((ResourceKey<CreativeModeTab>) null);

@@ -16,9 +16,9 @@ import com.tterrag.registrate.util.entry.RegistryEntry
 
 object GTMMCreativeModeTabs {
     @JvmField
-    val CREATIVE_TAB: RegistryEntry<CreativeModeTab?> = GTMMRegistration.GTMMREGISTRATE
-        .defaultCreativeTab("creative") { builder: CreativeModeTab.Builder? ->
-            builder!!
+    val CREATIVE_TAB: RegistryEntry<CreativeModeTab> = GTMMRegistration.GTMMREGISTRATE
+        .defaultCreativeTab("creative") { builder: CreativeModeTab.Builder ->
+            builder
                 .displayItems(
                     GTCreativeModeTabs.RegistrateDisplayItemsGenerator(
                         "creative",
@@ -32,9 +32,9 @@ object GTMMCreativeModeTabs {
         .register()
 
     @JvmField
-    val WIRELESS_TAB: RegistryEntry<CreativeModeTab?> = GTMMRegistration.GTMMREGISTRATE
-        .defaultCreativeTab("wireless") { builder: CreativeModeTab.Builder? ->
-            builder!!
+    val WIRELESS_TAB: RegistryEntry<CreativeModeTab> = GTMMRegistration.GTMMREGISTRATE
+        .defaultCreativeTab("wireless") { builder: CreativeModeTab.Builder ->
+            builder
                 .displayItems(
                     GTCreativeModeTabs.RegistrateDisplayItemsGenerator(
                         "wireless",
@@ -57,9 +57,9 @@ object GTMMCreativeModeTabs {
         .register()
 
     @JvmField
-    val MORE_MACHINES: RegistryEntry<CreativeModeTab?> = GTMMRegistration.GTMMREGISTRATE
-        .defaultCreativeTab("more_machines") { builder: CreativeModeTab.Builder? ->
-            builder!!
+    val MORE_MACHINES: RegistryEntry<CreativeModeTab> = GTMMRegistration.GTMMREGISTRATE
+        .defaultCreativeTab("more_machines") { builder: CreativeModeTab.Builder ->
+            builder
                 .displayItems(
                     GTCreativeModeTabs.RegistrateDisplayItemsGenerator(
                         "more_machines",

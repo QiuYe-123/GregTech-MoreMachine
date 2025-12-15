@@ -14,6 +14,7 @@ object AdvancedTerminalLang {
         provider.add("item.gtmoremachine.advanced_terminal.setting.borlamp", "Borderless Lamp")
         provider.add("item.gtmoremachine.advanced_terminal.setting.rotor", "Rotor Holder")
         provider.add("item.gtmoremachine.advanced_terminal.setting.wecc", "Wireless Energy Capacity Component")
+        provider.add("item.gtmoremachine.advanced_terminal.setting.ecu", "Energy Communication Unit")
         provider.add(
             "item.gtmoremachine.advanced_terminal.setting.1.tooltip",
             "Set the priority level for automatic Tier Block placement (Click to open).",

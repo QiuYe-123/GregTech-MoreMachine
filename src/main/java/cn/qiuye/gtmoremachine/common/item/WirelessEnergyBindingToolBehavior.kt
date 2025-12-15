@@ -26,12 +26,14 @@ class WirelessEnergyBindingToolBehavior : IInteractionItem {
         if (!GTMMConfig.INSTANCE.isWirelessRateEnable) return InteractionResult.PASS
 
         val pos = context.clickedPos
-        val rate = getRate(context.level, pos)
+        val machine = getmachine(context.level, pos) ?: return InteractionResult.PASS
+        val rate = getRate(machine)
         if (rate <= BigInteger.ZERO) return InteractionResult.PASS
 
         val container = WirelessEnergyContainer.getOrCreateContainer(context.player!!.uuid)
         container.setRate(rate)
         container.setBindPos(GlobalPos.of(context.level.dimension(), pos))
+        container.setDimensional(14, true, machine)
 
         context.player?.sendSystemMessage(
             Component.translatable(
@@ -44,22 +46,21 @@ class WirelessEnergyBindingToolBehavior : IInteractionItem {
     }
 
     companion object {
-        fun getRate(level: BlockGetter?, pos: BlockPos): BigInteger {
-            val machine = level?.let { MetaMachine.getMachine(it, pos) } ?: return BigInteger.ZERO
-
-            return when (machine) {
-                is BatteryBufferMachine -> calculateBatteryRate(machine)
-                is PowerSubstationMachine -> if (machine.isFormed) {
-                    // TODO 等实现电力网落全部组件及多变电站时应改为比4096更大的数值
-                    machine.energyInfo.capacity() /
-                        BigInteger.valueOf(160)
-                } else {
-                    BigInteger.ZERO
-                }
-                else -> BigInteger.ZERO
+        fun getRate(machine: MetaMachine): BigInteger = when (machine) {
+            is BatteryBufferMachine -> calculateBatteryRate(machine)
+            is PowerSubstationMachine -> if (machine.isFormed) {
+                // TODO 等实现电力网落全部组件及多变电站时应改为比4096更大的数值
+                machine.energyInfo.capacity() /
+                    BigInteger.valueOf(160)
+            } else {
+                BigInteger.ZERO
             }
+            else -> BigInteger.ZERO
         }
-
+        fun getmachine(level: BlockGetter?, pos: BlockPos): MetaMachine? {
+            val machine = level?.let { MetaMachine.getMachine(it, pos) } ?: return null
+            return machine
+        }
         private fun calculateBatteryRate(machine: BatteryBufferMachine): BigInteger {
             val inv = machine.batteryInventory
             var rate = BigInteger.ZERO
