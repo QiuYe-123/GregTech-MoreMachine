@@ -12,6 +12,9 @@ import it.unimi.dsi.fastutil.ints.IntIntPair
 
 import javax.annotation.Nonnull
 
+operator fun IntIntPair.component1(): Int = this.firstInt()
+operator fun IntIntPair.component2(): Int = this.secondInt()
+
 @OnlyIn(Dist.CLIENT)
 class ModularHUD {
     private var stringAmount: Byte = 0
@@ -23,57 +26,51 @@ class ModularHUD {
     }
 
     fun draw(poseStack: GuiGraphics) {
-        for (i in 0..<stringAmount) {
-            val coords = this.getStringCoord(i)
-            poseStack.drawString(
-                mc.font,
-                stringList[i],
-                coords.firstInt(),
-                coords.secondInt(),
-                0xFFFFFF,
-                false,
-            )
+        repeat(stringAmount.toInt()) { i ->
+            val (posX, posY) = getStringCoord(i)
+            poseStack.drawString(mc.font, stringList[i], posX, posY, 0xFFFFFF, false)
         }
     }
 
     @Nonnull
     private fun getStringCoord(index: Int): IntIntPair {
-        val posX: Int
-        val posY: Int
         val hudOffsetX = 0
         val hudOffsetY = 0
         val fontHeight = mc.font.lineHeight
         val windowHeight = mc.window.guiScaledHeight
         val windowWidth = mc.window.guiScaledWidth
         val stringWidth = mc.font.width(stringList[index])
-        when (GTMMConfig.INSTANCE.wirelessAlign) {
+        return when (GTMMConfig.INSTANCE.wirelessAlign) {
             1 -> {
-                posX = 1 + hudOffsetX
-                posY = 1 + hudOffsetY + (fontHeight * index)
+                val posX = 1 + hudOffsetX
+                val posY = 1 + hudOffsetY + (fontHeight * index)
+                IntIntPair.of(posX, posY)
             }
 
             2 -> {
-                posX = windowWidth - (1 + hudOffsetX) - stringWidth
-                posY = 1 + hudOffsetY + (fontHeight * index)
+                val posX = windowWidth - (1 + hudOffsetX) - stringWidth
+                val posY = 1 + hudOffsetY + (fontHeight * index)
+                IntIntPair.of(posX, posY)
             }
 
             3 -> {
-                posX = 1 + hudOffsetX
-                posY = windowHeight - fontHeight * (stringAmount - index) - 1 -
+                val posX = 1 + hudOffsetX
+                val posY = windowHeight - fontHeight * (stringAmount - index) - 1 -
                     hudOffsetY
+                IntIntPair.of(posX, posY)
             }
 
             4 -> {
-                posX = windowWidth - (1 + hudOffsetX) - stringWidth
-                posY = windowHeight - fontHeight * (stringAmount - index) - 1 -
+                val posX = windowWidth - (1 + hudOffsetX) - stringWidth
+                val posY = windowHeight - fontHeight * (stringAmount - index) - 1 -
                     hudOffsetY
+                IntIntPair.of(posX, posY)
             }
 
             else -> throw IllegalArgumentException(
                 "Armor Hud config hudLocation is improperly configured. Allowed values: [1,2,3,4]",
             )
         }
-        return IntIntPair.of(posX, posY)
     }
 
     fun reset() {
