@@ -24,7 +24,7 @@ class HudGuiOverlay : IGuiOverlay {
         screenHeight: Int,
     ) {
         val mc = Minecraft.getInstance()
-        if (mc.level != null && !mc.options.renderDebug && !mc.options.hideGui) {
+        if (mc.isWindowActive && mc.level != null && !mc.options.renderDebug && !mc.options.hideGui) {
             renderHUDMetaItem(getItemEquipped(mc.player!!, GTMMItems.WIRELESS_ENERGY_TERMINAL.asItem()), guiGraphics)
         }
     }
