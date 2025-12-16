@@ -10,13 +10,20 @@ import top.theillusivec4.curios.api.CuriosApi
 
 object CuriosUtils {
     fun getItemCuriosEquipped(player: Player, item: Item): ItemStack {
-        if (GTmm.Mods.isCuriosLoaded()) {
-            val curiosInventory = CuriosApi.getCuriosInventory(player)
-            if (curiosInventory.isPresent && curiosInventory.resolve().isPresent) {
-                return curiosInventory.resolve().get().findFirstCurio(item).get().stack
-            }
+        if (!GTmm.Mods.isCuriosLoaded()) {
+            return ItemStack.EMPTY
         }
-        return ItemStack.EMPTY
+
+        return CuriosApi.getCuriosInventory(player)
+            .takeIf { it.isPresent }
+            ?.resolve()
+            ?.takeIf { it.isPresent }
+            ?.get()
+            ?.findFirstCurio(item)
+            ?.takeIf { it.isPresent }
+            ?.get()
+            ?.stack
+            ?: ItemStack.EMPTY
     }
 
     fun getItemInventoryEquipped(player: Player, item: Item): ItemStack =

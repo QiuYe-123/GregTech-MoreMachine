@@ -10,6 +10,7 @@ import cn.qiuye.gtmoremachine.common.registry.GTMMRegistration;
 import cn.qiuye.gtmoremachine.config.GTMMConfig;
 import cn.qiuye.gtmoremachine.data.GTMMDatagen;
 import cn.qiuye.gtmoremachine.utils.input.SyncedKeyMappings;
+import cn.qiuye.gtmoremachine.utils.input.open.HotKeyActions;
 
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
@@ -44,6 +45,7 @@ public class CommonProxy {
         }
         GTMMDatagen.initPost();
         SyncedKeyMappings.init();
+        HotKeyActions.init();
     }
 
     private static void commonSetup(FMLCommonSetupEvent event) {}
