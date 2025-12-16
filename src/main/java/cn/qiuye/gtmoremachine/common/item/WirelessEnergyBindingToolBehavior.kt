@@ -57,8 +57,11 @@ class WirelessEnergyBindingToolBehavior : IInteractionItem {
             }
             else -> BigInteger.ZERO
         }
-        fun getmachine(level: BlockGetter?, pos: BlockPos): MetaMachine? {
-            val machine = level?.let { MetaMachine.getMachine(it, pos) } ?: return null
+        fun getmachine(level: BlockGetter?, pos: BlockPos?): MetaMachine? {
+            if (level == null || pos == null) {
+                return null
+            }
+            val machine = MetaMachine.getMachine(level, pos)
             return machine
         }
         private fun calculateBatteryRate(machine: BatteryBufferMachine): BigInteger {
