@@ -10,36 +10,45 @@ import net.minecraftforge.api.distmarker.OnlyIn
 
 import it.unimi.dsi.fastutil.ints.IntIntPair
 
-import javax.annotation.Nonnull
-
 operator fun IntIntPair.component1(): Int = this.firstInt()
 operator fun IntIntPair.component2(): Int = this.secondInt()
 
 @OnlyIn(Dist.CLIENT)
 class ModularHUD {
     private var stringAmount: Byte = 0
+    private var stringWidth: Int = 0
     private val stringList = ArrayList<Component>()
 
     fun newString(string: Component) {
         this.stringAmount++
         this.stringList.add(string)
+        val stringWidth = mc.font.width(string)
+        if (stringWidth > this.stringWidth) {
+            this.stringWidth = stringWidth
+        }
     }
 
     fun draw(poseStack: GuiGraphics) {
         repeat(stringAmount.toInt()) { i ->
             val (posX, posY) = getStringCoord(i)
-            poseStack.drawString(mc.font, stringList[i], posX, posY, 0xFFFFFF, false)
+            poseStack.drawString(
+                mc.font,
+                stringList[i],
+                posX,
+                posY,
+                0xFFFFFF,
+                false,
+            )
         }
     }
 
-    @Nonnull
     private fun getStringCoord(index: Int): IntIntPair {
         val hudOffsetX = 0
         val hudOffsetY = 0
         val fontHeight = mc.font.lineHeight
         val windowHeight = mc.window.guiScaledHeight
         val windowWidth = mc.window.guiScaledWidth
-        val stringWidth = mc.font.width(stringList[index])
+        val stringWidth = this.stringWidth
         return when (GTMMConfig.INSTANCE.wirelessAlign) {
             1 -> {
                 val posX = 1 + hudOffsetX
