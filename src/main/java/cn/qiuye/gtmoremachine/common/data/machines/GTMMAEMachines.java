@@ -4,6 +4,7 @@ import cn.qiuye.gtmoremachine.GTmm;
 import cn.qiuye.gtmoremachine.integration.ae.machine.MEOutputPartMachine;
 import cn.qiuye.gtmoremachine.integration.ae.machine.ProgrammableDualHatchPartMachine;
 import cn.qiuye.gtmoremachine.integration.ae.machine.ProgrammableHatchPartMachine;
+import cn.qiuye.gtmoremachine.integration.ae.machine.multiblockmachine.GTMMAEMultiMachines;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
