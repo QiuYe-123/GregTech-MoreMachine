@@ -40,7 +40,7 @@ public record WirelessTransferCoverPlaceBehavior(CoverDefinition coverDefinition
                 tag.putInt("y", blockPos.getY());
                 tag.putInt("z", blockPos.getZ());
                 itemStack.setTag(tag);
-                if (level.isClientSide()) player.sendSystemMessage(Component.translatable("item.gtmthings.wireless_transfer.tooltip.bind.1", Component.translatable(level.getBlockState(blockPos).getBlock().getDescriptionId()), blockPos.toShortString()));
+                if (level.isClientSide()) player.sendSystemMessage(Component.translatable("item.gtmoremachine.wireless_transfer.tooltip.bind.1", Component.translatable(level.getBlockState(blockPos).getBlock().getDescriptionId()), blockPos.toShortString()));
             }
             return InteractionResult.SUCCESS;
         }
@@ -58,7 +58,7 @@ public record WirelessTransferCoverPlaceBehavior(CoverDefinition coverDefinition
             is.removeTagKey("x");
             is.removeTagKey("y");
             is.removeTagKey("z");
-            if (level.isClientSide()) player.sendSystemMessage(Component.translatable("item.gtmthings.wireless_transfer.tooltip.bind.2"));
+            if (level.isClientSide()) player.sendSystemMessage(Component.translatable("item.gtmoremachine.wireless_transfer.tooltip.bind.2"));
         }
         return IInteractionItem.super.use(item, level, player, usedHand);
     }

@@ -29,14 +29,14 @@ public class ForgeCommonEventListener {
                 boolean refreshBinding = event.getServer().getTickCount() % 200 == 0;
                 for (WirelessEnergyContainer container : WirelessEnergySavedData.INSTANCE.containerMap.values()) {
                     if (refreshBinding) {
-                        BigInteger rate = BigInteger.ZERO;
+                        BigInteger rate;
                         GlobalPos pos = container.getBindPos();
-                        MetaMachine machine = WirelessEnergyBindingToolBehavior.Companion.getmachine(event.getServer().getLevel(pos.dimension()), pos.pos());
-                        if (machine != null) {
+                        if (pos != null) {
+                            MetaMachine machine = WirelessEnergyBindingToolBehavior.Companion.getmachine(event.getServer().getLevel(pos.dimension()), pos.pos());
                             rate = WirelessEnergyBindingToolBehavior.Companion.getRate(machine);
                             container.setDimensional(14, rate.compareTo(BigInteger.ZERO) > 0, machine);
+                            container.setRate(rate);
                         }
-                        container.setRate(rate);
                     }
                     container.getAllEnergyStat().tick();
                     container.getInEnergyStat().tick();

@@ -1,5 +1,20 @@
 # ChangeLog
 
+## Version [v1.4.0](https://github.com/QiuYe-123/GTMoreMachine/compare/v1.3.0-1.20.1...v1.4.0-1.20.1)
+### Added
+
+- 完善无线网络 by @QiuYe-123 in [#61](https://github.com/QiuYe-123/GTMoreMachine/pull/61)
+- 重构无线电网系统UHD by @QiuYe-123 in [#66](https://github.com/QiuYe-123/GTMoreMachine/pull/66)
+
+### Fixed
+
+- 修复来自CuriosUtils的报错 by @QiuYe-123 in [#67](https://github.com/QiuYe-123/GTMoreMachine/pull/67)
+
+### Changed
+
+- 重构无线电网系统UHD by @QiuYe-123 in [#66](https://github.com/QiuYe-123/GTMoreMachine/pull/66)
+
+ 
 ## Version [v1.3.0](https://github.com/QiuYe-123/GTMoreMachine/compare/v1.2.2-1.20.1...v1.3.0-1.20.1)
 ### Added
 

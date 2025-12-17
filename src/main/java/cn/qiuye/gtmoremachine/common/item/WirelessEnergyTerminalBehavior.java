@@ -4,10 +4,11 @@ import cn.qiuye.gtmoremachine.GTmm;
 import cn.qiuye.gtmoremachine.api.gui.monitor.*;
 import cn.qiuye.gtmoremachine.api.gui.widget.AlignComponentPanelWidget;
 import cn.qiuye.gtmoremachine.api.gui.widget.AlignLabelWidget;
-import cn.qiuye.gtmoremachine.api.item.WirelessEnergyHUD;
+import cn.qiuye.gtmoremachine.api.item.ModularHUD;
 import cn.qiuye.gtmoremachine.api.machine.IWirelessEnergyContainerHolder;
 import cn.qiuye.gtmoremachine.api.misc.wireless.energy.IWirelessMonitor;
 import cn.qiuye.gtmoremachine.api.misc.wireless.energy.WirelessEnergyContainer;
+import cn.qiuye.gtmoremachine.utils.FormattingUtil;
 import cn.qiuye.gtmoremachine.utils.NumberUtils;
 
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
@@ -22,6 +23,7 @@ import com.lowdragmc.lowdraglib.gui.widget.DraggableScrollableWidgetGroup;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.BlockPos;
@@ -36,6 +38,8 @@ import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.List;
 import java.util.UUID;
 
@@ -49,7 +53,7 @@ import static cn.qiuye.gtmoremachine.common.machine.electric.WirelessEnergyMonit
 public class WirelessEnergyTerminalBehavior implements IItemUIFactory, IItemHUDProvider, IWirelessEnergyContainerHolder {
 
     @OnlyIn(Dist.CLIENT)
-    private WirelessEnergyHUD hud;
+    private ModularHUD hud;
     private UUID uuid;
     public static int p;
     public static BlockPos pPos;
@@ -63,7 +67,7 @@ public class WirelessEnergyTerminalBehavior implements IItemUIFactory, IItemHUDP
      */
     public WirelessEnergyTerminalBehavior() {
         if (GTmm.isClientSide() && !GTmm.isDataGen()) {
-            this.hud = new WirelessEnergyHUD();
+            this.hud = new ModularHUD();
         }
     }
 
@@ -170,7 +174,7 @@ public class WirelessEnergyTerminalBehavior implements IItemUIFactory, IItemHUDP
         textList.addAll(monitor.displayTextCache);
     }
 
-    // ==================== WirelessEnergyHUD 相关 ====================
+    // ==================== ModularHUD 相关 ====================
 
     /**
      * 绘制HUD信息
@@ -180,19 +184,36 @@ public class WirelessEnergyTerminalBehavior implements IItemUIFactory, IItemHUDP
      */
     @Override
     public void drawHUD(ItemStack stack, GuiGraphics guiGraphics) {
-        if (getUUID(stack) == null) {
-            this.hud.newString(Component.literal("0"));
-            this.hud.newString(Component.literal("0"));
-            this.hud.newString(Component.literal("0"));
-            this.hud.newString(Component.literal("0"));
-        } else {
+        BigDecimal all = BigDecimal.ZERO;
+        BigDecimal in = BigDecimal.ZERO;
+        BigDecimal out = BigDecimal.ZERO;
+        BigInteger storage = BigInteger.ZERO;
+        if (getUUID(stack) != null) {
             this.uuid = getUUID(stack);
             var container = getWirelessEnergyContainer();
-            this.hud.newString(Component.literal(NumberUtils.formatBigDecimalNumberOrSic(container.getAllEnergyStat().getAvg())));
-            this.hud.newString(Component.literal(NumberUtils.formatBigDecimalNumberOrSic(container.getInEnergyStat().getAvg())));
-            this.hud.newString(Component.literal(NumberUtils.formatBigDecimalNumberOrSic(container.getOutEnergyStat().getAvg())));
-            this.hud.newString(Component.literal(NumberUtils.formatBigIntegerNumberOrSic(container.getStorage())));
+            if (container != null) {
+                all = container.getAllEnergyStat().getAvg();
+                in = container.getInEnergyStat().getAvg();
+                out = container.getOutEnergyStat().getAvg();
+                storage = container.getStorage();
+            }
         }
+        this.hud.newString(Component.translatable("item.gtmoremachine.wireless_energy_terminal.hud.1",
+                Component.literal(NumberUtils.formatBigDecimalNumberOrSic(all)).withStyle(ChatFormatting.DARK_PURPLE),
+                Component.literal(NumberUtils.formatBigDecimalNumberOrSic(FormattingUtil.voltageAmperage(all))),
+                FormattingUtil.voltageName(all)));
+        this.hud.newString(Component.translatable("item.gtmoremachine.wireless_energy_terminal.hud.2",
+                Component.literal(NumberUtils.formatBigDecimalNumberOrSic(in)).withStyle(ChatFormatting.DARK_BLUE),
+                Component.literal(NumberUtils.formatBigDecimalNumberOrSic(FormattingUtil.voltageAmperage(in))),
+                FormattingUtil.voltageName(in)));
+        this.hud.newString(Component.translatable("item.gtmoremachine.wireless_energy_terminal.hud.3",
+                Component.literal(NumberUtils.formatBigDecimalNumberOrSic(out)).withStyle(ChatFormatting.DARK_RED),
+                Component.literal(NumberUtils.formatBigDecimalNumberOrSic(FormattingUtil.voltageAmperage(out))),
+                FormattingUtil.voltageName(out)));
+        this.hud.newString(Component.translatable("item.gtmoremachine.wireless_energy_terminal.hud.4",
+                Component.literal(NumberUtils.formatBigIntegerNumberOrSic(storage)).withStyle(ChatFormatting.DARK_AQUA),
+                Component.literal(NumberUtils.formatBigDecimalNumberOrSic(FormattingUtil.voltageAmperage(new BigDecimal(storage)))),
+                FormattingUtil.voltageName(new BigDecimal(storage))));
         this.hud.draw(guiGraphics);
         this.hud.reset();
     }
