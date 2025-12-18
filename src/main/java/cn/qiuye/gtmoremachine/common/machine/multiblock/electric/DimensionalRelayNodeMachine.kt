@@ -79,12 +79,6 @@ open class DimensionalRelayNodeMachine(holder: IMachineBlockEntity) :
     override fun getUUID(): UUID? = ownerUUID
 
     /**
-     * 检查是否能源仓
-     * @return 当前返回false表示不是
-     */
-    override fun display(): Boolean = false
-
-    /**
      * 检查是否是维度机器
      * @return 返回true表示是维度机器
      */
@@ -161,11 +155,12 @@ open class DimensionalRelayNodeMachine(holder: IMachineBlockEntity) :
         pos: BlockPos,
         direction: Direction,
     ): Boolean {
-        if (isRemote) return true
+        if (isRemote) return false
         val item = player.getItemInHand(hand)
-        if (item.isEmpty) return true
+        if (item.isEmpty) return false
         // 检查是否为数据棒
         if (item.`is`(GTItems.TOOL_DATA_STICK.asItem())) {
+            ownerUUID = null
             wirelessEnergyContainerCache = null
             val container = getWirelessEnergyContainer()
             container?.setDimensional(0, false, this)
@@ -225,8 +220,9 @@ open class DimensionalRelayNodeMachine(holder: IMachineBlockEntity) :
      * 创建UI部件（IDisplayUIMachine接口实现）
      * @return 配置好的UI部件组
      */
-    override fun createUIWidget(): Widget = WidgetGroup(0, 0, 182 + 8, 117 + 8)
-        .addWidget(
+    override fun createUIWidget(): Widget {
+        val group = WidgetGroup(0, 0, 182 + 8, 117 + 8)
+        group.addWidget(
             DraggableScrollableWidgetGroup(4, 4, 182, 117).setBackground(screenTexture)
                 .addWidget(LabelWidget(4, 5, self().blockState.block.descriptionId))
                 .addWidget(
@@ -243,7 +239,9 @@ open class DimensionalRelayNodeMachine(holder: IMachineBlockEntity) :
                         },
                 ),
         )
-        .setBackground(GuiTextures.BACKGROUND_INVERSE)
+        group.setBackground(GuiTextures.BACKGROUND_INVERSE)
+        return group
+    }
 
     /**
      * 创建花式UI（IFancyUIMachine接口实现）

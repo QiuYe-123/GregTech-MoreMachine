@@ -93,12 +93,6 @@ open class DemodulationHubMachine(holder: IMachineBlockEntity) :
     override fun getUUID(): UUID? = ownerUUID
 
     /**
-     * 检查是否能源仓
-     * @return 当前返回false表示不是
-     */
-    override fun display(): Boolean = false
-
-    /**
      * 检查是否是容量机器
      * @return 返回true表示是容量机器
      */
@@ -167,6 +161,7 @@ open class DemodulationHubMachine(holder: IMachineBlockEntity) :
         if (item.isEmpty) return false
         // 检查是否为数据棒
         if (item.`is`(GTItems.TOOL_DATA_STICK.asItem())) {
+            ownerUUID = null
             wirelessEnergyContainerCache = null
             val container = getWirelessEnergyContainer()
             container?.setCapacity(BigInteger.ZERO, false, this)
