@@ -1,4 +1,6 @@
 {
+  "gtmoremachine.multiblock.pattern.error.ecutypes": "§c必须使用同种电网容量组件§r",
+  "gtmoremachine.multiblock.pattern.error.wecc": "§c必须使用相同的能源通讯单元§r",
   "itemGroup.gtmoremachine.creative": "创造物品",
   "item.gtmoremachine.creative_fluid_cell": "创造流体单元",
   "item.gtmoremachine.creative_fluid_cell.tooltip1": "§2内部流体：§f%1$s",

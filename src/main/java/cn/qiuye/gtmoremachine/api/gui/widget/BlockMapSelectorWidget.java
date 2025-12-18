@@ -1,6 +1,5 @@
-package cn.qiuye.gtmoremachine.api.gui;
+package cn.qiuye.gtmoremachine.api.gui.widget;
 
-import cn.qiuye.gtmoremachine.api.gui.widget.ExtendLabelWidget;
 import cn.qiuye.gtmoremachine.common.block.BlockMap;
 
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
