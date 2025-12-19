@@ -35,7 +35,7 @@ public class GTMMPredicates {
         }, () -> GTMMAPI.ECU.entrySet().stream()
                 .sorted(Comparator.comparingInt(entry -> entry.getKey().getTier()))
                 .map(entry -> new BlockInfo(entry.getValue().get().defaultBlockState(), null))
-                .toArray(BlockInfo[]::new)).addTooltips(Component.translatable("gtceu.multiblock.pattern.error.batteries"));
+                .toArray(BlockInfo[]::new)).addTooltips(Component.translatable("gtmoremachine.multiblock.pattern.error.ecutypes"));
     }
 
     public static TraceabilityPredicate WirelessEnergyCapacityComponent() {

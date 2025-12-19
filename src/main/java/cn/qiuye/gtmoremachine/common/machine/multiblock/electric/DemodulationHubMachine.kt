@@ -22,9 +22,12 @@ import com.lowdragmc.lowdraglib.gui.util.ClickData
 import com.lowdragmc.lowdraglib.gui.widget.*
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder
 
+import net.minecraft.ChatFormatting
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
 import net.minecraft.network.chat.Component
+import net.minecraft.network.chat.HoverEvent
+import net.minecraft.network.chat.Style
 import net.minecraft.world.InteractionHand
 import net.minecraft.world.InteractionResult
 import net.minecraft.world.entity.player.Player
@@ -285,6 +288,28 @@ open class DemodulationHubMachine(holder: IMachineBlockEntity) :
     override fun createUI(entityPlayer: Player?): ModularUI =
         ModularUI(198, 208, this, entityPlayer).widget(FancyMachineUIWidget(this, 198, 208))
 
+    override fun addDisplayText(textList: MutableList<Component>) {
+        super.addDisplayText(textList)
+        if (isFormed()) {
+            if (!isWorkingEnabled) {
+            }
+        } else {
+            val tooltip: Component = Component.translatable("gtceu.multiblock.invalid_structure.tooltip")
+                .withStyle(ChatFormatting.GRAY)
+            textList.add(
+                Component.translatable("gtceu.multiblock.invalid_structure")
+                    .withStyle(
+                        Style.EMPTY.withColor(ChatFormatting.RED)
+                            .withHoverEvent(HoverEvent(HoverEvent.Action.SHOW_TEXT, tooltip)),
+                    ),
+            )
+        }
+        definition.additionalDisplay.accept(this, textList)
+    }
+
+    override fun isWorkingEnabled(): Boolean = true
+
+    override fun setWorkingEnabled(ignored: Boolean) {}
     // ================= 内部类：容量 =================
     /**
      * 维度中继节点银行

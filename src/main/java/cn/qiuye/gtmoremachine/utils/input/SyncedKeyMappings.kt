@@ -10,7 +10,7 @@ import com.mojang.blaze3d.platform.InputConstants
 
 object SyncedKeyMappings {
     val OPEN_WET: SyncedKeyMapping = SyncedKeyMapping.createConfigurable(
-        "gtmoremachine.key.wet",
+        "gtmoremachine.key",
         KeyConflictContext.IN_GAME,
         InputConstants.CURSOR_DISABLED,
         GTmm.MOD_NAME,
