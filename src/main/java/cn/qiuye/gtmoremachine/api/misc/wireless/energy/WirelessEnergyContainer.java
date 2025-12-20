@@ -144,7 +144,6 @@ public class WirelessEnergyContainer {
     }
 
     public void PassiveDrainEnergy(BigInteger energy) {
-        if (this.storage.compareTo(BigInteger.ZERO) == 0) return;
         BigInteger change = storage.min(energy);
         if (change.compareTo(BigInteger.ZERO) <= 0) return;
         storage = storage.subtract(change);
