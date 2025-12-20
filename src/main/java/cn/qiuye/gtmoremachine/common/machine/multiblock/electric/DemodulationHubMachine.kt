@@ -138,7 +138,7 @@ open class DemodulationHubMachine(holder: IMachineBlockEntity) :
             ownerUUID = player.uuid
             wirelessEnergyContainerCache = null
             val container = getWirelessEnergyContainer()
-            container?.setCapacity(this.totalCapacity, true, this)
+            container?.setCapacity(this.totalCapacity, this.totalPassiveDrain, true, this)
             player.sendSystemMessage(
                 Component.translatable(
                     "gtmoremachine.machine.wireless_energy_hatch.tooltip.bind",
@@ -169,7 +169,7 @@ open class DemodulationHubMachine(holder: IMachineBlockEntity) :
             ownerUUID = null
             wirelessEnergyContainerCache = null
             val container = getWirelessEnergyContainer()
-            container?.setCapacity(BigInteger.ZERO, false, this)
+            container?.setCapacity(BigInteger.ZERO, BigInteger.ZERO, false, this)
             player.sendSystemMessage(
                 Component.translatable("gtmoremachine.machine.wireless_energy_hatch.tooltip.unbind"),
             )
@@ -213,7 +213,7 @@ open class DemodulationHubMachine(holder: IMachineBlockEntity) :
         tickSubscription.updateSubscription()
         // 更新无线能源容器容量
         val container = getWirelessEnergyContainer()
-        container?.setCapacity(this.totalCapacity, true, this)
+        container?.setCapacity(this.totalCapacity, this.totalPassiveDrain, true, this)
     }
 
     /**
@@ -224,7 +224,7 @@ open class DemodulationHubMachine(holder: IMachineBlockEntity) :
         capacityBank = null
         tickSubscription.updateSubscription()
         val container = getWirelessEnergyContainer()
-        container?.setCapacity(BigInteger.ZERO, false, this)
+        container?.setCapacity(BigInteger.ZERO, BigInteger.ZERO, false, this)
         super.onStructureInvalid()
     }
 
@@ -301,9 +301,10 @@ open class DemodulationHubMachine(holder: IMachineBlockEntity) :
             }
             val container = getWirelessEnergyContainer()
             if (container != null) {
-                val percentage = container.getStoragePercentage()
-                if (percentage.storagePercentage() >= BigDecimal.ZERO) {
-                    textList.add(Component.literal(percentage.storagePercentage().toString()))
+                val storagepercentage = container.getStoragePercentage()
+                val percentage = storagepercentage.storagePercentage()
+                if (percentage >= BigDecimal.ZERO) {
+                    textList.add(Component.literal(percentage.toString()))
                 }
             }
         } else {

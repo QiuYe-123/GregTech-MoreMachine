@@ -91,7 +91,11 @@ public interface IWirelessMonitor extends IWirelessEnergyContainerHolder {
                     .withStyle(ChatFormatting.GRAY));
         } else if (compare < 0) {
             textListCache.add(Component.translatable("gtceu.multiblock.power_substation.time_to_drain",
-                    getTimeToFillDrainText(energyTotal.divide(multiply))).withStyle(ChatFormatting.GRAY));
+                    getTimeToFillDrainText(energyTotal.divide(multiply)))
+                    .withStyle(ChatFormatting.GRAY));
+        } else {
+            textListCache.add(Component.translatable("gtceu.multiblock.power_substation.time_to_drain",
+                    Component.translatable("gtceu.multiblock.power_substation.time_forever")).withStyle(ChatFormatting.GRAY));
         }
 
         if (GTMMConfig.getINSTANCE().isWirelessRateEnable && container.getBindPos() != null) {

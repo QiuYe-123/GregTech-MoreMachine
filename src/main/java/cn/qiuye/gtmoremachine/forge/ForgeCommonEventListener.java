@@ -38,6 +38,8 @@ public class ForgeCommonEventListener {
                             container.setRate(rate);
                         }
                     }
+                    container.PassiveDrainEnergy(container.getPassiveDrain());
+
                     container.getAllEnergyStat().tick();
                     container.getInEnergyStat().tick();
                     container.getOutEnergyStat().tick();
