@@ -54,11 +54,12 @@ public class WirelessEnergyContainer {
 
     private final TimeStat outEnergyStat;
 
-    public WirelessEnergyContainer(UUID uuid, BigInteger storage, BigInteger rate, BigInteger capacity, GlobalPos bindPos) {
+    public WirelessEnergyContainer(UUID uuid, BigInteger storage, BigInteger rate, BigInteger capacity, BigInteger passiveDrain, GlobalPos bindPos) {
         this.storage = storage;
         this.rate = rate;
         this.bindPos = bindPos;
         this.capacity = capacity;
+        this.passiveDrain = passiveDrain;
         this.uuid = uuid;
         this.allEnergyStat = new TimeStat(0);
         this.inEnergyStat = new TimeStat(0);
