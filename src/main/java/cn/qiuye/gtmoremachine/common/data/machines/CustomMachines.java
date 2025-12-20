@@ -1,7 +1,6 @@
 package cn.qiuye.gtmoremachine.common.data.machines;
 
 import cn.qiuye.gtmoremachine.common.data.GTMMCreativeModeTabs;
-import cn.qiuye.gtmoremachine.common.data.machines.multiblockmachine.PlanetEngineRegistrationMultiblockMachine;
 import cn.qiuye.gtmoremachine.common.machine.multiblock.part.HugeBusPartMachine;
 import cn.qiuye.gtmoremachine.common.machine.multiblock.part.HugeDualHatchPartMachine;
 

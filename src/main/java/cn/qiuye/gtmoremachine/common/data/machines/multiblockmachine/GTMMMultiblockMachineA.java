@@ -19,7 +19,7 @@ import static cn.qiuye.gtmoremachine.common.registry.GTMMRegistration.GTMMREGIST
 import static com.gregtechceu.gtceu.api.pattern.Predicates.*;
 import static com.gregtechceu.gtceu.common.data.GTBlocks.HIGH_POWER_CASING;
 
-public class PlanetEngineRegistrationMultiblockMachine {
+public class GTMMMultiblockMachineA {
 
     public static final MultiblockMachineDefinition PlanetaryEngine = GTMMREGISTRATE.multiblock("planetaryengine", WorkableElectricMultiblockMachine::new)
             .langValue("§cPlanetary Engine")

@@ -8,6 +8,7 @@ object MultiMachines {
     @JvmStatic
     fun init() {
         WirelessMultiMachines.init()
+        GTMMMultiblockMachineA.init()
         if (GTmm.Mods.isAE2Loaded()) {
             GTMMAEMultiMachines.init()
         }
