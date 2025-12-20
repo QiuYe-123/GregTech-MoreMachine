@@ -1,7 +1,7 @@
 package cn.qiuye.gtmoremachine.client
 
 import cn.qiuye.gtmoremachine.common.data.GTMMItems
-import cn.qiuye.gtmoremachine.utils.CuriosUtils.getItemEquipped
+import cn.qiuye.gtmoremachine.utils.SearchUtils.getItemEquipped
 
 import com.gregtechceu.gtceu.api.item.ComponentItem
 import com.gregtechceu.gtceu.api.item.component.IItemHUDProvider

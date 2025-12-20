@@ -16,7 +16,9 @@ import net.minecraft.world.level.Level;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.math.MathContext;
 import java.util.UUID;
 import java.util.WeakHashMap;
 
@@ -42,6 +44,8 @@ public class WirelessEnergyContainer {
 
     private BigInteger capacity;
 
+    private BigInteger passiveDrain;
+
     private final UUID uuid;
 
     private final TimeStat allEnergyStat;
@@ -50,11 +54,12 @@ public class WirelessEnergyContainer {
 
     private final TimeStat outEnergyStat;
 
-    public WirelessEnergyContainer(UUID uuid, BigInteger storage, BigInteger rate, GlobalPos bindPos, BigInteger capacity) {
+    public WirelessEnergyContainer(UUID uuid, BigInteger storage, BigInteger rate, BigInteger capacity, BigInteger passiveDrain, GlobalPos bindPos) {
         this.storage = storage;
         this.rate = rate;
         this.bindPos = bindPos;
         this.capacity = capacity;
+        this.passiveDrain = passiveDrain;
         this.uuid = uuid;
         this.allEnergyStat = new TimeStat(0);
         this.inEnergyStat = new TimeStat(0);
@@ -66,6 +71,7 @@ public class WirelessEnergyContainer {
         this.storage = BigInteger.ZERO;
         this.rate = BigInteger.ZERO;
         this.capacity = BigInteger.ZERO;
+        this.passiveDrain = BigInteger.ZERO;
         int currentTick = server.getTickCount();
         this.allEnergyStat = new TimeStat(currentTick);
         this.inEnergyStat = new TimeStat(currentTick);
@@ -138,6 +144,15 @@ public class WirelessEnergyContainer {
         return change;
     }
 
+    public void PassiveDrainEnergy(BigInteger energy) {
+        BigInteger change = storage.min(energy);
+        if (change.compareTo(BigInteger.ZERO) <= 0) return;
+        storage = storage.subtract(change);
+        WirelessEnergySavedData.INSTANCE.setDirty(true);
+        allEnergyStat.update(change.negate(), server.getTickCount());
+        outEnergyStat.update(change.negate(), server.getTickCount());
+    }
+
     public void setStorage(BigInteger energy) {
         storage = energy;
         WirelessEnergySavedData.INSTANCE.setDirty(true);
@@ -153,17 +168,27 @@ public class WirelessEnergyContainer {
         WirelessEnergySavedData.INSTANCE.setDirty(true);
     }
 
-    public void setCapacity(BigInteger StorageCapacity, boolean Bind, MetaMachine machine) {
+    public StoragePercentageData getStoragePercentage() {
+        var storage = new BigDecimal(this.storage);
+        var capacity = new BigDecimal(this.capacity);
+        return new StoragePercentageData(storage.divide(capacity, MathContext.DECIMAL32).multiply(BigDecimal.valueOf(100)), this.storage, this.capacity);
+    }
+
+    public void setCapacity(BigInteger StorageCapacity, BigInteger PassiveDrain, boolean Bind, MetaMachine machine) {
         if (Bind) {
-            if (machine != null) CAPACITY_STORAGE_DATA.put(machine, new CapacityStorageData(uuid, StorageCapacity, machine));
+            if (machine != null) CAPACITY_STORAGE_DATA.put(machine, new CapacityStorageData(uuid, StorageCapacity, PassiveDrain, machine));
         } else {
             if (machine != null) CAPACITY_STORAGE_DATA.remove(machine);
         }
         BigInteger change = BigInteger.ZERO;
+        BigInteger passiveDrain = BigInteger.ZERO;
         for (ICapacitylimitData data : CAPACITY_STORAGE_DATA.values()) {
             if (data.StorageCapacity() != null) change = change.add(data.StorageCapacity());
+            if (data.PassiveDrain() != null) passiveDrain = passiveDrain.add(data.PassiveDrain());
         }
         this.capacity = change;
+        this.passiveDrain = passiveDrain;
+        if (this.storage.compareTo(this.capacity) > 0) this.storage = this.capacity;
         WirelessEnergySavedData.INSTANCE.setDirty(true);
     }
 

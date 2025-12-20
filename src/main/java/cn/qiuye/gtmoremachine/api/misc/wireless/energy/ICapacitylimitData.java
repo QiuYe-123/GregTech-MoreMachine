@@ -23,11 +23,14 @@ public interface ICapacitylimitData {
 
     BigInteger StorageCapacity();
 
+    BigInteger PassiveDrain();
+
     MetaMachine machine();
 
     default Component getInfo(Format format) {
         MetaMachine machine = machine();
         BigDecimal euStorage = new BigDecimal(StorageCapacity());
+        BigDecimal euPassiveDrain = new BigDecimal(PassiveDrain());
         String pos = machine.getPos().toShortString();
         return Component.translatable(machine.getBlockState().getBlock().getDescriptionId())
                 .withStyle(Style.EMPTY.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
@@ -39,6 +42,12 @@ public interface ICapacitylimitData {
                 .append(" EU (")
                 .append(NumberUtils.formatBigDecimalNumberOrSic(FormattingUtil.voltageAmperage(euStorage), format) + " A ")
                 .append(FormattingUtil.voltageName(euStorage)).append(")")
+                .append("\n")
+                .append("被动耗能")
+                .append(NumberUtils.formatBigDecimalNumberOrSic(euPassiveDrain, format))
+                .append(" EU (")
+                .append(NumberUtils.formatBigDecimalNumberOrSic(FormattingUtil.voltageAmperage(euPassiveDrain), format) + " A ")
+                .append(FormattingUtil.voltageName(euPassiveDrain)).append(")")
                 .append(ComponentPanelWidget.withButton(Component.literal(" [ ] "), pos));
     }
 }

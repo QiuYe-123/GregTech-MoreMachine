@@ -8,7 +8,7 @@ import net.minecraft.world.item.ItemStack
 
 import top.theillusivec4.curios.api.CuriosApi
 
-object CuriosUtils {
+object SearchUtils {
     fun getItemCuriosEquipped(player: Player, item: Item): ItemStack {
         if (!GTmm.Mods.isCuriosLoaded()) {
             return ItemStack.EMPTY
@@ -30,8 +30,8 @@ object CuriosUtils {
         player.inventory.items.find { itemStack -> itemStack.item == item } ?: ItemStack.EMPTY
 
     fun getItemEquipped(player: Player, item: Item): ItemStack {
-        var stack = getItemInventoryEquipped(player, item)
-        if (stack.isEmpty)stack = getItemCuriosEquipped(player, item)
+        var stack = getItemCuriosEquipped(player, item)
+        if (stack.isEmpty) stack = getItemInventoryEquipped(player, item)
         return stack
     }
 }
