@@ -3,6 +3,7 @@ package cn.qiuye.gtmoremachine.common.machine.multiblock.electric
 import cn.qiuye.gtmoremachine.api.machine.IWirelessEnergyContainerHolder
 import cn.qiuye.gtmoremachine.api.machine.multiblock.ICapacityComponentData
 import cn.qiuye.gtmoremachine.api.misc.wireless.energy.WirelessEnergyContainer
+import cn.qiuye.gtmoremachine.utils.NumberUtils
 import cn.qiuye.gtmoremachine.utils.TeamUtils.getName
 
 import com.gregtechceu.gtceu.api.gui.GuiTextures
@@ -35,6 +36,7 @@ import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.phys.BlockHitResult
 
+import java.math.BigDecimal
 import java.math.BigInteger
 import java.util.*
 
@@ -291,7 +293,18 @@ open class DemodulationHubMachine(holder: IMachineBlockEntity) :
     override fun addDisplayText(textList: MutableList<Component>) {
         super.addDisplayText(textList)
         if (isFormed()) {
-            if (!isWorkingEnabled) {
+            if (this.totalCapacity >= BigInteger.ZERO) {
+                textList.add(Component.literal(NumberUtils.formatBigIntegerNumberOrSic(this.totalCapacity)))
+            }
+            if (this.totalPassiveDrain >= BigInteger.ZERO) {
+                textList.add(Component.literal(NumberUtils.formatBigIntegerNumberOrSic(this.totalPassiveDrain)))
+            }
+            val container = getWirelessEnergyContainer()
+            if (container != null) {
+                val percentage = container.getStoragePercentage()
+                if (percentage.storagePercentage() >= BigDecimal.ZERO) {
+                    textList.add(Component.literal(percentage.storagePercentage().toString()))
+                }
             }
         } else {
             val tooltip: Component = Component.translatable("gtceu.multiblock.invalid_structure.tooltip")

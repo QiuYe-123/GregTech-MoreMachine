@@ -255,8 +255,7 @@ open class DimensionalRelayNodeMachine(holder: IMachineBlockEntity) :
     override fun addDisplayText(textList: MutableList<Component>) {
         super.addDisplayText(textList)
         if (isFormed()) {
-            if (!isWorkingEnabled) {
-            }
+            if (this.currentTier > 0) {}
         } else {
             val tooltip: Component = Component.translatable("gtceu.multiblock.invalid_structure.tooltip")
                 .withStyle(ChatFormatting.GRAY)

@@ -16,7 +16,9 @@ import net.minecraft.world.level.Level;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.math.MathContext;
 import java.util.UUID;
 import java.util.WeakHashMap;
 
@@ -151,6 +153,12 @@ public class WirelessEnergyContainer {
     public void setBindPos(GlobalPos bindPos) {
         this.bindPos = bindPos;
         WirelessEnergySavedData.INSTANCE.setDirty(true);
+    }
+
+    public StoragePercentageData getStoragePercentage() {
+        var storage = new BigDecimal(this.storage);
+        var capacity = new BigDecimal(this.capacity);
+        return new StoragePercentageData(storage.divide(capacity, MathContext.DECIMAL32).multiply(BigDecimal.valueOf(100)), this.storage, this.capacity);
     }
 
     public void setCapacity(BigInteger StorageCapacity, boolean Bind, MetaMachine machine) {
