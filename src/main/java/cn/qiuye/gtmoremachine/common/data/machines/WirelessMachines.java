@@ -2,6 +2,7 @@ package cn.qiuye.gtmoremachine.common.data.machines;
 
 import cn.qiuye.gtmoremachine.GTmm;
 import cn.qiuye.gtmoremachine.common.data.GTMMCreativeModeTabs;
+import cn.qiuye.gtmoremachine.common.data.machines.multiblockmachine.PlanetEngineRegistrationMultiblockMachine;
 import cn.qiuye.gtmoremachine.common.data.machines.multiblockmachine.WirelessMultiMachines;
 import cn.qiuye.gtmoremachine.common.machine.electric.WirelessCWUMonitor;
 import cn.qiuye.gtmoremachine.common.machine.electric.WirelessEnergyInterface;
@@ -129,5 +130,6 @@ public class WirelessMachines {
 
     public static void init() {
         WirelessMultiMachines.init();
+        PlanetEngineRegistrationMultiblockMachine.init();
     }
 }

@@ -80,7 +80,6 @@ public class CustomMachines {
             ALL_TIERS);
 
     public static void init() {
-        PlanetEngineRegistrationMultiblockMachine.init();
         if (GTmm.Mods.isAE2Loaded()) {
             GTMMAEMachines.init();
         }
