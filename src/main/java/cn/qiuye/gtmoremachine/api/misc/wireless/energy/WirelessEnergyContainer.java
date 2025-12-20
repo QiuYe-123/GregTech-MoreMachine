@@ -144,22 +144,13 @@ public class WirelessEnergyContainer {
     }
 
     public void PassiveDrainEnergy(BigInteger energy) {
-        BigInteger change = storage.min(energy);
         if (this.storage.compareTo(BigInteger.ZERO) == 0) return;
+        BigInteger change = storage.min(energy);
         if (change.compareTo(BigInteger.ZERO) <= 0) return;
-        boolean passiveDrain = storage.subtract(change).compareTo(BigInteger.ZERO) >= 0;
-        if (passiveDrain) {
-            storage = storage.subtract(change);
-            WirelessEnergySavedData.INSTANCE.setDirty(true);
-            allEnergyStat.update(change.negate(), server.getTickCount());
-            outEnergyStat.update(change.negate(), server.getTickCount());
-        } else {
-            var remove = this.storage;
-            storage = storage.subtract(remove);
-            WirelessEnergySavedData.INSTANCE.setDirty(true);
-            allEnergyStat.update(remove.negate(), server.getTickCount());
-            outEnergyStat.update(remove.negate(), server.getTickCount());
-        }
+        storage = storage.subtract(change);
+        WirelessEnergySavedData.INSTANCE.setDirty(true);
+        allEnergyStat.update(change.negate(), server.getTickCount());
+        outEnergyStat.update(change.negate(), server.getTickCount());
     }
 
     public void setStorage(BigInteger energy) {
