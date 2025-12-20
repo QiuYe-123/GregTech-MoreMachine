@@ -3,6 +3,7 @@ package cn.qiuye.gtmoremachine.common.machine.multiblock.electric
 import cn.qiuye.gtmoremachine.api.machine.IWirelessEnergyContainerHolder
 import cn.qiuye.gtmoremachine.api.machine.multiblock.ICapacityComponentData
 import cn.qiuye.gtmoremachine.api.misc.wireless.energy.WirelessEnergyContainer
+import cn.qiuye.gtmoremachine.utils.NumberUtils
 import cn.qiuye.gtmoremachine.utils.TeamUtils.getName
 
 import com.gregtechceu.gtceu.api.gui.GuiTextures
@@ -22,9 +23,12 @@ import com.lowdragmc.lowdraglib.gui.util.ClickData
 import com.lowdragmc.lowdraglib.gui.widget.*
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder
 
+import net.minecraft.ChatFormatting
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
 import net.minecraft.network.chat.Component
+import net.minecraft.network.chat.HoverEvent
+import net.minecraft.network.chat.Style
 import net.minecraft.world.InteractionHand
 import net.minecraft.world.InteractionResult
 import net.minecraft.world.entity.player.Player
@@ -32,6 +36,7 @@ import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.phys.BlockHitResult
 
+import java.math.BigDecimal
 import java.math.BigInteger
 import java.util.*
 
@@ -93,12 +98,6 @@ open class DemodulationHubMachine(holder: IMachineBlockEntity) :
     override fun getUUID(): UUID? = ownerUUID
 
     /**
-     * 检查是否能源仓
-     * @return 当前返回false表示不是
-     */
-    override fun display(): Boolean = false
-
-    /**
      * 检查是否是容量机器
      * @return 返回true表示是容量机器
      */
@@ -139,7 +138,7 @@ open class DemodulationHubMachine(holder: IMachineBlockEntity) :
             ownerUUID = player.uuid
             wirelessEnergyContainerCache = null
             val container = getWirelessEnergyContainer()
-            container?.setCapacity(this.totalCapacity, true, this)
+            container?.setCapacity(this.totalCapacity, this.totalPassiveDrain, true, this)
             player.sendSystemMessage(
                 Component.translatable(
                     "gtmoremachine.machine.wireless_energy_hatch.tooltip.bind",
@@ -167,9 +166,10 @@ open class DemodulationHubMachine(holder: IMachineBlockEntity) :
         if (item.isEmpty) return false
         // 检查是否为数据棒
         if (item.`is`(GTItems.TOOL_DATA_STICK.asItem())) {
+            ownerUUID = null
             wirelessEnergyContainerCache = null
             val container = getWirelessEnergyContainer()
-            container?.setCapacity(BigInteger.ZERO, false, this)
+            container?.setCapacity(BigInteger.ZERO, BigInteger.ZERO, false, this)
             player.sendSystemMessage(
                 Component.translatable("gtmoremachine.machine.wireless_energy_hatch.tooltip.unbind"),
             )
@@ -213,7 +213,7 @@ open class DemodulationHubMachine(holder: IMachineBlockEntity) :
         tickSubscription.updateSubscription()
         // 更新无线能源容器容量
         val container = getWirelessEnergyContainer()
-        container?.setCapacity(this.totalCapacity, true, this)
+        container?.setCapacity(this.totalCapacity, this.totalPassiveDrain, true, this)
     }
 
     /**
@@ -224,7 +224,7 @@ open class DemodulationHubMachine(holder: IMachineBlockEntity) :
         capacityBank = null
         tickSubscription.updateSubscription()
         val container = getWirelessEnergyContainer()
-        container?.setCapacity(BigInteger.ZERO, false, this)
+        container?.setCapacity(BigInteger.ZERO, BigInteger.ZERO, false, this)
         super.onStructureInvalid()
     }
 
@@ -290,6 +290,40 @@ open class DemodulationHubMachine(holder: IMachineBlockEntity) :
     override fun createUI(entityPlayer: Player?): ModularUI =
         ModularUI(198, 208, this, entityPlayer).widget(FancyMachineUIWidget(this, 198, 208))
 
+    override fun addDisplayText(textList: MutableList<Component>) {
+        super.addDisplayText(textList)
+        if (isFormed()) {
+            if (this.totalCapacity >= BigInteger.ZERO) {
+                textList.add(Component.literal(NumberUtils.formatBigIntegerNumberOrSic(this.totalCapacity)))
+            }
+            if (this.totalPassiveDrain >= BigInteger.ZERO) {
+                textList.add(Component.literal(NumberUtils.formatBigIntegerNumberOrSic(this.totalPassiveDrain)))
+            }
+            val container = getWirelessEnergyContainer()
+            if (container != null) {
+                val storagepercentage = container.getStoragePercentage()
+                val percentage = storagepercentage.storagePercentage()
+                if (percentage >= BigDecimal.ZERO) {
+                    textList.add(Component.literal(percentage.toString()))
+                }
+            }
+        } else {
+            val tooltip: Component = Component.translatable("gtceu.multiblock.invalid_structure.tooltip")
+                .withStyle(ChatFormatting.GRAY)
+            textList.add(
+                Component.translatable("gtceu.multiblock.invalid_structure")
+                    .withStyle(
+                        Style.EMPTY.withColor(ChatFormatting.RED)
+                            .withHoverEvent(HoverEvent(HoverEvent.Action.SHOW_TEXT, tooltip)),
+                    ),
+            )
+        }
+        definition.additionalDisplay.accept(this, textList)
+    }
+
+    override fun isWorkingEnabled(): Boolean = true
+
+    override fun setWorkingEnabled(ignored: Boolean) {}
     // ================= 内部类：容量 =================
     /**
      * 维度中继节点银行

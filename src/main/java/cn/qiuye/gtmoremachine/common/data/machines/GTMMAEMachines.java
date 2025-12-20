@@ -63,7 +63,5 @@ public class GTMMAEMachines {
                     .register(),
             DUAL_HATCH_TIERS);
 
-    public static void init() {
-        GTMMAEMultiMachines.init();
-    }
+    public static void init() {}
 }

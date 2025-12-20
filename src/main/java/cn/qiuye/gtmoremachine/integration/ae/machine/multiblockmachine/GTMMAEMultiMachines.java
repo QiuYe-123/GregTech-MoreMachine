@@ -1,4 +1,4 @@
-package cn.qiuye.gtmoremachine.common.data.machines;
+package cn.qiuye.gtmoremachine.integration.ae.machine.multiblockmachine;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.RotationState;

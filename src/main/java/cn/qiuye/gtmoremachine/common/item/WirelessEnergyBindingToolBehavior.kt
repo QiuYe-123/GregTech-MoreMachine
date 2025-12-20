@@ -57,7 +57,7 @@ class WirelessEnergyBindingToolBehavior : IInteractionItem {
             }
             else -> BigInteger.ZERO
         }
-        fun getmachine(level: BlockGetter, pos: BlockPos): MetaMachine = MetaMachine.getMachine(level, pos)!!
+        fun getmachine(level: BlockGetter, pos: BlockPos): MetaMachine? = MetaMachine.getMachine(level, pos)
         private fun calculateBatteryRate(machine: BatteryBufferMachine): BigInteger {
             val inv = machine.batteryInventory
             var rate = BigInteger.ZERO

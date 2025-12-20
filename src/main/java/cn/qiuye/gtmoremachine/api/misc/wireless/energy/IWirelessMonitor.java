@@ -80,8 +80,9 @@ public interface IWirelessMonitor extends IWirelessEnergyContainerHolder {
                 Component.literal(NumberUtils.formatBigDecimalNumberOrSic(FormattingUtil.voltageAmperage(avgEnergy), format)),
                 FormattingUtil.voltageName(avgEnergy)));
 
-        int compare = avgEnergy.compareTo(BigDecimal.valueOf(0));
-        BigInteger multiply = avgEnergy.abs().toBigInteger().multiply(BigInteger.valueOf(20));
+        BigDecimal allAvgEnergy = allstat.getAvg();
+        int compare = allAvgEnergy.compareTo(BigDecimal.valueOf(0));
+        BigInteger multiply = allAvgEnergy.abs().toBigInteger().multiply(BigInteger.valueOf(20));
         if (compare > 0) {
             textListCache.add(Component.translatable("gtceu.multiblock.power_substation.time_to_fill",
                     GTMMConfig.getINSTANCE().isWirelessCapacitylimitEnable ?
@@ -90,7 +91,11 @@ public interface IWirelessMonitor extends IWirelessEnergyContainerHolder {
                     .withStyle(ChatFormatting.GRAY));
         } else if (compare < 0) {
             textListCache.add(Component.translatable("gtceu.multiblock.power_substation.time_to_drain",
-                    getTimeToFillDrainText(energyTotal.divide(multiply))).withStyle(ChatFormatting.GRAY));
+                    getTimeToFillDrainText(energyTotal.divide(multiply)))
+                    .withStyle(ChatFormatting.GRAY));
+        } else {
+            textListCache.add(Component.translatable("gtceu.multiblock.power_substation.time_to_drain",
+                    Component.translatable("gtceu.multiblock.power_substation.time_forever")).withStyle(ChatFormatting.GRAY));
         }
 
         if (GTMMConfig.getINSTANCE().isWirelessRateEnable && container.getBindPos() != null) {
@@ -131,7 +136,8 @@ public interface IWirelessMonitor extends IWirelessEnergyContainerHolder {
             }
         } else if (type == Type.RelayNode) {
             for (Map.Entry<Level, IDimensionTransferData> m : getDimensionTransferList(sorting)) {
-                if (statistics == Statistics.Global || m.getKey().dimension().equals(this.getLevel().dimension())) {
+                UUID uuid = m.getValue().UUID();
+                if (statistics == Statistics.Global || uuid.equals(TeamUtils.getTeamUUID(this.getUUID()))) {
                     textListCache.add(m.getValue().getInfo());
                 }
             }

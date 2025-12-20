@@ -1,6 +1,5 @@
 package cn.qiuye.gtmoremachine.common.data.machines;
 
-import cn.qiuye.gtmoremachine.GTmm;
 import cn.qiuye.gtmoremachine.common.data.GTMMCreativeModeTabs;
 import cn.qiuye.gtmoremachine.common.data.machines.multiblockmachine.PlanetEngineRegistrationMultiblockMachine;
 import cn.qiuye.gtmoremachine.common.machine.multiblock.part.HugeBusPartMachine;
@@ -79,9 +78,5 @@ public class CustomMachines {
             },
             ALL_TIERS);
 
-    public static void init() {
-        if (GTmm.Mods.isAE2Loaded()) {
-            GTMMAEMachines.init();
-        }
-    }
+    public static void init() {}
 }

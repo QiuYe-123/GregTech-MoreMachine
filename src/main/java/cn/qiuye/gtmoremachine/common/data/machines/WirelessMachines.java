@@ -2,8 +2,6 @@ package cn.qiuye.gtmoremachine.common.data.machines;
 
 import cn.qiuye.gtmoremachine.GTmm;
 import cn.qiuye.gtmoremachine.common.data.GTMMCreativeModeTabs;
-import cn.qiuye.gtmoremachine.common.data.machines.multiblockmachine.PlanetEngineRegistrationMultiblockMachine;
-import cn.qiuye.gtmoremachine.common.data.machines.multiblockmachine.WirelessMultiMachines;
 import cn.qiuye.gtmoremachine.common.machine.electric.WirelessCWUMonitor;
 import cn.qiuye.gtmoremachine.common.machine.electric.WirelessEnergyInterface;
 import cn.qiuye.gtmoremachine.common.machine.electric.WirelessEnergyMonitor;
@@ -128,8 +126,5 @@ public class WirelessMachines {
     public static final MachineDefinition[] WIRELESS_ENERGY_OUTPUT_HATCH_33554432A = registerWirelessLaserHatch(IO.OUT, 33554432, PartAbility.INPUT_LASER, WIRELL_ENERGY_HIGH_TIERS);
     public static final MachineDefinition[] WIRELESS_ENERGY_OUTPUT_HATCH_67108863A = registerWirelessLaserHatch(IO.OUT, 67108863, PartAbility.INPUT_LASER, WIRELL_ENERGY_HIGH_TIERS);
 
-    public static void init() {
-        WirelessMultiMachines.init();
-        PlanetEngineRegistrationMultiblockMachine.init();
-    }
+    public static void init() {}
 }

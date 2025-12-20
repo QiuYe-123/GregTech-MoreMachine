@@ -21,9 +21,12 @@ import com.lowdragmc.lowdraglib.gui.widget.*
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder
 
+import net.minecraft.ChatFormatting
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
 import net.minecraft.network.chat.Component
+import net.minecraft.network.chat.HoverEvent
+import net.minecraft.network.chat.Style
 import net.minecraft.world.InteractionHand
 import net.minecraft.world.InteractionResult
 import net.minecraft.world.entity.player.Player
@@ -77,12 +80,6 @@ open class DimensionalRelayNodeMachine(holder: IMachineBlockEntity) :
      * @return 所有者UUID，可能为null
      */
     override fun getUUID(): UUID? = ownerUUID
-
-    /**
-     * 检查是否能源仓
-     * @return 当前返回false表示不是
-     */
-    override fun display(): Boolean = false
 
     /**
      * 检查是否是维度机器
@@ -161,11 +158,12 @@ open class DimensionalRelayNodeMachine(holder: IMachineBlockEntity) :
         pos: BlockPos,
         direction: Direction,
     ): Boolean {
-        if (isRemote) return true
+        if (isRemote) return false
         val item = player.getItemInHand(hand)
-        if (item.isEmpty) return true
+        if (item.isEmpty) return false
         // 检查是否为数据棒
         if (item.`is`(GTItems.TOOL_DATA_STICK.asItem())) {
+            ownerUUID = null
             wirelessEnergyContainerCache = null
             val container = getWirelessEnergyContainer()
             container?.setDimensional(0, false, this)
@@ -225,8 +223,9 @@ open class DimensionalRelayNodeMachine(holder: IMachineBlockEntity) :
      * 创建UI部件（IDisplayUIMachine接口实现）
      * @return 配置好的UI部件组
      */
-    override fun createUIWidget(): Widget = WidgetGroup(0, 0, 182 + 8, 117 + 8)
-        .addWidget(
+    override fun createUIWidget(): Widget {
+        val group = WidgetGroup(0, 0, 182 + 8, 117 + 8)
+        group.addWidget(
             DraggableScrollableWidgetGroup(4, 4, 182, 117).setBackground(screenTexture)
                 .addWidget(LabelWidget(4, 5, self().blockState.block.descriptionId))
                 .addWidget(
@@ -243,11 +242,35 @@ open class DimensionalRelayNodeMachine(holder: IMachineBlockEntity) :
                         },
                 ),
         )
-        .setBackground(GuiTextures.BACKGROUND_INVERSE)
+        group.setBackground(GuiTextures.BACKGROUND_INVERSE)
+        return group
+    }
 
     /**
      * 创建花式UI（IFancyUIMachine接口实现）
      */
     override fun createUI(entityPlayer: Player?): ModularUI =
         ModularUI(198, 208, this, entityPlayer).widget(FancyMachineUIWidget(this, 198, 208))
+
+    override fun addDisplayText(textList: MutableList<Component>) {
+        super.addDisplayText(textList)
+        if (isFormed()) {
+            if (this.currentTier > 0) {}
+        } else {
+            val tooltip: Component = Component.translatable("gtceu.multiblock.invalid_structure.tooltip")
+                .withStyle(ChatFormatting.GRAY)
+            textList.add(
+                Component.translatable("gtceu.multiblock.invalid_structure")
+                    .withStyle(
+                        Style.EMPTY.withColor(ChatFormatting.RED)
+                            .withHoverEvent(HoverEvent(HoverEvent.Action.SHOW_TEXT, tooltip)),
+                    ),
+            )
+        }
+        definition.additionalDisplay.accept(this, textList)
+    }
+
+    override fun isWorkingEnabled(): Boolean = true
+
+    override fun setWorkingEnabled(ignored: Boolean) {}
 }

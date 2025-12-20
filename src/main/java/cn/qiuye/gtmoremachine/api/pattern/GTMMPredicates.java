@@ -25,7 +25,7 @@ public class GTMMPredicates {
                     var ecu = entry.getKey();
                     Object currentCoil = blockWorldState.getMatchContext().getOrPut("ECUType", ecu);
                     if (!currentCoil.equals(ecu)) {
-                        blockWorldState.setError(new PatternStringError("gtceu.multiblock.pattern.error.filters"));
+                        blockWorldState.setError(new PatternStringError("gtmoremachine.multiblock.pattern.error.ecutypes"));
                         return false;
                     }
                     return true;
@@ -35,7 +35,7 @@ public class GTMMPredicates {
         }, () -> GTMMAPI.ECU.entrySet().stream()
                 .sorted(Comparator.comparingInt(entry -> entry.getKey().getTier()))
                 .map(entry -> new BlockInfo(entry.getValue().get().defaultBlockState(), null))
-                .toArray(BlockInfo[]::new)).addTooltips(Component.translatable("gtceu.multiblock.pattern.error.batteries"));
+                .toArray(BlockInfo[]::new)).addTooltips(Component.translatable("gtmoremachine.multiblock.pattern.error.ecutypes"));
     }
 
     public static TraceabilityPredicate WirelessEnergyCapacityComponent() {
@@ -57,6 +57,6 @@ public class GTMMPredicates {
         }, () -> GTMMAPI.WECC.entrySet().stream()
                 .sorted(Comparator.comparingInt(entry -> entry.getKey().getTier()))
                 .map(entry -> new BlockInfo(entry.getValue().get().defaultBlockState(), null))
-                .toArray(BlockInfo[]::new)).addTooltips(Component.translatable("gtceu.multiblock.pattern.error.batteries"));
+                .toArray(BlockInfo[]::new)).addTooltips(Component.translatable("gtmoremachine.multiblock.pattern.error.wecc"));
     }
 }
