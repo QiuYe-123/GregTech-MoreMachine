@@ -1,5 +1,7 @@
 # ChangeLog
 
+## Version [v1.4.1](https://github.com/QiuYe-123/GTMoreMachine/compare/v1.4.0-1.20.1...v1.4.1-1.20.1)
+ 
 ## Version [v1.4.0](https://github.com/QiuYe-123/GTMoreMachine/compare/v1.3.0-1.20.1...v1.4.0-1.20.1)
 ### Added
 

@@ -43,13 +43,13 @@ class ModularHUD {
     }
 
     private fun getStringCoord(index: Int): IntIntPair {
-        val hudOffsetX = 0
-        val hudOffsetY = 0
+        val hudOffsetX = GTMMConfig.INSTANCE.hud.hudOffsetX
+        val hudOffsetY = GTMMConfig.INSTANCE.hud.hudOffsetY
         val fontHeight = mc.font.lineHeight
         val windowHeight = mc.window.guiScaledHeight
         val windowWidth = mc.window.guiScaledWidth
         val stringWidth = this.stringWidth
-        return when (GTMMConfig.INSTANCE.wirelessAlign) {
+        return when (GTMMConfig.INSTANCE.hud.hudLocation) {
             1 -> {
                 val posX = 1 + hudOffsetX
                 val posY = 1 + hudOffsetY + (fontHeight * index)
@@ -57,7 +57,7 @@ class ModularHUD {
             }
 
             2 -> {
-                val posX = windowWidth - (1 + hudOffsetX) - stringWidth
+                val posX = windowWidth - stringWidth + (1 + hudOffsetX)
                 val posY = 1 + hudOffsetY + (fontHeight * index)
                 IntIntPair.of(posX, posY)
             }
@@ -70,7 +70,20 @@ class ModularHUD {
             }
 
             4 -> {
-                val posX = windowWidth - (1 + hudOffsetX) - stringWidth
+                val posX = windowWidth - stringWidth + (1 + hudOffsetX)
+                val posY = windowHeight - fontHeight * (stringAmount - index) - 1 -
+                    hudOffsetY
+                IntIntPair.of(posX, posY)
+            }
+
+            5 -> {
+                val posX = windowWidth / 2 - stringWidth / 2 + (1 + hudOffsetX)
+                val posY = 1 + hudOffsetY + (fontHeight * index)
+                IntIntPair.of(posX, posY)
+            }
+
+            6 -> {
+                val posX = windowWidth / 2 - stringWidth / 2 + (1 + hudOffsetX)
                 val posY = windowHeight - fontHeight * (stringAmount - index) - 1 -
                     hudOffsetY
                 IntIntPair.of(posX, posY)
