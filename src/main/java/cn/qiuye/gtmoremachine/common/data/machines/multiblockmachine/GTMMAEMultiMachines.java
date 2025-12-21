@@ -1,4 +1,4 @@
-package cn.qiuye.gtmoremachine.integration.ae.machine.multiblockmachine;
+package cn.qiuye.gtmoremachine.common.data.machines.multiblockmachine;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.RotationState;
@@ -20,7 +20,7 @@ public class GTMMAEMultiMachines {
             .rotationState(RotationState.ALL)
             .appearanceBlock(GTBlocks.HIGH_POWER_CASING)
             .recipeType(GTRecipeTypes.DUMMY_RECIPES)
-            .pattern((definition) -> FactoryBlockPattern.start()
+            .pattern(definition -> FactoryBlockPattern.start()
                     .aisle("A")
                     .aisle("~")
                     .where("~", controller(blocks(definition.getBlock())))
@@ -36,7 +36,7 @@ public class GTMMAEMultiMachines {
             .rotationState(RotationState.ALL)
             .appearanceBlock(GTBlocks.HIGH_POWER_CASING)
             .recipeType(GTRecipeTypes.DUMMY_RECIPES)
-            .pattern((definition) -> FactoryBlockPattern.start()
+            .pattern(definition -> FactoryBlockPattern.start()
                     .aisle("A")
                     .aisle("~")
                     .where("~", controller(blocks(definition.getBlock())))
@@ -52,7 +52,7 @@ public class GTMMAEMultiMachines {
             .rotationState(RotationState.ALL)
             .appearanceBlock(GTBlocks.HIGH_POWER_CASING)
             .recipeType(GTRecipeTypes.DUMMY_RECIPES)
-            .pattern((definition) -> FactoryBlockPattern.start()
+            .pattern(definition -> FactoryBlockPattern.start()
                     .aisle("A")
                     .aisle("~")
                     .where("~", controller(blocks(definition.getBlock())))
