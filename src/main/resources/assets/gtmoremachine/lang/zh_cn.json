@@ -1,4 +1,6 @@
 {
+  "gtmoremachine.multiblock.pattern.error.ecutypes": "§c必须使用同种能源通讯单元r",
+  "gtmoremachine.multiblock.pattern.error.wecc": "§c必须使用相同的电网容量组件§§r",
   "itemGroup.gtmoremachine.creative": "创造物品",
   "item.gtmoremachine.creative_fluid_cell": "创造流体单元",
   "item.gtmoremachine.creative_fluid_cell.tooltip1": "§2内部流体：§f%1$s",
@@ -183,7 +185,10 @@
   "config.gtmoremachine.option.isWirelessRateEnable": "是否启用无线能源传输限制。",
   "config.gtmoremachine.option.isWirelessDimensionRateEnable": "是否启用无线能源维度限制。",
   "config.gtmoremachine.option.isWirelessCapacitylimitEnable": "是否启用无线能源容量限制。",
-  "config.gtmoremachine.option.wirelessAlign": "wirelessAlign",
+  "config.gtmoremachine.option.hud": "hud",
+  "config.gtmoremachine.option.hudLocation": "HUD位置",
+  "config.gtmoremachine.option.hudOffsetX": "HUD偏移X",
+  "config.gtmoremachine.option.hudOffsetY": "HUD偏移Y",
   "gtmoremachine.machine.energy_hatch.input.tooltip": "为多方块结构输入能量",
   "gtmoremachine.machine.energy_hatch.output.tooltip": "为多方块结构输出能量",
   "gtmoremachine.machine.energy_hatch.target.tooltip": "为多方块结构输入大量能量",

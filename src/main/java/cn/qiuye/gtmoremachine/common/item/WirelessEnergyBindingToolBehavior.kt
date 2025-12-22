@@ -21,7 +21,7 @@ import net.minecraft.world.level.BlockGetter
 import java.math.BigInteger
 
 class WirelessEnergyBindingToolBehavior : IInteractionItem {
-    override fun onItemUseFirst(stack: ItemStack?, context: UseOnContext): InteractionResult {
+    override fun onItemUseFirst(stack: ItemStack, context: UseOnContext): InteractionResult {
         if (context.level.isClientSide) return InteractionResult.PASS
         if (!GTMMConfig.INSTANCE.isWirelessRateEnable) return InteractionResult.PASS
 
@@ -57,7 +57,7 @@ class WirelessEnergyBindingToolBehavior : IInteractionItem {
             }
             else -> BigInteger.ZERO
         }
-        fun getmachine(level: BlockGetter, pos: BlockPos): MetaMachine = MetaMachine.getMachine(level, pos)!!
+        fun getmachine(level: BlockGetter, pos: BlockPos): MetaMachine? = MetaMachine.getMachine(level, pos)
         private fun calculateBatteryRate(machine: BatteryBufferMachine): BigInteger {
             val inv = machine.batteryInventory
             var rate = BigInteger.ZERO

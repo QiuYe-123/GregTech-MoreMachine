@@ -9,6 +9,7 @@ object LangHandler {
         ItemLang.init(provider)
         BlockLang.init(provider)
         HUDLang.init(provider)
+        ErrorLang.init(provider)
         KeybindingLang.init(provider)
         MachineLang.init(provider)
         CreativeLang.init(provider)

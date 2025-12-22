@@ -38,17 +38,60 @@ class GTMMConfig {
     var isWirelessCapacitylimitEnable: Boolean = false
 
     @Configurable
-    @Configurable.Range(min = 1, max = 6)
+    @Configurable.Comment("HUD设置", "HUD Settings")
     @JvmField
-    var wirelessAlign: Int = 1
+    var hud = HUDConfig()
 
     companion object {
         @JvmStatic
         val INSTANCE: GTMMConfig by lazy(LazyThreadSafetyMode.SYNCHRONIZED) {
             Configuration.registerConfig(GTMMConfig::class.java, ConfigFormats.YAML).configInstance
         }
+
         fun init() {
             INSTANCE
+        }
+
+        class HUDConfig {
+
+            @Configurable
+            @Configurable.Comment(
+                "设置HUD显示位置",
+                "Sets HUD location",
+                "左上角 (left-upper corner)",
+                "右上角 (right-upper corner)",
+                "左下角 (left-bottom corner)",
+                "右下角 (right-bottom corner)",
+                "中上   (middle-upper corner)",
+                "中下   (middle-bottom corner)",
+                "默认值: left-upper",
+                "Default: left-upper",
+            )
+            @Configurable.Range(min = 1, max = 6)
+            @JvmField
+            var hudLocation: HUDLocation = HUDLocation.LeftUpper
+
+            @Configurable
+            @Configurable.Comment(
+                "HUD水平偏移量",
+                "Horizontal offset of HUD.",
+                "默认值: 0",
+                "Default: 0",
+            )
+            @Configurable.Range(min = -100, max = 100)
+            @JvmField
+            var hudOffsetX: Int = 0
+
+            @Configurable
+            @Configurable.Comment(
+                "HUD垂直偏移量",
+                "Vertical offset of HUD.",
+                "默认值: 0",
+                "Default: 0",
+            )
+            @Configurable.Range(min = -100, max = 100)
+            @JvmField
+            var hudOffsetY: Int = 0
         }
     }
 }

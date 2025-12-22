@@ -184,12 +184,15 @@ public class WirelessEnergyTerminalBehavior implements IItemUIFactory, IItemHUDP
      */
     @Override
     public void drawHUD(ItemStack stack, GuiGraphics guiGraphics) {
-        BigDecimal all = BigDecimal.ZERO;
-        BigDecimal in = BigDecimal.ZERO;
-        BigDecimal out = BigDecimal.ZERO;
-        BigInteger storage = BigInteger.ZERO;
-        if (getUUID(stack) != null) {
-            this.uuid = getUUID(stack);
+        UUID uuid = getUUID(stack);
+        BigDecimal all;
+        BigDecimal in;
+        BigDecimal out;
+        BigInteger storage;
+        all = in = out = BigDecimal.ZERO;
+        storage = BigInteger.ZERO;
+        if (uuid != null) {
+            this.uuid = uuid;
             var container = getWirelessEnergyContainer();
             if (container != null) {
                 all = container.getAllEnergyStat().getAvg();

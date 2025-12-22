@@ -33,14 +33,14 @@ object TeamUtils {
     }
 
     @JvmStatic
-    fun getName(level: Level?, playerUUID: UUID): Component {
+    fun getName(level: Level, playerUUID: UUID): Component {
         if (GTmm.Mods.isFTBTeamsLoaded() && FTBTeamsAPI.api().isManagerLoaded) {
             val team = FTBTeamsAPI.api().manager.getTeamForPlayerID(playerUUID)
             if (team.isPresent) {
                 return team.get().name
             }
         }
-        val player = level?.getPlayerByUUID(playerUUID)
+        val player = level.getPlayerByUUID(playerUUID)
         if (player != null) return player.name
         return Component.literal(playerUUID.toString())
     }

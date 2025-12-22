@@ -17,6 +17,7 @@ import com.lowdragmc.lowdraglib.gui.util.ClickData;
 import com.lowdragmc.lowdraglib.gui.widget.DraggableScrollableWidgetGroup;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
+import com.lowdragmc.lowdraglib.syncdata.annotation.DropSaved;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
@@ -44,6 +45,14 @@ public class WirelessCWUMonitor extends MetaMachine implements IFancyUIMachine, 
 
     public WirelessCWUMonitor(IMachineBlockEntity holder) {
         super(holder);
+        this.statistics = Statistics.Team;
+        this.format = Format.Unit;
+        this.CWUStatus = Status.All;
+    }
+
+    @Override
+    public ManagedFieldHolder getFieldHolder() {
+        return MANAGED_FIELD_HOLDER;
     }
 
     @Getter
@@ -53,11 +62,14 @@ public class WirelessCWUMonitor extends MetaMachine implements IFancyUIMachine, 
     private List<Component> textListCache;
 
     @Persisted
-    private Statistics statistics = Statistics.Team;
+    @DropSaved
+    private Statistics statistics;
     @Persisted
-    private Format format = Format.Unit;
+    @DropSaved
+    private Format format;
     @Persisted
-    private Status CWUStatus = Status.All;
+    @DropSaved
+    private Status CWUStatus;
 
     //////////////////////////////////////
     // *********** GUI ***********//

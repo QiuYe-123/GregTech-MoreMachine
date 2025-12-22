@@ -1,9 +1,9 @@
 package cn.qiuye.gtmoremachine.common.data.machines;
 
 import cn.qiuye.gtmoremachine.GTmm;
-import cn.qiuye.gtmoremachine.integration.ae.machine.MEOutputPartMachine;
 import cn.qiuye.gtmoremachine.integration.ae.machine.ProgrammableDualHatchPartMachine;
 import cn.qiuye.gtmoremachine.integration.ae.machine.ProgrammableHatchPartMachine;
+import cn.qiuye.gtmoremachine.integration.ae.machine.multiblock.part.MEOutputPartMachine;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
@@ -63,7 +63,5 @@ public class GTMMAEMachines {
                     .register(),
             DUAL_HATCH_TIERS);
 
-    public static void init() {
-        GTMMAEMultiMachines.init();
-    }
+    public static void init() {}
 }

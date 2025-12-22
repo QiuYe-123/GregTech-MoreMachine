@@ -1,6 +1,7 @@
 package cn.qiuye.gtmoremachine.api.item
 
 import cn.qiuye.gtmoremachine.config.GTMMConfig
+import cn.qiuye.gtmoremachine.config.HUDLocation
 
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.GuiGraphics
@@ -43,42 +44,51 @@ class ModularHUD {
     }
 
     private fun getStringCoord(index: Int): IntIntPair {
-        val hudOffsetX = 0
-        val hudOffsetY = 0
+        val hudOffsetX = GTMMConfig.INSTANCE.hud.hudOffsetX
+        val hudOffsetY = GTMMConfig.INSTANCE.hud.hudOffsetY
         val fontHeight = mc.font.lineHeight
         val windowHeight = mc.window.guiScaledHeight
         val windowWidth = mc.window.guiScaledWidth
         val stringWidth = this.stringWidth
-        return when (GTMMConfig.INSTANCE.wirelessAlign) {
-            1 -> {
+        return when (GTMMConfig.INSTANCE.hud.hudLocation) {
+            HUDLocation.LeftUpper -> {
                 val posX = 1 + hudOffsetX
                 val posY = 1 + hudOffsetY + (fontHeight * index)
                 IntIntPair.of(posX, posY)
             }
 
-            2 -> {
-                val posX = windowWidth - (1 + hudOffsetX) - stringWidth
+            HUDLocation.RightUpper -> {
+                val posX = windowWidth - stringWidth + (1 + hudOffsetX)
                 val posY = 1 + hudOffsetY + (fontHeight * index)
                 IntIntPair.of(posX, posY)
             }
 
-            3 -> {
+            HUDLocation.LeftLower -> {
                 val posX = 1 + hudOffsetX
                 val posY = windowHeight - fontHeight * (stringAmount - index) - 1 -
                     hudOffsetY
                 IntIntPair.of(posX, posY)
             }
 
-            4 -> {
-                val posX = windowWidth - (1 + hudOffsetX) - stringWidth
+            HUDLocation.RightLower -> {
+                val posX = windowWidth - stringWidth + (1 + hudOffsetX)
                 val posY = windowHeight - fontHeight * (stringAmount - index) - 1 -
                     hudOffsetY
                 IntIntPair.of(posX, posY)
             }
 
-            else -> throw IllegalArgumentException(
-                "Armor Hud config hudLocation is improperly configured. Allowed values: [1,2,3,4]",
-            )
+            HUDLocation.MiddleUpper -> {
+                val posX = windowWidth / 2 - stringWidth / 2 + (1 + hudOffsetX)
+                val posY = 1 + hudOffsetY + (fontHeight * index)
+                IntIntPair.of(posX, posY)
+            }
+
+            HUDLocation.MiddleLower -> {
+                val posX = windowWidth / 2 - stringWidth / 2 + (1 + hudOffsetX)
+                val posY = windowHeight - fontHeight * (stringAmount - index) - 1 -
+                    hudOffsetY
+                IntIntPair.of(posX, posY)
+            }
         }
     }
 

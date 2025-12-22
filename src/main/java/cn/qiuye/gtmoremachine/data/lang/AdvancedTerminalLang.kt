@@ -1,5 +1,7 @@
 package cn.qiuye.gtmoremachine.data.lang
 
+import cn.qiuye.gtmoremachine.common.block.BlockMap
+
 import com.tterrag.registrate.providers.RegistrateLangProvider
 
 object AdvancedTerminalLang {
@@ -7,14 +9,14 @@ object AdvancedTerminalLang {
     fun init(provider: RegistrateLangProvider) {
         provider.add("item.gtmoremachine.advanced_terminal.setting.title", "§bAdvanced Terminal")
         provider.add("item.gtmoremachine.advanced_terminal.setting.1", "Level Block")
-        provider.add("item.gtmoremachine.advanced_terminal.setting.coil", "Coil")
-        provider.add("item.gtmoremachine.advanced_terminal.setting.comp", "Capacitor")
-        provider.add("item.gtmoremachine.advanced_terminal.setting.clea", "CleamRoomType")
-        provider.add("item.gtmoremachine.advanced_terminal.setting.lamp", "Lamp")
-        provider.add("item.gtmoremachine.advanced_terminal.setting.borlamp", "Borderless Lamp")
-        provider.add("item.gtmoremachine.advanced_terminal.setting.rotor", "Rotor Holder")
-        provider.add("item.gtmoremachine.advanced_terminal.setting.wecc", "Wireless Energy Capacity Component")
-        provider.add("item.gtmoremachine.advanced_terminal.setting.ecu", "Energy Communication Unit")
+        provider.add(BlockMap.COIL, "Coil")
+        provider.add(BlockMap.COMP, "Capacitor")
+        provider.add(BlockMap.CLEA, "CleamRoomType")
+        provider.add(BlockMap.LAMP, "Lamp")
+        provider.add(BlockMap.BORLAMP, "Borderless Lamp")
+        provider.add(BlockMap.ROTOR, "Rotor Holder")
+        provider.add(BlockMap.WECC, "Wireless Energy Capacity Component")
+        provider.add(BlockMap.ECU, "Energy Communication Unit")
         provider.add(
             "item.gtmoremachine.advanced_terminal.setting.1.tooltip",
             "Set the priority level for automatic Tier Block placement (Click to open).",

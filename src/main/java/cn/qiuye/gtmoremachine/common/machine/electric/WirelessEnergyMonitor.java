@@ -15,6 +15,7 @@ import com.lowdragmc.lowdraglib.gui.util.ClickData;
 import com.lowdragmc.lowdraglib.gui.widget.DraggableScrollableWidgetGroup;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
+import com.lowdragmc.lowdraglib.syncdata.annotation.DropSaved;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
@@ -43,6 +44,11 @@ public class WirelessEnergyMonitor extends MetaMachine implements IFancyUIMachin
 
     public WirelessEnergyMonitor(IMachineBlockEntity holder) {
         super(holder);
+        this.statistics = Statistics.Team;
+        this.format = Format.Unit;
+        this.powerStatus = Status.All;
+        this.sortingrules = Sorting.Ascending;
+        this.type = Type.PowerInteraction;
     }
 
     @Override
@@ -57,15 +63,20 @@ public class WirelessEnergyMonitor extends MetaMachine implements IFancyUIMachin
     private List<Component> textListCache;
 
     @Persisted
-    private Statistics statistics = Statistics.Team;
+    @DropSaved
+    private Statistics statistics;
     @Persisted
-    private Format format = Format.Unit;
+    @DropSaved
+    private Format format;
     @Persisted
-    private Status powerStatus = Status.All;
+    @DropSaved
+    private Status powerStatus;
     @Persisted
-    private Sorting sortingrules = Sorting.Ascending;
+    @DropSaved
+    private Sorting sortingrules;
     @Persisted
-    private Type type = Type.PowerInteraction;
+    @DropSaved
+    private Type type;
 
     //////////////////////////////////////
     // *********** GUI ***********//
