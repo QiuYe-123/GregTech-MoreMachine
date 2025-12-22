@@ -21,7 +21,7 @@ import net.minecraft.world.level.BlockGetter
 import java.math.BigInteger
 
 class WirelessEnergyBindingToolBehavior : IInteractionItem {
-    override fun onItemUseFirst(stack: ItemStack?, context: UseOnContext): InteractionResult {
+    override fun onItemUseFirst(stack: ItemStack, context: UseOnContext): InteractionResult {
         if (context.level.isClientSide) return InteractionResult.PASS
         if (!GTMMConfig.INSTANCE.isWirelessRateEnable) return InteractionResult.PASS
 
