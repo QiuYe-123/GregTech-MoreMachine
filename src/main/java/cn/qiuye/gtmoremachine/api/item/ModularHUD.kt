@@ -89,10 +89,6 @@ class ModularHUD {
                     hudOffsetY
                 IntIntPair.of(posX, posY)
             }
-
-            else -> throw IllegalArgumentException(
-                "Armor Hud config hudLocation is improperly configured. Allowed values: [1,2,3,4]",
-            )
         }
     }
 
