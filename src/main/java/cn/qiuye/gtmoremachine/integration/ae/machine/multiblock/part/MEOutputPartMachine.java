@@ -1,4 +1,4 @@
-package cn.qiuye.gtmoremachine.integration.ae.machine;
+package cn.qiuye.gtmoremachine.integration.ae.machine.multiblock.part;
 
 import cn.qiuye.gtmoremachine.api.machine.trait.InaccessibleInfiniteHandler;
 import cn.qiuye.gtmoremachine.api.machine.trait.InaccessibleInfiniteTank;

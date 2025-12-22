@@ -1,6 +1,7 @@
 package cn.qiuye.gtmoremachine.common.data.machines.multiblockmachine;
 
 import cn.qiuye.gtmoremachine.api.pattern.GTMMPredicates;
+import cn.qiuye.gtmoremachine.common.data.GTMMCreativeModeTabs;
 import cn.qiuye.gtmoremachine.common.machine.multiblock.electric.DemodulationHubMachine;
 import cn.qiuye.gtmoremachine.common.machine.multiblock.electric.DimensionalRelayNodeMachine;
 import cn.qiuye.gtmoremachine.config.GTMMConfig;
@@ -17,6 +18,10 @@ import static com.gregtechceu.gtceu.api.pattern.Predicates.blocks;
 import static com.gregtechceu.gtceu.api.pattern.Predicates.controller;
 
 public class WirelessMultiMachines {
+
+    static {
+        GTMMREGISTRATE.creativeModeTab(() -> GTMMCreativeModeTabs.WIRELESS_TAB);
+    }
 
     public final static MultiblockMachineDefinition WIRELSESS_ENERGY_DIMENSIONAL_RELAY_NODE = GTMMConfig.getINSTANCE().isWirelessDimensionRateEnable ? GTMMREGISTRATE
             .multiblock("wirelsess_energy_dimensional_relay_node", DimensionalRelayNodeMachine::new)
