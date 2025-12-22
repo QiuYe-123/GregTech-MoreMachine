@@ -58,18 +58,18 @@ class GTMMConfig {
             @Configurable.Comment(
                 "设置HUD显示位置",
                 "Sets HUD location",
-                "1 - 左上角 (left-upper corner)",
-                "2 - 右上角 (right-upper corner)",
-                "3 - 左下角 (left-bottom corner)",
-                "4 - 右下角 (right-bottom corner)",
-                "5 - 中上 (middle-upper corner)",
-                "6 - 中下 (middle-bottom corner)",
-                "默认值: 1",
-                "Default: 1",
+                "左上角 (left-upper corner)",
+                "右上角 (right-upper corner)",
+                "左下角 (left-bottom corner)",
+                "右下角 (right-bottom corner)",
+                "中上   (middle-upper corner)",
+                "中下   (middle-bottom corner)",
+                "默认值: left-upper",
+                "Default: left-upper",
             )
             @Configurable.Range(min = 1, max = 6)
             @JvmField
-            var hudLocation: Int = 1
+            var hudLocation: HUDLocation = HUDLocation.LeftUpper
 
             @Configurable
             @Configurable.Comment(

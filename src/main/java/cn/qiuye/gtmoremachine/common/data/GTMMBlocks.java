@@ -9,7 +9,6 @@ import cn.qiuye.gtmoremachine.common.block.CapacityComponentBlock.CapacityCompon
 import cn.qiuye.gtmoremachine.common.block.EnergyCommunicationUnitBlock;
 import cn.qiuye.gtmoremachine.common.block.EnergyCommunicationUnitBlock.EnergyCommunicationUnitPartType;
 import cn.qiuye.gtmoremachine.common.data.models.GTMMModels;
-import cn.qiuye.gtmoremachine.config.GTMMConfig;
 
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.common.data.GTMachines;
@@ -82,7 +81,7 @@ public class GTMMBlocks {
     public static final BlockEntry<CapacityComponentBlock> CAPACITYCOMPONENT_MAX = createCapacityComponentBlock(CapacityComponentBlockPartType.MAX);
 
     private static BlockEntry<CapacityComponentBlock> createCapacityComponentBlock(ICapacityComponentData CapacityComponentData) {
-        var CapacityComponentBlock = GTMMConfig.getINSTANCE().isWirelessCapacitylimitEnable ? GTMMREGISTRATE
+        var CapacityComponentBlock = GTMMREGISTRATE
                 .block("%s_capacity_component".formatted(CapacityComponentData.getCapacityComponentName()),
                         p -> new CapacityComponentBlock(p, CapacityComponentData))
                 .lang("%s Wireless Energy Capacity Component".formatted(CapacityComponentData.getTier() == -1 ? "Empty tier" : GTValues.VNF[CapacityComponentData.getTier()]))
@@ -92,10 +91,8 @@ public class GTMMBlocks {
                 .tag(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WRENCH)
                 .item(BlockItem::new)
                 .build()
-                .register() : null;
-        if (CapacityComponentBlock != null) {
-            GTMMAPI.WECC.put(CapacityComponentData, CapacityComponentBlock);
-        }
+                .register();
+        GTMMAPI.WECC.put(CapacityComponentData, CapacityComponentBlock);
         return CapacityComponentBlock;
     }
 

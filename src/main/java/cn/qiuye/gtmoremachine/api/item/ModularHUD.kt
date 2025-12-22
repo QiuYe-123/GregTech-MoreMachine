@@ -1,6 +1,7 @@
 package cn.qiuye.gtmoremachine.api.item
 
 import cn.qiuye.gtmoremachine.config.GTMMConfig
+import cn.qiuye.gtmoremachine.config.HUDLocation
 
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.GuiGraphics
@@ -50,39 +51,39 @@ class ModularHUD {
         val windowWidth = mc.window.guiScaledWidth
         val stringWidth = this.stringWidth
         return when (GTMMConfig.INSTANCE.hud.hudLocation) {
-            1 -> {
+            HUDLocation.LeftUpper -> {
                 val posX = 1 + hudOffsetX
                 val posY = 1 + hudOffsetY + (fontHeight * index)
                 IntIntPair.of(posX, posY)
             }
 
-            2 -> {
+            HUDLocation.RightUpper -> {
                 val posX = windowWidth - stringWidth + (1 + hudOffsetX)
                 val posY = 1 + hudOffsetY + (fontHeight * index)
                 IntIntPair.of(posX, posY)
             }
 
-            3 -> {
+            HUDLocation.LeftLower -> {
                 val posX = 1 + hudOffsetX
                 val posY = windowHeight - fontHeight * (stringAmount - index) - 1 -
                     hudOffsetY
                 IntIntPair.of(posX, posY)
             }
 
-            4 -> {
+            HUDLocation.RightLower -> {
                 val posX = windowWidth - stringWidth + (1 + hudOffsetX)
                 val posY = windowHeight - fontHeight * (stringAmount - index) - 1 -
                     hudOffsetY
                 IntIntPair.of(posX, posY)
             }
 
-            5 -> {
+            HUDLocation.MiddleUpper -> {
                 val posX = windowWidth / 2 - stringWidth / 2 + (1 + hudOffsetX)
                 val posY = 1 + hudOffsetY + (fontHeight * index)
                 IntIntPair.of(posX, posY)
             }
 
-            6 -> {
+            HUDLocation.MiddleLower -> {
                 val posX = windowWidth / 2 - stringWidth / 2 + (1 + hudOffsetX)
                 val posY = windowHeight - fontHeight * (stringAmount - index) - 1 -
                     hudOffsetY
