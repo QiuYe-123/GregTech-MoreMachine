@@ -5,5 +5,6 @@ object MultiMachines {
     @JvmStatic
     fun init() {
         WirelessMultiMachines.init()
+        GTMMMultiblockMachineA.init()
     }
 }
