@@ -34,7 +34,7 @@ modernfix = "5.24.4+mc1.20.1"
 ## curseforge maven ##
 
 ## libs ##
-jech = "4.5.11-dev-shadow"
+jech = "4.6.1"
 
 
 [libraries]
