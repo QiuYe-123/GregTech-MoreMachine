@@ -44,11 +44,11 @@ public class WirelessEnergyMonitor extends MetaMachine implements IFancyUIMachin
 
     public WirelessEnergyMonitor(IMachineBlockEntity holder) {
         super(holder);
-        this.statistics = Statistics.Team;
-        this.format = Format.Unit;
-        this.powerStatus = Status.All;
-        this.sortingrules = Sorting.Ascending;
-        this.type = Type.PowerInteraction;
+        this.statistics = Statistics.Companion.getDefaultValue();
+        this.format = Format.Companion.getDefaultValue();
+        this.powerStatus = Status.Companion.getDefaultValue();
+        this.sortingrules = Sorting.Companion.getDefaultValue();
+        this.type = Type.Companion.getDefaultValue();
     }
 
     @Override
