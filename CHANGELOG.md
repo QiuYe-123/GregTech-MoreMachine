@@ -1,5 +1,16 @@
 # ChangeLog
 
+## Version [v1.5.0](https://github.com/QiuYe-123/GTMoreMachine/compare/v1.4.1-1.20.1...v1.5.0-1.20.1)
+### Fixed
+
+- Fix Tag by @QiuYe-123 in [#76](https://github.com/QiuYe-123/GTMoreMachine/pull/76)
+- 提前null检测 by @QiuYe-123 in [#82](https://github.com/QiuYe-123/GTMoreMachine/pull/82)
+
+### Changed
+
+- GTMM ItemTag Tag refactor by @QiuYe-123 in [#83](https://github.com/QiuYe-123/GTMoreMachine/pull/83)
+
+ 
 ## Version [v1.4.1](https://github.com/QiuYe-123/GTMoreMachine/compare/v1.4.0-1.20.1...v1.4.1-1.20.1)
  
 ## Version [v1.4.0](https://github.com/QiuYe-123/GTMoreMachine/compare/v1.3.0-1.20.1...v1.4.0-1.20.1)
