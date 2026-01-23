@@ -1,9 +1,39 @@
 package cn.qiuye.gtmoremachine.utils
 
 import net.minecraft.world.item.ItemStack
+
 import java.util.*
 
 object TagUtils {
+
+    // ==================== 数据存储相关 (NBT) ====================
+
+    /**
+     * 设置统计模式
+     *
+     * @param tagKey Tag的key名
+     * @param tag tag
+     * @param stack      物品堆
+     */
+    @JvmStatic
+    fun setStringTag(tagKey: String, tag: String, stack: ItemStack) {
+        val itemStacktag = stack.getOrCreateTag()
+        itemStacktag.putString(tagKey, tag)
+        stack.tag = itemStacktag
+    }
+
+    /**
+     * 从物品堆获取对应Tagkey是否存在
+     *
+     * @param tagkey Tag的key名
+     * @param itemStack 物品堆
+     * @return Boolean 物品堆是否存在Tagkey对应的值
+     */
+    @JvmStatic
+    fun hasTagKey(tagkey: String, itemStack: ItemStack): Boolean {
+        val tag = itemStack.getOrCreateTag()
+        return tag.contains(tagkey)
+    }
 
     // ==================== UUID 相关 ====================
 
@@ -34,18 +64,5 @@ object TagUtils {
         } else {
             null
         }
-    }
-
-    /**
-     * 从物品堆获取对应Tagkey是否存在
-     *
-     * @param itemStack 物品堆
-     * @param tagkey Tag的key名
-     * @return boolean
-     */
-    @JvmStatic
-    fun hasTagKey(itemStack: ItemStack, tagkey: String): Boolean {
-        val tag = itemStack.getOrCreateTag()
-        return tag.contains(tagkey)
     }
 }
