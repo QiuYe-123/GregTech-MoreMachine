@@ -193,10 +193,11 @@ public class WirelessEnergyContainer {
     }
 
     public void setDimensional(int Voltagelevel, boolean Bind, MetaMachine machine) {
+        if (machine == null) return;
         if (Bind) {
-            if (machine != null) DIMENSIONAL_TRANSFER_DATA.put(machine.getLevel(), new DimensionBoundData(uuid, machine.getLevel(), Voltagelevel, machine));
+            DIMENSIONAL_TRANSFER_DATA.put(machine.getLevel(), new DimensionBoundData(uuid, machine.getLevel(), Voltagelevel, machine));
         } else {
-            if (machine != null) DIMENSIONAL_TRANSFER_DATA.remove(machine.getLevel());
+            DIMENSIONAL_TRANSFER_DATA.remove(machine.getLevel());
         }
         WirelessEnergySavedData.INSTANCE.setDirty(true);
     }
