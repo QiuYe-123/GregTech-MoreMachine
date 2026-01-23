@@ -10,6 +10,7 @@ import cn.qiuye.gtmoremachine.api.misc.wireless.energy.IWirelessMonitor;
 import cn.qiuye.gtmoremachine.api.misc.wireless.energy.WirelessEnergyContainer;
 import cn.qiuye.gtmoremachine.utils.FormattingUtil;
 import cn.qiuye.gtmoremachine.utils.NumberUtils;
+import cn.qiuye.gtmoremachine.utils.TagUtils;
 
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.item.component.IItemHUDProvider;
@@ -62,6 +63,12 @@ public class WirelessEnergyTerminalBehavior implements IItemUIFactory, IItemHUDP
     @Setter
     private WirelessEnergyContainer WirelessEnergyContainerCache;
 
+    private final String statistics = "statistics",
+            format = "format",
+            powerstatus = "powerStatus",
+            sortingrules = "sortingrules",
+            type = "type";
+
     /**
      * 构造函数，初始化HUD显示
      */
@@ -83,15 +90,15 @@ public class WirelessEnergyTerminalBehavior implements IItemUIFactory, IItemHUDP
      * @param clickData     点击数据
      */
     private void handleDisplayClick(ItemStack stack, String componentData, ClickData clickData) {
-        if (componentData.equals("statistics")) {
+        if (componentData.equals(statistics)) {
             if (!clickData.isRemote) {
                 setStatistics((getStatistics(stack) == Statistics.Team) ? Statistics.Global : Statistics.Team, stack);
             }
-        } else if (componentData.equals("format")) {
+        } else if (componentData.equals(format)) {
             if (!clickData.isRemote) {
                 setFormat((getFormat(stack) == Format.Unit) ? Format.Science : Format.Unit, stack);
             }
-        } else if (componentData.equals("powerStatus")) {
+        } else if (componentData.equals(powerstatus)) {
             if (!clickData.isRemote) {
                 // 循环切换PowerStatus：All -> In -> Out -> All
                 switch (getPowerStatus(stack)) {
@@ -100,11 +107,11 @@ public class WirelessEnergyTerminalBehavior implements IItemUIFactory, IItemHUDP
                     case Out -> setPowerStatus(Status.All, stack);
                 }
             }
-        } else if (componentData.equals("sortingrules")) {
+        } else if (componentData.equals(sortingrules)) {
             if (!clickData.isRemote) {
                 setSortingrules((getSortingrules(stack) == Sorting.Ascending) ? Sorting.Descendingorder : Sorting.Ascending, stack);
             }
-        } else if (componentData.equals("type")) {
+        } else if (componentData.equals(type)) {
             if (!clickData.isRemote) {
                 switch (getType(stack)) {
                     case PowerInteraction -> setType(Type.Capacitycomponent, stack);
@@ -129,7 +136,9 @@ public class WirelessEnergyTerminalBehavior implements IItemUIFactory, IItemHUDP
     @Override
     public ModularUI createUI(HeldItemUIFactory.HeldItemHolder holder, Player entityPlayer) {
         final var handItem = entityPlayer.getMainHandItem();
-        setUUID(entityPlayer.getUUID(), handItem);
+        if (TagUtils.hasTagKey("UUID", handItem)) {
+            TagUtils.setUUID(entityPlayer.getUUID(), handItem);
+        }
         return new ModularUI(DISPLAY_TEXT_WIDTH + 8 + 8, 117 + 8 + 8 + 8 + 17, holder, entityPlayer).widget(createWidget(handItem, holder.getHeld().getDescriptionId(), new WirelessMonitor(entityPlayer.getUUID(), entityPlayer.level())));
     }
 
@@ -184,7 +193,7 @@ public class WirelessEnergyTerminalBehavior implements IItemUIFactory, IItemHUDP
      */
     @Override
     public void drawHUD(ItemStack stack, GuiGraphics guiGraphics) {
-        UUID uuid = getUUID(stack);
+        UUID uuid = TagUtils.getUUID(stack);
         BigDecimal all;
         BigDecimal in;
         BigDecimal out;
@@ -226,13 +235,11 @@ public class WirelessEnergyTerminalBehavior implements IItemUIFactory, IItemHUDP
     /**
      * 设置统计模式
      *
-     * @param statistics 统计模式
-     * @param stack      物品堆
+     * @param enumtype 统计模式
+     * @param stack    物品堆
      */
-    private void setStatistics(Statistics statistics, ItemStack stack) {
-        var tag = stack.getOrCreateTag();
-        tag.putString("statistics", statistics.toString());
-        stack.setTag(tag);
+    private void setStatistics(Statistics enumtype, ItemStack stack) {
+        TagUtils.setStringTag(statistics, enumtype.toString(), stack);
     }
 
     /**
@@ -243,23 +250,21 @@ public class WirelessEnergyTerminalBehavior implements IItemUIFactory, IItemHUDP
      */
     private Statistics getStatistics(ItemStack stack) {
         var tag = stack.getOrCreateTag();
-        if (!tag.isEmpty() && tag.contains("statistics")) {
-            return Statistics.valueOf(tag.getString("statistics"));
+        if (!tag.isEmpty() && tag.contains(statistics)) {
+            return Statistics.valueOf(tag.getString(statistics));
         } else {
-            return Statistics.Team;
+            return Statistics.Companion.getDefaultValue();
         }
     }
 
     /**
      * 设置数字格式
      *
-     * @param format 数字格式
-     * @param stack  物品堆
+     * @param enumtype 数字格式
+     * @param stack    物品堆
      */
-    private void setFormat(Format format, ItemStack stack) {
-        var tag = stack.getOrCreateTag();
-        tag.putString("format", format.toString());
-        stack.setTag(tag);
+    private void setFormat(Format enumtype, ItemStack stack) {
+        TagUtils.setStringTag(format, enumtype.toString(), stack);
     }
 
     /**
@@ -270,23 +275,21 @@ public class WirelessEnergyTerminalBehavior implements IItemUIFactory, IItemHUDP
      */
     private Format getFormat(ItemStack stack) {
         var tag = stack.getOrCreateTag();
-        if (!tag.isEmpty() && tag.contains("format")) {
-            return Format.valueOf(tag.getString("format"));
+        if (!tag.isEmpty() && tag.contains(format)) {
+            return Format.valueOf(tag.getString(format));
         } else {
-            return Format.Unit;
+            return Format.Companion.getDefaultValue();
         }
     }
 
     /**
      * 设置电力状态过滤
      *
-     * @param powerStatus 电力状态
-     * @param stack       物品堆
+     * @param enumtype 电力状态
+     * @param stack    物品堆
      */
-    private void setPowerStatus(Status powerStatus, ItemStack stack) {
-        var tag = stack.getOrCreateTag();
-        tag.putString("powerStatus", powerStatus.toString());
-        stack.setTag(tag);
+    private void setPowerStatus(Status enumtype, ItemStack stack) {
+        TagUtils.setStringTag(powerstatus, enumtype.toString(), stack);
     }
 
     /**
@@ -297,23 +300,21 @@ public class WirelessEnergyTerminalBehavior implements IItemUIFactory, IItemHUDP
      */
     private Status getPowerStatus(ItemStack stack) {
         var tag = stack.getOrCreateTag();
-        if (!tag.isEmpty() && tag.contains("powerStatus")) {
-            return Status.valueOf(tag.getString("powerStatus"));
+        if (!tag.isEmpty() && tag.contains(powerstatus)) {
+            return Status.valueOf(tag.getString(powerstatus));
         } else {
-            return Status.All;
+            return Status.Companion.getDefaultValue();
         }
     }
 
     /**
      * 设置排序规则
      *
-     * @param sortingrules 排序规则
-     * @param stack        物品堆
+     * @param enumtype 排序规则
+     * @param stack    物品堆
      */
-    private void setSortingrules(Sorting sortingrules, ItemStack stack) {
-        var tag = stack.getOrCreateTag();
-        tag.putString("sortingrules", sortingrules.toString());
-        stack.setTag(tag);
+    private void setSortingrules(Sorting enumtype, ItemStack stack) {
+        TagUtils.setStringTag(sortingrules, enumtype.toString(), stack);
     }
 
     /**
@@ -324,23 +325,21 @@ public class WirelessEnergyTerminalBehavior implements IItemUIFactory, IItemHUDP
      */
     private Sorting getSortingrules(ItemStack stack) {
         var tag = stack.getOrCreateTag();
-        if (!tag.isEmpty() && tag.contains("sortingrules")) {
-            return Sorting.valueOf(tag.getString("sortingrules"));
+        if (!tag.isEmpty() && tag.contains(sortingrules)) {
+            return Sorting.valueOf(tag.getString(sortingrules));
         } else {
-            return Sorting.Ascending;
+            return Sorting.Companion.getDefaultValue();
         }
     }
 
     /**
      * 设置显示的设备类型
      *
-     * @param type  设备类型
-     * @param stack 物品堆
+     * @param enumtype 设备类型
+     * @param stack    物品堆
      */
-    private void setType(Type type, ItemStack stack) {
-        var tag = stack.getOrCreateTag();
-        tag.putString("type", type.toString());
-        stack.setTag(tag);
+    private void setType(Type enumtype, ItemStack stack) {
+        TagUtils.setStringTag(type, enumtype.toString(), stack);
     }
 
     /**
@@ -351,10 +350,10 @@ public class WirelessEnergyTerminalBehavior implements IItemUIFactory, IItemHUDP
      */
     private Type getType(ItemStack stack) {
         var tag = stack.getOrCreateTag();
-        if (!tag.isEmpty() && tag.contains("type")) {
-            return Type.valueOf(tag.getString("type"));
+        if (!tag.isEmpty() && tag.contains(type)) {
+            return Type.valueOf(tag.getString(type));
         } else {
-            return Type.Capacitycomponent;
+            return Type.Companion.getDefaultValue();
         }
     }
 
@@ -368,33 +367,6 @@ public class WirelessEnergyTerminalBehavior implements IItemUIFactory, IItemHUDP
     @Override
     public @Nullable UUID getUUID() {
         return this.uuid;
-    }
-
-    /**
-     * 设置UUID到物品堆
-     *
-     * @param uuid      UUID
-     * @param itemStack 物品堆
-     */
-    private void setUUID(UUID uuid, ItemStack itemStack) {
-        var tag = itemStack.getOrCreateTag();
-        tag.putUUID("UUID", uuid);
-        itemStack.setTag(tag);
-    }
-
-    /**
-     * 从物品堆获取UUID
-     *
-     * @param itemStack 物品堆
-     * @return UUID
-     */
-    private @Nullable UUID getUUID(ItemStack itemStack) {
-        var tag = itemStack.getOrCreateTag();
-        if (!tag.isEmpty() && tag.contains("UUID")) {
-            return tag.getUUID("UUID");
-        } else {
-            return null;
-        }
     }
 
     // ==================== 内部类 ====================
