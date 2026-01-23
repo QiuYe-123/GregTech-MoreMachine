@@ -11,6 +11,7 @@ import cn.qiuye.gtmoremachine.api.misc.wireless.energy.WirelessEnergyContainer;
 import cn.qiuye.gtmoremachine.utils.FormattingUtil;
 import cn.qiuye.gtmoremachine.utils.NumberUtils;
 
+import cn.qiuye.gtmoremachine.utils.TagUtils;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.item.component.IItemHUDProvider;
 import com.gregtechceu.gtceu.api.item.component.IItemUIFactory;
@@ -129,7 +130,9 @@ public class WirelessEnergyTerminalBehavior implements IItemUIFactory, IItemHUDP
     @Override
     public ModularUI createUI(HeldItemUIFactory.HeldItemHolder holder, Player entityPlayer) {
         final var handItem = entityPlayer.getMainHandItem();
-        setUUID(entityPlayer.getUUID(), handItem);
+        if (TagUtils.hasTagKey(handItem, "UUID")) {
+            TagUtils.setUUID(entityPlayer.getUUID(), handItem);
+        }
         return new ModularUI(DISPLAY_TEXT_WIDTH + 8 + 8, 117 + 8 + 8 + 8 + 17, holder, entityPlayer).widget(createWidget(handItem, holder.getHeld().getDescriptionId(), new WirelessMonitor(entityPlayer.getUUID(), entityPlayer.level())));
     }
 
@@ -184,7 +187,7 @@ public class WirelessEnergyTerminalBehavior implements IItemUIFactory, IItemHUDP
      */
     @Override
     public void drawHUD(ItemStack stack, GuiGraphics guiGraphics) {
-        UUID uuid = getUUID(stack);
+        UUID uuid = TagUtils.getUUID(stack);
         BigDecimal all;
         BigDecimal in;
         BigDecimal out;
@@ -368,33 +371,6 @@ public class WirelessEnergyTerminalBehavior implements IItemUIFactory, IItemHUDP
     @Override
     public @Nullable UUID getUUID() {
         return this.uuid;
-    }
-
-    /**
-     * 设置UUID到物品堆
-     *
-     * @param uuid      UUID
-     * @param itemStack 物品堆
-     */
-    private void setUUID(UUID uuid, ItemStack itemStack) {
-        var tag = itemStack.getOrCreateTag();
-        tag.putUUID("UUID", uuid);
-        itemStack.setTag(tag);
-    }
-
-    /**
-     * 从物品堆获取UUID
-     *
-     * @param itemStack 物品堆
-     * @return UUID
-     */
-    private @Nullable UUID getUUID(ItemStack itemStack) {
-        var tag = itemStack.getOrCreateTag();
-        if (!tag.isEmpty() && tag.contains("UUID")) {
-            return tag.getUUID("UUID");
-        } else {
-            return null;
-        }
     }
 
     // ==================== 内部类 ====================
