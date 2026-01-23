@@ -197,7 +197,7 @@ public class WirelessEnergyContainer {
         if (Bind) {
             DIMENSIONAL_TRANSFER_DATA.put(machine.getLevel(), new DimensionBoundData(uuid, machine.getLevel(), Voltagelevel, machine));
         } else {
-           DIMENSIONAL_TRANSFER_DATA.remove(machine.getLevel());
+            DIMENSIONAL_TRANSFER_DATA.remove(machine.getLevel());
         }
         WirelessEnergySavedData.INSTANCE.setDirty(true);
     }
