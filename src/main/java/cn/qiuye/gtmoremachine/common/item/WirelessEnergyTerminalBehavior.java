@@ -235,11 +235,11 @@ public class WirelessEnergyTerminalBehavior implements IItemUIFactory, IItemHUDP
     /**
      * 设置统计模式
      *
-     * @param emun  统计模式
-     * @param stack 物品堆
+     * @param enumtype 统计模式
+     * @param stack    物品堆
      */
-    private void setStatistics(Statistics emun, ItemStack stack) {
-        TagUtils.setStringTag(statistics, emun.toString(), stack);
+    private void setStatistics(Statistics enumtype, ItemStack stack) {
+        TagUtils.setStringTag(statistics, enumtype.toString(), stack);
     }
 
     /**
@@ -253,18 +253,18 @@ public class WirelessEnergyTerminalBehavior implements IItemUIFactory, IItemHUDP
         if (!tag.isEmpty() && tag.contains(statistics)) {
             return Statistics.valueOf(tag.getString(statistics));
         } else {
-            return Statistics.Team;
+            return Statistics.Companion.getDefaultValue();
         }
     }
 
     /**
      * 设置数字格式
      *
-     * @param emun  数字格式
-     * @param stack 物品堆
+     * @param enumtype 数字格式
+     * @param stack    物品堆
      */
-    private void setFormat(Format emun, ItemStack stack) {
-        TagUtils.setStringTag(format, emun.toString(), stack);
+    private void setFormat(Format enumtype, ItemStack stack) {
+        TagUtils.setStringTag(format, enumtype.toString(), stack);
     }
 
     /**
@@ -278,18 +278,18 @@ public class WirelessEnergyTerminalBehavior implements IItemUIFactory, IItemHUDP
         if (!tag.isEmpty() && tag.contains(format)) {
             return Format.valueOf(tag.getString(format));
         } else {
-            return Format.Unit;
+            return Format.Companion.getDefaultValue();
         }
     }
 
     /**
      * 设置电力状态过滤
      *
-     * @param emun  电力状态
-     * @param stack 物品堆
+     * @param enumtype 电力状态
+     * @param stack    物品堆
      */
-    private void setPowerStatus(Status emun, ItemStack stack) {
-        TagUtils.setStringTag(powerstatus, emun.toString(), stack);
+    private void setPowerStatus(Status enumtype, ItemStack stack) {
+        TagUtils.setStringTag(powerstatus, enumtype.toString(), stack);
     }
 
     /**
@@ -303,18 +303,18 @@ public class WirelessEnergyTerminalBehavior implements IItemUIFactory, IItemHUDP
         if (!tag.isEmpty() && tag.contains(powerstatus)) {
             return Status.valueOf(tag.getString(powerstatus));
         } else {
-            return Status.All;
+            return Status.Companion.getDefaultValue();
         }
     }
 
     /**
      * 设置排序规则
      *
-     * @param emun  排序规则
-     * @param stack 物品堆
+     * @param enumtype 排序规则
+     * @param stack    物品堆
      */
-    private void setSortingrules(Sorting emun, ItemStack stack) {
-        TagUtils.setStringTag(sortingrules, emun.toString(), stack);
+    private void setSortingrules(Sorting enumtype, ItemStack stack) {
+        TagUtils.setStringTag(sortingrules, enumtype.toString(), stack);
     }
 
     /**
@@ -328,18 +328,18 @@ public class WirelessEnergyTerminalBehavior implements IItemUIFactory, IItemHUDP
         if (!tag.isEmpty() && tag.contains(sortingrules)) {
             return Sorting.valueOf(tag.getString(sortingrules));
         } else {
-            return Sorting.Ascending;
+            return Sorting.Companion.getDefaultValue();
         }
     }
 
     /**
      * 设置显示的设备类型
      *
-     * @param emun  设备类型
-     * @param stack 物品堆
+     * @param enumtype 设备类型
+     * @param stack    物品堆
      */
-    private void setType(Type emun, ItemStack stack) {
-        TagUtils.setStringTag(type, emun.toString(), stack);
+    private void setType(Type enumtype, ItemStack stack) {
+        TagUtils.setStringTag(type, enumtype.toString(), stack);
     }
 
     /**
@@ -353,7 +353,7 @@ public class WirelessEnergyTerminalBehavior implements IItemUIFactory, IItemHUDP
         if (!tag.isEmpty() && tag.contains(type)) {
             return Type.valueOf(tag.getString(type));
         } else {
-            return Type.Capacitycomponent;
+            return Type.Companion.getDefaultValue();
         }
     }
 
