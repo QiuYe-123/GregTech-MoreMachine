@@ -125,7 +125,7 @@ public class WirelessEnergyHatchPartMachine extends TieredIOPartMachine implemen
         if (changeStored <= 0) return;
         WirelessEnergyContainer container = getWirelessEnergyContainer();
         if (container == null) return;
-        changeStored = container.removeEnergy(changeStored, this);
+        changeStored = container.removeEnergy(this.tier, changeStored, this);
         if (changeStored > 0) energyContainer.setEnergyStored(currentStored + changeStored);
     }
 
@@ -135,7 +135,7 @@ public class WirelessEnergyHatchPartMachine extends TieredIOPartMachine implemen
         var changeStored = Math.min(energyContainer.getOutputVoltage() * energyContainer.getOutputAmperage(), currentStored);
         WirelessEnergyContainer container = getWirelessEnergyContainer();
         if (container == null) return;
-        changeStored = container.addEnergy(changeStored, this);
+        changeStored = container.addEnergy(this.tier, changeStored, this);
         if (changeStored > 0) energyContainer.setEnergyStored(currentStored - changeStored);
     }
 
