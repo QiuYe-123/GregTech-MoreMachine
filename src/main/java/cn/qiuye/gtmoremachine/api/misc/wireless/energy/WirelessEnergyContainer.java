@@ -241,7 +241,7 @@ public class WirelessEnergyContainer {
             if (Dimension.Voltagelevel() >= 14) {
                 return false;
             } else {
-                return Dimension.Voltagelevel() <= tier;
+                return Dimension.Voltagelevel() > tier;
             }
         } else {
             return true;
