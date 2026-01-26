@@ -4,6 +4,7 @@ import cn.qiuye.gtmoremachine.api.gui.monitor.Format;
 import cn.qiuye.gtmoremachine.api.gui.monitor.Statistics;
 import cn.qiuye.gtmoremachine.api.gui.monitor.Status;
 import cn.qiuye.gtmoremachine.api.machine.IWirelessCWUContainerHolder;
+import cn.qiuye.gtmoremachine.api.misc.wireless.time.TimeStat;
 import cn.qiuye.gtmoremachine.utils.FormattingUtil;
 import cn.qiuye.gtmoremachine.utils.NumberUtils;
 import cn.qiuye.gtmoremachine.utils.TeamUtils;
@@ -32,10 +33,10 @@ public interface IWirelessMonitor extends IWirelessCWUContainerHolder {
         textListCache.add(FormattingUtil.formatWithConstantWidth("gtmoremachine.machine.wireless_cwu_monitor.tooltip.1",
                 Component.literal(NumberUtils.formatBigIntegerNumberOrSic(CWUToTal, format)).withStyle(ChatFormatting.GOLD)));
 
-        var allstat = container.getAllCWUStat();
-        var instat = container.getInCWUStat();
-        var outstat = container.getOutCWUStat();
-        var stat = switch (CWUStatus) {
+        TimeStat allstat = container.getAllCWUStat();
+        TimeStat instat = container.getInCWUStat();
+        TimeStat outstat = container.getOutCWUStat();
+        TimeStat stat = switch (CWUStatus) {
             case All -> allstat;
             case In -> instat;
             case Out -> outstat;

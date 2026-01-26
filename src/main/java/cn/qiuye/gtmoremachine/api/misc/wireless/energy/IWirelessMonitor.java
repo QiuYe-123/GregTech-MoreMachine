@@ -2,6 +2,7 @@ package cn.qiuye.gtmoremachine.api.misc.wireless.energy;
 
 import cn.qiuye.gtmoremachine.api.gui.monitor.*;
 import cn.qiuye.gtmoremachine.api.machine.IWirelessEnergyContainerHolder;
+import cn.qiuye.gtmoremachine.api.misc.wireless.time.TimeStat;
 import cn.qiuye.gtmoremachine.config.GTMMConfig;
 import cn.qiuye.gtmoremachine.utils.BigIntegerUtils;
 import cn.qiuye.gtmoremachine.utils.FormattingUtil;
@@ -47,10 +48,10 @@ public interface IWirelessMonitor extends IWirelessEnergyContainerHolder {
                     FormattingUtil.voltageName(new BigDecimal(rate))));
         }
 
-        var allstat = container.getAllEnergyStat();
-        var instat = container.getInEnergyStat();
-        var outstat = container.getOutEnergyStat();
-        var stat = switch (powerStatus) {
+        TimeStat allstat = container.getAllEnergyStat();
+        TimeStat instat = container.getInEnergyStat();
+        TimeStat outstat = container.getOutEnergyStat();
+        TimeStat stat = switch (powerStatus) {
             case All -> allstat;
             case In -> instat;
             case Out -> outstat;
