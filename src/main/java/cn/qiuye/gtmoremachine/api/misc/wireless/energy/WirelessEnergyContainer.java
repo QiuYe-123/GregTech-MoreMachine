@@ -7,7 +7,6 @@ import cn.qiuye.gtmoremachine.utils.BigIntegerUtils;
 import cn.qiuye.gtmoremachine.utils.TeamUtils;
 
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.core.GlobalPos;
 import net.minecraft.server.MinecraftServer;
@@ -78,10 +77,44 @@ public class WirelessEnergyContainer {
         this.outEnergyStat = new TimeStat(currentTick);
     }
 
+    public long addEnergy(int tier, long energy, @Nullable MetaMachine machine) {
+        long change = energy;
+        if (GTMMConfig.getINSTANCE().isWirelessRateEnable) change = Math.min(BigIntegerUtils.getLongValue(rate), energy);
+        if (GTMMConfig.getINSTANCE().isWirelessDimensionRateEnable && isDimensionBound(tier, machine)) return 0;
+        if (GTMMConfig.getINSTANCE().isWirelessCapacitylimitEnable && storage.add(BigInteger.valueOf(change)).compareTo(capacity) > 0) change = BigIntegerUtils.getLongValue(capacity.subtract(storage));
+        if (change <= 0) return 0;
+        storage = storage.add(BigInteger.valueOf(change));
+        WirelessEnergySavedData.INSTANCE.setDirty(true);
+        if (machine != null) {
+            allEnergyStat.update(BigInteger.valueOf(change), server.getTickCount());
+            inEnergyStat.update(BigInteger.valueOf(change), server.getTickCount());
+        }
+        if (observed && machine != null) {
+            TRANSFER_DATA.put(machine, new BasicTransferData(uuid, new BigInteger(String.valueOf(change)), machine));
+        }
+        return change;
+    }
+
+    public long removeEnergy(int tier, long energy, @Nullable MetaMachine machine) {
+        long change = Math.min(BigIntegerUtils.getLongValue(storage), energy);
+        if (GTMMConfig.getINSTANCE().isWirelessRateEnable) change = Math.min(BigIntegerUtils.getLongValue(storage), Math.min(BigIntegerUtils.getLongValue(rate), energy));
+        if (GTMMConfig.getINSTANCE().isWirelessDimensionRateEnable && isDimensionBound(tier, machine)) return 0;
+        if (change <= 0) return 0;
+        storage = storage.subtract(BigInteger.valueOf(change));
+        WirelessEnergySavedData.INSTANCE.setDirty(true);
+        if (machine != null) {
+            allEnergyStat.update(BigInteger.valueOf(change).negate(), server.getTickCount());
+            outEnergyStat.update(BigInteger.valueOf(change).negate(), server.getTickCount());
+        }
+        if (observed && machine != null) {
+            TRANSFER_DATA.put(machine, new BasicTransferData(uuid, new BigInteger(String.valueOf(-change)), machine));
+        }
+        return change;
+    }
+
     public long addEnergy(long energy, @Nullable MetaMachine machine) {
         long change = energy;
         if (GTMMConfig.getINSTANCE().isWirelessRateEnable) change = Math.min(BigIntegerUtils.getLongValue(rate), energy);
-        if (GTMMConfig.getINSTANCE().isWirelessDimensionRateEnable && isDimensionBound(change, machine)) return 0;
         if (GTMMConfig.getINSTANCE().isWirelessCapacitylimitEnable && storage.add(BigInteger.valueOf(change)).compareTo(capacity) > 0) change = BigIntegerUtils.getLongValue(capacity.subtract(storage));
         if (change <= 0) return 0;
         storage = storage.add(BigInteger.valueOf(change));
@@ -99,7 +132,6 @@ public class WirelessEnergyContainer {
     public long removeEnergy(long energy, @Nullable MetaMachine machine) {
         long change = Math.min(BigIntegerUtils.getLongValue(storage), energy);
         if (GTMMConfig.getINSTANCE().isWirelessRateEnable) change = Math.min(BigIntegerUtils.getLongValue(storage), Math.min(BigIntegerUtils.getLongValue(rate), energy));
-        if (GTMMConfig.getINSTANCE().isWirelessDimensionRateEnable && isDimensionBound(change, machine)) return 0;
         if (change <= 0) return 0;
         storage = storage.subtract(BigInteger.valueOf(change));
         WirelessEnergySavedData.INSTANCE.setDirty(true);
@@ -202,15 +234,14 @@ public class WirelessEnergyContainer {
         WirelessEnergySavedData.INSTANCE.setDirty(true);
     }
 
-    private boolean isDimensionBound(long energy, MetaMachine machine) {
+    private boolean isDimensionBound(int tier, MetaMachine machine) {
         if (machine == null) return true;
-        int voltageTier = GTUtil.getFloorTierByVoltage(energy);
         IDimensionTransferData Dimension = DIMENSIONAL_TRANSFER_DATA.get(machine.getLevel());
         if (Dimension != null) {
             if (Dimension.Voltagelevel() >= 14) {
                 return false;
             } else {
-                return Dimension.Voltagelevel() < voltageTier;
+                return Dimension.Voltagelevel() > tier;
             }
         } else {
             return true;

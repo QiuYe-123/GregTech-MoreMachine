@@ -45,9 +45,9 @@ public class WirelessCWUMonitor extends MetaMachine implements IFancyUIMachine, 
 
     public WirelessCWUMonitor(IMachineBlockEntity holder) {
         super(holder);
-        this.statistics = Statistics.Team;
-        this.format = Format.Unit;
-        this.CWUStatus = Status.All;
+        this.statistics = Statistics.Companion.getDefaultValue();
+        this.format = Format.Companion.getDefaultValue();
+        this.CWUStatus = Status.Companion.getDefaultValue();
     }
 
     @Override
