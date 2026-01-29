@@ -1,5 +1,15 @@
 # ChangeLog
 
+## Version [v1.5.1](https://github.com/QiuYe-123/GTMoreMachine/compare/v1.5.0-1.20.1...v1.5.1-1.20.1)
+### Fixed
+
+- TagUtils fix by @QiuYe-123 in [#89](https://github.com/QiuYe-123/GTMoreMachine/pull/89)
+
+### Changed
+
+- 将传输限制改为等级控制 by @QiuYe-123 in [#86](https://github.com/QiuYe-123/GTMoreMachine/pull/86)
+
+ 
 ## Version [v1.5.0](https://github.com/QiuYe-123/GTMoreMachine/compare/v1.4.1-1.20.1...v1.5.0-1.20.1)
 ### Fixed
 
