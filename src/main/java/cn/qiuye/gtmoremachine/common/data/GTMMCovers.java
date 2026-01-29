@@ -19,7 +19,7 @@ import java.util.Arrays;
 import java.util.Locale;
 import java.util.function.Supplier;
 
-import static cn.qiuye.gtmoremachine.common.registry.GTMMRegistration.GTMMREGISTRATE;
+import static cn.qiuye.gtmoremachine.common.registry.GTMMRegistration.GTMM;
 
 public class GTMMCovers {
 
@@ -27,7 +27,7 @@ public class GTMMCovers {
             GTCEuAPI.isHighTier() ? GTValues.OpV : GTValues.UV);
 
     static {
-        GTMMRegistration.GTMMREGISTRATE.creativeModeTab(() -> GTMMCreativeModeTabs.WIRELESS_TAB);
+        GTMMRegistration.GTMM.creativeModeTab(() -> GTMMCreativeModeTabs.WIRELESS_TAB);
     }
 
     public final static CoverDefinition CREATIVE_ENERGY = register("creative_energy",
@@ -57,7 +57,7 @@ public class GTMMCovers {
             () -> () -> new SimpleCoverRenderer(GTmm.id("block/cover/overlay_wireless_fluid_transfer")));
 
     static {
-        GTMMREGISTRATE.creativeModeTab(() -> GTMMCreativeModeTabs.MORE_MACHINES);
+        GTMM.creativeModeTab(() -> GTMMCreativeModeTabs.MORE_MACHINES);
     }
 
     public final static CoverDefinition[] WIRELESS_ENERGY_RECEIVE = registerTieredWirelessCover(

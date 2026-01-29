@@ -19,7 +19,7 @@ public class GTMMGTAddon implements IGTAddon {
 
     @Override
     public GTRegistrate getRegistrate() {
-        return GTMMRegistration.GTMMREGISTRATE;
+        return GTMMRegistration.GTMM;
     }
 
     @Override

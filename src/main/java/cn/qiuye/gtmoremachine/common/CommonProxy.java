@@ -27,7 +27,7 @@ public class CommonProxy {
     public CommonProxy() {
         init();
         IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
-        GTMMRegistration.GTMMREGISTRATE.registerEventListeners(eventBus);
+        GTMMRegistration.GTMM.registerEventListeners(eventBus);
         eventBus.addListener(CommonProxy::commonSetup);
         eventBus.addGenericListener(GTCreativeModeTabs.class, this::registerCreativeModeTabs);
         eventBus.addGenericListener(GTRecipeType.class, this::registerRecipeTypes);

@@ -19,12 +19,12 @@ import net.minecraft.world.level.block.Blocks;
 
 import com.tterrag.registrate.util.entry.BlockEntry;
 
-import static cn.qiuye.gtmoremachine.common.registry.GTMMRegistration.GTMMREGISTRATE;
+import static cn.qiuye.gtmoremachine.common.registry.GTMMRegistration.GTMM;
 
 public class GTMMBlocks {
 
     static {
-        GTMMREGISTRATE.creativeModeTab(() -> GTMMCreativeModeTabs.MORE_MACHINES);
+        GTMM.creativeModeTab(() -> GTMMCreativeModeTabs.MORE_MACHINES);
     }
 
     // ECU
@@ -44,7 +44,7 @@ public class GTMMBlocks {
     public static final BlockEntry<EnergyCommunicationUnitBlock> ENERGY_COMMUNICATION_UNIT_MAX = createEnergyCommunicationUnitBlock(EnergyCommunicationUnitPartType.MAX);
 
     private static BlockEntry<EnergyCommunicationUnitBlock> createEnergyCommunicationUnitBlock(IEnergyCommunicationUnitBlock EnergyCommunicationUnitDate) {
-        var entry = GTMMREGISTRATE
+        var entry = GTMM
                 .block("%s_energy_communication_unit".formatted(EnergyCommunicationUnitDate.getEnergyCommunicationUnitBlockName()),
                         e -> new EnergyCommunicationUnitBlock(e, EnergyCommunicationUnitDate))
                 .lang("%s Energy Communication Unit".formatted(GTValues.VNF[EnergyCommunicationUnitDate.getTier()]))
@@ -60,7 +60,7 @@ public class GTMMBlocks {
     }
 
     static {
-        GTMMREGISTRATE.creativeModeTab(() -> GTMMCreativeModeTabs.WIRELESS_TAB);
+        GTMM.creativeModeTab(() -> GTMMCreativeModeTabs.WIRELESS_TAB);
     }
 
     // WECC
@@ -81,7 +81,7 @@ public class GTMMBlocks {
     public static final BlockEntry<CapacityComponentBlock> CAPACITYCOMPONENT_MAX = createCapacityComponentBlock(CapacityComponentBlockPartType.MAX);
 
     private static BlockEntry<CapacityComponentBlock> createCapacityComponentBlock(ICapacityComponentData CapacityComponentData) {
-        var CapacityComponentBlock = GTMMREGISTRATE
+        var CapacityComponentBlock = GTMM
                 .block("%s_capacity_component".formatted(CapacityComponentData.getCapacityComponentName()),
                         p -> new CapacityComponentBlock(p, CapacityComponentData))
                 .lang("%s Wireless Energy Capacity Component".formatted(CapacityComponentData.getTier() == -1 ? "Empty tier" : GTValues.VNF[CapacityComponentData.getTier()]))
