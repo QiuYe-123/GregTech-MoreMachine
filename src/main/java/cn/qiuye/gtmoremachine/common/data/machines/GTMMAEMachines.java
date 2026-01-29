@@ -19,12 +19,12 @@ import net.minecraft.network.chat.Component;
 
 import static cn.qiuye.gtmoremachine.common.data.machines.utils.CustomMachinesUtils.registerTieredMachines;
 import static cn.qiuye.gtmoremachine.common.machine.multiblock.part.HugeBusPartMachine.INV_MULTIPLE;
-import static cn.qiuye.gtmoremachine.common.registry.GTMMRegistration.GTMMREGISTRATE;
+import static cn.qiuye.gtmoremachine.common.registry.GTMMRegistration.GTMM;
 import static com.gregtechceu.gtceu.common.data.machines.GTMachineUtils.DUAL_HATCH_TIERS;
 
 public class GTMMAEMachines {
 
-    public static final MachineDefinition ME_EXPORT_BUFFER = GTMMREGISTRATE
+    public static final MachineDefinition ME_EXPORT_BUFFER = GTMM
             .machine("me_export_buffer", MEOutputPartMachine::new)
             .rotationState(RotationState.ALL)
             .abilities(PartAbility.EXPORT_ITEMS, PartAbility.EXPORT_FLUIDS)

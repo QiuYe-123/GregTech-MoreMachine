@@ -8,12 +8,12 @@ import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.client.renderer.cover.SimpleCoverRenderer;
 
 import static cn.qiuye.gtmoremachine.common.data.GTMMCovers.register;
-import static cn.qiuye.gtmoremachine.common.registry.GTMMRegistration.GTMMREGISTRATE;
+import static cn.qiuye.gtmoremachine.common.registry.GTMMRegistration.GTMM;
 
 public class GTMMAECovers {
 
     static {
-        GTMMREGISTRATE.creativeModeTab(() -> GTMMCreativeModeTabs.MORE_MACHINES);
+        GTMM.creativeModeTab(() -> GTMMCreativeModeTabs.MORE_MACHINES);
     }
 
     public final static CoverDefinition PROGRAMMABLE_COVER = register("programmable_cover",

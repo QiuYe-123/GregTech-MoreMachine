@@ -19,7 +19,7 @@ import net.minecraft.network.chat.Component;
 
 import static cn.qiuye.gtmoremachine.common.data.machines.utils.WirelessMachinesUtils.registerWirelessEnergyHatch;
 import static cn.qiuye.gtmoremachine.common.data.machines.utils.WirelessMachinesUtils.registerWirelessLaserHatch;
-import static cn.qiuye.gtmoremachine.common.registry.GTMMRegistration.GTMMREGISTRATE;
+import static cn.qiuye.gtmoremachine.common.registry.GTMMRegistration.GTMM;
 
 public class WirelessMachines {
 
@@ -27,10 +27,10 @@ public class WirelessMachines {
     public static final int[] WIRELL_ENERGY_HIGH_TIERS = GTValues.tiersBetween(GTValues.EV, GTCEuAPI.isHighTier() ? GTValues.MAX : GTValues.UHV);
 
     static {
-        GTMMREGISTRATE.creativeModeTab(() -> GTMMCreativeModeTabs.WIRELESS_TAB);
+        GTMM.creativeModeTab(() -> GTMMCreativeModeTabs.WIRELESS_TAB);
     }
 
-    public static final MachineDefinition WIRELESS_CWU_MONITOR = GTMMREGISTRATE
+    public static final MachineDefinition WIRELESS_CWU_MONITOR = GTMM
             .machine("wireless_cwu_monitor", WirelessCWUMonitor::new)
             .langValue("Wireless CWU Monitor")
             .rotationState(RotationState.NON_Y_AXIS)
@@ -38,7 +38,7 @@ public class WirelessMachines {
             .tier(GTValues.IV)
             .register();
 
-    public static final MachineDefinition WIRELESS_ENERGY_MONITOR = GTMMREGISTRATE
+    public static final MachineDefinition WIRELESS_ENERGY_MONITOR = GTMM
             .machine("wireless_energy_monitor", WirelessEnergyMonitor::new)
             .langValue("Wireless Energy Monitor")
             .rotationState(RotationState.NON_Y_AXIS)
@@ -46,7 +46,7 @@ public class WirelessMachines {
             .tier(GTValues.IV)
             .register();
 
-    public static final MachineDefinition WIRELESS_ENERGY_INTERFACE = GTMMREGISTRATE
+    public static final MachineDefinition WIRELESS_ENERGY_INTERFACE = GTMM
             .machine("wireless_energy_interface", WirelessEnergyInterface::new)
             .langValue("Wireless Energy Interface")
             .rotationState(RotationState.ALL)
@@ -54,7 +54,7 @@ public class WirelessMachines {
             .tier(GTValues.IV)
             .register();
 
-    public static final MachineDefinition WIRELESS_COMPUTATION_HATCH_TRANSMITTER = GTMMREGISTRATE
+    public static final MachineDefinition WIRELESS_COMPUTATION_HATCH_TRANSMITTER = GTMM
             .machine("wireless_computation_transmitter_hatch", (holder) -> new WirelessCWUHatchMachine(holder, true))
             .langValue("Wireless Computation Data Reception Hatch")
             .overlayTieredHullModel("computation_data_hatch")
@@ -65,7 +65,7 @@ public class WirelessMachines {
             .tier(GTValues.UV)
             .register();
 
-    public static final MachineDefinition WIRELESS_COMPUTATION_HATCH_RECEIVER = GTMMREGISTRATE
+    public static final MachineDefinition WIRELESS_COMPUTATION_HATCH_RECEIVER = GTMM
             .machine("wireless_computation_receiver_hatch", (holder) -> new WirelessCWUHatchMachine(holder, false))
             .langValue("Wireless Computation Data Transmission Hatch")
             .overlayTieredHullModel("computation_data_hatch")
@@ -76,7 +76,7 @@ public class WirelessMachines {
             .tier(GTValues.UV)
             .register();
 
-    public static final MachineDefinition WIRELESS_CWU_HATCH_PART_TRANSMITTER = GTMMREGISTRATE
+    public static final MachineDefinition WIRELESS_CWU_HATCH_PART_TRANSMITTER = GTMM
             .machine("wireless_cwu_transmitter_hatch", (holder) -> new WirelessCWUHatchPartMachine(holder, true))
             .langValue("Wireless Computation Data Reception Hatch")
             .overlayTieredHullModel("computation_data_hatch")
@@ -85,7 +85,7 @@ public class WirelessMachines {
             .tier(GTValues.UV)
             .register();
 
-    public static final MachineDefinition WIRELESS_CWU_HATCH_PART_RECEIVER = GTMMREGISTRATE
+    public static final MachineDefinition WIRELESS_CWU_HATCH_PART_RECEIVER = GTMM
             .machine("wireless_cwu_receiver_hatch", (holder) -> new WirelessCWUHatchPartMachine(holder, false))
             .langValue("Wireless Computation Data Transmission Hatch")
             .overlayTieredHullModel("computation_data_hatch")

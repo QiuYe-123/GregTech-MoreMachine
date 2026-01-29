@@ -13,17 +13,17 @@ import com.gregtechceu.gtceu.api.pattern.FactoryBlockPattern;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 
-import static cn.qiuye.gtmoremachine.common.registry.GTMMRegistration.GTMMREGISTRATE;
+import static cn.qiuye.gtmoremachine.common.registry.GTMMRegistration.GTMM;
 import static com.gregtechceu.gtceu.api.pattern.Predicates.blocks;
 import static com.gregtechceu.gtceu.api.pattern.Predicates.controller;
 
 public class WirelessMultiMachines {
 
     static {
-        GTMMREGISTRATE.creativeModeTab(() -> GTMMCreativeModeTabs.WIRELESS_TAB);
+        GTMM.creativeModeTab(() -> GTMMCreativeModeTabs.WIRELESS_TAB);
     }
 
-    public final static MultiblockMachineDefinition WIRELSESS_ENERGY_DIMENSIONAL_RELAY_NODE = GTMMConfig.getINSTANCE().isWirelessDimensionRateEnable ? GTMMREGISTRATE
+    public final static MultiblockMachineDefinition WIRELSESS_ENERGY_DIMENSIONAL_RELAY_NODE = GTMMConfig.getINSTANCE().isWirelessDimensionRateEnable ? GTMM
             .multiblock("wirelsess_energy_dimensional_relay_node", DimensionalRelayNodeMachine::new)
             .langValue("Wirelsess Energy Dimensional Relay Node")
             .rotationState(RotationState.NON_Y_AXIS)
@@ -39,7 +39,7 @@ public class WirelessMultiMachines {
                     GTCEu.id("block/multiblock/network_switch"))
             .register() : null;
 
-    public final static MultiblockMachineDefinition WIRELSESS_ENERGY_DEMODULATION_HUB = GTMMConfig.getINSTANCE().isWirelessCapacitylimitEnable ? GTMMREGISTRATE
+    public final static MultiblockMachineDefinition WIRELSESS_ENERGY_DEMODULATION_HUB = GTMMConfig.getINSTANCE().isWirelessCapacitylimitEnable ? GTMM
             .multiblock("wirelsess_energy_demodulation_hub", DemodulationHubMachine::new)
             .langValue("Wirelsess Energy Demodulation Hub")
             .rotationState(RotationState.NON_Y_AXIS)
