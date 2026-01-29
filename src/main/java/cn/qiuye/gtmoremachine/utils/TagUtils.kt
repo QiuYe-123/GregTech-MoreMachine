@@ -1,19 +1,39 @@
 package cn.qiuye.gtmoremachine.utils
 
+import cn.qiuye.gtmoremachine.api.gui.monitor.DefaultValueProvider
+
 import net.minecraft.world.item.ItemStack
 
 import java.util.*
 
 object TagUtils {
 
-    // ==================== 数据存储相关 (NBT) ====================
+    @JvmStatic
+    fun <T : Enum<T>> getEnumTag(
+        tagKey: String,
+        stack: ItemStack,
+        enumClass: Class<T>,
+        defaultValueProvider: DefaultValueProvider<T>,
+    ): T {
+        val tag = stack.orCreateTag
+        return if (!tag.isEmpty && tag.contains(tagKey)) {
+            java.lang.Enum.valueOf(enumClass, tag.getString(tagKey))
+        } else {
+            defaultValueProvider.defaultValue
+        }
+    }
+
+    @JvmStatic
+    fun <T : Enum<*>> setEnumTag(tagKey: String, tagValue: T, stack: ItemStack) {
+        setStringTag(tagKey, tagValue.toString(), stack)
+    }
 
     /**
      * 设置统计模式
      *
      * @param tagKey Tag的key名
      * @param tag tag
-     * @param stack      物品堆
+     * @param stack 物品堆
      */
     @JvmStatic
     fun setStringTag(tagKey: String, tag: String, stack: ItemStack) {
