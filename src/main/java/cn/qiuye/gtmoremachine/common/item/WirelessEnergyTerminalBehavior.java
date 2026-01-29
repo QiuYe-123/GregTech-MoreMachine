@@ -239,7 +239,7 @@ public class WirelessEnergyTerminalBehavior implements IItemUIFactory, IItemHUDP
      * @param stack    物品堆
      */
     private void setStatistics(Statistics enumtype, ItemStack stack) {
-        TagUtils.setStringTag(statistics, enumtype.toString(), stack);
+        TagUtils.setEnumTag(statistics, enumtype, stack);
     }
 
     /**
@@ -249,12 +249,7 @@ public class WirelessEnergyTerminalBehavior implements IItemUIFactory, IItemHUDP
      * @return 当前统计模式
      */
     private Statistics getStatistics(ItemStack stack) {
-        var tag = stack.getOrCreateTag();
-        if (!tag.isEmpty() && tag.contains(statistics)) {
-            return Statistics.valueOf(tag.getString(statistics));
-        } else {
-            return Statistics.Companion.getDefaultValue();
-        }
+        return TagUtils.getEnumTag(statistics, stack, Statistics.class, Statistics.Companion);
     }
 
     /**
@@ -264,7 +259,7 @@ public class WirelessEnergyTerminalBehavior implements IItemUIFactory, IItemHUDP
      * @param stack    物品堆
      */
     private void setFormat(Format enumtype, ItemStack stack) {
-        TagUtils.setStringTag(format, enumtype.toString(), stack);
+        TagUtils.setEnumTag(format, enumtype, stack);
     }
 
     /**
@@ -274,12 +269,7 @@ public class WirelessEnergyTerminalBehavior implements IItemUIFactory, IItemHUDP
      * @return 当前数字格式
      */
     private Format getFormat(ItemStack stack) {
-        var tag = stack.getOrCreateTag();
-        if (!tag.isEmpty() && tag.contains(format)) {
-            return Format.valueOf(tag.getString(format));
-        } else {
-            return Format.Companion.getDefaultValue();
-        }
+        return TagUtils.getEnumTag(format, stack, Format.class, Format.Companion);
     }
 
     /**
@@ -289,7 +279,7 @@ public class WirelessEnergyTerminalBehavior implements IItemUIFactory, IItemHUDP
      * @param stack    物品堆
      */
     private void setPowerStatus(Status enumtype, ItemStack stack) {
-        TagUtils.setStringTag(powerstatus, enumtype.toString(), stack);
+        TagUtils.setEnumTag(powerstatus, enumtype, stack);
     }
 
     /**
@@ -299,12 +289,7 @@ public class WirelessEnergyTerminalBehavior implements IItemUIFactory, IItemHUDP
      * @return 当前电力状态
      */
     private Status getPowerStatus(ItemStack stack) {
-        var tag = stack.getOrCreateTag();
-        if (!tag.isEmpty() && tag.contains(powerstatus)) {
-            return Status.valueOf(tag.getString(powerstatus));
-        } else {
-            return Status.Companion.getDefaultValue();
-        }
+        return TagUtils.getEnumTag(powerstatus, stack, Status.class, Status.Companion);
     }
 
     /**
@@ -314,7 +299,7 @@ public class WirelessEnergyTerminalBehavior implements IItemUIFactory, IItemHUDP
      * @param stack    物品堆
      */
     private void setSortingrules(Sorting enumtype, ItemStack stack) {
-        TagUtils.setStringTag(sortingrules, enumtype.toString(), stack);
+        TagUtils.setEnumTag(sortingrules, enumtype, stack);
     }
 
     /**
@@ -324,12 +309,7 @@ public class WirelessEnergyTerminalBehavior implements IItemUIFactory, IItemHUDP
      * @return 当前排序规则
      */
     private Sorting getSortingrules(ItemStack stack) {
-        var tag = stack.getOrCreateTag();
-        if (!tag.isEmpty() && tag.contains(sortingrules)) {
-            return Sorting.valueOf(tag.getString(sortingrules));
-        } else {
-            return Sorting.Companion.getDefaultValue();
-        }
+        return TagUtils.getEnumTag(sortingrules, stack, Sorting.class, Sorting.Companion);
     }
 
     /**
@@ -339,7 +319,7 @@ public class WirelessEnergyTerminalBehavior implements IItemUIFactory, IItemHUDP
      * @param stack    物品堆
      */
     private void setType(Type enumtype, ItemStack stack) {
-        TagUtils.setStringTag(type, enumtype.toString(), stack);
+        TagUtils.setEnumTag(type, enumtype, stack);
     }
 
     /**
@@ -349,12 +329,7 @@ public class WirelessEnergyTerminalBehavior implements IItemUIFactory, IItemHUDP
      * @return 当前显示的设备类型
      */
     private Type getType(ItemStack stack) {
-        var tag = stack.getOrCreateTag();
-        if (!tag.isEmpty() && tag.contains(type)) {
-            return Type.valueOf(tag.getString(type));
-        } else {
-            return Type.Companion.getDefaultValue();
-        }
+        return TagUtils.getEnumTag(type, stack, Type.class, Type.Companion);
     }
 
     // ==================== UUID 相关 ====================
