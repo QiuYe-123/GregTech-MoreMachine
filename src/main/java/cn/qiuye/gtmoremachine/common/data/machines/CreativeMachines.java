@@ -29,15 +29,15 @@ import com.tterrag.registrate.providers.ProviderType;
 import com.tterrag.registrate.util.entry.ItemEntry;
 import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
 
-import static cn.qiuye.gtmoremachine.common.registry.GTMMRegistration.GTMMREGISTRATE;
+import static cn.qiuye.gtmoremachine.common.registry.GTMMRegistration.GTMM;
 
 public class CreativeMachines {
 
     static {
-        GTMMREGISTRATE.creativeModeTab(() -> GTMMCreativeModeTabs.CREATIVE_TAB);
+        GTMM.creativeModeTab(() -> GTMMCreativeModeTabs.CREATIVE_TAB);
     }
 
-    public final static MachineDefinition CREATIVE_FLUID_INPUT_HATCH = GTMMREGISTRATE
+    public final static MachineDefinition CREATIVE_FLUID_INPUT_HATCH = GTMM
             .machine("creative_fluid_input_hatch", CreativeInputHatchPartMachine::new)
             .langValue("Creative Input Hatch")
             .rotationState(RotationState.ALL)
@@ -47,7 +47,7 @@ public class CreativeMachines {
             .tier(GTValues.MAX)
             .register();
 
-    public final static MachineDefinition CREATIVE_ITEM_INPUT_BUS = GTMMREGISTRATE
+    public final static MachineDefinition CREATIVE_ITEM_INPUT_BUS = GTMM
             .machine("creative_item_input_bus", CreativeInputBusPartMachine::new)
             .langValue("Creative Input Bus")
             .rotationState(RotationState.ALL)
@@ -58,7 +58,7 @@ public class CreativeMachines {
             .register();
 
     // energy input hatch
-    public final static MachineDefinition CREATIVE_ENERGY_INPUT_HATCH = GTMMREGISTRATE
+    public final static MachineDefinition CREATIVE_ENERGY_INPUT_HATCH = GTMM
             .machine("creative_energy_hatch", CreativeEnergyHatchPartMachine::new)
             .langValue("§rCreative Energy Hatch")
             .rotationState(RotationState.ALL)
@@ -69,7 +69,7 @@ public class CreativeMachines {
             .register();
 
     // laser input hatch
-    public final static MachineDefinition CREATIVE_LASER_INPUT_HATCH = GTMMREGISTRATE
+    public final static MachineDefinition CREATIVE_LASER_INPUT_HATCH = GTMM
             .machine("creative_laser_hatch", CreativeLaserHatchPartMachine::new)
             .langValue("§rCreative Laser Target Hatch")
             .rotationState(RotationState.ALL)
@@ -79,14 +79,14 @@ public class CreativeMachines {
             .tier(GTValues.MAX)
             .register();
 
-    public final static ItemEntry<ComponentItem> CREATIVE_ENERGY_COVER = GTMMREGISTRATE
+    public final static ItemEntry<ComponentItem> CREATIVE_ENERGY_COVER = GTMM
             .item("creative_energy_cover", ComponentItem::create)
             .lang("Creative Energy Cover")
             .onRegister(GTItems.attach(new CoverPlaceBehavior(GTMMCovers.CREATIVE_ENERGY),
                     new TooltipBehavior(lines -> lines.add(Component.translatable("gtmoremachine.creative_tooltip")))))
             .register();
 
-    public final static ItemEntry<ComponentItem> CREATIVE_FLUID_CELL = GTMMREGISTRATE
+    public final static ItemEntry<ComponentItem> CREATIVE_FLUID_CELL = GTMM
             .item("creative_fluid_cell", ComponentItem::create)
             .lang("Creative Fluid Cell")
             .color(() -> GTItems::cellColor)

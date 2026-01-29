@@ -17,7 +17,7 @@ import net.minecraft.network.chat.Component;
 
 import static cn.qiuye.gtmoremachine.common.data.machines.utils.CustomMachinesUtils.registerTieredMachines;
 import static cn.qiuye.gtmoremachine.common.machine.multiblock.part.HugeBusPartMachine.INV_MULTIPLE;
-import static cn.qiuye.gtmoremachine.common.registry.GTMMRegistration.GTMMREGISTRATE;
+import static cn.qiuye.gtmoremachine.common.registry.GTMMRegistration.GTMM;
 import static com.gregtechceu.gtceu.common.data.models.GTMachineModels.*;
 
 public class CustomMachines {
@@ -25,7 +25,7 @@ public class CustomMachines {
     public static final int[] ALL_TIERS = GTValues.tiersBetween(GTValues.ULV, GTCEuAPI.isHighTier() ? GTValues.MAX : GTValues.UV);
 
     static {
-        GTMMREGISTRATE.creativeModeTab(() -> GTMMCreativeModeTabs.MORE_MACHINES);
+        GTMM.creativeModeTab(() -> GTMMCreativeModeTabs.MORE_MACHINES);
     }
 
     public static final MachineDefinition[] HUGE_ITEM_IMPORT_BUS = registerTieredMachines("huge_item_import_bus",

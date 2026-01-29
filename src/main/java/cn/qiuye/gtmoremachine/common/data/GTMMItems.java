@@ -23,20 +23,20 @@ import com.tterrag.registrate.util.nullness.NonNullConsumer;
 import java.util.Locale;
 
 import static cn.qiuye.gtmoremachine.common.data.GTMMCovers.*;
-import static cn.qiuye.gtmoremachine.common.registry.GTMMRegistration.GTMMREGISTRATE;
+import static cn.qiuye.gtmoremachine.common.registry.GTMMRegistration.GTMM;
 import static com.gregtechceu.gtceu.common.data.GTItems.attach;
 
 public class GTMMItems {
 
     static {
-        GTMMREGISTRATE.creativeModeTab(() -> GTMMCreativeModeTabs.WIRELESS_TAB);
+        GTMM.creativeModeTab(() -> GTMMCreativeModeTabs.WIRELESS_TAB);
     }
 
     public static <T extends ComponentItem> NonNullConsumer<T> attachRenderer(ICustomRenderer customRenderer) {
         return !GTmm.isClientSide() ? NonNullConsumer.noop() : (item) -> item.attachComponents(customRenderer);
     }
 
-    public final static ItemEntry<ComponentItem> WIRELESS_ITEM_TRANSFER_COVER = GTMMREGISTRATE
+    public final static ItemEntry<ComponentItem> WIRELESS_ITEM_TRANSFER_COVER = GTMM
             .item("wireless_item_transfer_cover", ComponentItem::create)
             .lang("Wireless Item Transfer Cover")
             .onRegister(attach(new WirelessTransferCoverPlaceBehavior(GTMMCovers.WIRELESS_ITEM_TRANSFER),
@@ -47,7 +47,7 @@ public class GTMMItems {
                     })))
             .register();
 
-    public final static ItemEntry<ComponentItem> WIRELESS_FLUID_TRANSFER_COVER = GTMMREGISTRATE
+    public final static ItemEntry<ComponentItem> WIRELESS_FLUID_TRANSFER_COVER = GTMM
             .item("wireless_fluid_transfer_cover", ComponentItem::create)
             .lang("Wireless Fluid Transfer Cover")
             .onRegister(attach(new WirelessTransferCoverPlaceBehavior(GTMMCovers.WIRELESS_FLUID_TRANSFER),
@@ -58,7 +58,7 @@ public class GTMMItems {
                     })))
             .register();
 
-    public final static ItemEntry<ComponentItem> ADVANCED_WIRELESS_ITEM_TRANSFER_COVER = GTMMREGISTRATE
+    public final static ItemEntry<ComponentItem> ADVANCED_WIRELESS_ITEM_TRANSFER_COVER = GTMM
             .item("advanced_wireless_item_transfer_cover", ComponentItem::create)
             .lang("§bAdvanced Wireless Item Transfer Cover")
             .onRegister(attach(new WirelessTransferCoverPlaceBehavior(GTMMCovers.ADVANCED_WIRELESS_ITEM_TRANSFER),
@@ -70,7 +70,7 @@ public class GTMMItems {
                     })))
             .register();
 
-    public final static ItemEntry<ComponentItem> ADVANCED_WIRELESS_FLUID_TRANSFER_COVER = GTMMREGISTRATE
+    public final static ItemEntry<ComponentItem> ADVANCED_WIRELESS_FLUID_TRANSFER_COVER = GTMM
             .item("advanced_wireless_fluid_transfer_cover", ComponentItem::create)
             .lang("§bAdvanced Wireless Fluid Transfer Cover")
             .onRegister(attach(new WirelessTransferCoverPlaceBehavior(GTMMCovers.ADVANCED_WIRELESS_FLUID_TRANSFER),
@@ -82,14 +82,14 @@ public class GTMMItems {
                     })))
             .register();
 
-    public final static ItemEntry<ComponentItem> ADVANCED_TERMINAL = GTMMREGISTRATE
+    public final static ItemEntry<ComponentItem> ADVANCED_TERMINAL = GTMM
             .item("advanced_terminal", ComponentItem::create)
             .lang("§bAdvanced Terminal")
             .properties(p -> p.stacksTo(1))
             .onRegister(attach(new AdvancedTerminalBehavior()))
             .register();
 
-    public final static ItemEntry<ComponentItem> WIRELESS_ENERGY_TERMINAL = GTMMREGISTRATE
+    public final static ItemEntry<ComponentItem> WIRELESS_ENERGY_TERMINAL = GTMM
             .item("wireless_energy_terminal", ComponentItem::create)
             .lang("Wireless Energy Terminal")
             .properties(p -> p.stacksTo(1))
@@ -97,7 +97,7 @@ public class GTMMItems {
             .onRegister(attach(new WirelessEnergyBindingToolBehavior()))
             .register();
 
-    public final static ItemEntry<ComponentItem> WIRELESS_ENERGY_BINDING_TOOL = GTMMREGISTRATE
+    public final static ItemEntry<ComponentItem> WIRELESS_ENERGY_BINDING_TOOL = GTMM
             .item("wireless_energy_binding_tool", ComponentItem::create)
             .lang("Wireless Energy Binding Tool")
             .properties(p -> p.stacksTo(1))
@@ -143,7 +143,7 @@ public class GTMMItems {
             registerTieredCover(GTValues.OpV, 4) : null;
 
     private static ItemEntry<ComponentItem> registerTieredCover(int tier, int amperage) {
-        return GTMMREGISTRATE
+        return GTMM
                 .item(GTValues.VN[tier].toLowerCase(Locale.ROOT) + "_" + (amperage == 1 ? "" : amperage + "a_") + "wireless_energy_receive_cover", ComponentItem::create)
                 .lang(GTValues.VNF[tier] + " " + "Wireless Energy Receive Cover")
                 .onRegister(attach(new TooltipBehavior(lines -> {

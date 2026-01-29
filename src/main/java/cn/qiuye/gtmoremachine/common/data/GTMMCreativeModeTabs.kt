@@ -16,32 +16,32 @@ import com.tterrag.registrate.util.entry.RegistryEntry
 
 object GTMMCreativeModeTabs {
     @JvmField
-    val CREATIVE_TAB: RegistryEntry<CreativeModeTab> = GTMMRegistration.GTMMREGISTRATE
+    val CREATIVE_TAB: RegistryEntry<CreativeModeTab> = GTMMRegistration.GTMM
         .defaultCreativeTab("creative") { builder: CreativeModeTab.Builder ->
             builder
                 .displayItems(
                     GTCreativeModeTabs.RegistrateDisplayItemsGenerator(
                         "creative",
-                        GTMMRegistration.GTMMREGISTRATE,
+                        GTMMRegistration.GTMM,
                     ),
                 )
-                .title(GTMMRegistration.GTMMREGISTRATE.addLang("itemGroup", GTmm.id("creative"), "Creative Things"))
+                .title(GTMMRegistration.GTMM.addLang("itemGroup", GTmm.id("creative"), "Creative Things"))
                 .icon { GTMachines.CREATIVE_ENERGY.asStack() }
                 .build()
         }
         .register()
 
     @JvmField
-    val WIRELESS_TAB: RegistryEntry<CreativeModeTab> = GTMMRegistration.GTMMREGISTRATE
+    val WIRELESS_TAB: RegistryEntry<CreativeModeTab> = GTMMRegistration.GTMM
         .defaultCreativeTab("wireless") { builder: CreativeModeTab.Builder ->
             builder
                 .displayItems(
                     GTCreativeModeTabs.RegistrateDisplayItemsGenerator(
                         "wireless",
-                        GTMMRegistration.GTMMREGISTRATE,
+                        GTMMRegistration.GTMM,
                     ),
                 )
-                .title(GTMMRegistration.GTMMREGISTRATE.addLang("itemGroup", GTmm.id("wireless"), "Gregtech Wireless"))
+                .title(GTMMRegistration.GTMM.addLang("itemGroup", GTmm.id("wireless"), "Gregtech Wireless"))
                 .icon {
                     WirelessMachines.WIRELESS_ENERGY_INPUT_HATCH[
                         if (GTCEuAPI.isHighTier()) {
@@ -57,16 +57,16 @@ object GTMMCreativeModeTabs {
         .register()
 
     @JvmField
-    val MORE_MACHINES: RegistryEntry<CreativeModeTab> = GTMMRegistration.GTMMREGISTRATE
+    val MORE_MACHINES: RegistryEntry<CreativeModeTab> = GTMMRegistration.GTMM
         .defaultCreativeTab("more_machines") { builder: CreativeModeTab.Builder ->
             builder
                 .displayItems(
                     GTCreativeModeTabs.RegistrateDisplayItemsGenerator(
                         "more_machines",
-                        GTMMRegistration.GTMMREGISTRATE,
+                        GTMMRegistration.GTMM,
                     ),
                 )
-                .title(GTMMRegistration.GTMMREGISTRATE.addLang("itemGroup", GTmm.id("more_machines"), "More Machines"))
+                .title(GTMMRegistration.GTMM.addLang("itemGroup", GTmm.id("more_machines"), "More Machines"))
                 .icon {
                     CustomMachines.HUGE_INPUT_DUAL_HATCH[
                         if (GTCEuAPI.isHighTier()) {
