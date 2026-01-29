@@ -57,13 +57,13 @@ public class CreativeFluidStats implements IItemComponent, IComponentCapability,
         tooltipComponents.add(Component.translatable("gtmoremachine.creative_tooltip"));
         if (stack.hasTag() && stack.getTag().contains("Fluid")) {
             FluidUtil.getFluidContained(stack).ifPresent(tank -> tooltipComponents
-                    .add(Component.translatable("item.gtmoremachine.creative_fluid_cell.tooltip1", tank.getDisplayName())));
+                    .add(Component.translatable("item.gtmoremachine.creative_fluid_cell.tooltip.1", tank.getDisplayName())));
             if (getAccurate(stack)) {
                 tooltipComponents
-                        .add(Component.translatable("item.gtmoremachine.creative_fluid_cell.tooltip3", getCapacity(stack)));
+                        .add(Component.translatable("item.gtmoremachine.creative_fluid_cell.tooltip.3", getCapacity(stack)));
             }
         } else {
-            tooltipComponents.add(Component.translatable("item.gtmoremachine.creative_fluid_cell.tooltip2"));
+            tooltipComponents.add(Component.translatable("item.gtmoremachine.creative_fluid_cell.tooltip.2"));
         }
     }
 
@@ -96,8 +96,8 @@ public class CreativeFluidStats implements IItemComponent, IComponentCapability,
         group.addWidget(new LabelWidget(7, 9, "gtceu.creative.tank.fluid"));
         group.addWidget(new SwitchWidget(7, 30, 60, 15, (clickData, aBoolean) -> setAccurate(aBoolean))
                 .setTexture(
-                        new GuiTextureGroup(ResourceBorderTexture.BUTTON_COMMON, new TextTexture("item.gtmoremachine.creative_fluid_cell.gui.button1")),
-                        new GuiTextureGroup(ResourceBorderTexture.BUTTON_COMMON, new TextTexture("item.gtmoremachine.creative_fluid_cell.gui.button2")))
+                        new GuiTextureGroup(ResourceBorderTexture.BUTTON_COMMON, new TextTexture("item.gtmoremachine.creative_fluid_cell.gui.button.1")),
+                        new GuiTextureGroup(ResourceBorderTexture.BUTTON_COMMON, new TextTexture("item.gtmoremachine.creative_fluid_cell.gui.button.2")))
                 .setPressed(getAccurate()));
         group.addWidget(new TerminalInputWidget(72, 31, 90, 10, this::getCapacity, this::setCapacity)
                 .setMin(1).setMax(Integer.MAX_VALUE));

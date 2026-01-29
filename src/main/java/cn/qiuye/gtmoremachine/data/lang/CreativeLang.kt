@@ -1,15 +1,23 @@
 package cn.qiuye.gtmoremachine.data.lang
 
-import com.tterrag.registrate.providers.RegistrateLangProvider
+import cn.qiuye.gtmoremachine.data.lang.LangHandler.addCNEN
 
 object CreativeLang {
 
-    fun init(provider: RegistrateLangProvider) {
-        provider.add("item.gtmoremachine.creative_fluid_cell.tooltip1", "§2Fluid Stored: §f%s")
-        provider.add("item.gtmoremachine.creative_fluid_cell.tooltip2", "Right click to open GUI to set fluid.")
-        provider.add("item.gtmoremachine.creative_fluid_cell.tooltip3", "Enabled Accurate output(%1\$d mB)")
-        provider.add("item.gtmoremachine.creative_fluid_cell.gui.button1", "Enable Accurate output")
-        provider.add("item.gtmoremachine.creative_fluid_cell.gui.button2", "Disable Accurate output")
-        provider.add("gtmoremachine.creative_tooltip", "§7You just need Creative Mode§7 to use this")
+    fun init() {
+        addCNEN("item.gtmoremachine.creative_fluid_cell.tooltip.1", "§2内部流体：§f%1\$s", "§2Fluid Stored: §f%s")
+        addCNEN(
+            "item.gtmoremachine.creative_fluid_cell.tooltip.2",
+            "右键打开设置窗口来指定流体。",
+            "Right click to open GUI to set fluid.",
+        )
+        addCNEN(
+            "item.gtmoremachine.creative_fluid_cell.tooltip.3",
+            "已启用精确输出(%1\$d mB)",
+            "Enabled Accurate output(%1\$d mB)",
+        )
+        addCNEN("item.gtmoremachine.creative_fluid_cell.gui.button.1", "启用精确输出", "Enable Accurate output")
+        addCNEN("item.gtmoremachine.creative_fluid_cell.gui.button.2", "禁用精确输出", "Disable Accurate output")
+        addCNEN("gtmoremachine.creative_tooltip", "§7你需要§b创造模式§7来使用它", "§7You just need Creative Mode§7 to use this")
     }
 }

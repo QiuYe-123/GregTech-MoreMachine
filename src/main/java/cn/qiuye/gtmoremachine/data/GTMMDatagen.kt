@@ -11,7 +11,6 @@ object GTMMDatagen {
 
     @JvmStatic
     fun initPost() {
-        GTMMRegistration.GTMMREGISTRATE.addDataGenerator(ProviderType.LANG, LangHandler::init)
         GTMMRegistration.GTMMREGISTRATE.addDataGenerator(ProviderType.LANG, LangHandler::enInitialize)
         GTMMRegistration.GTMMREGISTRATE.addDataGenerator(
             SimplifiedChineseLanguageProvider.LANG,
