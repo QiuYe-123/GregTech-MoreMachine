@@ -6,15 +6,16 @@ import cn.qiuye.gtmoremachine.api.annotation.language.GTMMRegisterLanguage;
 import cn.qiuye.gtmoremachine.config.GTMMConfig;
 
 import com.gregtechceu.gtceu.api.GTCEuAPI;
-import com.gregtechceu.gtceu.api.block.IMachineBlock;
+import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTMachines;
 
 import net.minecraft.world.level.block.Block;
 
 import com.tterrag.registrate.util.entry.RegistryEntry;
-import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.function.Supplier;
@@ -23,11 +24,10 @@ import java.util.function.Supplier;
 public class BlockMap {
 
     public static final Object2ObjectOpenHashMap<String, Block[]> MAP = new Object2ObjectOpenHashMap<>(50);
-    public static final Int2ObjectOpenHashMap<Supplier<IMachineBlock>> rotMap = new Int2ObjectOpenHashMap<>(11);
+    public static final Reference2ObjectOpenHashMap<Block, String> BLOCK_CATEGORY_MAP = new Reference2ObjectOpenHashMap<>();
 
     public static Block[] LAMP;
     public static Block[] BORLAMP;
-    public static Block[] ROTOR_HOLDER;
 
     public static final String namePrefix = "gtmoremachine.adv_terminal.block_map";
 
@@ -41,15 +41,16 @@ public class BlockMap {
     public static final String lamp = "lamp";
     @GTMMRegisterLanguage(namePrefix = namePrefix, cn = "无框灯", en = "Borderless Lamp")
     public static final String borlamp = "borlamp";
+    @GTMMRegisterLanguage(namePrefix = namePrefix, cn = "消声仓", en = "Muffler Hatch")
+    public static final String muffler_hatch = "muffler_hatch";
     @GTMMRegisterLanguage(namePrefix = namePrefix, cn = "转子支架", en = "Rotor Holder")
-    public static final String rotor_holder = "rotor_holder";
+    public static final String rotor_hatch = "rotor_hatch";
     @GTMMRegisterLanguage(namePrefix = namePrefix, cn = "能源通讯单元", en = "Energy Communication Unit")
     public static final String ECU = "ecu";
     @GTMMRegisterLanguage(namePrefix = namePrefix, cn = "电网容量组件", en = "Wireless Energy Capacity Component")
     public static final String WECC = "wecc";
 
     public static void build() {
-        load();
         // 线圈
         var coils = new ArrayList<>(GTCEuAPI.HEATING_COILS.entrySet());
         coils.sort(Comparator.comparingInt(entry -> entry.getKey().getTier()));
@@ -72,21 +73,26 @@ public class BlockMap {
         var ecublock = new ArrayList<>(GTMMAPI.ECU.entrySet());
         ecublock.sort(Comparator.comparingInt(entry -> entry.getKey().getTier()));
         MAP.put(ECU, ecublock.stream().map(Map.Entry::getValue).map(Supplier::get).toArray(Block[]::new));
-        // 转子支架
-        MAP.put(rotor_holder, ROTOR_HOLDER);
+        // 消声仓
+        MAP.put(muffler_hatch, Arrays.stream(GTMachines.MUFFLER_HATCH).filter(Objects::nonNull).distinct().sorted(Comparator.comparingInt(MachineDefinition::getTier)).map(MachineDefinition::get).toArray(Block[]::new));
+        // 转子仓
+        MAP.put(rotor_hatch, Arrays.stream(GTMachines.ROTOR_HOLDER).filter(Objects::nonNull).distinct().sorted(Comparator.comparingInt(MachineDefinition::getTier)).map(MachineDefinition::get).toArray(Block[]::new));
 
         if (GTMMConfig.INSTANCE.isWirelessCapacitylimitEnable) {
             var weccblock = new ArrayList<>(GTMMAPI.WECC.entrySet());
             weccblock.sort(Comparator.comparingInt(entry -> entry.getKey().getTier()));
             MAP.put(WECC, weccblock.stream().map(Map.Entry::getValue).map(Supplier::get).toArray(Block[]::new));
         }
+
+        MAP.forEach((category, blocks) -> {
+            for (Block block : blocks) {
+                BLOCK_CATEGORY_MAP.put(block, category);
+            }
+        });
     }
 
-    public static void load() {
-        int j = 0;
-        for (int i = 3; i <= 13; i++) {
-            BlockMap.ROTOR_HOLDER[j] = GTMachines.ROTOR_HOLDER[i].getBlock();
-            j++;
-        }
+    @Nullable
+    public static String getCategory(Block block) {
+        return BLOCK_CATEGORY_MAP.get(block);
     }
 }
