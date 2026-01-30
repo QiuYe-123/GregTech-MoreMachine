@@ -1,8 +1,8 @@
 package cn.qiuye.gtmoremachine.config;
 
 import cn.qiuye.gtmoremachine.GTmm;
-import cn.qiuye.gtmoremachine.api.annotation.DataGeneratorScanned;
-import cn.qiuye.gtmoremachine.api.annotation.language.RegisterLanguage;
+import cn.qiuye.gtmoremachine.api.annotation.GTMMDataGeneratorScanned;
+import cn.qiuye.gtmoremachine.api.annotation.language.GTMMRegisterLanguage;
 
 import dev.toma.configuration.Configuration;
 import dev.toma.configuration.config.Config;
@@ -10,11 +10,11 @@ import dev.toma.configuration.config.Configurable;
 import dev.toma.configuration.config.UpdateRestrictions;
 import dev.toma.configuration.config.format.ConfigFormats;
 
-@DataGeneratorScanned
+@GTMMDataGeneratorScanned
 @Config(id = GTmm.MOD_ID)
 public class GTMMConfig {
 
-    @RegisterLanguage(en = "GTMM Config", cn = "GTMM 配置")
+    @GTMMRegisterLanguage(en = "GTMM Config", cn = "GTMM 配置")
     private static final String SCREEN = "config.screen.gtmoremachine";
     public static GTMMConfig INSTANCE;
     private static final Object LOCK = new Object();
@@ -34,7 +34,7 @@ public class GTMMConfig {
             "如果启用，则需要使用无线能源绑定工具绑定电池箱或者变电站来提高无线能量传输上限。",
             "If enabled, you need to use a wireless energy binding tool to bind the battery box or substation to increase the wireless energy transfer limit."
     })
-    @RegisterLanguage(namePrefix = CFGPreFix, en = "Enable wireless power transfer limit.", cn = "是否启用无线能源传输限制。")
+    @GTMMRegisterLanguage(namePrefix = CFGPreFix, en = "Enable wireless power transfer limit.", cn = "是否启用无线能源传输限制。")
     public boolean isWirelessRateEnable = true;
 
     @Configurable
@@ -43,7 +43,7 @@ public class GTMMConfig {
             "如果启用，则每个维度需要放置维度电网传输装置来绑定维度",
             "If enabled, a Dimensional Grid Transmission Device must be placed in each dimension to bind it."
     })
-    @RegisterLanguage(namePrefix = CFGPreFix, en = "Enable wireless energy dimension limit.", cn = "是否启用无线能源维度限制。")
+    @GTMMRegisterLanguage(namePrefix = CFGPreFix, en = "Enable wireless energy dimension limit.", cn = "是否启用无线能源维度限制。")
     public boolean isWirelessDimensionRateEnable = false;
 
     @Configurable
@@ -52,15 +52,15 @@ public class GTMMConfig {
             "如果启用，则需要放置电网存储系统，可以放置多台提高总容量",
             "If enabled, Grid Storage Systems must be placed; multiple units can be installed to increase total capacity."
     })
-    @RegisterLanguage(namePrefix = CFGPreFix, en = "Enable wireless power capacity limit.", cn = "是否启用无线能源容量限制。")
+    @GTMMRegisterLanguage(namePrefix = CFGPreFix, en = "Enable wireless power capacity limit.", cn = "是否启用无线能源容量限制。")
     public boolean isWirelessCapacitylimitEnable = false;
 
     @Configurable
     @Configurable.Comment({ "HUD设置", "HUD Settings" })
-    @RegisterLanguage(namePrefix = CFGPreFix, en = "HUD Configuration", cn = "HUD配置")
+    @GTMMRegisterLanguage(namePrefix = CFGPreFix, en = "HUD Configuration", cn = "HUD配置")
     public HUDConfig hud = new HUDConfig();
 
-    @DataGeneratorScanned
+    @GTMMDataGeneratorScanned
     public static class HUDConfig {
 
         @Configurable
@@ -76,7 +76,7 @@ public class GTMMConfig {
                 "默认值: left-upper",
                 "Default: left-upper"
         })
-        @RegisterLanguage(namePrefix = CFGPreFix, en = "HUD Location", cn = "HUD位置")
+        @GTMMRegisterLanguage(namePrefix = CFGPreFix, en = "HUD Location", cn = "HUD位置")
         public HUDLocation hudLocation = HUDLocation.LeftUpper;
 
         @Configurable
@@ -86,7 +86,7 @@ public class GTMMConfig {
                 "默认值: 0",
                 "Default: 0"
         })
-        @RegisterLanguage(namePrefix = CFGPreFix, en = "HUD Offset X", cn = "HUD偏移X")
+        @GTMMRegisterLanguage(namePrefix = CFGPreFix, en = "HUD Offset X", cn = "HUD偏移X")
         @Configurable.Range(min = -100, max = 100)
         public int hudOffsetX = 0;
 
@@ -97,7 +97,7 @@ public class GTMMConfig {
                 "默认值: 0",
                 "Default: 0"
         })
-        @RegisterLanguage(namePrefix = CFGPreFix, en = "HUD Offset Y", cn = "HUD偏移Y")
+        @GTMMRegisterLanguage(namePrefix = CFGPreFix, en = "HUD Offset Y", cn = "HUD偏移Y")
         @Configurable.Range(min = -100, max = 100)
         public int hudOffsetY = 0;
     }

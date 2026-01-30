@@ -1,9 +1,9 @@
 package cn.qiuye.gtmoremachine.api.registries;
 
 import cn.qiuye.gtmoremachine.GTmm;
-import cn.qiuye.gtmoremachine.api.annotation.DataGeneratorScanned;
-import cn.qiuye.gtmoremachine.api.annotation.Scanned;
-import cn.qiuye.gtmoremachine.api.annotation.language.RegisterLanguage;
+import cn.qiuye.gtmoremachine.api.annotation.GTMMDataGeneratorScanned;
+import cn.qiuye.gtmoremachine.api.annotation.GTMMScanned;
+import cn.qiuye.gtmoremachine.api.annotation.language.GTMMRegisterLanguage;
 import cn.qiuye.gtmoremachine.api.lang.CNEN;
 
 import net.minecraftforge.fml.ModList;
@@ -24,8 +24,8 @@ public class ScanningClass {
 
     static {
         long time = System.currentTimeMillis();
-        Type scannedclass = Type.getType(Scanned.class);
-        Type datageneratorscanned = LANG == null ? null : Type.getType(DataGeneratorScanned.class);
+        Type scannedclass = Type.getType(GTMMScanned.class);
+        Type datageneratorscanned = LANG == null ? null : Type.getType(GTMMDataGeneratorScanned.class);
 
         for (ModFileScanData scanData : ModList.get().getAllScanData()) {
             for (ModFileScanData.AnnotationData annotationData : scanData.getAnnotations()) {
@@ -34,8 +34,8 @@ public class ScanningClass {
                     try {
                         Class<?> data = Class.forName(annotationData.memberName());
                         for (Field field : data.getDeclaredFields()) {
-                            if (LANG != null && field.isAnnotationPresent(RegisterLanguage.class)) {
-                                RegisterLanguage registerLanguage = field.getAnnotation(RegisterLanguage.class);
+                            if (LANG != null && field.isAnnotationPresent(GTMMRegisterLanguage.class)) {
+                                GTMMRegisterLanguage registerLanguage = field.getAnnotation(GTMMRegisterLanguage.class);
                                 try {
                                     assert registerLanguage != null;
                                     String key = registerLanguage.key();

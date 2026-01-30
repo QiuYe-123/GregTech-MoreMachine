@@ -8,7 +8,7 @@ import java.lang.annotation.RetentionPolicy;
 
 @Target(allowedTargets = AnnotationTarget.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface RegisterLanguage {
+public @interface GTMMRegisterLanguage {
 
     String namePrefix() default "";
 

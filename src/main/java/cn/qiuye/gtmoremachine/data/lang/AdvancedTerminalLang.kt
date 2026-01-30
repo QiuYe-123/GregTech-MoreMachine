@@ -1,23 +1,10 @@
 package cn.qiuye.gtmoremachine.data.lang
 
-import cn.qiuye.gtmoremachine.common.block.BlockMap
 import cn.qiuye.gtmoremachine.data.lang.LangHandler.addCNEN
 
 object AdvancedTerminalLang {
 
-    fun levelbockinit() {
-        addCNEN(BlockMap.COIL, "线圈", "Coil")
-        addCNEN(BlockMap.COMP, "电容", "Capacitor")
-        addCNEN(BlockMap.CLEA, "过滤机械方块", "CleamRoomType")
-        addCNEN(BlockMap.LAMP, "灯", "Lamp")
-        addCNEN(BlockMap.BORLAMP, "无框灯", "Borderless Lamp")
-        addCNEN(BlockMap.ROTOR, "转子支架", "Rotor Holder")
-        addCNEN(BlockMap.WECC, "电网容量组件", "Wireless Energy Capacity Component")
-        addCNEN(BlockMap.ECU, "能源通讯单元", "Energy Communication Unit")
-    }
-
     fun init() {
-        levelbockinit()
         addCNEN("item.gtmoremachine.advanced_terminal.setting.title", "高级终端设置", "§bAdvanced Terminal")
         addCNEN("item.gtmoremachine.advanced_terminal.setting.1", "等级方块", "Level Block")
         addCNEN(
