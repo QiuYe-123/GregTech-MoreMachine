@@ -40,7 +40,7 @@ public interface IWirelessMonitor extends IWirelessEnergyContainerHolder {
                 Component.literal(NumberUtils.formatBigIntegerNumberOrSic(energyTotal, format)).withStyle(ChatFormatting.GOLD),
                 Component.literal(NumberUtils.formatBigDecimalNumberOrSic(FormattingUtil.voltageAmperage(new BigDecimal(energyTotal)), format)),
                 FormattingUtil.voltageName(new BigDecimal(energyTotal))));
-        if (GTMMConfig.getINSTANCE().isWirelessRateEnable) {
+        if (GTMMConfig.INSTANCE.isWirelessRateEnable) {
             BigInteger rate = container.getRate();
             textListCache.add(FormattingUtil.formatWithConstantWidth("gtmoremachine.machine.wireless_energy_monitor.tooltip.2",
                     Component.literal(NumberUtils.formatBigIntegerNumberOrSic(rate, format)).withStyle(ChatFormatting.GRAY),
@@ -86,7 +86,7 @@ public interface IWirelessMonitor extends IWirelessEnergyContainerHolder {
         BigInteger multiply = allAvgEnergy.abs().toBigInteger().multiply(BigInteger.valueOf(20));
         if (compare > 0) {
             textListCache.add(Component.translatable("gtceu.multiblock.power_substation.time_to_fill",
-                    GTMMConfig.getINSTANCE().isWirelessCapacitylimitEnable ?
+                    GTMMConfig.INSTANCE.isWirelessCapacitylimitEnable ?
                             getTimeToFillDrainText((container.getCapacity().subtract(energyTotal)).divide(multiply)) :
                             Component.translatable("gtmoremachine.machine.wireless_energy_monitor.tooltip.time_to_fill"))
                     .withStyle(ChatFormatting.GRAY));
@@ -99,7 +99,7 @@ public interface IWirelessMonitor extends IWirelessEnergyContainerHolder {
                     Component.translatable("gtceu.multiblock.power_substation.time_forever")).withStyle(ChatFormatting.GRAY));
         }
 
-        if (GTMMConfig.getINSTANCE().isWirelessRateEnable && container.getBindPos() != null) {
+        if (GTMMConfig.INSTANCE.isWirelessRateEnable && container.getBindPos() != null) {
             String pos = container.getBindPos().pos().toShortString();
             textListCache.add(Component.translatable("gtmoremachine.machine.wireless_energy_hatch.tooltip.2",
                     Component.translatable("recipe.condition.dimension.tooltip", container.getBindPos().dimension().location().toString()).append(" [").append(pos).append("] ")).withStyle(ChatFormatting.GRAY));

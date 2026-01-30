@@ -1,6 +1,7 @@
 package cn.qiuye.gtmoremachine.common;
 
 import cn.qiuye.gtmoremachine.GTmm;
+import cn.qiuye.gtmoremachine.api.registries.ScanningClass;
 import cn.qiuye.gtmoremachine.common.data.GTMMCovers;
 import cn.qiuye.gtmoremachine.common.data.GTMMCreativeModeTabs;
 import cn.qiuye.gtmoremachine.common.data.machines.Machines;
@@ -37,10 +38,11 @@ public class CommonProxy {
 
     private static void init() {
         GTmm.LOGGER.info("GTMoreMachine common proxy init!");
-        GTMMConfig.Companion.init();
+        GTMMConfig.init();
+        ScanningClass.init();
         if (GTmm.isDataGen()) {
-            GTMMConfig.getINSTANCE().isWirelessDimensionRateEnable = true;
-            GTMMConfig.getINSTANCE().isWirelessCapacitylimitEnable = true;
+            GTMMConfig.INSTANCE.isWirelessDimensionRateEnable = true;
+            GTMMConfig.INSTANCE.isWirelessCapacitylimitEnable = true;
         }
         GTMMDatagen.initPost();
         SyncedKeyMappings.init();

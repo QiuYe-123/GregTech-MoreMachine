@@ -79,9 +79,9 @@ public class WirelessEnergyContainer {
 
     public long addEnergy(int tier, long energy, @Nullable MetaMachine machine) {
         long change = energy;
-        if (GTMMConfig.getINSTANCE().isWirelessRateEnable) change = Math.min(BigIntegerUtils.getLongValue(rate), energy);
-        if (GTMMConfig.getINSTANCE().isWirelessDimensionRateEnable && isDimensionBound(tier, machine)) return 0;
-        if (GTMMConfig.getINSTANCE().isWirelessCapacitylimitEnable && storage.add(BigInteger.valueOf(change)).compareTo(capacity) > 0) change = BigIntegerUtils.getLongValue(capacity.subtract(storage));
+        if (GTMMConfig.INSTANCE.isWirelessRateEnable) change = Math.min(BigIntegerUtils.getLongValue(rate), energy);
+        if (GTMMConfig.INSTANCE.isWirelessDimensionRateEnable && isDimensionBound(tier, machine)) return 0;
+        if (GTMMConfig.INSTANCE.isWirelessCapacitylimitEnable && storage.add(BigInteger.valueOf(change)).compareTo(capacity) > 0) change = BigIntegerUtils.getLongValue(capacity.subtract(storage));
         if (change <= 0) return 0;
         storage = storage.add(BigInteger.valueOf(change));
         WirelessEnergySavedData.INSTANCE.setDirty(true);
@@ -97,8 +97,8 @@ public class WirelessEnergyContainer {
 
     public long removeEnergy(int tier, long energy, @Nullable MetaMachine machine) {
         long change = Math.min(BigIntegerUtils.getLongValue(storage), energy);
-        if (GTMMConfig.getINSTANCE().isWirelessRateEnable) change = Math.min(BigIntegerUtils.getLongValue(storage), Math.min(BigIntegerUtils.getLongValue(rate), energy));
-        if (GTMMConfig.getINSTANCE().isWirelessDimensionRateEnable && isDimensionBound(tier, machine)) return 0;
+        if (GTMMConfig.INSTANCE.isWirelessRateEnable) change = Math.min(BigIntegerUtils.getLongValue(storage), Math.min(BigIntegerUtils.getLongValue(rate), energy));
+        if (GTMMConfig.INSTANCE.isWirelessDimensionRateEnable && isDimensionBound(tier, machine)) return 0;
         if (change <= 0) return 0;
         storage = storage.subtract(BigInteger.valueOf(change));
         WirelessEnergySavedData.INSTANCE.setDirty(true);
@@ -114,8 +114,8 @@ public class WirelessEnergyContainer {
 
     public long addEnergy(long energy, @Nullable MetaMachine machine) {
         long change = energy;
-        if (GTMMConfig.getINSTANCE().isWirelessRateEnable) change = Math.min(BigIntegerUtils.getLongValue(rate), energy);
-        if (GTMMConfig.getINSTANCE().isWirelessCapacitylimitEnable && storage.add(BigInteger.valueOf(change)).compareTo(capacity) > 0) change = BigIntegerUtils.getLongValue(capacity.subtract(storage));
+        if (GTMMConfig.INSTANCE.isWirelessRateEnable) change = Math.min(BigIntegerUtils.getLongValue(rate), energy);
+        if (GTMMConfig.INSTANCE.isWirelessCapacitylimitEnable && storage.add(BigInteger.valueOf(change)).compareTo(capacity) > 0) change = BigIntegerUtils.getLongValue(capacity.subtract(storage));
         if (change <= 0) return 0;
         storage = storage.add(BigInteger.valueOf(change));
         WirelessEnergySavedData.INSTANCE.setDirty(true);
@@ -131,7 +131,7 @@ public class WirelessEnergyContainer {
 
     public long removeEnergy(long energy, @Nullable MetaMachine machine) {
         long change = Math.min(BigIntegerUtils.getLongValue(storage), energy);
-        if (GTMMConfig.getINSTANCE().isWirelessRateEnable) change = Math.min(BigIntegerUtils.getLongValue(storage), Math.min(BigIntegerUtils.getLongValue(rate), energy));
+        if (GTMMConfig.INSTANCE.isWirelessRateEnable) change = Math.min(BigIntegerUtils.getLongValue(storage), Math.min(BigIntegerUtils.getLongValue(rate), energy));
         if (change <= 0) return 0;
         storage = storage.subtract(BigInteger.valueOf(change));
         WirelessEnergySavedData.INSTANCE.setDirty(true);
@@ -147,7 +147,7 @@ public class WirelessEnergyContainer {
 
     public BigInteger addEnergy(BigInteger energy, @Nullable MetaMachine machine) {
         BigInteger change = energy;
-        if (GTMMConfig.getINSTANCE().isWirelessCapacitylimitEnable && storage.add(change).compareTo(capacity) > 0) change = capacity.subtract(storage);
+        if (GTMMConfig.INSTANCE.isWirelessCapacitylimitEnable && storage.add(change).compareTo(capacity) > 0) change = capacity.subtract(storage);
         if (change.compareTo(BigInteger.ZERO) <= 0) return BigInteger.ZERO;
         storage = storage.add(change);
         WirelessEnergySavedData.INSTANCE.setDirty(true);

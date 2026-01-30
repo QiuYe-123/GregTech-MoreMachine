@@ -3,6 +3,7 @@ package cn.qiuye.gtmoremachine.data.lang
 import cn.qiuye.gtmoremachine.api.lang.CNEN
 import cn.qiuye.gtmoremachine.api.lang.SimplifiedChineseLanguageProvider
 import cn.qiuye.gtmoremachine.api.lang.TraditionalChineseLanguageProvider
+import cn.qiuye.gtmoremachine.api.registries.ScanningClass
 import cn.qiuye.gtmoremachine.utils.datagen.ChineseConverter
 
 import net.minecraftforge.common.data.LanguageProvider
@@ -50,7 +51,7 @@ object LangHandler {
     }
 
     fun init() {
-        ConfigurationLang.init()
+        ScanningClass.LANG.forEach(LangHandler::addKeyCNEN)
         ItemLang.init()
         BlockLang.init()
         HUDLang.init()

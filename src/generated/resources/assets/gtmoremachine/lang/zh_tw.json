@@ -468,6 +468,7 @@
   "config.jade.plugin_gtmoremachine.wireless_energy_hatch_provider.tooltip.1": "能源總量: %s EU (%s A %s§r)",
   "config.jade.plugin_gtmoremachine.wireless_energy_provider": "[GTMoreMachine] 無線能源監視器",
   "config.jade.plugin_gtmoremachine.wireless_optical_computation_hatch_provider": "[GTMoreMachine] 無線光學算力倉",
+  "config.screen.gtmoremachine": "GTMM 配置",
   "gtmoremachine.creative_tooltip": "§7你需要§b創造模式§7來使用它",
   "gtmoremachine.machine.energy_hatch.input.tooltip": "為多方塊結構輸入能量",
   "gtmoremachine.machine.energy_hatch.output.tooltip": "為多方塊結構輸齣能量",
