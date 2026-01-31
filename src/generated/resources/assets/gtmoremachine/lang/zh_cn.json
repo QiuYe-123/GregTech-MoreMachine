@@ -558,7 +558,7 @@
   "item.gtmoremachine.advanced_terminal.setting.2": "重复结构次数",
   "item.gtmoremachine.advanced_terminal.setting.2.tooltip": "用于设置可重复结构(蒸馏塔、装配线等)的重复部分放置次数",
   "item.gtmoremachine.advanced_terminal.setting.3": "无仓室模式",
-  "item.gtmoremachine.advanced_terminal.setting.3.tooltip": "是否启用无仓室模式(OFF:不启用,ON:启用)\\n启用无仓室模式后不会在非唯一时放置各种仓室。",
+  "item.gtmoremachine.advanced_terminal.setting.3.tooltip": "是否启用无仓室模式(OFF:不启用,ON:启用)\n启用无仓室模式后不会在非唯一时放置各种仓室。",
   "item.gtmoremachine.advanced_terminal.setting.4": "替换模式",
   "item.gtmoremachine.advanced_terminal.setting.4.tooltip": "是否启用等级方块替换模式(OFF:不启用,ON:启用)\n启用等级方块替换模式会将所有线圈替换为等级方块中指定的等级。",
   "item.gtmoremachine.advanced_terminal.setting.5": "使用AE物品",

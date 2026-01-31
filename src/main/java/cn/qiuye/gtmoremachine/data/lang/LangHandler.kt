@@ -52,16 +52,17 @@ object LangHandler {
 
     fun init() {
         ScanningClass.LANG.forEach(LangHandler::addKeyCNEN)
-        ItemLang.init()
+        CreativeModeTabsLang.init()
+        CreativeLang.init()
+        WirelessItmeLang.init()
+        WirelessMachineLang.init()
+        MachineLang.init()
         BlockLang.init()
+        ItemLang.init()
+        AdvancedTerminalLang.init()
         HUDLang.init()
         ErrorLang.init()
         KeybindingLang.init()
-        MachineLang.init()
-        CreativeLang.init()
-        AdvancedTerminalLang.init()
         JadeLang.init()
-        CuriosLang.init()
-        Tobefixed.init()
     }
 }

@@ -21,7 +21,7 @@ object AdvancedTerminalLang {
         addCNEN("item.gtmoremachine.advanced_terminal.setting.3", "无仓室模式", "No Hatch mode")
         addCNEN(
             "item.gtmoremachine.advanced_terminal.setting.3.tooltip",
-            "是否启用无仓室模式(OFF:不启用,ON:启用)\\n启用无仓室模式后不会在非唯一时放置各种仓室。",
+            "是否启用无仓室模式(OFF:不启用,ON:启用)\n启用无仓室模式后不会在非唯一时放置各种仓室。",
             "Whether to enable the no-Hatch mode (OFF: not enabled, ON: enabled)\nAfter enabling the no-Hatch mode, various Hatches will not be placed when they are not unique.",
         )
         addCNEN("item.gtmoremachine.advanced_terminal.setting.4", "替换模式", "Replace mode")

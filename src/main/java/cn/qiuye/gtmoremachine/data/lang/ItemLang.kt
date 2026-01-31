@@ -1,10 +1,23 @@
 package cn.qiuye.gtmoremachine.data.lang
 
+import cn.qiuye.gtmoremachine.data.lang.LangHandler.addCN
 import cn.qiuye.gtmoremachine.data.lang.LangHandler.addCNEN
 
 object ItemLang {
 
+    fun programmablec() {
+        addCN("item.gtmoremachine.programmable_cover", "可编程覆盖板")
+        addCN("item.gtmoremachine.virtual_item_provider", "虚拟物品提供器")
+        addCN("item.gtmoremachine.virtual_item_provider_cell", "虚拟物品提供器元件")
+    }
+
+    fun itme() {
+        addCN("item.gtmoremachine.advanced_terminal", "§b高级终端")
+    }
+
     fun init() {
+        programmablec()
+        itme()
         addCNEN(
             "item.gtmoremachine.wireless_energy_receive_cover.tooltip.1",
             "§7作§f覆盖板§7时从电网§b拉取能量§7传输到机器。",
