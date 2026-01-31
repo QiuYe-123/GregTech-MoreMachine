@@ -15,13 +15,13 @@ import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.material.Fluids;
 
-import static cn.qiuye.gtmoremachine.common.registry.GTMMRegistration.GTMMREGISTRATE;
+import static cn.qiuye.gtmoremachine.common.registry.GTMMRegistration.GTMM;
 import static com.gregtechceu.gtceu.api.pattern.Predicates.*;
 import static com.gregtechceu.gtceu.common.data.GTBlocks.HIGH_POWER_CASING;
 
 public class GTMMMultiblockMachineA {
 
-    public static final MultiblockMachineDefinition PlanetaryEngine = GTMMREGISTRATE.multiblock("planetaryengine", WorkableElectricMultiblockMachine::new)
+    public static final MultiblockMachineDefinition PlanetaryEngine = GTMM.multiblock("planetaryengine", WorkableElectricMultiblockMachine::new)
             .langValue("§cPlanetary Engine")
             .rotationState(RotationState.NON_Y_AXIS)
             .recipeTypes(GTRecipeTypes.ALLOY_SMELTER_RECIPES)
