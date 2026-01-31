@@ -3,7 +3,7 @@ ldlib = "1.0.47"
 registrate = "MC1.20-1.3.11"
 configuration = "3.1.0-forge"
 kotlinforforge = "4.11.0"
-gtm = "7.4.0"
+gtm = "7.5.0-SNAPSHOT"
 mixinExtras = "0.5.0-rc.3"
 
 jei = "15.20.0.121"
@@ -32,9 +32,9 @@ modernui = "6ksT8CWg" #3.12.0.1
 modernfix = "5.24.4+mc1.20.1"
 
 ## curseforge maven ##
+jech = "7411324"
 
 ## libs ##
-jech = "4.6.1"
 
 
 [libraries]
@@ -70,6 +70,6 @@ sophisticatedbackpacks = { module = "maven.modrinth:TyCTlI4b", version.ref = "so
 sophisticatedstorage = { module = "maven.modrinth:hMlaZH8f", version.ref = "sophisticated-storage" }
 
 
-jecharacters        = { module = "dev:jecharacters-1.20.1-forge", version.ref = "jech" }
+jecharacters        = { module = "curse.maven:just-enough-characters-250702", version.ref = "jech" }
 [bundles]
 jei = ["jei-common-api", "jei-forge-api", "jei-forge-impl"]

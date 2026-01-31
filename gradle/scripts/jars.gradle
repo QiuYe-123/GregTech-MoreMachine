@@ -1,3 +1,8 @@
+jar {
+    exclude "**/.cache"
+    exclude "**/SimplifiedToTraditional.properties"
+}
+
 tasks.register('slimJar', Jar) {
     dependsOn("classes")
     archiveClassifier = "dev-slim"
