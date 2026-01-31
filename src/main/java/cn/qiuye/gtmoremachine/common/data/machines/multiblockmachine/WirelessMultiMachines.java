@@ -23,7 +23,7 @@ public class WirelessMultiMachines {
         GTMM.creativeModeTab(() -> GTMMCreativeModeTabs.WIRELESS_TAB);
     }
 
-    public final static MultiblockMachineDefinition WIRELSESS_ENERGY_DIMENSIONAL_RELAY_NODE = GTMMConfig.getINSTANCE().isWirelessDimensionRateEnable ? GTMM
+    public final static MultiblockMachineDefinition WIRELSESS_ENERGY_DIMENSIONAL_RELAY_NODE = GTMMConfig.INSTANCE.isWirelessDimensionRateEnable ? GTMM
             .multiblock("wirelsess_energy_dimensional_relay_node", DimensionalRelayNodeMachine::new)
             .langValue("Wirelsess Energy Dimensional Relay Node")
             .rotationState(RotationState.NON_Y_AXIS)
@@ -39,7 +39,7 @@ public class WirelessMultiMachines {
                     GTCEu.id("block/multiblock/network_switch"))
             .register() : null;
 
-    public final static MultiblockMachineDefinition WIRELSESS_ENERGY_DEMODULATION_HUB = GTMMConfig.getINSTANCE().isWirelessCapacitylimitEnable ? GTMM
+    public final static MultiblockMachineDefinition WIRELSESS_ENERGY_DEMODULATION_HUB = GTMMConfig.INSTANCE.isWirelessCapacitylimitEnable ? GTMM
             .multiblock("wirelsess_energy_demodulation_hub", DemodulationHubMachine::new)
             .langValue("Wirelsess Energy Demodulation Hub")
             .rotationState(RotationState.NON_Y_AXIS)
