@@ -24,7 +24,7 @@ public class WirelessMachinesUtils {
 
     public static MachineDefinition[] registerTieredMachines(String name,
                                                              BiFunction<IMachineBlockEntity, Integer, MetaMachine> factory,
-                                                             BiFunction<Integer, MachineBuilder<MachineDefinition>, MachineDefinition> builder,
+                                                             BiFunction<Integer, MachineBuilder<MachineDefinition, ?>, MachineDefinition> builder,
                                                              int... tiers) {
         return CustomMachinesUtils.registerTieredMachines(name, factory, builder, tiers);
     }

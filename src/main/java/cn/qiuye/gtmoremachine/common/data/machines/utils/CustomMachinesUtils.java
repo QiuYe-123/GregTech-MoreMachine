@@ -9,17 +9,17 @@ import com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder;
 import java.util.Locale;
 import java.util.function.BiFunction;
 
-import static cn.qiuye.gtmoremachine.common.registry.GTMMRegistration.GTMMREGISTRATE;
+import static cn.qiuye.gtmoremachine.common.registry.GTMMRegistration.GTMM;
 
 public class CustomMachinesUtils {
 
     public static MachineDefinition[] registerTieredMachines(String name,
                                                              BiFunction<IMachineBlockEntity, Integer, MetaMachine> factory,
-                                                             BiFunction<Integer, MachineBuilder<MachineDefinition>, MachineDefinition> builder,
+                                                             BiFunction<Integer, MachineBuilder<MachineDefinition, ?>, MachineDefinition> builder,
                                                              int... tiers) {
         MachineDefinition[] definitions = new MachineDefinition[GTValues.TIER_COUNT];
         for (int tier : tiers) {
-            var register = GTMMREGISTRATE
+            var register = GTMM
                     .machine(GTValues.VN[tier].toLowerCase(Locale.ROOT) + "_" + name,
                             holder -> factory.apply(holder, tier))
                     .tier(tier);
