@@ -36,7 +36,7 @@ public class BlockMapSelectorWidget extends WidgetGroup {
         var tag = itemStack.getOrCreateTag();
         var block = tag.getString("blocks");
         if (!block.isEmpty()) {
-            this.blocks = Arrays.stream(BlockMap.MAP.get(BlockMap.namePrefix + block)).toList();
+            this.blocks = Arrays.stream(BlockMap.MAP.get(block)).toList();
             this.currentType = block;
         }
     }
@@ -53,9 +53,9 @@ public class BlockMapSelectorWidget extends WidgetGroup {
             int y = 0;
             for (var key : BlockMap.MAP.keySet()) {
                 blockType.addWidget((new WidgetGroup(2, 2 + y, 66, 15))
-                        .addWidget(new ExtendLabelWidget(0, 0, translatable(key)))
+                        .addWidget(new ExtendLabelWidget(0, 0, translatable(BlockMap.namePrefix + "." + key)))
                         .addWidget(new ButtonWidget(0, 0, 64, 15, (cd) -> {
-                            showTier(Arrays.stream(BlockMap.MAP.get(BlockMap.namePrefix + key)).toList());
+                            showTier(Arrays.stream(BlockMap.MAP.get(key)).toList());
                             currentType = key;
                         })));
                 y += 15;

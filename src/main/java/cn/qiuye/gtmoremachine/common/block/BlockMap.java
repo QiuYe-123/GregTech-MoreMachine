@@ -46,9 +46,9 @@ public class BlockMap {
     @GTMMRegisterLanguage(namePrefix = namePrefix, cn = "转子支架", en = "Rotor Holder")
     public static final String rotor_hatch = "rotor_hatch";
     @GTMMRegisterLanguage(namePrefix = namePrefix, cn = "能源通讯单元", en = "Energy Communication Unit")
-    public static final String ECU = "ecu";
+    public static final String ecu = "ecu";
     @GTMMRegisterLanguage(namePrefix = namePrefix, cn = "电网容量组件", en = "Wireless Energy Capacity Component")
-    public static final String WECC = "wecc";
+    public static final String wecc = "wecc";
 
     public static void build() {
         // 线圈
@@ -72,7 +72,7 @@ public class BlockMap {
         // 能源通讯单元
         var ecublock = new ArrayList<>(GTMMAPI.ECU.entrySet());
         ecublock.sort(Comparator.comparingInt(entry -> entry.getKey().getTier()));
-        MAP.put(ECU, ecublock.stream().map(Map.Entry::getValue).map(Supplier::get).toArray(Block[]::new));
+        MAP.put(ecu, ecublock.stream().map(Map.Entry::getValue).map(Supplier::get).toArray(Block[]::new));
         // 消声仓
         MAP.put(muffler_hatch, Arrays.stream(GTMachines.MUFFLER_HATCH).filter(Objects::nonNull).distinct().sorted(Comparator.comparingInt(MachineDefinition::getTier)).map(MachineDefinition::get).toArray(Block[]::new));
         // 转子仓
@@ -81,7 +81,7 @@ public class BlockMap {
         if (GTMMConfig.INSTANCE.isWirelessCapacitylimitEnable) {
             var weccblock = new ArrayList<>(GTMMAPI.WECC.entrySet());
             weccblock.sort(Comparator.comparingInt(entry -> entry.getKey().getTier()));
-            MAP.put(WECC, weccblock.stream().map(Map.Entry::getValue).map(Supplier::get).toArray(Block[]::new));
+            MAP.put(wecc, weccblock.stream().map(Map.Entry::getValue).map(Supplier::get).toArray(Block[]::new));
         }
 
         MAP.forEach((category, blocks) -> {

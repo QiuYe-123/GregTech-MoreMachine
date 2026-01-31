@@ -160,9 +160,9 @@ public class AdvancedTerminalBehavior implements IItemUIFactory {
                 tag.putString("blocks", s);
                 tag.putInt("Tier", i);
                 handItem.setTag(tag);
-                blockLabel.setComponent(Component.literal(" (").append(translatable(s))
+                blockLabel.setComponent(Component.literal(" (").append(translatable(BlockMap.namePrefix + "." + s))
                         .append(Component.literal(" : "))
-                        .append(MAP.get(BlockMap.namePrefix + s)[i].getName())
+                        .append(MAP.get(s)[i].getName())
                         .append(Component.literal(")")));
             }
         });
@@ -180,9 +180,9 @@ public class AdvancedTerminalBehavior implements IItemUIFactory {
             var block = tag.getString("blocks");
             if (!block.isEmpty()) {
                 int tier = tag.getInt("Tier");
-                return Component.literal("(").append(translatable(block))
+                return Component.literal("(").append(translatable(BlockMap.namePrefix + "." + block))
                         .append(Component.literal(" : "))
-                        .append(MAP.get(BlockMap.namePrefix + block)[tier].getName())
+                        .append(MAP.get(block)[tier].getName())
                         .append(Component.literal(")"));
             }
         }
