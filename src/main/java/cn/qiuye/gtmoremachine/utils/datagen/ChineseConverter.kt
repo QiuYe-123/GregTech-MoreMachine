@@ -7,6 +7,7 @@ import java.util.ResourceBundle
 object ChineseConverter {
     private val mappingTable: MutableMap<Char, Char> = Char2CharOpenHashMap()
 
+    @JvmStatic
     fun convert(cn: String): String {
         val cntw = StringBuilder()
 

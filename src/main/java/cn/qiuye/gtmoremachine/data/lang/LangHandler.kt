@@ -1,10 +1,8 @@
 package cn.qiuye.gtmoremachine.data.lang
 
 import cn.qiuye.gtmoremachine.api.lang.CNEN
-import cn.qiuye.gtmoremachine.api.lang.SimplifiedChineseLanguageProvider
-import cn.qiuye.gtmoremachine.api.lang.TraditionalChineseLanguageProvider
+import cn.qiuye.gtmoremachine.api.lang.ChineseLangProvider
 import cn.qiuye.gtmoremachine.api.registries.ScanningClass
-import cn.qiuye.gtmoremachine.utils.datagen.ChineseConverter
 
 import net.minecraftforge.common.data.LanguageProvider
 
@@ -36,17 +34,10 @@ object LangHandler {
         }
     }
 
-    fun cnInitialize(provider: SimplifiedChineseLanguageProvider) {
+    fun cnInitialize(provider: ChineseLangProvider) {
         langs.forEach { (k: String, v: CNEN) ->
             if (v.cn().isEmpty()) return@forEach
             provider.add(k, v.cn())
-        }
-    }
-
-    fun twInitialize(provider: TraditionalChineseLanguageProvider) {
-        langs.forEach { (k: String, v: CNEN) ->
-            if (v.cn().isEmpty()) return@forEach
-            provider.add(k, ChineseConverter.convert(v.cn()))
         }
     }
 
