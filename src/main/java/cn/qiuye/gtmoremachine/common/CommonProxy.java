@@ -1,6 +1,8 @@
 package cn.qiuye.gtmoremachine.common;
 
 import cn.qiuye.gtmoremachine.GTmm;
+import cn.qiuye.gtmoremachine.api.registries.ScanningClass;
+import cn.qiuye.gtmoremachine.common.block.BlockMap;
 import cn.qiuye.gtmoremachine.common.data.GTMMCovers;
 import cn.qiuye.gtmoremachine.common.data.GTMMCreativeModeTabs;
 import cn.qiuye.gtmoremachine.common.data.machines.Machines;
@@ -38,7 +40,7 @@ public class CommonProxy {
     private static void init() {
         GTmm.LOGGER.info("GTMoreMachine common proxy init!");
         GTMMConfig.Companion.init();
-        if (GTmm.isDataGen()) {
+        if (GTmm.isDev()) {
             GTMMConfig.getINSTANCE().isWirelessDimensionRateEnable = true;
             GTMMConfig.getINSTANCE().isWirelessCapacitylimitEnable = true;
         }
@@ -47,7 +49,9 @@ public class CommonProxy {
         HotKeyActions.init();
     }
 
-    private static void commonSetup(FMLCommonSetupEvent event) {}
+    private static void commonSetup(FMLCommonSetupEvent event) {
+        BlockMap.build();
+    }
 
     private void registerCreativeModeTabs(GTCEuAPI.RegisterEvent<ResourceLocation, GTCreativeModeTabs> event) {
         GTMMCreativeModeTabs.init();
