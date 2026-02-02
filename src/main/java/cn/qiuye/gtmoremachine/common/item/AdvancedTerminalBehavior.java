@@ -209,7 +209,7 @@ public class AdvancedTerminalBehavior implements IItemUIFactory {
                 map.put(key, blockTag.getInt(key));
             }
         }
-	    return map;
+        return map;
     }
 
     private int getRepeatCount(ItemStack itemStack) {
