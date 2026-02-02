@@ -23,6 +23,7 @@ import com.lowdragmc.lowdraglib.gui.texture.TextTexture;
 import com.lowdragmc.lowdraglib.gui.widget.*;
 import com.lowdragmc.lowdraglib.utils.BlockInfo;
 
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -31,6 +32,7 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import lombok.Getter;
@@ -188,6 +190,28 @@ public class AdvancedTerminalBehavior implements IItemUIFactory {
         return Component.literal("");
     }
 
+    private void setBlockMap(Object2IntOpenHashMap<String> map, ItemStack itemStack) {
+        CompoundTag compound = new CompoundTag();
+        for (var entry : map.object2IntEntrySet()) {
+            compound.putInt(entry.getKey(), entry.getIntValue());
+        }
+        var tag = itemStack.getOrCreateTag();
+        tag.put("blockmap", compound);
+        itemStack.setTag(tag);
+    }
+
+    private Object2IntOpenHashMap<String> getBlockMap(ItemStack itemStack) {
+        Object2IntOpenHashMap<String> map = new Object2IntOpenHashMap<>();
+        var tag = itemStack.getOrCreateTag();
+        if (!tag.isEmpty() && tag.contains("blockmap")) {
+            var blockTag = tag.getCompound("blockmap");
+            for (String key : blockTag.getAllKeys()) {
+                map.put(key, blockTag.getInt(key));
+            }
+        }
+	    return map;
+    }
+
     private int getRepeatCount(ItemStack itemStack) {
         var tag = itemStack.getOrCreateTag();
         if (!tag.isEmpty() && tag.contains("RepeatCount")) {
@@ -282,12 +306,15 @@ public class AdvancedTerminalBehavior implements IItemUIFactory {
     @Getter
     public static class AutoBuildSetting {
 
+        Object2IntOpenHashMap<String> tierBlocks;
+
         Block[] tierBlock;
         Set<Block> blocks = Collections.emptySet();
         private int Tier, repeatCount;
         private boolean noHatchMode, replaceMode, isUseAE, isUseMirror, isUseDemolish;
 
         public AutoBuildSetting() {
+            this.tierBlocks = new Object2IntOpenHashMap<>();
             this.Tier = 0;
             this.repeatCount = 0;
             this.noHatchMode = true;
