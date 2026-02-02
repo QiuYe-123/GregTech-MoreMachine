@@ -38,7 +38,7 @@ public class CommonProxy {
     private static void init() {
         GTmm.LOGGER.info("GTMoreMachine common proxy init!");
         GTMMConfig.Companion.init();
-        if (GTmm.isDataGen()) {
+        if (GTmm.isDev()) {
             GTMMConfig.getINSTANCE().isWirelessDimensionRateEnable = true;
             GTMMConfig.getINSTANCE().isWirelessCapacitylimitEnable = true;
         }
