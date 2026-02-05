@@ -4,7 +4,7 @@ import java.math.BigDecimal
 import java.math.BigInteger
 import java.math.RoundingMode
 
-class TimeStat(windowStart: Int) {
+class TimeStat(windowStart: Int = 0) {
     private val minute: TimeWheel = TimeWheel(TimeWheel.TIMESCALE.SECOND, 60, windowStart)
     private val hour: TimeWheel = TimeWheel(TimeWheel.TIMESCALE.MINUTE, 60, windowStart)
     private val day: TimeWheel = TimeWheel(TimeWheel.TIMESCALE.HOUR, 24, windowStart)

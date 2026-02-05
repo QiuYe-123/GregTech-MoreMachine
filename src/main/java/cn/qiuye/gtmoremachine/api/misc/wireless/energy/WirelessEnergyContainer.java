@@ -7,11 +7,14 @@ import cn.qiuye.gtmoremachine.utils.BigIntegerUtils;
 import cn.qiuye.gtmoremachine.utils.TeamUtils;
 
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.api.machine.feature.ITieredMachine;
 
 import net.minecraft.core.GlobalPos;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.Level;
 
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
@@ -29,6 +32,10 @@ public class WirelessEnergyContainer {
     public static final WeakHashMap<MetaMachine, ITransferData> TRANSFER_DATA = new WeakHashMap<>();
     public static final WeakHashMap<Level, IDimensionTransferData> DIMENSIONAL_TRANSFER_DATA = new WeakHashMap<>();
     public static final WeakHashMap<MetaMachine, ICapacitylimitData> CAPACITY_STORAGE_DATA = new WeakHashMap<>();
+
+    private final Object2IntOpenHashMap<ResourceLocation> dimension = new Object2IntOpenHashMap<>();
+    private ResourceLocation defaultDimension;
+
     public static MinecraftServer server;
 
     public static WirelessEnergyContainer getOrCreateContainer(UUID uuid) {
@@ -60,9 +67,9 @@ public class WirelessEnergyContainer {
         this.capacity = capacity;
         this.passiveDrain = passiveDrain;
         this.uuid = uuid;
-        this.allEnergyStat = new TimeStat(0);
-        this.inEnergyStat = new TimeStat(0);
-        this.outEnergyStat = new TimeStat(0);
+        this.allEnergyStat = new TimeStat();
+        this.inEnergyStat = new TimeStat();
+        this.outEnergyStat = new TimeStat();
     }
 
     private WirelessEnergyContainer(UUID uuid) {
@@ -77,39 +84,14 @@ public class WirelessEnergyContainer {
         this.outEnergyStat = new TimeStat(currentTick);
     }
 
-    public long addEnergy(int tier, long energy, @Nullable MetaMachine machine) {
-        long change = energy;
-        if (GTMMConfig.INSTANCE.isWirelessRateEnable) change = Math.min(BigIntegerUtils.getLongValue(rate), energy);
-        if (GTMMConfig.INSTANCE.isWirelessDimensionRateEnable && isDimensionBound(tier, machine)) return 0;
-        if (GTMMConfig.INSTANCE.isWirelessCapacitylimitEnable && storage.add(BigInteger.valueOf(change)).compareTo(capacity) > 0) change = BigIntegerUtils.getLongValue(capacity.subtract(storage));
-        if (change <= 0) return 0;
-        storage = storage.add(BigInteger.valueOf(change));
-        WirelessEnergySavedData.INSTANCE.setDirty(true);
-        if (machine != null) {
-            allEnergyStat.update(BigInteger.valueOf(change), server.getTickCount());
-            inEnergyStat.update(BigInteger.valueOf(change), server.getTickCount());
-        }
-        if (observed && machine != null) {
-            TRANSFER_DATA.put(machine, new BasicTransferData(uuid, new BigInteger(String.valueOf(change)), machine));
-        }
-        return change;
+    public long addTierEnergy(long energy, MetaMachine machine) {
+        if (GTMMConfig.INSTANCE.isWirelessDimensionRateEnable && isDimensionBound(machine)) return 0;
+        return this.addEnergy(energy, machine);
     }
 
-    public long removeEnergy(int tier, long energy, @Nullable MetaMachine machine) {
-        long change = Math.min(BigIntegerUtils.getLongValue(storage), energy);
-        if (GTMMConfig.INSTANCE.isWirelessRateEnable) change = Math.min(BigIntegerUtils.getLongValue(storage), Math.min(BigIntegerUtils.getLongValue(rate), energy));
-        if (GTMMConfig.INSTANCE.isWirelessDimensionRateEnable && isDimensionBound(tier, machine)) return 0;
-        if (change <= 0) return 0;
-        storage = storage.subtract(BigInteger.valueOf(change));
-        WirelessEnergySavedData.INSTANCE.setDirty(true);
-        if (machine != null) {
-            allEnergyStat.update(BigInteger.valueOf(change).negate(), server.getTickCount());
-            outEnergyStat.update(BigInteger.valueOf(change).negate(), server.getTickCount());
-        }
-        if (observed && machine != null) {
-            TRANSFER_DATA.put(machine, new BasicTransferData(uuid, new BigInteger(String.valueOf(-change)), machine));
-        }
-        return change;
+    public long removeTierEnergy(long energy, MetaMachine machine) {
+        if (GTMMConfig.INSTANCE.isWirelessDimensionRateEnable && isDimensionBound(machine)) return 0;
+        return this.removeEnergy(energy, machine);
     }
 
     public long addEnergy(long energy, @Nullable MetaMachine machine) {
@@ -225,26 +207,32 @@ public class WirelessEnergyContainer {
     }
 
     public void setDimensional(int Voltagelevel, boolean Bind, MetaMachine machine) {
-        if (machine == null) return;
+        Level level = machine.getLevel();
+        ResourceLocation tierdimension = level.dimension().location();
         if (Bind) {
-            DIMENSIONAL_TRANSFER_DATA.put(machine.getLevel(), new DimensionBoundData(uuid, machine.getLevel(), Voltagelevel, machine));
+            DIMENSIONAL_TRANSFER_DATA.put(level, new DimensionBoundData(uuid, level, Voltagelevel, machine));
+            if (this.defaultDimension != null) {
+                this.dimension.removeInt(this.defaultDimension);
+            }
+            this.defaultDimension = tierdimension;
+            this.dimension.put(tierdimension, Voltagelevel);
         } else {
-            DIMENSIONAL_TRANSFER_DATA.remove(machine.getLevel());
+            DIMENSIONAL_TRANSFER_DATA.remove(level);
+            this.dimension.removeInt(tierdimension);
+            if (this.defaultDimension == tierdimension) {
+                this.defaultDimension = null;
+            }
         }
         WirelessEnergySavedData.INSTANCE.setDirty(true);
     }
 
-    private boolean isDimensionBound(int tier, MetaMachine machine) {
+    private boolean isDimensionBound(MetaMachine machine) {
         if (machine == null) return true;
-        IDimensionTransferData Dimension = DIMENSIONAL_TRANSFER_DATA.get(machine.getLevel());
-        if (Dimension != null) {
-            if (Dimension.Voltagelevel() >= 14) {
-                return false;
-            } else {
-                return Dimension.Voltagelevel() > tier;
-            }
-        } else {
-            return true;
+        if (machine instanceof ITieredMachine velataeTier) {
+            Level level = machine.getLevel();
+            if (level == null) return true;
+            return this.dimension.getInt(machine.getLevel().dimension().location()) <= velataeTier.getTier();
         }
+        return true;
     }
 }

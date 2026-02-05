@@ -105,7 +105,7 @@ public class WirelessEnergyInterface extends TieredIOPartMachine implements IInt
         if (currentStored <= 0) return;
         WirelessEnergyContainer container = getWirelessEnergyContainer();
         if (container == null) return;
-        long changeEnergy = container.addEnergy(currentStored, this);
+        long changeEnergy = container.addTierEnergy(currentStored, this);
         if (changeEnergy > 0) energyContainer.setEnergyStored(currentStored - changeEnergy);
     }
 

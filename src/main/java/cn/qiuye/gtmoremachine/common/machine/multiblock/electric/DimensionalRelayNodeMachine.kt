@@ -51,9 +51,9 @@ open class DimensionalRelayNodeMachine(holder: IMachineBlockEntity) :
     // ================= 伴生对象 =================
     companion object {
         /** 管理字段工厂 */
-        protected val MANAGEMENT_FACTORY: ManagedFieldHolder = ManagedFieldHolder(
+        protected val MANAGED_FIELD_HOLDER: ManagedFieldHolder = ManagedFieldHolder(
             DimensionalRelayNodeMachine::class.java,
-            MANAGED_FIELD_HOLDER,
+            WorkableMultiblockMachine.MANAGED_FIELD_HOLDER,
         )
     }
 
@@ -106,7 +106,7 @@ open class DimensionalRelayNodeMachine(holder: IMachineBlockEntity) :
      * 获取管理字段持有器
      * @return 管理字段持有器
      */
-    override fun getFieldHolder(): ManagedFieldHolder = MANAGEMENT_FACTORY
+    override fun getFieldHolder(): ManagedFieldHolder = MANAGED_FIELD_HOLDER
 
     /**
      * 检查是否为远程端（客户端）
