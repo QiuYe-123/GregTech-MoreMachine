@@ -136,7 +136,7 @@ open class DemodulationHubMachine(holder: IMachineBlockEntity) :
         // 检查是否为数据棒
         if (item.`is`(GTItems.TOOL_DATA_STICK.asItem())) {
             ownerUUID = player.uuid
-            wirelessEnergyContainerCache = null
+            setWirelessEnergyContainerCache(null)
             val container = getWirelessEnergyContainer()
             container?.setCapacity(this.totalCapacity, this.totalPassiveDrain, true, this)
             player.sendSystemMessage(
@@ -342,14 +342,14 @@ open class DemodulationHubMachine(holder: IMachineBlockEntity) :
          * 计算总容量（惰性计算）
          */
         val totalCapacity: BigInteger = components.fold(BigInteger.ZERO) { acc, component ->
-            acc.add(component.capacity)
+            acc.add(component.getCapacity())
         }
 
         /**
          * 计算总被动损耗（惰性计算）
          */
         val totalPassiveDrain: BigInteger = components.fold(BigInteger.ZERO) { acc, component ->
-            acc.add(component.lossEnergy)
+            acc.add(component.getLossEnergy())
         }
 
         /**
