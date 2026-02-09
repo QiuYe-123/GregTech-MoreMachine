@@ -353,7 +353,7 @@ public class AdvancedBlockPattern extends BlockPattern {
         if (!collectedItems.isEmpty() && !player.isCreative()) {
             giveItemsToPlayer(player, collectedItems, autoBuildSetting);
         }
-        controller.checkPattern();
+        controller.checkPatternWithTryLock();
     }
 
     /**
