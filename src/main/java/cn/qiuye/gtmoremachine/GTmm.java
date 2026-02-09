@@ -74,7 +74,7 @@ public class GTmm {
      * @return if we're not running in a production environment
      */
     public static boolean isDev() {
-        return !isProd();
+        return !isProd() || isDataGen();
     }
 
     /**

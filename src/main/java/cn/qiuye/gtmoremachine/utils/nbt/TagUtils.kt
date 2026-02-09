@@ -1,10 +1,10 @@
-package cn.qiuye.gtmoremachine.utils
+package cn.qiuye.gtmoremachine.utils.nbt
 
 import cn.qiuye.gtmoremachine.api.gui.monitor.DefaultValueProvider
 
 import net.minecraft.world.item.ItemStack
 
-import java.util.*
+import java.util.UUID
 
 object TagUtils {
 
