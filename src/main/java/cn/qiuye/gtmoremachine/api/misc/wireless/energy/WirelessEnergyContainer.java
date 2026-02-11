@@ -30,11 +30,10 @@ public class WirelessEnergyContainer {
     public static boolean observed;
 
     public static final WeakHashMap<MetaMachine, ITransferData> TRANSFER_DATA = new WeakHashMap<>();
-    public static final WeakHashMap<Level, IDimensionTransferData> DIMENSIONAL_TRANSFER_DATA = new WeakHashMap<>();
+    public static final WeakHashMap<MetaMachine, IDimensionTransferData> DIMENSIONAL_TRANSFER_DATA = new WeakHashMap<>();
     public static final WeakHashMap<MetaMachine, ICapacitylimitData> CAPACITY_STORAGE_DATA = new WeakHashMap<>();
 
     private final Object2IntOpenHashMap<ResourceLocation> dimension = new Object2IntOpenHashMap<>();
-    private ResourceLocation defaultDimension;
 
     public static MinecraftServer server;
 
@@ -207,20 +206,16 @@ public class WirelessEnergyContainer {
     }
 
     public void setDimensional(int Voltagelevel, boolean Bind, MetaMachine machine) {
-        Level level = machine.getLevel();
-        ResourceLocation tierdimension = level.dimension().location();
+        ResourceLocation tierdimension = machine.getLevel().dimension().location();
         if (Bind) {
-            DIMENSIONAL_TRANSFER_DATA.put(level, new DimensionBoundData(uuid, level, Voltagelevel, machine));
-            if (this.defaultDimension != null) {
-                this.dimension.removeInt(this.defaultDimension);
+            if (this.dimension.getInt(tierdimension) <= Voltagelevel || !this.dimension.containsKey(tierdimension)) {
+                DIMENSIONAL_TRANSFER_DATA.put(machine, new DimensionBoundData(uuid, Voltagelevel, machine));
+                this.dimension.put(tierdimension, Voltagelevel);
             }
-            this.defaultDimension = tierdimension;
-            this.dimension.put(tierdimension, Voltagelevel);
         } else {
-            DIMENSIONAL_TRANSFER_DATA.remove(level);
-            this.dimension.removeInt(tierdimension);
-            if (this.defaultDimension == tierdimension) {
-                this.defaultDimension = null;
+            if (this.dimension.getInt(tierdimension) > Voltagelevel) {
+                DIMENSIONAL_TRANSFER_DATA.remove(machine);
+                this.dimension.removeInt(tierdimension);
             }
         }
         WirelessEnergySavedData.INSTANCE.setDirty(true);

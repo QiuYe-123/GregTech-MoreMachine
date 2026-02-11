@@ -10,15 +10,12 @@ import com.lowdragmc.lowdraglib.gui.widget.ComponentPanelWidget;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.network.chat.Style;
-import net.minecraft.world.level.Level;
 
 import java.util.UUID;
 
 public interface IDimensionTransferData {
 
     UUID UUID();
-
-    Level level();
 
     int Voltagelevel();
 

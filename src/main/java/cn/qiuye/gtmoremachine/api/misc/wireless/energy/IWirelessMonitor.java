@@ -136,7 +136,7 @@ public interface IWirelessMonitor extends IWirelessEnergyContainerHolder {
                 }
             }
         } else if (type == Type.RelayNode) {
-            for (Map.Entry<Level, IDimensionTransferData> m : getDimensionTransferList(sorting)) {
+            for (Map.Entry<MetaMachine, IDimensionTransferData> m : getDimensionTransferList(sorting)) {
                 UUID uuid = m.getValue().UUID();
                 if (statistics == Statistics.Global || uuid.equals(TeamUtils.getTeamUUID(this.getUUID()))) {
                     textListCache.add(m.getValue().getInfo());
@@ -209,7 +209,7 @@ public interface IWirelessMonitor extends IWirelessEnergyContainerHolder {
                 .toList();
     }
 
-    private List<Map.Entry<Level, IDimensionTransferData>> getDimensionTransferList(Sorting sorting) {
+    private List<Map.Entry<MetaMachine, IDimensionTransferData>> getDimensionTransferList(Sorting sorting) {
         return WirelessEnergyContainer.DIMENSIONAL_TRANSFER_DATA.entrySet()
                 .stream()
                 .sorted((entry1, entry2) -> {
