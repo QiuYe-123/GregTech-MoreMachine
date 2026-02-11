@@ -37,7 +37,7 @@ public class WirelessEnergySavedData extends SavedData {
         ListTag allEnergy = tag.getList("allEnergy", Tag.TAG_COMPOUND);
         for (int i = 0; i < allEnergy.size(); i++) {
             WirelessEnergyContainer container = readTag(allEnergy.getCompound(i));
-            containerMap.put(container.getUuid(), container);
+            containerMap.put(container.getUUID(), container);
         }
     }
 
@@ -90,7 +90,7 @@ public class WirelessEnergySavedData extends SavedData {
             engTag.putString("dimension", bindPos.dimension().location().toString());
             engTag.putLong("pos", bindPos.pos().asLong());
         }
-        if (!engTag.isEmpty()) engTag.putUUID("uuid", container.getUuid());
+        if (!engTag.isEmpty()) engTag.putUUID("uuid", container.getUUID());
         return engTag;
     }
 

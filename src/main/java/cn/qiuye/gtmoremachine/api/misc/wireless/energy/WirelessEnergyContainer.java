@@ -51,7 +51,7 @@ public class WirelessEnergyContainer {
 
     private BigInteger passiveDrain;
 
-    private final UUID uuid;
+    private final UUID UUID;
 
     private final TimeStat allEnergyStat;
 
@@ -65,14 +65,14 @@ public class WirelessEnergyContainer {
         this.bindPos = bindPos;
         this.capacity = capacity;
         this.passiveDrain = passiveDrain;
-        this.uuid = uuid;
+        this.UUID = uuid;
         this.allEnergyStat = new TimeStat();
         this.inEnergyStat = new TimeStat();
         this.outEnergyStat = new TimeStat();
     }
 
     private WirelessEnergyContainer(UUID uuid) {
-        this.uuid = uuid;
+        this.UUID = uuid;
         this.storage = BigInteger.ZERO;
         this.rate = BigInteger.ZERO;
         this.capacity = BigInteger.ZERO;
@@ -105,7 +105,7 @@ public class WirelessEnergyContainer {
             inEnergyStat.update(BigInteger.valueOf(change), server.getTickCount());
         }
         if (observed && machine != null) {
-            TRANSFER_DATA.put(machine, new BasicTransferData(uuid, new BigInteger(String.valueOf(change)), machine));
+            TRANSFER_DATA.put(machine, new BasicTransferData(UUID, new BigInteger(String.valueOf(change)), machine));
         }
         return change;
     }
@@ -121,7 +121,7 @@ public class WirelessEnergyContainer {
             outEnergyStat.update(BigInteger.valueOf(change).negate(), server.getTickCount());
         }
         if (observed && machine != null) {
-            TRANSFER_DATA.put(machine, new BasicTransferData(uuid, new BigInteger(String.valueOf(-change)), machine));
+            TRANSFER_DATA.put(machine, new BasicTransferData(UUID, new BigInteger(String.valueOf(-change)), machine));
         }
         return change;
     }
@@ -137,7 +137,7 @@ public class WirelessEnergyContainer {
             inEnergyStat.update(change, server.getTickCount());
         }
         if (observed && machine != null) {
-            TRANSFER_DATA.put(machine, new BasicTransferData(uuid, change, machine));
+            TRANSFER_DATA.put(machine, new BasicTransferData(UUID, change, machine));
         }
         return change;
     }
@@ -152,7 +152,7 @@ public class WirelessEnergyContainer {
             outEnergyStat.update(change.negate(), server.getTickCount());
         }
         if (observed && machine != null) {
-            TRANSFER_DATA.put(machine, new BasicTransferData(uuid, change.negate(), machine));
+            TRANSFER_DATA.put(machine, new BasicTransferData(UUID, change.negate(), machine));
         }
         return change;
     }
@@ -189,7 +189,7 @@ public class WirelessEnergyContainer {
 
     public void setCapacity(BigInteger StorageCapacity, BigInteger PassiveDrain, boolean Bind, MetaMachine machine) {
         if (Bind) {
-            if (machine != null) CAPACITY_STORAGE_DATA.put(machine, new CapacityStorageData(uuid, StorageCapacity, PassiveDrain, machine));
+            if (machine != null) CAPACITY_STORAGE_DATA.put(machine, new CapacityStorageData(UUID, StorageCapacity, PassiveDrain, machine));
         } else {
             if (machine != null) CAPACITY_STORAGE_DATA.remove(machine);
         }
@@ -209,7 +209,7 @@ public class WirelessEnergyContainer {
         ResourceLocation tierdimension = machine.getLevel().dimension().location();
         if (Bind) {
             if (this.dimension.getInt(tierdimension) <= Voltagelevel || !this.dimension.containsKey(tierdimension)) {
-                DIMENSIONAL_TRANSFER_DATA.put(machine, new DimensionBoundData(uuid, Voltagelevel, machine));
+                DIMENSIONAL_TRANSFER_DATA.put(machine, new DimensionBoundData(UUID, Voltagelevel, machine));
                 this.dimension.put(tierdimension, Voltagelevel);
             }
         } else {
