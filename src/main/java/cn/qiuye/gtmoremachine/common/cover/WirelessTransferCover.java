@@ -63,7 +63,7 @@ public class WirelessTransferCover extends CoverBehavior {
 
     @Override
     public boolean canAttach() {
-	    var targetMachine = MetaMachine.getMachine(coverHolder.getLevel(), coverHolder.getBlockPos());
+        var targetMachine = MetaMachine.getMachine(coverHolder.getLevel(), coverHolder.getBlockPos());
         if (targetMachine instanceof WorkableTieredMachine workableTieredMachine) {
             if ((workableTieredMachine.exportItems.getSlots() > 0 && this.transferType == TRANSFER_ITEM) || (workableTieredMachine.exportFluids.getTanks() > 0 && this.transferType == TRANSFER_FLUID)) {
 

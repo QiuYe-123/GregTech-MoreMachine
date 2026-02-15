@@ -16,13 +16,14 @@ public class ProgrammableHatchPartMachine extends DualHatchPartMachine {
         super(holder, tier, io);
     }
 
-    protected @NotNull NotifiableItemStackHandler createInventory(Object @NotNull... args) {
+    @Override
+    protected @NotNull NotifiableItemStackHandler createInventory() {
         return new NotifiableItemStackHandler(this, getInventorySize(), io).setFilter(itemStack -> !itemStack.is(GTMMAEItems.VIRTUAL_ITEM_PROVIDER.get()));
     }
 
     @Override
-    protected @NotNull NotifiableItemStackHandler createCircuitItemHandler(Object... args) {
-        if (args.length > 0 && args[0] instanceof IO io && io == IO.IN) {
+    protected NotifiableItemStackHandler createCircuitItemHandler(IO io) {
+        if (io == IO.IN) {
             return new ProgrammableCircuitHandler(this);
         } else {
             return new NotifiableItemStackHandler(this, 0, IO.NONE);
