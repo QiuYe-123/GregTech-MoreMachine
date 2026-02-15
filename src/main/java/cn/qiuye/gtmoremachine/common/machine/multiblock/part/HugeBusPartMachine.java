@@ -41,6 +41,7 @@ import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
+import net.minecraftforge.items.IItemHandlerModifiable;
 
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
@@ -67,13 +68,13 @@ public class HugeBusPartMachine extends TieredIOPartMachine implements IDistinct
     @SaveField
     protected final CatalystItemStackHandler shareInventory;
 
-    public HugeBusPartMachine(BlockEntityCreationInfo holder, int tier, IO io, Object... args) {
-        this(holder, tier, io, 4, args);
+    public HugeBusPartMachine(BlockEntityCreationInfo holder, int tier, IO io) {
+        this(holder, tier, io, 4);
     }
 
-    public HugeBusPartMachine(BlockEntityCreationInfo holder, int tier, IO io, int shareSize, Object... args) {
+    public HugeBusPartMachine(BlockEntityCreationInfo holder, int tier, IO io, int shareSize) {
         super(holder, tier, io);
-        this.inventory = createInventory(args);
+        this.inventory = createInventory(io);
         this.circuitInventory = createCircuitItemHandler(io);
         this.shareInventory = new CatalystItemStackHandler(this, shareSize, IO.IN, IO.NONE);
     }
@@ -87,7 +88,7 @@ public class HugeBusPartMachine extends TieredIOPartMachine implements IDistinct
         else return (1 + getTier()) * INV_MULTIPLE;
     }
 
-    protected NotifiableItemStackHandler createInventory(Object... args) {
+    protected NotifiableItemStackHandler createInventory(IO io) {
         return new NotifiableItemStackHandler(this, getInventorySize(), io, io, UnlimitedItemStackTransfer::new) {
 
             @Override
@@ -174,6 +175,16 @@ public class HugeBusPartMachine extends TieredIOPartMachine implements IDistinct
     @Override
     public void onMachineDestroyed() {
         clearInventory(shareInventory);
+    }
+
+    public void clearInventory(IItemHandlerModifiable inventory) {
+        for (int i = 0; i < inventory.getSlots(); i++) {
+            ItemStack stackInSlot = inventory.getStackInSlot(i);
+            if (!stackInSlot.isEmpty()) {
+                inventory.setStackInSlot(i, ItemStack.EMPTY);
+                Block.popResource(getLevel(), getBlockPos(), stackInSlot);
+            }
+        }
     }
 
     protected void updateInventorySubscription() {

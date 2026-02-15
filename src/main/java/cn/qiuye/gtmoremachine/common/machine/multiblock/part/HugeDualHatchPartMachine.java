@@ -50,8 +50,8 @@ public class HugeDualHatchPartMachine extends HugeBusPartMachine {
     private boolean hasFluidTransfer;
     private boolean hasItemTransfer;
 
-    public HugeDualHatchPartMachine(@UnknownNullability BlockEntityCreationInfo holder, int tier, IO io, Object... args) {
-        super(holder, tier, io, 9, args);
+    public HugeDualHatchPartMachine(@UnknownNullability BlockEntityCreationInfo holder, int tier, IO io) {
+        super(holder, tier, io, 9);
         this.tank = createTank();
         this.shareTank = new CatalystFluidStackHandler(this, 9, 16000, IO.IN, IO.NONE);
     }

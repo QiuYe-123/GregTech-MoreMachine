@@ -27,7 +27,6 @@ import com.lowdragmc.lowdraglib.gui.widget.TextFieldWidget;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
@@ -73,12 +72,6 @@ public class CreativeEnergyHatchPartMachine extends TieredIOPartMachine implemen
         this.maxEnergy = this.voltage * this.amps;
         container = new InfinityEnergyContainer(this, this.maxEnergy, this.voltage, this.amps, 0L, 0L);
         return container;
-    }
-
-    @Override
-    public void loadCustomPersistedData(CompoundTag tag) {
-        super.loadCustomPersistedData(tag);
-        updateEnergyContainer();
     }
 
     @Override

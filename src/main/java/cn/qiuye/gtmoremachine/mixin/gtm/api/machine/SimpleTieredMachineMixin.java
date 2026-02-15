@@ -42,8 +42,7 @@ public abstract class SimpleTieredMachineMixin extends WorkableTieredMachine {
         NotifiableItemStackHandler newImportHandler = new NotifiableItemStackHandler(
                 this,
                 getRecipeType().getMaxInputs(ItemRecipeCapability.CAP),
-                IO.IN
-        ).setFilter(i -> !i.is(GTMMAEItems.VIRTUAL_ITEM_PROVIDER.get()) || !i.hasTag());
+                IO.IN).setFilter(i -> !i.is(GTMMAEItems.VIRTUAL_ITEM_PROVIDER.get()) || !i.hasTag());
 
         try {
             Field importItemsField = WorkableTieredMachine.class.getDeclaredField("importItems");
