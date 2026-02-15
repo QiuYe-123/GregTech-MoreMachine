@@ -2,9 +2,8 @@ package cn.qiuye.gtmoremachine.api.pattern;
 
 import cn.qiuye.gtmoremachine.common.item.AdvancedTerminalBehavior;
 
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
+import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.pattern.BlockPattern;
 import com.gregtechceu.gtceu.api.pattern.MultiblockState;
 import com.gregtechceu.gtceu.api.pattern.TraceabilityPredicate;
@@ -124,8 +123,8 @@ public class AdvancedBlockPattern extends BlockPattern {
 
         int minZ = -centerOffset[4];
         clearWorldState(worldState);
-        IMultiController controller = worldState.getController();
-        BlockPos centerPos = controller.self().getPos();
+        MultiblockControllerMachine controller = worldState.getController();
+        BlockPos centerPos = controller.self().getBlockPos();
         Direction facing = controller.self().getFrontFacing();
         Direction upwardsFacing = controller.self().getUpwardsFacing();
         boolean isUseMirror = autoBuildSetting.isUseMirror();
@@ -259,8 +258,8 @@ public class AdvancedBlockPattern extends BlockPattern {
                             placeBlockPos.add(pos);
                             if (handler != null) handler.extractItem(foundSlot, 1, false);
                         }
-                        if (world.getBlockEntity(pos) instanceof IMachineBlockEntity machineBlockEntity) {
-                            blocks.put(pos, machineBlockEntity.getMetaMachine());
+                        if (world.getBlockEntity(pos) instanceof MetaMachine metaMachine) {
+                            blocks.put(pos, metaMachine);
                         } else blocks.put(pos, world.getBlockState(pos));
                     }
                 }
@@ -272,7 +271,7 @@ public class AdvancedBlockPattern extends BlockPattern {
             // adjust facing
             var pos = entry.getKey();
             var block = entry.getValue();
-            if (!(block instanceof IMultiController)) {
+            if (!(block instanceof MultiblockControllerMachine)) {
                 if (block instanceof BlockState && placeBlockPos.contains(pos)) {
                     resetFacing(pos, (BlockState) block, frontFacing, (p, f) -> {
                         Object object = blocks.get(p.relative(f));
@@ -303,11 +302,11 @@ public class AdvancedBlockPattern extends BlockPattern {
     public void autoDemolish(Player player, MultiblockState worldState, AdvancedTerminalBehavior.AutoBuildSetting autoBuildSetting) {
         Level world = player.level();
         int minZ = -centerOffset[4];
-        IMultiController controller = worldState.getController();
+        MultiblockControllerMachine controller = worldState.getController();
         if (controller == null) {
             return;
         }
-        BlockPos centerPos = controller.self().getPos();
+        BlockPos centerPos = controller.self().getBlockPos();
         Direction facing = controller.self().getFrontFacing();
         Direction upwardsFacing = controller.self().getUpwardsFacing();
         boolean isUseMirror = autoBuildSetting.isUseMirror();

@@ -14,9 +14,10 @@ import com.gregtechceu.gtceu.api.capability.recipe.IRecipeCapabilityHolder;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
+import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
+import com.gregtechceu.gtceu.api.machine.trait.MachineTraitType;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableRecipeHandlerTrait;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.utils.GTUtil;
@@ -38,6 +39,14 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class WirelessNotifiableCWUContainer extends NotifiableRecipeHandlerTrait<Integer> implements IOpticalComputationHatch, IOpticalComputationReceiver, IWirelessCWUContainerHolder {
+
+    public static final MachineTraitType<WirelessNotifiableCWUContainer> TYPE = new MachineTraitType<>(
+            WirelessNotifiableCWUContainer.class);
+
+    @Override
+    public MachineTraitType<WirelessNotifiableCWUContainer> getTraitType() {
+        return TYPE;
+    }
 
     private WirelessCWUContainer container;
     @Getter
@@ -74,11 +83,11 @@ public class WirelessNotifiableCWUContainer extends NotifiableRecipeHandlerTrait
                     if (!part.isFormed()) {
                         return 0;
                     }
-                    for (IMultiController controller : part.getControllers()) {
+                    for (MultiblockControllerMachine controller : part.getControllers()) {
                         if (controller instanceof IOpticalComputationProvider provider) {
                             return provider.requestCWUt(cwut, simulate, seen);
                         }
-                        for (MachineTrait trait : controller.self().getTraits()) {
+                        for (MachineTrait trait : controller.self().getTraitHolder().getAllTraits()) {
                             if (trait instanceof IOpticalComputationProvider provider) {
                                 return provider.requestCWUt(cwut, simulate, seen);
                             }
@@ -118,14 +127,14 @@ public class WirelessNotifiableCWUContainer extends NotifiableRecipeHandlerTrait
                     if (!part.isFormed()) {
                         return 0;
                     }
-                    for (IMultiController controller : part.getControllers()) {
+                    for (MultiblockControllerMachine controller : part.getControllers()) {
                         if (!controller.isFormed()) {
                             continue;
                         }
                         if (controller instanceof IOpticalComputationProvider provider) {
                             return provider.getMaxCWUt(seen);
                         }
-                        for (MachineTrait trait : controller.self().getTraits()) {
+                        for (MachineTrait trait : controller.self().getTraitHolder().getAllTraits()) {
                             if (trait instanceof IOpticalComputationProvider provider) {
                                 return provider.getMaxCWUt(seen);
                             }
@@ -172,7 +181,7 @@ public class WirelessNotifiableCWUContainer extends NotifiableRecipeHandlerTrait
                             // first, remove the progress the recipe logic adds.
                             rlm.getRecipeLogic().setProgress(rlm.getRecipeLogic().getProgress() - 1 + drawn);
                         } else if (machine instanceof IMultiPart multiPart) {
-                            for (IMultiController controller : multiPart.getControllers()) {
+                            for (MultiblockControllerMachine controller : multiPart.getControllers()) {
                                 if (controller instanceof IRecipeLogicMachine rlm) {
                                     rlm.getRecipeLogic().setProgress(rlm.getRecipeLogic().getProgress() - 1 + drawn);
                                 }
@@ -228,7 +237,7 @@ public class WirelessNotifiableCWUContainer extends NotifiableRecipeHandlerTrait
             }
         }
         for (Direction direction : GTUtil.DIRECTIONS) {
-            BlockEntity blockEntity = machine.getLevel().getBlockEntity(machine.getPos().relative(direction));
+            BlockEntity blockEntity = machine.getLevel().getBlockEntity(machine.getBlockPos().relative(direction));
             if (blockEntity == null) continue;
 
             // noinspection DataFlowIssue can be null just fine.

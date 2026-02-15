@@ -6,18 +6,16 @@ import cn.qiuye.gtmoremachine.api.gui.widget.AlignLabelWidget;
 import cn.qiuye.gtmoremachine.api.misc.wireless.energy.IWirelessMonitor;
 import cn.qiuye.gtmoremachine.api.misc.wireless.energy.WirelessEnergyContainer;
 
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 
 import com.lowdragmc.lowdraglib.gui.util.ClickData;
 import com.lowdragmc.lowdraglib.gui.widget.DraggableScrollableWidgetGroup;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-import com.lowdragmc.lowdraglib.syncdata.annotation.DropSaved;
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
@@ -36,13 +34,10 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 public class WirelessEnergyMonitor extends MetaMachine implements IFancyUIMachine, IWirelessMonitor {
 
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(WirelessEnergyMonitor.class,
-            MetaMachine.MANAGED_FIELD_HOLDER);
-
     public static int p;
     public static BlockPos pPos;
 
-    public WirelessEnergyMonitor(IMachineBlockEntity holder) {
+    public WirelessEnergyMonitor(BlockEntityCreationInfo holder) {
         super(holder);
         this.statistics = Statistics.Companion.getDefaultValue();
         this.format = Format.Companion.getDefaultValue();
@@ -51,31 +46,21 @@ public class WirelessEnergyMonitor extends MetaMachine implements IFancyUIMachin
         this.type = Type.Companion.getDefaultValue();
     }
 
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
-    }
-
     @Getter
     @Setter
     private WirelessEnergyContainer WirelessEnergyContainerCache;
 
     private List<Component> textListCache;
 
-    @Persisted
-    @DropSaved
+    @SaveField
     private Statistics statistics;
-    @Persisted
-    @DropSaved
+    @SaveField
     private Format format;
-    @Persisted
-    @DropSaved
+    @SaveField
     private Status powerStatus;
-    @Persisted
-    @DropSaved
+    @SaveField
     private Sorting sortingrules;
-    @Persisted
-    @DropSaved
+    @SaveField
     private Type type;
 
     //////////////////////////////////////
