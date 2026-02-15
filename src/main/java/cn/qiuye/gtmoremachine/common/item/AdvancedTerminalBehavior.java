@@ -13,7 +13,7 @@ import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.item.component.IItemUIFactory;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
+import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
 
 import com.lowdragmc.lowdraglib.gui.editor.ColorPattern;
@@ -57,7 +57,7 @@ public class AdvancedTerminalBehavior implements IItemUIFactory {
             var blockPos = context.getClickedPos();
             var metaMachine = MetaMachine.getMachine(level, blockPos);
             if (context.getPlayer() != null && !level.isClientSide() &&
-                    metaMachine instanceof IMultiController controller) {
+                    metaMachine instanceof MultiblockControllerMachine controller) {
                 var autoBuildSetting = getAutoBuildSetting(context.getPlayer().getMainHandItem());
 
                 if (GTmm.Mods.isAE2Loaded()) {

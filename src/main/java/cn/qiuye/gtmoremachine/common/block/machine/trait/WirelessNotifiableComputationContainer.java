@@ -7,8 +7,8 @@ import com.gregtechceu.gtceu.api.capability.IOpticalComputationProvider;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
+import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableComputationContainer;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
@@ -47,11 +47,11 @@ public class WirelessNotifiableComputationContainer extends NotifiableComputatio
                     if (part.getControllers().isEmpty()) {
                         return 0;
                     }
-                    for (IMultiController controller : part.getControllers()) {
+                    for (MultiblockControllerMachine controller : part.getControllers()) {
                         if (controller instanceof IOpticalComputationProvider provider) {
                             return provider.requestCWUt(cwut, simulate, seen);
                         }
-                        for (MachineTrait trait : controller.self().getTraits()) {
+                        for (MachineTrait trait : controller.self().getTraitHolder().getAllTraits()) {
                             if (trait instanceof IOpticalComputationProvider provider) {
                                 return provider.requestCWUt(cwut, simulate, seen);
                             }
@@ -88,14 +88,14 @@ public class WirelessNotifiableComputationContainer extends NotifiableComputatio
                     if (part.getControllers().isEmpty()) {
                         return 0;
                     }
-                    for (IMultiController controller : part.getControllers()) {
+                    for (MultiblockControllerMachine controller : part.getControllers()) {
                         if (!controller.isFormed()) {
                             continue;
                         }
                         if (controller instanceof IOpticalComputationProvider provider) {
                             return provider.getMaxCWUt(seen);
                         }
-                        for (MachineTrait trait : controller.self().getTraits()) {
+                        for (MachineTrait trait : controller.self().getTraitHolder().getAllTraits()) {
                             if (trait instanceof IOpticalComputationProvider provider) {
                                 return provider.getMaxCWUt(seen);
                             }
@@ -131,14 +131,14 @@ public class WirelessNotifiableComputationContainer extends NotifiableComputatio
                     if (part.getControllers().isEmpty()) {
                         return false;
                     }
-                    for (IMultiController controller : part.getControllers()) {
+                    for (MultiblockControllerMachine controller : part.getControllers()) {
                         if (!controller.isFormed()) {
                             continue;
                         }
                         if (controller instanceof IOpticalComputationProvider provider) {
                             return provider.canBridge(seen);
                         }
-                        for (MachineTrait trait : controller.self().getTraits()) {
+                        for (MachineTrait trait : controller.self().getTraitHolder().getAllTraits()) {
                             if (trait instanceof IOpticalComputationProvider provider) {
                                 return provider.canBridge(seen);
                             }
@@ -179,7 +179,7 @@ public class WirelessNotifiableComputationContainer extends NotifiableComputatio
                             // first, remove the progress the recipe logic adds.
                             rlm.getRecipeLogic().setProgress(rlm.getRecipeLogic().getProgress() - 1 + drawn);
                         } else if (machine instanceof IMultiPart multiPart) {
-                            for (IMultiController controller : multiPart.getControllers()) {
+                            for (MultiblockControllerMachine controller : multiPart.getControllers()) {
                                 if (controller instanceof IRecipeLogicMachine rlm) {
                                     rlm.getRecipeLogic().setProgress(rlm.getRecipeLogic().getProgress() - 1 + drawn);
                                 }

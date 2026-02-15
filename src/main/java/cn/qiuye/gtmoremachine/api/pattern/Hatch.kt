@@ -1,6 +1,5 @@
 package cn.qiuye.gtmoremachine.api.pattern
 
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity
 import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine
 import com.gregtechceu.gtceu.api.registry.GTRegistries
 
@@ -13,9 +12,7 @@ object Hatch {
     val BlockSet: Set<Block> = HashSet<Block>().apply {
         GTRegistries.MACHINES.forEach { d ->
             val block = d.block
-            val machine = d.createMetaMachine(
-                d.blockEntityType.create(BlockPos.ZERO, block.defaultBlockState()) as IMachineBlockEntity,
-            )
+            val machine = d.blockEntityType.create(BlockPos.ZERO, block.defaultBlockState())
             if (machine is MultiblockPartMachine) {
                 add(block)
             }

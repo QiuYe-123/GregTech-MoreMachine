@@ -6,18 +6,13 @@ import cn.qiuye.gtmoremachine.api.misc.wireless.energy.WirelessEnergyContainer;
 import cn.qiuye.gtmoremachine.utils.TeamUtils;
 
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
-import com.gregtechceu.gtceu.api.machine.feature.IExplosionMachine;
-import com.gregtechceu.gtceu.api.machine.feature.IInteractedMachine;
-import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredIOPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableEnergyContainer;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.common.data.GTItems;
-
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
@@ -43,22 +38,14 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class WirelessEnergyHatchPartMachine extends TieredIOPartMachine implements IInteractedMachine, IExplosionMachine, IMachineLife, IWirelessEnergyContainerHolder {
-
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
-            WirelessEnergyHatchPartMachine.class, TieredIOPartMachine.MANAGED_FIELD_HOLDER);
-
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
-    }
+public class WirelessEnergyHatchPartMachine extends TieredIOPartMachine implements IWirelessEnergyContainerHolder {
 
     @Nullable
     @Getter
     @Setter
     private WirelessEnergyContainer WirelessEnergyContainerCache;
 
-    @Persisted
+    @SaveField
     public final NotifiableEnergyContainer energyContainer;
     @Getter
     protected int amperage;
@@ -66,23 +53,17 @@ public class WirelessEnergyHatchPartMachine extends TieredIOPartMachine implemen
     private final boolean leaser;
     private TickableSubscription updEnergySubs;
 
-    public WirelessEnergyHatchPartMachine(IMachineBlockEntity holder, int tier, IO io, int amperage, boolean isleaser, Object... args) {
+    public WirelessEnergyHatchPartMachine(BlockEntityCreationInfo holder, int tier, IO io, int amperage, boolean isleaser) {
         super(holder, tier, io);
         this.amperage = amperage;
         this.leaser = isleaser;
-        this.energyContainer = createEnergyContainer(args);
+        this.energyContainer = createEnergyContainer();
     }
 
-    protected NotifiableEnergyContainer createEnergyContainer(Object... args) {
-        NotifiableEnergyContainer container;
-        if (isLeaser()) {
-            container = NotifiableEnergyContainer.emitterContainer(this, GTValues.VEX[tier] * 64L * amperage,
-                    GTValues.VEX[tier], amperage);
-        } else {
-            container = NotifiableEnergyContainer.receiverContainer(this, GTValues.VEX[tier] * 16L * amperage,
-                    GTValues.VEX[tier], amperage);
-        }
-        return container;
+    protected NotifiableEnergyContainer createEnergyContainer() {
+        long multiplier = isLeaser() ? 64L : 16L;
+        long capacity = GTValues.VEX[tier] * multiplier * amperage;
+        return io == IO.IN ? NotifiableEnergyContainer.receiverContainer(this, capacity, GTValues.VEX[tier], amperage) : NotifiableEnergyContainer.emitterContainer(this, capacity, GTValues.VEX[tier], amperage);
     }
 
     @Override

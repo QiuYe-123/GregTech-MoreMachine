@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.SimpleTieredMachine;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.WorkableTieredMachine;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.common.machine.electric.PumpMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.FluidHatchPartMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.ItemBusPartMachine;
@@ -18,8 +19,6 @@ import com.gregtechceu.gtceu.common.machine.storage.QuantumTankMachine;
 
 import com.lowdragmc.lowdraglib.side.fluid.FluidTransferHelper;
 import com.lowdragmc.lowdraglib.side.item.ItemTransferHelper;
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
@@ -43,21 +42,18 @@ import static net.minecraft.resources.ResourceLocation.tryParse;
 @MethodsReturnNonnullByDefault
 public class WirelessTransferCover extends CoverBehavior {
 
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(WirelessTransferCover.class,
-            CoverBehavior.MANAGED_FIELD_HOLDER);
-
     public static final int TRANSFER_ITEM = 1;
     public static final int TRANSFER_FLUID = 2;
 
-    @Persisted
+    @SaveField
     protected final int transferType;
     private TickableSubscription subscription;
     protected ServerLevel targetLever;
-    @Persisted
+    @SaveField
     private String dimensionId;
-    @Persisted
+    @SaveField
     protected BlockPos targetPos;
-    @Persisted
+    @SaveField
     protected Direction facing;
 
     public WirelessTransferCover(CoverDefinition definition, ICoverable coverHolder, Direction attachedSide, int transferType) {
@@ -66,13 +62,8 @@ public class WirelessTransferCover extends CoverBehavior {
     }
 
     @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
-    }
-
-    @Override
     public boolean canAttach() {
-        var targetMachine = MetaMachine.getMachine(coverHolder.getLevel(), coverHolder.getPos());
+        var targetMachine = MetaMachine.getMachine(coverHolder.getLevel(), coverHolder.getBlockPos());
         if (targetMachine instanceof WorkableTieredMachine workableTieredMachine) {
             if ((workableTieredMachine.exportItems.getSlots() > 0 && this.transferType == TRANSFER_ITEM) || (workableTieredMachine.exportFluids.getTanks() > 0 && this.transferType == TRANSFER_FLUID)) {
 
@@ -134,10 +125,10 @@ public class WirelessTransferCover extends CoverBehavior {
             this.facing = Direction.byName(tag.getString("facing"));
             GetLevel();
         }
-        var targetMachine = MetaMachine.getMachine(coverHolder.getLevel(), coverHolder.getPos());
+        var targetMachine = MetaMachine.getMachine(coverHolder.getLevel(), coverHolder.getBlockPos());
         if (targetMachine instanceof SimpleTieredMachine simpleTieredMachine) {
-            if (this.transferType == TRANSFER_ITEM) simpleTieredMachine.setAutoOutputItems(false);
-            if (this.transferType == TRANSFER_FLUID) simpleTieredMachine.setAutoOutputFluids(false);
+            if (this.transferType == TRANSFER_ITEM) simpleTieredMachine.autoOutput.setAllowAutoOutputItems(false);
+            if (this.transferType == TRANSFER_FLUID) simpleTieredMachine.autoOutput.setAllowAutoOutputFluids(false);
         } else if (targetMachine instanceof ItemBusPartMachine itemBusPartMachine && this.transferType == TRANSFER_ITEM) {
             itemBusPartMachine.setWorkingEnabled(false);
         } else if (targetMachine instanceof FluidHatchPartMachine fluidHatchPartMachine && this.transferType == TRANSFER_FLUID) {
@@ -157,11 +148,11 @@ public class WirelessTransferCover extends CoverBehavior {
         if (coverHolder.getOffsetTimer() % 5 == 0) {
             if (this.targetLever == null || this.targetPos == null || coverHolder.getLevel().isClientSide()) return;
             if (this.transferType == TRANSFER_ITEM) {
-                var itemTransfer = ItemTransferHelper.getItemTransfer(coverHolder.getLevel(), coverHolder.getPos(), attachedSide);
+                var itemTransfer = ItemTransferHelper.getItemTransfer(coverHolder.getLevel(), coverHolder.getBlockPos(), attachedSide);
                 if (itemTransfer == null) return;
                 ItemTransferHelper.exportToTarget(itemTransfer, Integer.MAX_VALUE, f -> true, this.targetLever, this.targetPos, this.facing);
             } else {
-                var fluidTransfer = FluidTransferHelper.getFluidTransfer(coverHolder.getLevel(), coverHolder.getPos(), attachedSide);
+                var fluidTransfer = FluidTransferHelper.getFluidTransfer(coverHolder.getLevel(), coverHolder.getBlockPos(), attachedSide);
                 if (fluidTransfer == null) return;
                 FluidTransferHelper.exportToTarget(fluidTransfer, Integer.MAX_VALUE, f -> true, this.targetLever, this.targetPos, this.facing);
             }

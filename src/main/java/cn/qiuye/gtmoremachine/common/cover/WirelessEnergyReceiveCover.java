@@ -108,7 +108,7 @@ public class WirelessEnergyReceiveCover extends CoverBehavior implements IWirele
 
     private void updateEnergy() {
         if (getUUID() == null) return;
-        var energyContainer = getEnergyContainer(coverHolder.getLevel(), coverHolder.getPos(), attachedSide);
+        var energyContainer = getEnergyContainer(coverHolder.getLevel(), coverHolder.getBlockPos(), attachedSide);
         if (energyContainer != null) {
             var machine = getMachine();
             if (machine instanceof BatteryBufferMachine || machine instanceof HullMachine || machine instanceof WirelessEnergyReceiveCoverHolder) {
@@ -145,7 +145,7 @@ public class WirelessEnergyReceiveCover extends CoverBehavior implements IWirele
 
     @Nullable
     private MetaMachine getMachine() {
-        if (machine == null) machine = MetaMachine.getMachine(coverHolder.getLevel(), coverHolder.getPos());
+        if (machine == null) machine = MetaMachine.getMachine(coverHolder.getLevel(), coverHolder.getBlockPos());
         if (machine instanceof TieredEnergyMachine tieredEnergyMachine) {
             this.machineMaxEnergy = GTValues.VEX[tieredEnergyMachine.getTier()] << 6;
         }
