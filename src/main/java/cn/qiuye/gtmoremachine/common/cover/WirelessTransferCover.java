@@ -63,7 +63,7 @@ public class WirelessTransferCover extends CoverBehavior {
 
     @Override
     public boolean canAttach() {
-        var targetMachine = MetaMachine.getMachine(coverHolder.getLevel(), coverHolder.getBlockPos());
+	    var targetMachine = MetaMachine.getMachine(coverHolder.getLevel(), coverHolder.getBlockPos());
         if (targetMachine instanceof WorkableTieredMachine workableTieredMachine) {
             if ((workableTieredMachine.exportItems.getSlots() > 0 && this.transferType == TRANSFER_ITEM) || (workableTieredMachine.exportFluids.getTanks() > 0 && this.transferType == TRANSFER_FLUID)) {
 
@@ -127,8 +127,8 @@ public class WirelessTransferCover extends CoverBehavior {
         }
         var targetMachine = MetaMachine.getMachine(coverHolder.getLevel(), coverHolder.getBlockPos());
         if (targetMachine instanceof SimpleTieredMachine simpleTieredMachine) {
-            if (this.transferType == TRANSFER_ITEM) simpleTieredMachine.setAllAutoOutputItems(false);
-            if (this.transferType == TRANSFER_FLUID) simpleTieredMachine.setAutoOutputFluids(false);
+            if (this.transferType == TRANSFER_ITEM) simpleTieredMachine.autoOutput.setAllowAutoOutputItems(false);
+            if (this.transferType == TRANSFER_FLUID) simpleTieredMachine.autoOutput.setAllowAutoOutputFluids(false);
         } else if (targetMachine instanceof ItemBusPartMachine itemBusPartMachine && this.transferType == TRANSFER_ITEM) {
             itemBusPartMachine.setWorkingEnabled(false);
         } else if (targetMachine instanceof FluidHatchPartMachine fluidHatchPartMachine && this.transferType == TRANSFER_FLUID) {

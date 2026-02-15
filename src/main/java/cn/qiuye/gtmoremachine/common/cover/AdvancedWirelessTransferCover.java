@@ -124,8 +124,8 @@ public class AdvancedWirelessTransferCover extends CoverBehavior implements IUIC
         }
         var targetMachine = MetaMachine.getMachine(coverHolder.getLevel(), coverHolder.getBlockPos());
         if (targetMachine instanceof SimpleTieredMachine simpleTieredMachine) {
-            if (this.transferType == TRANSFER_ITEM) simpleTieredMachine.setAutoOutputItems(false);
-            if (this.transferType == TRANSFER_FLUID) simpleTieredMachine.setAutoOutputFluids(false);
+            if (this.transferType == TRANSFER_ITEM) simpleTieredMachine.autoOutput.setAllowAutoOutputItems(false);
+            if (this.transferType == TRANSFER_FLUID) simpleTieredMachine.autoOutput.setAllowAutoOutputFluids(false);
         } else if (targetMachine instanceof ItemBusPartMachine itemBusPartMachine && this.transferType == TRANSFER_ITEM) {
             itemBusPartMachine.setWorkingEnabled(false);
         } else if (targetMachine instanceof FluidHatchPartMachine fluidHatchPartMachine && this.transferType == TRANSFER_FLUID) {
