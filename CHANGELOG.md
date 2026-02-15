@@ -1,5 +1,15 @@
 # ChangeLog
 
+## Version [v1.6.0](https://github.com/QiuYe-123/GTMoreMachine/compare/v1.5.1-1.20.1...v1.6.0-1.20.1)
+### Fixed
+
+- 简化isDataGen() && isDev() 到isDev() by @QiuYe-123 in [#101](https://github.com/QiuYe-123/GTMoreMachine/pull/101)
+
+### Changed
+
+- Refactor GTMMRegistration by @QiuYe-123 in [#88](https://github.com/QiuYe-123/GTMoreMachine/pull/88)
+
+ 
 ## Version [v1.5.1](https://github.com/QiuYe-123/GTMoreMachine/compare/v1.5.0-1.20.1...v1.5.1-1.20.1)
 ### Fixed
 
