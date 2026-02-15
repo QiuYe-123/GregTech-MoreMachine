@@ -25,7 +25,7 @@ public interface ITransferData {
     default Component getInfo(Format format) {
         MetaMachine machine = machine();
         int cwu = Throughput();
-        String pos = machine.getPos().toShortString();
+        String pos = machine.getBlockPos().toShortString();
         return Component.translatable(machine.getBlockState().getBlock().getDescriptionId())
                 .withStyle(Style.EMPTY.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
                         Component.translatable("recipe.condition.dimension.tooltip",

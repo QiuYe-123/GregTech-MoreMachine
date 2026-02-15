@@ -1,9 +1,9 @@
 package cn.qiuye.gtmoremachine.common.machine.multiblock.part;
 
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IDataInfoProvider;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredIOPartMachine;
@@ -11,6 +11,7 @@ import com.gregtechceu.gtceu.api.machine.trait.NotifiableEnergyContainer;
 import com.gregtechceu.gtceu.api.pattern.MultiblockWorldSavedData;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.ingredient.EnergyStack;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.common.item.PortableScannerBehavior;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
@@ -23,12 +24,9 @@ import com.lowdragmc.lowdraglib.gui.widget.ButtonWidget;
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.SelectorWidget;
 import com.lowdragmc.lowdraglib.gui.widget.TextFieldWidget;
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
@@ -47,21 +45,19 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 public class CreativeEnergyHatchPartMachine extends TieredIOPartMachine implements IDataInfoProvider {
 
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(CreativeEnergyHatchPartMachine.class, TieredIOPartMachine.MANAGED_FIELD_HOLDER);
-
-    @Persisted
+    @SaveField
     public final NotifiableEnergyContainer energyContainer;
-    @Persisted
+    @SaveField
     private long maxEnergy;
-    @Persisted
+    @SaveField
     private long voltage = 0;
-    @Persisted
+    @SaveField
     @Getter
     private int amps = 1;
-    @Persisted
+    @SaveField
     private int setTier = GTValues.VNF.length - 1;
 
-    public CreativeEnergyHatchPartMachine(IMachineBlockEntity holder) {
+    public CreativeEnergyHatchPartMachine(BlockEntityCreationInfo holder) {
         super(holder, GTValues.MAX, IO.IN);
         this.energyContainer = createEnergyContainer();
     }
@@ -69,10 +65,6 @@ public class CreativeEnergyHatchPartMachine extends TieredIOPartMachine implemen
     //////////////////////////////////////
     // ***** Initialization ******//
     //////////////////////////////////////
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
-    }
 
     protected NotifiableEnergyContainer createEnergyContainer() {
         NotifiableEnergyContainer container;
@@ -80,12 +72,6 @@ public class CreativeEnergyHatchPartMachine extends TieredIOPartMachine implemen
         this.maxEnergy = this.voltage * this.amps;
         container = new InfinityEnergyContainer(this, this.maxEnergy, this.voltage, this.amps, 0L, 0L);
         return container;
-    }
-
-    @Override
-    public void loadCustomPersistedData(CompoundTag tag) {
-        super.loadCustomPersistedData(tag);
-        updateEnergyContainer();
     }
 
     @Override

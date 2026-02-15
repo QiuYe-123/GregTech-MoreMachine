@@ -3,14 +3,12 @@ package cn.qiuye.gtmoremachine.common.machine.multiblock.part;
 import cn.qiuye.gtmoremachine.api.capability.IGTMMJadeIF;
 import cn.qiuye.gtmoremachine.common.block.machine.trait.WirelessNotifiableComputationContainer;
 
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IDataStickInteractable;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
-
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
@@ -32,23 +30,15 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 public class WirelessCWUHatchMachine extends MultiblockPartMachine implements IDataStickInteractable, IGTMMJadeIF {
 
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
-            WirelessCWUHatchMachine.class, MultiblockPartMachine.MANAGED_FIELD_HOLDER);
-
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
-    }
-
     private final boolean transmitter;
 
-    @Persisted
+    @SaveField
     private BlockPos transmitterPos;
-    @Persisted
+    @SaveField
     private BlockPos receiverPos;
     protected WirelessNotifiableComputationContainer computationContainer;
 
-    public WirelessCWUHatchMachine(IMachineBlockEntity holder, boolean transmitter) {
+    public WirelessCWUHatchMachine(BlockEntityCreationInfo holder, boolean transmitter) {
         super(holder);
         this.transmitter = transmitter;
         this.computationContainer = createComputationContainer(transmitter);
@@ -134,7 +124,7 @@ public class WirelessCWUHatchMachine extends MultiblockPartMachine implements ID
         if (isRemote()) return InteractionResult.SUCCESS;
 
         CompoundTag tag = dataStick.getOrCreateTag();
-        BlockPos currentPos = getPos();
+        BlockPos currentPos = getBlockPos();
         if (isTransmitter()) {
             tag.put(KEY_TRANSMITTER, createPos(currentPos));
             player.sendSystemMessage(Component.translatable("gtmoremachine.machine.wireless_computation_transmitter_hatch.tobind"));
@@ -169,7 +159,7 @@ public class WirelessCWUHatchMachine extends MultiblockPartMachine implements ID
 
     private boolean bindWith(BlockPos otherPos, Player player) {
         Level level = getLevel();
-        if (level == null || otherPos.equals(this.getPos())) return false;
+        if (level == null || otherPos.equals(this.getBlockPos())) return false;
 
         MetaMachine otherMachine = MetaMachine.getMachine(level, otherPos);
         if (otherMachine instanceof WirelessCWUHatchMachine otherWoch) {
@@ -178,10 +168,10 @@ public class WirelessCWUHatchMachine extends MultiblockPartMachine implements ID
             }
             if (isTransmitter()) {
                 this.setReceiverPos(otherPos);
-                otherWoch.setTransmitterPos(this.getPos());
+                otherWoch.setTransmitterPos(this.getBlockPos());
             } else {
                 this.setTransmitterPos(otherPos);
-                otherWoch.setReceiverPos(this.getPos());
+                otherWoch.setReceiverPos(this.getBlockPos());
             }
 
             player.sendSystemMessage(Component.translatable("gtmoremachine.machine.wireless_computation_hatch.binded"));

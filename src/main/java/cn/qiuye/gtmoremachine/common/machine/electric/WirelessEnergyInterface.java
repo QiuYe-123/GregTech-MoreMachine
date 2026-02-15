@@ -5,18 +5,14 @@ import cn.qiuye.gtmoremachine.api.misc.wireless.energy.WirelessEnergyContainer;
 import cn.qiuye.gtmoremachine.utils.TeamUtils;
 
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
-import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
-import com.gregtechceu.gtceu.api.machine.feature.IInteractedMachine;
-import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredIOPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableEnergyContainer;
 import com.gregtechceu.gtceu.common.data.GTItems;
 
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
@@ -41,14 +37,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class WirelessEnergyInterface extends TieredIOPartMachine implements IInteractedMachine, IMachineLife, IWirelessEnergyContainerHolder {
-
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(WirelessEnergyInterface.class,
-            MetaMachine.MANAGED_FIELD_HOLDER);
-
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
-    }
+public class WirelessEnergyInterface extends TieredIOPartMachine implements IWirelessEnergyContainerHolder {
 
     private TickableSubscription updEnergySubs;
 
@@ -60,7 +49,7 @@ public class WirelessEnergyInterface extends TieredIOPartMachine implements IInt
     @Persisted
     public final NotifiableEnergyContainer energyContainer;
 
-    public WirelessEnergyInterface(IMachineBlockEntity holder) {
+    public WirelessEnergyInterface(BlockEntityCreationInfo holder) {
         super(holder, GTValues.MAX, IO.IN);
         this.energyContainer = createEnergyContainer();
     }
