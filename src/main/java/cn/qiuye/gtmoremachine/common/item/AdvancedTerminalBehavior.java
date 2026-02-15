@@ -7,6 +7,7 @@ import cn.qiuye.gtmoremachine.api.gui.widget.TerminalInputWidget;
 import cn.qiuye.gtmoremachine.api.pattern.AdvancedBlockNoAEPattern;
 import cn.qiuye.gtmoremachine.api.pattern.AdvancedBlockPattern;
 import cn.qiuye.gtmoremachine.api.pattern.Hatch;
+import cn.qiuye.gtmoremachine.common.block.BlockMap;
 
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
@@ -40,7 +41,7 @@ import lombok.Setter;
 
 import java.util.*;
 
-import static cn.qiuye.gtmoremachine.common.block.BlockMap.*;
+import static cn.qiuye.gtmoremachine.common.block.BlockMap.MAP;
 import static net.minecraft.network.chat.Component.translatable;
 
 @Getter
@@ -93,7 +94,7 @@ public class AdvancedTerminalBehavior implements IItemUIFactory {
             autoBuildSetting.setUseDemolish(tag.getBoolean("IsUseDemolish"));
             String block = tag.getString("blocks");
             if (!block.isEmpty()) {
-                autoBuildSetting.tierBlock = tierBlockMap.get(block).get();
+                autoBuildSetting.tierBlock = MAP.get(BlockMap.namePrefix + block);
                 autoBuildSetting.blocks = new ObjectOpenHashSet<>(autoBuildSetting.tierBlock);
             }
         }
@@ -161,9 +162,9 @@ public class AdvancedTerminalBehavior implements IItemUIFactory {
                 tag.putString("blocks", s);
                 tag.putInt("Tier", i);
                 handItem.setTag(tag);
-                blockLabel.setComponent(Component.literal(" (").append(translatable(s))
+                blockLabel.setComponent(Component.literal(" (").append(translatable(BlockMap.namePrefix + "." + s))
                         .append(Component.literal(" : "))
-                        .append(tierBlockMap.get(s).get()[i].getName())
+                        .append(MAP.get(s)[i].getName())
                         .append(Component.literal(")")));
             }
         });
@@ -181,9 +182,9 @@ public class AdvancedTerminalBehavior implements IItemUIFactory {
             var block = tag.getString("blocks");
             if (!block.isEmpty()) {
                 int tier = tag.getInt("Tier");
-                return Component.literal("(").append(translatable(block))
+                return Component.literal("(").append(translatable(BlockMap.namePrefix + "." + block))
                         .append(Component.literal(" : "))
-                        .append(tierBlockMap.get(block).get()[tier].getName())
+                        .append(MAP.get(block)[tier].getName())
                         .append(Component.literal(")"));
             }
         }

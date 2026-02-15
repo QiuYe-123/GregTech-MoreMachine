@@ -3,7 +3,6 @@ package cn.qiuye.gtmoremachine.common.data;
 import cn.qiuye.gtmoremachine.api.GTMMAPI;
 import cn.qiuye.gtmoremachine.api.machine.multiblock.ICapacityComponentData;
 import cn.qiuye.gtmoremachine.api.machine.multiblock.IEnergyCommunicationUnitBlock;
-import cn.qiuye.gtmoremachine.common.block.BlockMap;
 import cn.qiuye.gtmoremachine.common.block.CapacityComponentBlock;
 import cn.qiuye.gtmoremachine.common.block.CapacityComponentBlock.CapacityComponentBlockPartType;
 import cn.qiuye.gtmoremachine.common.block.EnergyCommunicationUnitBlock;
@@ -11,7 +10,6 @@ import cn.qiuye.gtmoremachine.common.block.EnergyCommunicationUnitBlock.EnergyCo
 import cn.qiuye.gtmoremachine.common.data.models.GTMMModels;
 
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 
 import net.minecraft.world.item.BlockItem;
@@ -96,12 +94,5 @@ public class GTMMBlocks {
         return CapacityComponentBlock;
     }
 
-    public static void init() {
-        BlockMap.init();
-        int j = 0;
-        for (int i = 3; i <= 13; i++) {
-            BlockMap.rotMap.put(j, GTMachines.ROTOR_HOLDER[i]);
-            j++;
-        }
-    }
+    public static void init() {}
 }
