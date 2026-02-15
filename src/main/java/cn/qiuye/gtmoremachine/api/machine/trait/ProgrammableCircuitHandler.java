@@ -20,8 +20,8 @@ import java.util.List;
 
 public class ProgrammableCircuitHandler extends NotifiableItemStackHandler {
 
-    public ProgrammableCircuitHandler(Object machine) {
-        super((MetaMachine) machine, 1, IO.IN, IO.IN, size -> new ItemStackHandler(size, machine));
+    public ProgrammableCircuitHandler(MetaMachine machine) {
+        super(machine, 1, IO.IN, IO.IN, size -> new ItemStackHandler(size, machine));
     }
 
     @Override

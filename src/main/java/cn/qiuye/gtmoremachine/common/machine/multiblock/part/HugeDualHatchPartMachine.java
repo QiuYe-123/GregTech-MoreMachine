@@ -10,6 +10,8 @@ import com.gregtechceu.gtceu.api.gui.fancy.ConfiguratorPanel;
 import com.gregtechceu.gtceu.api.machine.fancyconfigurator.FancyTankConfigurator;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 
+import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
+import com.gregtechceu.gtceu.utils.ISubscription;
 import com.lowdragmc.lowdraglib.gui.util.ClickData;
 import com.lowdragmc.lowdraglib.gui.widget.ComponentPanelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.DraggableScrollableWidgetGroup;
@@ -17,9 +19,6 @@ import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.side.fluid.FluidTransferHelper;
 import com.lowdragmc.lowdraglib.side.item.ItemTransferHelper;
-import com.lowdragmc.lowdraglib.syncdata.ISubscription;
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -30,7 +29,6 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.fluids.FluidStack;
 
 import lombok.Getter;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnknownNullability;
 
 import java.util.List;
@@ -41,19 +39,11 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 public class HugeDualHatchPartMachine extends HugeBusPartMachine {
 
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(HugeDualHatchPartMachine.class,
-            HugeBusPartMachine.MANAGED_FIELD_HOLDER);
-
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
-    }
-
-    @Persisted
+    @SaveField
     protected final NotifiableFluidTank tank;
-    protected @Nullable ISubscription tankSubs;
+    protected ISubscription tankSubs;
 
-    @Persisted
+    @SaveField
     @Getter
     protected final CatalystFluidStackHandler shareTank;
 
@@ -66,7 +56,7 @@ public class HugeDualHatchPartMachine extends HugeBusPartMachine {
         this.shareTank = new CatalystFluidStackHandler(this, 9, 16000, IO.IN, IO.NONE);
     }
 
-    protected NotifiableFluidTank createTank(Object... args) {
+    protected NotifiableFluidTank createTank() {
         return new NotifiableFluidTank(this, this.getTankInventorySize(), Integer.MAX_VALUE, io) {
 
             @Override
@@ -116,8 +106,8 @@ public class HugeDualHatchPartMachine extends HugeBusPartMachine {
         boolean canOutput = this.io == IO.OUT && (!this.tank.isEmpty() || !this.getInventory().isEmpty());
         Level level = this.getLevel();
         if (level != null) {
-            this.hasItemTransfer = ItemTransferHelper.getItemTransfer(level, this.getPos().relative(this.getFrontFacing()), this.getFrontFacing().getOpposite()) != null;
-            this.hasFluidTransfer = FluidTransferHelper.getFluidTransfer(level, this.getPos().relative(this.getFrontFacing()), this.getFrontFacing().getOpposite()) != null;
+            this.hasItemTransfer = ItemTransferHelper.getItemTransfer(level, this.getBlockPos().relative(this.getFrontFacing()), this.getFrontFacing().getOpposite()) != null;
+            this.hasFluidTransfer = FluidTransferHelper.getFluidTransfer(level, this.getBlockPos().relative(this.getFrontFacing()), this.getFrontFacing().getOpposite()) != null;
         } else {
             this.hasItemTransfer = false;
             this.hasFluidTransfer = false;
