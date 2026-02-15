@@ -3,9 +3,9 @@ package cn.qiuye.gtmoremachine.mixin.gtm.api.machine;
 import cn.qiuye.gtmoremachine.api.machine.trait.ProgrammableCircuitHandler;
 import cn.qiuye.gtmoremachine.integration.ae.item.GTMMAEItems;
 
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.SimpleTieredMachine;
 import com.gregtechceu.gtceu.api.machine.WorkableTieredMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
@@ -20,8 +20,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(SimpleTieredMachine.class)
 public class SimpleTieredMachineMixin extends WorkableTieredMachine {
 
-    private SimpleTieredMachineMixin(IMachineBlockEntity holder, int tier, Int2IntFunction tankScalingFunction, Object... args) {
-        super(holder, tier, tankScalingFunction, args);
+    private SimpleTieredMachineMixin(BlockEntityCreationInfo holder, int tier, Int2IntFunction tankScalingFunction) {
+        super(holder, tier, tankScalingFunction);
     }
 
     @Inject(method = "createCircuitItemHandler", at = @At("HEAD"), remap = false, cancellable = true)

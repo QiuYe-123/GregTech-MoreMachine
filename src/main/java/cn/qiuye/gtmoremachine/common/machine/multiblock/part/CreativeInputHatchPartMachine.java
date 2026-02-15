@@ -1,11 +1,11 @@
 package cn.qiuye.gtmoremachine.common.machine.multiblock.part;
 
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.blockentity.IPaintable;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.widget.PhantomFluidWidget;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IDistinctPart;
@@ -13,12 +13,11 @@ import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredIOPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
 
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraftforge.fluids.FluidStack;
@@ -35,23 +34,20 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 public class CreativeInputHatchPartMachine extends TieredIOPartMachine implements IDistinctPart, IPaintable {
 
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(CreativeInputHatchPartMachine.class,
-            TieredIOPartMachine.MANAGED_FIELD_HOLDER);
-
     private final int SLOT_COUNT = 9;
 
-    @Persisted
+    @SaveField
     public final NotifiableFluidTank tank;
     private final int slots;
     @Nullable
     protected TickableSubscription autoIOSubs;
     private Map<Integer, FluidStack> fluidMap;
-    @Persisted
+    @SaveField
     private CustomFluidTank[] creativeTanks;
 
     // The `Object... args` parameter is necessary in case a superclass needs to pass any args along to createTank().
     // We can't use fields here because those won't be available while createTank() is called.
-    public CreativeInputHatchPartMachine(IMachineBlockEntity holder) {
+    public CreativeInputHatchPartMachine(BlockEntityCreationInfo holder) {
         super(holder, GTValues.MAX, IO.IN);
         this.slots = SLOT_COUNT;
         this.tank = createTank();
@@ -65,10 +61,6 @@ public class CreativeInputHatchPartMachine extends TieredIOPartMachine implement
     //////////////////////////////////////
     // ***** Initialization ******//
     //////////////////////////////////////
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
-    }
 
     protected NotifiableFluidTank createTank() {
         return new InfinityFluidTank(this, SLOT_COUNT, Integer.MAX_VALUE, IO.IN);
@@ -168,13 +160,13 @@ public class CreativeInputHatchPartMachine extends TieredIOPartMachine implement
                         (fluid -> {
                             if (fluid.isEmpty()) {
                                 this.creativeTanks[finalIndex].setFluid(fluid);
-                                if (!fluidMap.isEmpty() && fluidMap.containsKey(finalIndex)) fluidMap.remove(finalIndex);
+                                if (!fluidMap.isEmpty()) fluidMap.remove(finalIndex);
                                 updateTankSubscription();
                                 return;
                             }
-                            for (Map.Entry entry : fluidMap.entrySet()) {
-                                int i = (int) entry.getKey();
-                                FluidStack f = (FluidStack) entry.getValue();
+                            for (Map.Entry<Integer, FluidStack> entry : fluidMap.entrySet()) {
+                                int i = entry.getKey();
+                                FluidStack f = entry.getValue();
                                 if (i != finalIndex && f.getFluid() == fluid.getFluid()) {
                                     return;
                                 } else if (i == finalIndex && f.getFluid() != fluid.getFluid()) {

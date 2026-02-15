@@ -3,10 +3,10 @@ package cn.qiuye.gtmoremachine.common.machine.multiblock.part;
 import cn.qiuye.gtmoremachine.common.machine.trait.CatalystFluidStackHandler;
 import cn.qiuye.gtmoremachine.utils.NumberUtils;
 
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.fancy.ConfiguratorPanel;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.fancyconfigurator.FancyTankConfigurator;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 
@@ -31,6 +31,7 @@ import net.minecraftforge.fluids.FluidStack;
 
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.UnknownNullability;
 
 import java.util.List;
 
@@ -59,7 +60,7 @@ public class HugeDualHatchPartMachine extends HugeBusPartMachine {
     private boolean hasFluidTransfer;
     private boolean hasItemTransfer;
 
-    public HugeDualHatchPartMachine(IMachineBlockEntity holder, int tier, IO io, Object... args) {
+    public HugeDualHatchPartMachine(@UnknownNullability BlockEntityCreationInfo holder, int tier, IO io, Object... args) {
         super(holder, tier, io, 9, args);
         this.tank = createTank();
         this.shareTank = new CatalystFluidStackHandler(this, 9, 16000, IO.IN, IO.NONE);

@@ -3,8 +3,8 @@ package cn.qiuye.gtmoremachine.integration.ae.machine;
 import cn.qiuye.gtmoremachine.api.machine.trait.ProgrammableCircuitHandler;
 import cn.qiuye.gtmoremachine.integration.ae.item.GTMMAEItems;
 
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.DualHatchPartMachine;
 
@@ -12,8 +12,8 @@ import org.jetbrains.annotations.NotNull;
 
 public class ProgrammableHatchPartMachine extends DualHatchPartMachine {
 
-    public ProgrammableHatchPartMachine(IMachineBlockEntity holder, int tier, IO io, Object... args) {
-        super(holder, tier, io, args);
+    public ProgrammableHatchPartMachine(BlockEntityCreationInfo holder, int tier, IO io) {
+        super(holder, tier, io);
     }
 
     protected @NotNull NotifiableItemStackHandler createInventory(Object @NotNull... args) {

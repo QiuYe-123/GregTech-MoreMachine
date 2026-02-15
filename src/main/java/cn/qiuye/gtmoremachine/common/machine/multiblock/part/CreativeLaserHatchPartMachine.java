@@ -1,16 +1,18 @@
 package cn.qiuye.gtmoremachine.common.machine.multiblock.part;
 
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.IDataInfoProvider;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredIOPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableLaserContainer;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.common.item.PortableScannerBehavior;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
+import com.gregtechceu.gtceu.utils.ISubscription;
 import com.lowdragmc.lowdraglib.gui.editor.ColorPattern;
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
@@ -20,9 +22,6 @@ import com.lowdragmc.lowdraglib.gui.widget.ButtonWidget;
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.SelectorWidget;
 import com.lowdragmc.lowdraglib.gui.widget.TextFieldWidget;
-import com.lowdragmc.lowdraglib.syncdata.ISubscription;
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.chat.Component;
@@ -46,20 +45,18 @@ import static net.minecraft.ChatFormatting.*;
 @MethodsReturnNonnullByDefault
 public class CreativeLaserHatchPartMachine extends TieredIOPartMachine implements IDataInfoProvider {
 
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(CreativeLaserHatchPartMachine.class, TieredIOPartMachine.MANAGED_FIELD_HOLDER);
-
-    @Persisted
+    @SaveField
     private NotifiableLaserContainer buffer;
     @Nullable
     protected ISubscription LaserListener;
     protected TickableSubscription explosionSubs;
     private Long maxEnergy;
-    @Persisted
+    @SaveField
     private long voltage;
-    @Persisted
+    @SaveField
     @Getter
     private int amps = 1;
-    @Persisted
+    @SaveField
     private int setTier = GTValues.VNF.length - 1;
 
     public static final String[] VNF = new String[] {
@@ -90,7 +87,7 @@ public class CreativeLaserHatchPartMachine extends TieredIOPartMachine implement
             MAX_PLUS_FORMAT.apply(15),
             MAX_PLUS_FORMAT.apply(16), };
 
-    public CreativeLaserHatchPartMachine(IMachineBlockEntity holder) {
+    public CreativeLaserHatchPartMachine(BlockEntityCreationInfo holder) {
         super(holder, GTValues.MAX, IO.IN);
         this.voltage = GTValues.VEX[setTier];
         this.maxEnergy = voltage * amps;
@@ -131,11 +128,6 @@ public class CreativeLaserHatchPartMachine extends TieredIOPartMachine implement
     @Override
     public boolean canShared() {
         return false;
-    }
-
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
     }
 
     @Override

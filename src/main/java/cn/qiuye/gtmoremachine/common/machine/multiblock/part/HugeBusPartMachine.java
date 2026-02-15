@@ -8,14 +8,13 @@ import cn.qiuye.gtmoremachine.common.machine.trait.CatalystItemStackHandler;
 import cn.qiuye.gtmoremachine.utils.NumberUtils;
 
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.blockentity.IPaintable;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.fancy.ConfiguratorPanel;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.fancyconfigurator.CircuitFancyConfigurator;
-import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IDistinctPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredIOPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
@@ -31,7 +30,6 @@ import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.side.item.ItemTransferHelper;
 import com.lowdragmc.lowdraglib.syncdata.ISubscription;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -54,10 +52,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class HugeBusPartMachine extends TieredIOPartMachine implements IDistinctPart, IMachineLife, IPaintable {
-
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(HugeBusPartMachine.class,
-            TieredIOPartMachine.MANAGED_FIELD_HOLDER);
+public class HugeBusPartMachine extends TieredIOPartMachine implements IDistinctPart, IPaintable {
 
     public static final int INV_MULTIPLE = 2;
     @Getter
@@ -74,11 +69,11 @@ public class HugeBusPartMachine extends TieredIOPartMachine implements IDistinct
     @Persisted
     protected final CatalystItemStackHandler shareInventory;
 
-    public HugeBusPartMachine(IMachineBlockEntity holder, int tier, IO io, Object... args) {
+    public HugeBusPartMachine(BlockEntityCreationInfo holder, int tier, IO io, Object... args) {
         this(holder, tier, io, 4, args);
     }
 
-    public HugeBusPartMachine(IMachineBlockEntity holder, int tier, IO io, int shareSize, Object... args) {
+    public HugeBusPartMachine(BlockEntityCreationInfo holder, int tier, IO io, int shareSize, Object... args) {
         super(holder, tier, io);
         this.inventory = createInventory(args);
         this.circuitInventory = createCircuitItemHandler(io);
@@ -88,10 +83,6 @@ public class HugeBusPartMachine extends TieredIOPartMachine implements IDistinct
     //////////////////////////////////////
     // ***** Initialization ******//
     //////////////////////////////////////
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
-    }
 
     protected int getInventorySize() {
         if (getTier() < GTValues.EV) return 1 + getTier();

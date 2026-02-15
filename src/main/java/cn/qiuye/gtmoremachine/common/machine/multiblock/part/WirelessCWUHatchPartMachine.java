@@ -4,9 +4,8 @@ import cn.qiuye.gtmoremachine.api.capability.cwu.ICWUBindable;
 import cn.qiuye.gtmoremachine.common.block.machine.trait.WirelessNotifiableCWUContainer;
 import cn.qiuye.gtmoremachine.utils.TeamUtils;
 
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
-import com.gregtechceu.gtceu.api.machine.feature.IInteractedMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
 import com.gregtechceu.gtceu.common.data.GTItems;
 
@@ -30,12 +29,12 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
-public class WirelessCWUHatchPartMachine extends MultiblockPartMachine implements IInteractedMachine, ICWUBindable {
+public class WirelessCWUHatchPartMachine extends MultiblockPartMachine implements ICWUBindable {
 
     @Getter
     private final WirelessNotifiableCWUContainer trait;
 
-    public WirelessCWUHatchPartMachine(IMachineBlockEntity holder, boolean transmitter) {
+    public WirelessCWUHatchPartMachine(BlockEntityCreationInfo holder, boolean transmitter) {
         super(holder);
         this.trait = createComputationContainer(transmitter);
     }
