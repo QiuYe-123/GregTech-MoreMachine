@@ -219,7 +219,7 @@ public class DemodulationHubMachine extends WorkableMultiblockMachine
     public Widget createUIWidget() {
         WidgetGroup group = new WidgetGroup(0, 0, 182 + 8, 117 + 8);
         group.addWidget(new DraggableScrollableWidgetGroup(4, 4, 182, 117)
-                .setBackground(GuiTextures.DISPLAY)
+                .setBackground(getScreenTexture())
                 .addWidget(new LabelWidget(4, 5, self().getBlockState().getBlock().getDescriptionId()))
                 .addWidget(new ComponentPanelWidget(4, 17, this::addDisplayText)
                         .setMaxWidthLimit(150)
@@ -236,7 +236,6 @@ public class DemodulationHubMachine extends WorkableMultiblockMachine
 
     @Override
     public void addDisplayText(List<Component> textList) {
-        super.addDisplayText(textList);
         if (isFormed()) {
             if (this.getTotalCapacity().compareTo(BigInteger.ZERO) >= 0) {
                 textList.add(Component.literal(NumberUtils.formatBigIntegerNumberOrSic(this.getTotalCapacity())));
@@ -259,7 +258,8 @@ public class DemodulationHubMachine extends WorkableMultiblockMachine
                     .withStyle(Style.EMPTY.withColor(ChatFormatting.RED)
                             .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, tooltip))));
         }
-        this.definition.additionalDisplay.accept(this, textList);
+        getDefinition().getAdditionalDisplay().accept(this, textList);
+        IDisplayUIMachine.super.addDisplayText(textList);
     }
 
     @Override

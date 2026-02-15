@@ -13,6 +13,8 @@ import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.SimpleTieredMachine;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.WorkableTieredMachine;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.common.machine.electric.PumpMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.FluidHatchPartMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.ItemBusPartMachine;
@@ -25,9 +27,6 @@ import com.gregtechceu.gtceu.utils.GTTransferUtils;
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
@@ -61,34 +60,26 @@ import static net.minecraft.resources.ResourceLocation.tryParse;
 @MethodsReturnNonnullByDefault
 public class AdvancedWirelessTransferCover extends CoverBehavior implements IUICover {
 
-    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
-            AdvancedWirelessTransferCover.class, CoverBehavior.MANAGED_FIELD_HOLDER);
-
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
-    }
-
     public static final int TRANSFER_ITEM = 1;
     public static final int TRANSFER_FLUID = 2;
 
-    @Persisted
+    @SaveField
     protected final int transferType;
     private TickableSubscription subscription;
     protected ServerLevel targetLever;
-    @Persisted
+    @SaveField
     private String dimensionId;
-    @Persisted
+    @SaveField
     protected BlockPos targetPos;
-    @Persisted
+    @SaveField
     protected Direction facing;
 
-    @Persisted
-    @DescSynced
+    @SaveField
+    @SyncToClient
     @Getter
     protected final FilterHandler<FluidStack, FluidFilter> filterHandlerFluid;
-    @Persisted
-    @DescSynced
+    @SaveField
+    @SyncToClient
     @Getter
     protected final FilterHandler<ItemStack, ItemFilter> filterHandlerItem;
 
@@ -109,7 +100,7 @@ public class AdvancedWirelessTransferCover extends CoverBehavior implements IUIC
 
     @Override
     public boolean canAttach() {
-        var targetMachine = MetaMachine.getMachine(coverHolder.getLevel(), coverHolder.getPos());
+        var targetMachine = MetaMachine.getMachine(coverHolder.getLevel(), coverHolder.getBlockPos());
         if (targetMachine instanceof WorkableTieredMachine workableTieredMachine) {
             return (workableTieredMachine.exportItems.getSlots() > 0 && this.transferType == TRANSFER_ITEM) || (workableTieredMachine.exportFluids.getTanks() > 0 && this.transferType == TRANSFER_FLUID);
         } else if (targetMachine instanceof PumpMachine || targetMachine instanceof QuantumTankMachine || targetMachine instanceof DrumMachine) {
@@ -131,7 +122,7 @@ public class AdvancedWirelessTransferCover extends CoverBehavior implements IUIC
             this.facing = Direction.byName(tag.getString("facing"));
             GetLevel();
         }
-        var targetMachine = MetaMachine.getMachine(coverHolder.getLevel(), coverHolder.getPos());
+        var targetMachine = MetaMachine.getMachine(coverHolder.getLevel(), coverHolder.getBlockPos());
         if (targetMachine instanceof SimpleTieredMachine simpleTieredMachine) {
             if (this.transferType == TRANSFER_ITEM) simpleTieredMachine.setAutoOutputItems(false);
             if (this.transferType == TRANSFER_FLUID) simpleTieredMachine.setAutoOutputFluids(false);
