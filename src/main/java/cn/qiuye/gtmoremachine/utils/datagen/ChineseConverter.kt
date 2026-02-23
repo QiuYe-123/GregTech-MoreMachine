@@ -5,18 +5,18 @@ import it.unimi.dsi.fastutil.chars.Char2CharOpenHashMap
 import java.util.ResourceBundle
 
 object ChineseConverter {
-    private val mappingTable: MutableMap<Char, Char> = Char2CharOpenHashMap()
+    private val mappingTable = Char2CharOpenHashMap()
 
     @JvmStatic
     fun convert(cn: String): String {
         val cntw = StringBuilder()
 
         for (cnstr in cn.toCharArray()) {
-            val cntwstr = mappingTable[cnstr]
-            if (cntwstr == null) {
-                cntw.append(cnstr)
-            } else {
+            if (mappingTable.containsKey(cnstr)) {
+                val cntwstr = mappingTable[cnstr]
                 cntw.append(cntwstr)
+            } else {
+                cntw.append(cnstr)
             }
         }
 
