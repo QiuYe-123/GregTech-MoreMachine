@@ -6,7 +6,7 @@ import cn.qiuye.gtmoremachine.common.item.VirtualItemProviderBehavior;
 import cn.qiuye.gtmoremachine.common.item.itemstack.VirtualItemProviderCellItem;
 
 import com.gregtechceu.gtceu.api.item.ComponentItem;
-import com.gregtechceu.gtceu.common.item.CoverPlaceBehavior;
+import com.gregtechceu.gtceu.common.item.behavior.CoverPlaceBehavior;
 
 import com.tterrag.registrate.util.entry.ItemEntry;
 
