@@ -126,7 +126,7 @@ public class AdvancedBlockNoAEPattern extends BlockPattern {
         BlockPos centerPos = controller.self().getBlockPos();
         Direction facing = controller.self().getFrontFacing();
         Direction upwardsFacing = controller.self().getUpwardsFacing();
-        boolean isUseMirror = autoBuildSetting.isUseMirror();
+        boolean isUseMirror = autoBuildSetting.isFlipped();
 
         Object2IntOpenHashMap<SimplePredicate> cacheGlobal = new Object2IntOpenHashMap<>(worldState.getGlobalCount());
         Object2IntOpenHashMap<SimplePredicate> cacheLayer = new Object2IntOpenHashMap<>(worldState.getLayerCount());
@@ -309,7 +309,7 @@ public class AdvancedBlockNoAEPattern extends BlockPattern {
         BlockPos centerPos = controller.self().getBlockPos();
         Direction facing = controller.self().getFrontFacing();
         Direction upwardsFacing = controller.self().getUpwardsFacing();
-        boolean isUseMirror = autoBuildSetting.isUseMirror();
+        boolean isFlipped = autoBuildSetting.isFlipped();
 
         // 使用与构建逻辑相同的重复次数计算方式
         int[] repeat = new int[this.fingerLength];
@@ -331,7 +331,7 @@ public class AdvancedBlockNoAEPattern extends BlockPattern {
                         TraceabilityPredicate predicate = this.blockMatches[c][b][a];
                         if (predicate.isAny()) continue;
 
-                        BlockPos pos = setActualRelativeOffset(x, y, z, facing, upwardsFacing, isUseMirror)
+                        BlockPos pos = setActualRelativeOffset(x, y, z, facing, upwardsFacing, isFlipped)
                                 .offset(centerPos.getX(), centerPos.getY(), centerPos.getZ());
                         if (pos.equals(centerPos)) {
                             continue;

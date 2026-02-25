@@ -47,9 +47,11 @@ import org.jetbrains.annotations.Nullable;
 import oshi.util.tuples.Triplet;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.util.*;
-import java.util.function.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.BiPredicate;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 public class AdvancedBlockPattern extends BlockPattern {
 
@@ -122,16 +124,16 @@ public class AdvancedBlockPattern extends BlockPattern {
         }
 
         int minZ = -centerOffset[4];
-        clearWorldState(worldState);
+        worldState.clean();
         MultiblockControllerMachine controller = worldState.getController();
-        BlockPos centerPos = controller.self().getBlockPos();
-        Direction facing = controller.self().getFrontFacing();
-        Direction upwardsFacing = controller.self().getUpwardsFacing();
-        boolean isUseMirror = autoBuildSetting.isUseMirror();
+        BlockPos centerPos = controller.getBlockPos();
+        Direction facing = controller.getFrontFacing();
+        Direction upwardsFacing = controller.getUpwardsFacing();
+        boolean isFlipped = autoBuildSetting.isFlipped();
         boolean isUseAE = autoBuildSetting.isUseAE();
 
-        Object2IntOpenHashMap<SimplePredicate> cacheGlobal = new Object2IntOpenHashMap<>(worldState.getGlobalCount());
-        Object2IntOpenHashMap<SimplePredicate> cacheLayer = new Object2IntOpenHashMap<>(worldState.getLayerCount());
+        Object2IntOpenHashMap<SimplePredicate> cacheGlobal = worldState.getGlobalCount();
+        Object2IntOpenHashMap<SimplePredicate> cacheLayer = worldState.getGlobalCount();
         Object2ObjectOpenHashMap<BlockPos, Object> blocks = new Object2ObjectOpenHashMap<>();
         ObjectOpenHashSet<BlockPos> placeBlockPos = new ObjectOpenHashSet<>();
         blocks.put(centerPos, controller);
@@ -146,16 +148,17 @@ public class AdvancedBlockPattern extends BlockPattern {
             } else repeat[h] = minH;
         }
 
-        for (int c = 0, z = minZ++, r; c < this.fingerLength; c++) {
+        for (int c = 0, z = minZ, r; c < this.fingerLength; c++) {
             for (r = 0; r < repeat[c]; r++) {
                 cacheLayer.clear();
                 for (int b = 0, y = -centerOffset[1]; b < this.thumbLength; b++, y++) {
                     for (int a = 0, x = -centerOffset[0]; a < this.palmLength; a++, x++) {
                         TraceabilityPredicate predicate = this.blockMatches[c][b][a];
                         if (predicate.isAny()) continue;
-                        BlockPos pos = setActualRelativeOffset(x, y, z, facing, upwardsFacing, isUseMirror)
+                        BlockPos pos = setActualRelativeOffset(x, y, z, facing, upwardsFacing, isFlipped)
                                 .offset(centerPos.getX(), centerPos.getY(), centerPos.getZ());
-                        updateWorldState(worldState, pos, predicate);
+                        if (!worldState.update(pos, predicate)) continue;
+
                         ItemStack itemStack = null;
                         if (!world.isEmptyBlock(pos)) {
                             Block block = world.getBlockState(pos).getBlock();
@@ -171,37 +174,36 @@ public class AdvancedBlockPattern extends BlockPattern {
                         boolean find = false;
                         BlockInfo[] infos = new BlockInfo[0];
                         for (var limit : predicate.limited) {
-                            if (limit.minLayerCount > 0 && autoBuildSetting.isPlaceHatch(limit.candidates.get())) {
+                            if (limit.candidates != null && !autoBuildSetting.isPlaceHatch(limit.candidates.get())) continue;
+                            if (limit.minLayerCount > 0) {
                                 int curr = cacheLayer.getInt(limit);
                                 if (curr < limit.minLayerCount &&
                                         (limit.maxLayerCount == -1 || curr < limit.maxLayerCount)) {
                                     cacheLayer.addTo(limit, 1);
-                                } else continue;
-                            } else continue;
-                            infos = limit.candidates == null ? null : limit.candidates.get();
-                            find = true;
-                            break;
+                                    infos = limit.candidates == null ? null : limit.candidates.get();
+                                    find = true;
+                                    break;
+                                }
+                            }
                         }
                         if (!find) {
                             for (var limit : predicate.limited) {
-                                if (limit.minCount > 0 && autoBuildSetting.isPlaceHatch(limit.candidates.get())) {
+                                if (limit.candidates != null && !autoBuildSetting.isPlaceHatch(limit.candidates.get())) continue;
+                                if (limit.minCount > 0) {
                                     int curr = cacheGlobal.getInt(limit);
                                     if (curr < limit.minCount && (limit.maxCount == -1 || curr < limit.maxCount)) {
                                         cacheGlobal.addTo(limit, 1);
-                                    } else continue;
-                                } else continue;
-                                infos = limit.candidates == null ? null : limit.candidates.get();
-                                find = true;
-                                break;
+                                        infos = limit.candidates == null ? null : limit.candidates.get();
+                                        find = true;
+                                        break;
+                                    }
+                                }
                             }
                         }
                         if (!find) { // no limited
                             for (SimplePredicate limit : predicate.limited) {
-                                if (!autoBuildSetting.isPlaceHatch(limit.candidates.get())) continue;
-                                if (limit.maxLayerCount != -1 &&
-                                        cacheLayer.getOrDefault(limit, Integer.MAX_VALUE) == limit.maxLayerCount) {
-                                    continue;
-                                }
+                                if (limit.candidates != null && !autoBuildSetting.isPlaceHatch(limit.candidates.get())) continue;
+                                if (limit.maxLayerCount != -1 && cacheLayer.getOrDefault(limit, Integer.MAX_VALUE) == limit.maxLayerCount) continue;
                                 if (limit.maxCount != -1 &&
                                         cacheGlobal.getOrDefault(limit, Integer.MAX_VALUE) == limit.maxCount) {
                                     continue;
@@ -220,9 +222,11 @@ public class AdvancedBlockPattern extends BlockPattern {
 
                         List<ItemStack> candidates = autoBuildSetting.apply(infos);
 
-                        if (autoBuildSetting.isReplaceMode() && itemStack != null &&
-                                ItemStack.isSameItem(candidates.get(0), itemStack))
-                            continue;
+                        if (autoBuildSetting.isReplaceMode() && itemStack != null) {
+                            ItemStack finalItemStack = itemStack;
+                            if (candidates.stream().anyMatch(cand -> ItemStack.isSameItem(cand, finalItemStack)))
+                                continue;
+                        }
 
                         // check inventory
                         Triplet<ItemStack, IItemHandler, Integer> result = foundItem(player, candidates, item -> item instanceof BlockItem, isUseAE);
@@ -309,7 +313,7 @@ public class AdvancedBlockPattern extends BlockPattern {
         BlockPos centerPos = controller.self().getBlockPos();
         Direction facing = controller.self().getFrontFacing();
         Direction upwardsFacing = controller.self().getUpwardsFacing();
-        boolean isUseMirror = autoBuildSetting.isUseMirror();
+        boolean isUseMirror = autoBuildSetting.isFlipped();
 
         // 使用与构建逻辑相同的重复次数计算方式
         int[] repeat = new int[this.fingerLength];
@@ -443,24 +447,6 @@ public class AdvancedBlockPattern extends BlockPattern {
         }
 
         return new Pair<>(handler, foundSlot);
-    }
-
-    private void clearWorldState(MultiblockState worldState) {
-        try {
-            Class<?> clazz = Class.forName("com.gregtechceu.gtceu.api.pattern.MultiblockState");
-            Method method = clazz.getDeclaredMethod("clean");
-            method.setAccessible(true);
-            method.invoke(worldState);
-        } catch (Exception ignored) {}
-    }
-
-    private void updateWorldState(MultiblockState worldState, BlockPos posIn, TraceabilityPredicate predicate) {
-        try {
-            Class<?> clazz = Class.forName("com.gregtechceu.gtceu.api.pattern.MultiblockState");
-            Method method = clazz.getDeclaredMethod("update", BlockPos.class, TraceabilityPredicate.class);
-            method.setAccessible(true);
-            method.invoke(worldState, posIn, predicate);
-        } catch (Exception ignored) {}
     }
 
     private BlockPos setActualRelativeOffset(int x, int y, int z, Direction facing, Direction upwardsFacing,

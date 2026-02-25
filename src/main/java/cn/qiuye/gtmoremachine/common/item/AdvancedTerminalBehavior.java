@@ -90,12 +90,12 @@ public class AdvancedTerminalBehavior implements IItemUIFactory {
             autoBuildSetting.setNoHatchMode(tag.getBoolean("NoHatchMode"));
             autoBuildSetting.setReplaceMode(tag.getBoolean("ReplaceMode"));
             autoBuildSetting.setUseAE(tag.getBoolean("IsUseAE"));
-            autoBuildSetting.setUseMirror(tag.getBoolean("IsUseMirror"));
+            autoBuildSetting.setFlipped(tag.getBoolean("IsUseMirror"));
             autoBuildSetting.setUseDemolish(tag.getBoolean("IsUseDemolish"));
             String block = tag.getString("blocks");
             if (!block.isEmpty()) {
-                autoBuildSetting.setTierBlock(MAP.get(BlockMap.namePrefix + block));
-                autoBuildSetting.setBlocks(new ObjectOpenHashSet<>(autoBuildSetting.getTierBlock()));
+                autoBuildSetting.setTierBlock(MAP.get(block));
+                autoBuildSetting.setBlocks(new ObjectOpenHashSet<>(autoBuildSetting.tierBlock));
             }
         }
         return autoBuildSetting;
@@ -121,35 +121,35 @@ public class AdvancedTerminalBehavior implements IItemUIFactory {
                         () -> getRepeatCount(handItem), (v) -> setRepeatCount(v, handItem))
                         .setMin(0).setMax(1000))
                 .addWidget(new ExtendLabelWidget(4, 5 + 16 * rowIndex, Component.translatable("item.gtmoremachine.advanced_terminal.setting.3"))
-                        .setHoverTooltips("item.gtmoremachine.advanced_terminal.setting.3.tooltip"))
+                        .setHoverTooltips(Component.translatable("item.gtmoremachine.advanced_terminal.setting.3.tooltip")))
                 .addWidget(new SwitchWidget(140, 5 + 16 * rowIndex++, 25, 16,
                         (c, v) -> setBuildHatches(v, handItem))
                         .setPressed(getBuildHatches(handItem))
                         .setTexture(new GuiTextureGroup(GuiTextures.BUTTON, new TextTexture("OFF")),
                                 new GuiTextureGroup(GuiTextures.BUTTON, new TextTexture("ON"))))
                 .addWidget(new ExtendLabelWidget(4, 5 + 16 * rowIndex, Component.translatable("item.gtmoremachine.advanced_terminal.setting.4"))
-                        .setHoverTooltips("item.gtmoremachine.advanced_terminal.setting.4.tooltip"))
+                        .setHoverTooltips(Component.translatable("item.gtmoremachine.advanced_terminal.setting.4.tooltip")))
                 .addWidget(new SwitchWidget(140, 5 + 16 * rowIndex++, 25, 16,
                         (c, v) -> setReplaceMode(v, handItem))
                         .setPressed(getReplaceMode(handItem))
                         .setTexture(new GuiTextureGroup(GuiTextures.BUTTON, new TextTexture("OFF")),
                                 new GuiTextureGroup(GuiTextures.BUTTON, new TextTexture("ON"))))
                 .addWidget(new ExtendLabelWidget(4, 5 + 16 * rowIndex, Component.translatable("item.gtmoremachine.advanced_terminal.setting.5"))
-                        .setHoverTooltips("item.gtmoremachine.advanced_terminal.setting.5.tooltip"))
+                        .setHoverTooltips(Component.translatable("item.gtmoremachine.advanced_terminal.setting.5.tooltip")))
                 .addWidget(new SwitchWidget(140, 5 + 16 * rowIndex++, 25, 16,
                         (c, v) -> setUseAE(v, handItem))
                         .setPressed(getUseAE(handItem))
                         .setTexture(new GuiTextureGroup(GuiTextures.BUTTON, new TextTexture("OFF")),
                                 new GuiTextureGroup(GuiTextures.BUTTON, new TextTexture("ON"))))
                 .addWidget(new LabelWidget(4, 5 + 16 * rowIndex, "item.gtmoremachine.advanced_terminal.setting.6")
-                        .setHoverTooltips("item.gtmoremachine.advanced_terminal.setting.6.tooltip"))
+                        .setHoverTooltips(Component.translatable("item.gtmoremachine.advanced_terminal.setting.6.tooltip")))
                 .addWidget(new SwitchWidget(140, 5 + 16 * rowIndex++, 25, 16,
                         (c, v) -> setUseMirror(v, handItem))
                         .setPressed(getUseMirror(handItem))
                         .setTexture(new GuiTextureGroup(GuiTextures.BUTTON, new TextTexture("OFF")),
                                 new GuiTextureGroup(GuiTextures.BUTTON, new TextTexture("ON"))))
                 .addWidget(new LabelWidget(4, 5 + 16 * rowIndex, "item.gtmoremachine.advanced_terminal.setting.7")
-                        .setHoverTooltips("item.gtmoremachine.advanced_terminal.setting.7.tooltip"))
+                        .setHoverTooltips(Component.translatable("item.gtmoremachine.advanced_terminal.setting.7.tooltip")))
                 .addWidget(new SwitchWidget(140, 5 + 16 * rowIndex++, 25, 16,
                         (c, v) -> setUseDemolish(v, handItem))
                         .setPressed(getUseDemolish(handItem))
@@ -312,7 +312,7 @@ public class AdvancedTerminalBehavior implements IItemUIFactory {
         Block[] tierBlock;
         Set<Block> blocks = Collections.emptySet();
         private int Tier, repeatCount;
-        private boolean noHatchMode, replaceMode, isUseAE, isUseMirror, isUseDemolish;
+        private boolean noHatchMode, replaceMode, isUseAE, isFlipped, isUseDemolish;
 
         public AutoBuildSetting() {
             this.tierBlocks = new Object2IntOpenHashMap<>();
@@ -321,7 +321,7 @@ public class AdvancedTerminalBehavior implements IItemUIFactory {
             this.noHatchMode = true;
             this.replaceMode = false;
             this.isUseAE = false;
-            this.isUseMirror = false;
+            this.isFlipped = false;
             this.isUseDemolish = false;
         }
 
