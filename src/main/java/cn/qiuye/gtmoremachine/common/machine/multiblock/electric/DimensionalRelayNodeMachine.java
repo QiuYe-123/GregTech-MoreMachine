@@ -15,13 +15,13 @@ import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.common.data.GTItems;
+import com.gregtechceu.gtceu.utils.ExtendedUseOnContext;
 
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.gui.widget.*;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.HoverEvent;
@@ -31,8 +31,6 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.BlockHitResult;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -85,14 +83,12 @@ public class DimensionalRelayNodeMachine extends WorkableMultiblockMachine
     // ============== Player Interaction ==============
 
     @Override
-    public InteractionResult onUse(BlockState state, Level world, BlockPos pos, Player player,
-                                   InteractionHand hand, BlockHitResult hit) {
+    public InteractionResult onUseWithItem(ExtendedUseOnContext context) {
         if (isRemote()) return InteractionResult.PASS;
-        ItemStack item = player.getItemInHand(hand);
+        ItemStack item = context.getItemInHand();
         if (item.isEmpty()) return InteractionResult.PASS;
-
-        if (item.is(GTItems.TOOL_DATA_STICK.get())) {
-            setOwnerUUID(player.getUUID());
+        if (item.is(GTItems.TOOL_DATA_STICK.asItem())) {
+            setOwnerUUID(context.getPlayer().getUUID());
             setWirelessEnergyContainerCache(null);
 
             WirelessEnergyContainer container = getWirelessEnergyContainer();
@@ -100,16 +96,16 @@ public class DimensionalRelayNodeMachine extends WorkableMultiblockMachine
                 container.setDimensional(this.currentTier, true, this);
             }
 
-            player.sendSystemMessage(Component.translatable(
+            context.getPlayer().sendSystemMessage(Component.translatable(
                     "gtmoremachine.machine.wireless_energy_hatch.tooltip.bind",
-                    TeamUtils.getName(player)));
+                    TeamUtils.getName(context.getPlayer())));
             return InteractionResult.SUCCESS;
         }
         return InteractionResult.PASS;
     }
 
     @Override
-    public boolean onLeftClick(Player player, Level world, InteractionHand hand, BlockPos pos, Direction direction) {
+    public boolean onLeftClick(Player player, InteractionHand hand, @Nullable Direction face) {
         if (isRemote()) return false;
         ItemStack item = player.getItemInHand(hand);
         if (item.isEmpty()) return false;
