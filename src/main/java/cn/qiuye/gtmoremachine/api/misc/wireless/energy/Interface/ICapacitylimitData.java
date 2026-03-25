@@ -1,4 +1,4 @@
-package cn.qiuye.gtmoremachine.api.misc.wireless.energy;
+package cn.qiuye.gtmoremachine.api.misc.wireless.energy.Interface;
 
 import cn.qiuye.gtmoremachine.api.gui.monitor.Format;
 import cn.qiuye.gtmoremachine.utils.FormattingUtil;

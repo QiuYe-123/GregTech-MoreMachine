@@ -1,5 +1,12 @@
 package cn.qiuye.gtmoremachine.api.misc.wireless.energy;
 
+import cn.qiuye.gtmoremachine.api.misc.wireless.energy.Interface.ICapacitylimitData;
+import cn.qiuye.gtmoremachine.api.misc.wireless.energy.Interface.IDimensionTransferData;
+import cn.qiuye.gtmoremachine.api.misc.wireless.energy.Interface.ITransferData;
+import cn.qiuye.gtmoremachine.api.misc.wireless.energy.record.BasicTransferData;
+import cn.qiuye.gtmoremachine.api.misc.wireless.energy.record.CapacityStorageData;
+import cn.qiuye.gtmoremachine.api.misc.wireless.energy.record.DimensionBoundData;
+import cn.qiuye.gtmoremachine.api.misc.wireless.energy.record.StoragePercentageData;
 import cn.qiuye.gtmoremachine.api.misc.wireless.time.TimeStat;
 import cn.qiuye.gtmoremachine.config.GTMMConfig;
 import cn.qiuye.gtmoremachine.data.wireless.energy.WirelessEnergySavedData;

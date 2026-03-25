@@ -58,9 +58,7 @@ public class DemodulationHubMachine extends WorkableMultiblockMachine
         super(holder);
         this.capacityBank = new DimensionalRelayNodeBank(this, new ArrayList<>());
         this.tickSubscription = new ConditionalSubscriptionHandler(
-                this,
-                this::updateMachineStatus,
-                this::isFormed);
+                this, this::updateMachineStatus, this::isFormed);
     }
 
     // ============== IWirelessEnergyContainerHolder ==============

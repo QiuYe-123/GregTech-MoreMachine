@@ -1,10 +1,8 @@
-package cn.qiuye.gtmoremachine.api.misc.wireless.energy;
+package cn.qiuye.gtmoremachine.api.misc.wireless.energy.Interface;
 
-import cn.qiuye.gtmoremachine.api.gui.monitor.Format;
-import cn.qiuye.gtmoremachine.utils.FormattingUtil;
-import cn.qiuye.gtmoremachine.utils.NumberUtils;
 import cn.qiuye.gtmoremachine.utils.TeamUtils;
 
+import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 
 import com.lowdragmc.lowdraglib.gui.widget.ComponentPanelWidget;
@@ -13,21 +11,19 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.network.chat.Style;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.util.UUID;
 
-public interface ITransferData {
+public interface IDimensionTransferData {
 
     UUID UUID();
 
-    BigInteger Throughput();
+    int Voltagelevel();
 
     MetaMachine machine();
 
-    default Component getInfo(Format format) {
+    default Component getInfo() {
         MetaMachine machine = machine();
-        BigDecimal eut = new BigDecimal(Throughput());
+        int Voltagelevel = Voltagelevel();
         String pos = machine.getBlockPos().toShortString();
         return Component.translatable(machine.getBlockState().getBlock().getDescriptionId())
                 .withStyle(Style.EMPTY.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
@@ -35,10 +31,7 @@ public interface ITransferData {
                                 machine.getLevel().dimension().location()).append(" [").append(pos).append("] ")
                                 .append(Component.translatable("gtmoremachine.machine.wireless_monitor.tooltip.0",
                                         TeamUtils.getName(machine.getLevel(), UUID()))))))
-                .append((eut.compareTo(BigDecimal.ZERO) > 0 ? " +" : " ") + NumberUtils.formatBigDecimalNumberOrSic(eut, format))
-                .append(" EU/t (")
-                .append(NumberUtils.formatBigDecimalNumberOrSic(FormattingUtil.voltageAmperage(eut), format) + " A ")
-                .append(FormattingUtil.voltageName(eut)).append(")")
+                .append(GTValues.VNF[Voltagelevel])
                 .append(ComponentPanelWidget.withButton(Component.literal(" [ ] "), pos));
     }
 }

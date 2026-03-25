@@ -1,5 +1,6 @@
-package cn.qiuye.gtmoremachine.api.misc.wireless.cwu;
+package cn.qiuye.gtmoremachine.api.misc.wireless.cwu.record;
 
+import cn.qiuye.gtmoremachine.api.misc.wireless.cwu.Interface.ITransferData;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 
 import java.util.UUID;

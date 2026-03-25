@@ -1,9 +1,10 @@
-package cn.qiuye.gtmoremachine.api.misc.wireless.cwu;
+package cn.qiuye.gtmoremachine.api.misc.wireless.cwu.Interface;
 
 import cn.qiuye.gtmoremachine.api.gui.monitor.Format;
 import cn.qiuye.gtmoremachine.api.gui.monitor.Statistics;
 import cn.qiuye.gtmoremachine.api.gui.monitor.Status;
 import cn.qiuye.gtmoremachine.api.machine.IWirelessCWUContainerHolder;
+import cn.qiuye.gtmoremachine.api.misc.wireless.cwu.WirelessCWUContainer;
 import cn.qiuye.gtmoremachine.api.misc.wireless.time.TimeStat;
 import cn.qiuye.gtmoremachine.utils.FormattingUtil;
 import cn.qiuye.gtmoremachine.utils.NumberUtils;

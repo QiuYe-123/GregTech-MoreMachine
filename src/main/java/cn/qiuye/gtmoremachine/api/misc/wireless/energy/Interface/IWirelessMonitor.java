@@ -1,7 +1,8 @@
-package cn.qiuye.gtmoremachine.api.misc.wireless.energy;
+package cn.qiuye.gtmoremachine.api.misc.wireless.energy.Interface;
 
 import cn.qiuye.gtmoremachine.api.gui.monitor.*;
 import cn.qiuye.gtmoremachine.api.machine.IWirelessEnergyContainerHolder;
+import cn.qiuye.gtmoremachine.api.misc.wireless.energy.WirelessEnergyContainer;
 import cn.qiuye.gtmoremachine.api.misc.wireless.time.TimeStat;
 import cn.qiuye.gtmoremachine.config.GTMMConfig;
 import cn.qiuye.gtmoremachine.utils.BigIntegerUtils;

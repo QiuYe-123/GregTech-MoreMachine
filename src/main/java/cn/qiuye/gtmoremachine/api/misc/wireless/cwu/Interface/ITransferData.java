@@ -1,4 +1,4 @@
-package cn.qiuye.gtmoremachine.api.misc.wireless.cwu;
+package cn.qiuye.gtmoremachine.api.misc.wireless.cwu.Interface;
 
 import cn.qiuye.gtmoremachine.api.gui.monitor.Format;
 import cn.qiuye.gtmoremachine.utils.NumberUtils;
