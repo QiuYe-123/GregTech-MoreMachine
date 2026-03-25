@@ -1,6 +1,8 @@
 package cn.qiuye.gtmoremachine.api.pattern;
 
 import cn.qiuye.gtmoremachine.api.GTMMAPI;
+import cn.qiuye.gtmoremachine.api.machine.multiblock.ICapacityComponentData;
+import cn.qiuye.gtmoremachine.common.block.CapacityComponentBlock;
 import cn.qiuye.gtmoremachine.common.machine.multiblock.electric.DemodulationHubMachine;
 import cn.qiuye.gtmoremachine.common.machine.multiblock.electric.DemodulationHubMachine.ComponentMatchWrapper;
 
@@ -14,6 +16,8 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import java.math.BigInteger;
 import java.util.Comparator;
+import java.util.Map;
+import java.util.function.Supplier;
 
 public class GTMMPredicates {
 
@@ -41,13 +45,13 @@ public class GTMMPredicates {
     public static TraceabilityPredicate WirelessEnergyCapacityComponent() {
         return new TraceabilityPredicate(blockWorldState -> {
             BlockState state = blockWorldState.getBlockState();
-            for (var entry : GTMMAPI.WECC.entrySet()) {
+            for (Map.Entry<ICapacityComponentData, Supplier<CapacityComponentBlock>> entry : GTMMAPI.WECC.entrySet()) {
                 if (state.is(entry.getValue().get())) {
-                    var wecc = entry.getKey();
+                    ICapacityComponentData wecc = entry.getKey();
                     if (wecc.getTier() != -1 && wecc.getCapacity().compareTo(BigInteger.ZERO) > 0) {
                         String key = DemodulationHubMachine.CAPACITY_COMPONENT_HEADER + wecc.getCapacityComponentName();
-                        ComponentMatchWrapper wrapper = blockWorldState.getMatchContext().get(key);
-                        if (wrapper == null) wrapper = new ComponentMatchWrapper(wecc);
+                        DemodulationHubMachine.ComponentMatchWrapper wrapper = blockWorldState.getMatchContext().get(key);
+                        if (wrapper == null) wrapper = new DemodulationHubMachine.ComponentMatchWrapper(wecc);
                         blockWorldState.getMatchContext().set(key, wrapper.increment());
                     }
                     return true;
@@ -57,6 +61,7 @@ public class GTMMPredicates {
         }, () -> GTMMAPI.WECC.entrySet().stream()
                 .sorted(Comparator.comparingInt(entry -> entry.getKey().getTier()))
                 .map(entry -> new BlockInfo(entry.getValue().get().defaultBlockState(), null))
-                .toArray(BlockInfo[]::new)).addTooltips(Component.translatable("gtmoremachine.multiblock.pattern.error.wecc"));
+                .toArray(BlockInfo[]::new))
+                .addTooltips(Component.translatable("gtmoremachine.multiblock.pattern.error.wecc"));
     }
 }

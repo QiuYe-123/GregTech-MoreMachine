@@ -1,6 +1,7 @@
 package cn.qiuye.gtmoremachine.api.misc.wireless.energy.record;
 
 import cn.qiuye.gtmoremachine.api.misc.wireless.energy.Interface.IDimensionTransferData;
+
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 
 import java.util.UUID;
