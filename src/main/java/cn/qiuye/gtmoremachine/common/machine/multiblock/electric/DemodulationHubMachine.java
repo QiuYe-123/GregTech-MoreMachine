@@ -9,14 +9,18 @@ import cn.qiuye.gtmoremachine.utils.TeamUtils;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.fancy.FancyMachineUIWidget;
+import com.gregtechceu.gtceu.api.gui.fancy.IFancyUIProvider;
+import com.gregtechceu.gtceu.api.gui.fancy.TooltipsPanel;
 import com.gregtechceu.gtceu.api.machine.ConditionalSubscriptionHandler;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IDisplayUIMachine;
+import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTraitType;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.utils.ExtendedUseOnContext;
 
@@ -33,7 +37,6 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -50,15 +53,15 @@ public class DemodulationHubMachine extends WorkableMultiblockMachine
 
     public static final String CAPACITY_COMPONENT_HEADER = "DRNComponent_";
 
+    @SaveField
     private DimensionalRelayNodeBank capacityBank;
     private WirelessEnergyContainer wirelessEnergyContainerCache;
     private final ConditionalSubscriptionHandler tickSubscription;
 
     public DemodulationHubMachine(BlockEntityCreationInfo holder) {
         super(holder);
-        this.capacityBank = new DimensionalRelayNodeBank(this, new ArrayList<>());
-        this.tickSubscription = new ConditionalSubscriptionHandler(
-                this, this::updateMachineStatus, this::isFormed);
+        this.tickSubscription = new ConditionalSubscriptionHandler(this, this::updateMachineStatus, this::isFormed);
+        this.capacityBank = new DimensionalRelayNodeBank(this, List.of());
     }
 
     // ============== IWirelessEnergyContainerHolder ==============
@@ -147,9 +150,8 @@ public class DemodulationHubMachine extends WorkableMultiblockMachine
         super.onStructureFormed();
 
         List<ICapacityComponentData> components = new ArrayList<>();
-        Set<Map.Entry<String, Object>> entries = getMultiblockState().getMatchContext().entrySet();
 
-        for (Map.Entry<String, Object> battery : entries) {
+        for (Map.Entry<String, Object> battery : getMultiblockState().getMatchContext().entrySet()) {
             if (battery.getKey().startsWith(CAPACITY_COMPONENT_HEADER) &&
                     battery.getValue() instanceof ComponentMatchWrapper wrapper) {
                 for (int i = 0; i < wrapper.amount; i++) {
@@ -179,7 +181,6 @@ public class DemodulationHubMachine extends WorkableMultiblockMachine
 
     @Override
     public void onStructureInvalid() {
-        this.capacityBank = null;
         tickSubscription.updateSubscription();
 
         WirelessEnergyContainer container = getWirelessEnergyContainer();
@@ -193,19 +194,11 @@ public class DemodulationHubMachine extends WorkableMultiblockMachine
     // ============== Status Update ==============
 
     protected void updateMachineStatus() {
-        Level level = getLevel();
-        if (level != null && !level.isClientSide) {
-            if (isWorkingEnabled() && isFormed()) {
-                recipeLogic.setStatus(RecipeLogic.Status.WORKING);
+        if (!getLevel().isClientSide) {
+            if (getOffsetTimer() % 20 == 0) {
+                getRecipeLogic().setStatus(RecipeLogic.Status.WORKING);
             }
         }
-    }
-
-    // ============== ManagedField ==============
-
-    @Override
-    public boolean isRemote() {
-        return super.isRemote();
     }
 
     // ============== UI ==============
@@ -258,6 +251,19 @@ public class DemodulationHubMachine extends WorkableMultiblockMachine
     }
 
     @Override
+    public List<IFancyUIProvider> getSubTabs() {
+        return getParts().stream().filter(IFancyUIProvider.class::isInstance).map(IFancyUIProvider.class::cast)
+                .toList();
+    }
+
+    @Override
+    public void attachTooltips(TooltipsPanel tooltipsPanel) {
+        for (IMultiPart part : getParts()) {
+            part.attachFancyTooltipsToController(this, tooltipsPanel);
+        }
+    }
+
+    @Override
     public boolean isWorkingEnabled() {
         return true;
     }
@@ -271,7 +277,17 @@ public class DemodulationHubMachine extends WorkableMultiblockMachine
 
     public static class DimensionalRelayNodeBank extends MachineTrait {
 
+        public static final MachineTraitType<DemodulationHubMachine.DimensionalRelayNodeBank> TYPE = new MachineTraitType<>(
+                DemodulationHubMachine.DimensionalRelayNodeBank.class);
+
+        @Override
+        public MachineTraitType<?> getTraitType() {
+            return TYPE;
+        }
+
+        @SaveField
         public final BigInteger totalCapacity;
+        @SaveField
         public final BigInteger totalPassiveDrain;
 
         public DimensionalRelayNodeBank(MetaMachine machine, List<ICapacityComponentData> components) {
@@ -288,12 +304,7 @@ public class DemodulationHubMachine extends WorkableMultiblockMachine
             if (component.isEmpty()) {
                 throw new IllegalArgumentException("Cannot rebuild bank with no batteries!");
             }
-            return new DimensionalRelayNodeBank(machine, component);
-        }
-
-        @Override
-        public MachineTraitType<?> getTraitType() {
-            return null;
+            return new DimensionalRelayNodeBank(this.machine, component);
         }
     }
 

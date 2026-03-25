@@ -73,13 +73,6 @@ public class DimensionalRelayNodeMachine extends WorkableMultiblockMachine
         return true;
     }
 
-    // ============== ManagedField ==============
-
-    @Override
-    public boolean isRemote() {
-        return super.isRemote();
-    }
-
     // ============== Player Interaction ==============
 
     @Override
