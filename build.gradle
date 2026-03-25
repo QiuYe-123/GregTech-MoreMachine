@@ -1,13 +1,13 @@
 plugins {
     id 'java-library'
+    id 'org.jetbrains.kotlin.jvm'
     id 'eclipse'
     id 'idea'
     id 'maven-publish'
+    id 'jacoco'
     alias libs.plugins.modDevGradle
     alias libs.plugins.spotless
     alias libs.plugins.lombok
-    alias libs.plugins.kotlin.jvm
-    alias libs.plugins.kotlin.plugin
 }
 
 group = maven_group
@@ -46,8 +46,6 @@ sourceSets {
 }
 
 configurations {
-    library
-    implementation.extendsFrom library
     // set these as unresolvable so we don't accidentally force all dependents to use them with us
     clientRuntimeOnly.canBeResolved = false
     extraRuntimeOnly.canBeResolved = false
@@ -108,4 +106,35 @@ tasks.named('compileJava', JavaCompile) {
 
 lombok {
     version = "1.18.38"
+}
+
+jacoco {
+    applyTo runGameTestServer
+}
+
+jacocoTestReport {
+    doFirst {
+        try {
+            runGameTestServer.exec()
+        } catch (RuntimeException ignored) {}
+    }
+    doLast {
+        println "Coverage report location:"
+        println " - file://${layout.buildDirectory.dir('coverage').map(a -> a.file('index.html')).get()}"
+        println " - file://${layout.buildDirectory.dir('coverage').map(a -> a.file('coverage.xml')).get()}"
+    }
+    executionData runGameTestServer
+    sourceSets sourceSets.test
+    reports {
+        csv.required = false
+        xml.required = true
+        html.outputLocation = layout.buildDirectory.dir('coverage')
+        xml.outputLocation = layout.buildDirectory.dir('coverage').map(a -> a.file('coverage.xml'))
+    }
+    afterEvaluate {
+        classDirectories.setFrom(files(classDirectories.files.collect {
+            fileTree(dir: it, exclude: '**/client/**')
+            fileTree(dir: it, exclude: '**/mixins/**')
+        }))
+    }
 }
