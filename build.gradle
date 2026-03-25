@@ -91,6 +91,7 @@ apply from: "$rootDir/gradle/scripts/spotless.gradle"
 generateModMetadata.doFirst {
     mkdir('run/client')
     mkdir('run/server')
+    mkdir('run/gametest')
     mkdir('run/data')
 }
 
@@ -98,6 +99,11 @@ tasks.withType(JavaCompile).configureEach {
     options.encoding = "UTF-8"
     options.compilerArgs << "-Xlint:-removal"
     options.compilerArgs << "-Aquiet=true"// 忽略删除和过时，真删了报错再说吧
+}
+
+tasks.named('compileJava', JavaCompile) {
+    dependsOn tasks.named('compileKotlin')
+    classpath += files(tasks.named('compileKotlin').map { it.destinationDirectory })
 }
 
 lombok {
