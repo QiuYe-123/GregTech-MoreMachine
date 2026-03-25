@@ -27,4 +27,10 @@ spotless {
         toggleOffOn()
         endWithNewline()
     }
+    json {
+        target('src/*/resources/**/*.json', 'src/*/resources/**/*.mcmeta')
+        targetExclude 'src/generated/resources/**'
+        leadingTabsToSpaces(2)
+        endWithNewline()
+    }
 }

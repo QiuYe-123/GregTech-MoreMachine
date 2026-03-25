@@ -91,11 +91,6 @@ legacyForge {
     }
 }
 
-jar {
-    exclude "**/.cache"
-    exclude "**/SimplifiedToTraditional.properties"
-}
-
 idea {
     module {
         downloadSources = true
