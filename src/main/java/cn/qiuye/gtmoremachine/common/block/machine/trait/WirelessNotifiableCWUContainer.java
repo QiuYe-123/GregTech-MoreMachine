@@ -1,7 +1,6 @@
 package cn.qiuye.gtmoremachine.common.block.machine.trait;
 
 import cn.qiuye.gtmoremachine.GTmm;
-import cn.qiuye.gtmoremachine.api.machine.IWirelessCWUContainerHolder;
 import cn.qiuye.gtmoremachine.api.misc.wireless.cwu.WirelessCWUContainer;
 
 import com.gregtechceu.gtceu.api.capability.GTCapability;
@@ -27,18 +26,18 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
 import lombok.Getter;
+import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.UUID;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class WirelessNotifiableCWUContainer extends NotifiableRecipeHandlerTrait<Integer> implements IOpticalComputationHatch, IOpticalComputationReceiver, IWirelessCWUContainerHolder {
+public class WirelessNotifiableCWUContainer extends NotifiableRecipeHandlerTrait<Integer> implements IOpticalComputationHatch, IOpticalComputationReceiver {
 
     public static final MachineTraitType<WirelessNotifiableCWUContainer> TYPE = new MachineTraitType<>(
             WirelessNotifiableCWUContainer.class);
@@ -48,7 +47,11 @@ public class WirelessNotifiableCWUContainer extends NotifiableRecipeHandlerTrait
         return TYPE;
     }
 
-    private WirelessCWUContainer container;
+    @Getter
+    @Setter
+    @Nullable
+    public WirelessCWUContainer wirelessCWUContainerCache;
+
     @Getter
     protected IO handlerIO;
     @Getter
@@ -57,10 +60,11 @@ public class WirelessNotifiableCWUContainer extends NotifiableRecipeHandlerTrait
     protected long lastTimeStamp;
     private int currentOutputCwu = 0, lastOutputCwu = 0;
 
-    public WirelessNotifiableCWUContainer(MetaMachine machine, IO handlerIO, boolean transmitter) {
+    public WirelessNotifiableCWUContainer(MetaMachine machine, @Nullable WirelessCWUContainer wirelessCWUContainerCache, IO handlerIO, boolean transmitter) {
         super(machine);
         this.handlerIO = handlerIO;
         this.transmitter = transmitter;
+        this.wirelessCWUContainerCache = wirelessCWUContainerCache;
 
         this.lastTimeStamp = Long.MIN_VALUE;
     }
@@ -249,21 +253,6 @@ public class WirelessNotifiableCWUContainer extends NotifiableRecipeHandlerTrait
             }
         }
         return null;
-    }
-
-    @Override
-    public @Nullable UUID getUUID() {
-        return this.getMachine().getOwnerUUID();
-    }
-
-    @Override
-    public void setWirelessCWUContainerCache(WirelessCWUContainer container) {
-        this.container = container;
-    }
-
-    @Override
-    public WirelessCWUContainer getWirelessCWUContainerCache() {
-        return this.container;
     }
 
     @Nullable

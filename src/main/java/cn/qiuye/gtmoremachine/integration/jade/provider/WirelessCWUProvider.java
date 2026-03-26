@@ -1,6 +1,7 @@
 package cn.qiuye.gtmoremachine.integration.jade.provider;
 
 import cn.qiuye.gtmoremachine.GTmm;
+import cn.qiuye.gtmoremachine.api.machine.IWirelessCWUContainerHolder;
 import cn.qiuye.gtmoremachine.common.machine.multiblock.part.WirelessCWUHatchPartMachine;
 import cn.qiuye.gtmoremachine.utils.BigIntegerUtils;
 import cn.qiuye.gtmoremachine.utils.FormattingUtil;
@@ -28,14 +29,14 @@ import snownee.jade.api.config.IPluginConfig;
 import java.math.BigInteger;
 import java.util.UUID;
 
-public class WrelessCWUProvider extends CapabilityBlockProvider<WirelessCWUHatchPartMachine> {
+public class WirelessCWUProvider extends CapabilityBlockProvider<IWirelessCWUContainerHolder> {
 
-    public WrelessCWUProvider() {
+    public WirelessCWUProvider() {
         super(ResourceLocation.tryBuild(GTmm.MOD_ID, FormattingUtil.toLowerCaseUnderscore("wireless_cwu_provider")));
     }
 
     @Override
-    protected @Nullable WirelessCWUHatchPartMachine getCapability(Level level, BlockPos pos, @Nullable Direction side) {
+    protected @Nullable IWirelessCWUContainerHolder getCapability(Level level, BlockPos pos, @Nullable Direction side) {
         var metamachine = MetaMachine.getMachine(level, pos);
         if (metamachine instanceof WirelessCWUHatchPartMachine bindable && bindable.display()) {
             return bindable;
@@ -44,31 +45,30 @@ public class WrelessCWUProvider extends CapabilityBlockProvider<WirelessCWUHatch
     }
 
     @Override
-    protected void write(CompoundTag data, WirelessCWUHatchPartMachine capability) {
+    protected void write(CompoundTag data, IWirelessCWUContainerHolder capability) {
         if (capability.getUUID() != null) {
             data.putBoolean("isCWUBindable", true);
             data.putUUID("UUID", capability.getUUID());
-            data.putString("cwu", BigIntegerUtils.getStringValue(capability.getTrait().getWirelessCWUContainer().getStorage()));
+            data.putString("cwu", BigIntegerUtils.getStringValue(capability.getWirelessCWUContainer().getStorage()));
         }
     }
 
     @Override
     protected void addTooltip(CompoundTag capData, ITooltip tooltip, Player player, BlockAccessor block, BlockEntity blockEntity, IPluginConfig config) {
         if (!capData.getBoolean("isCWUBindable")) return;
+
         if (!capData.hasUUID("UUID")) {
             tooltip.add(Component.translatable("gtmoremachine.machine.wireless_energy_hatch.tooltip.1"));
-        } else {
-            BigInteger cwu = BigIntegerUtils.setBigIntegerValue(capData.getString("cwu"));
-            UUID uuid = capData.getUUID("UUID");
-            if (TeamUtils.hasOwner(block.getLevel(), uuid)) {
-                tooltip.add(Component.translatable("gtmoremachine.machine.wireless_energy_hatch.tooltip.2", TeamUtils.getName(block.getLevel(), uuid)));
-                tooltip.add(Component.translatable("gtmoremachine.machine.wireless_cwu_monitor.tooltip.1",
-                        Component.literal(NumberUtils.formatBigIntegerNumberOrSic(cwu)).withStyle(ChatFormatting.GOLD)));
-            } else {
-                tooltip.add(Component.translatable("gtmoremachine.machine.wireless_energy_hatch.tooltip.3", uuid));
-                tooltip.add(Component.translatable("gtmoremachine.machine.wireless_cwu_monitor.tooltip.1",
-                        Component.literal(NumberUtils.formatBigIntegerNumberOrSic(cwu)).withStyle(ChatFormatting.GOLD)));
-            }
+            return;
         }
+
+        BigInteger cwu = BigIntegerUtils.setBigIntegerValue(capData.getString("cwu"));
+        UUID uuid = capData.getUUID("UUID");
+        Component ownerInfo = TeamUtils.hasOwner(block.getLevel(), uuid) ? TeamUtils.getName(block.getLevel(), uuid) : Component.nullToEmpty(uuid.toString());
+        String ownerKeySuffix = TeamUtils.hasOwner(block.getLevel(), uuid) ? "2" : "3";
+
+        tooltip.add(Component.translatable("gtmoremachine.machine.wireless_energy_hatch.tooltip." + ownerKeySuffix, ownerInfo));
+        tooltip.add(Component.translatable("gtmoremachine.machine.wireless_cwu_monitor.tooltip.1",
+                Component.literal(NumberUtils.formatBigIntegerNumberOrSic(cwu)).withStyle(ChatFormatting.GOLD)));
     }
 }

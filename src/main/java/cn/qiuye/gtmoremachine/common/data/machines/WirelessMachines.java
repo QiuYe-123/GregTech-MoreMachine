@@ -77,7 +77,7 @@ public class WirelessMachines {
             .register();
 
     public static final MachineDefinition WIRELESS_CWU_HATCH_PART_TRANSMITTER = GTMM
-            .machine("wireless_cwu_transmitter_hatch", (holder) -> new WirelessCWUHatchPartMachine(holder, true))
+            .machine("wireless_cwu_transmitter_hatch", (holder) -> new WirelessCWUHatchPartMachine(holder, IO.IN))
             .langValue("Wireless Computation Data Reception Hatch")
             .overlayTieredHullModel("computation_data_hatch")
             .rotationState(RotationState.ALL)
@@ -86,7 +86,7 @@ public class WirelessMachines {
             .register();
 
     public static final MachineDefinition WIRELESS_CWU_HATCH_PART_RECEIVER = GTMM
-            .machine("wireless_cwu_receiver_hatch", (holder) -> new WirelessCWUHatchPartMachine(holder, false))
+            .machine("wireless_cwu_receiver_hatch", (holder) -> new WirelessCWUHatchPartMachine(holder, IO.OUT))
             .langValue("Wireless Computation Data Transmission Hatch")
             .overlayTieredHullModel("computation_data_hatch")
             .rotationState(RotationState.ALL)

@@ -1,8 +1,8 @@
 package cn.qiuye.gtmoremachine.integration.jade
 
+import cn.qiuye.gtmoremachine.integration.jade.provider.WirelessCWUProvider
 import cn.qiuye.gtmoremachine.integration.jade.provider.WirelessEnergyProvider
 import cn.qiuye.gtmoremachine.integration.jade.provider.WirelessOpticalComputationHatchProvider
-import cn.qiuye.gtmoremachine.integration.jade.provider.WrelessCWUProvider
 
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock
 import com.gregtechceu.gtceu.api.machine.MetaMachine
@@ -18,7 +18,7 @@ class GTJadePlugin : IWailaPlugin {
 
     override fun register(registration: IWailaCommonRegistration) {
         registration.registerBlockDataProvider(WirelessEnergyProvider(), MetaMachine::class.java)
-        registration.registerBlockDataProvider(WrelessCWUProvider(), MetaMachine::class.java)
+        registration.registerBlockDataProvider(WirelessCWUProvider(), MetaMachine::class.java)
         registration.registerBlockDataProvider(
             WirelessOpticalComputationHatchProvider(),
             MetaMachine::class.java,
@@ -27,7 +27,7 @@ class GTJadePlugin : IWailaPlugin {
 
     override fun registerClient(registration: IWailaClientRegistration) {
         registration.registerBlockComponent(WirelessEnergyProvider(), MetaMachineBlock::class.java)
-        registration.registerBlockComponent(WrelessCWUProvider(), MetaMachineBlock::class.java)
+        registration.registerBlockComponent(WirelessCWUProvider(), MetaMachineBlock::class.java)
         registration.registerBlockComponent(WirelessOpticalComputationHatchProvider(), MetaMachineBlock::class.java)
     }
 }
