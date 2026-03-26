@@ -16,16 +16,13 @@ import com.gregtechceu.gtceu.api.machine.feature.multiblock.IDisplayUIMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTraitType;
-import com.gregtechceu.gtceu.api.machine.trait.NotifiableComputationContainer;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
-import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.utils.ExtendedUseOnContext;
 
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.gui.widget.*;
 
-import lombok.Getter;
 import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
@@ -53,7 +50,6 @@ public class DemodulationHubMachine extends WorkableMultiblockMachine
 
     public static final String CAPACITY_COMPONENT_HEADER = "DRNComponent_";
 
-    @SaveField
     private DimensionalRelayNodeBank capacityBank;
     private WirelessEnergyContainer wirelessEnergyContainerCache;
     private final ConditionalSubscriptionHandler tickSubscription;
@@ -277,12 +273,7 @@ public class DemodulationHubMachine extends WorkableMultiblockMachine
 
     public static class DimensionalRelayNodeBank extends MachineTrait {
 
-        public static final MachineTraitType<DimensionalRelayNodeBank> TYPE = new MachineTraitType<>(
-                DimensionalRelayNodeBank.class);
-
-        @Getter
         public final BigInteger totalCapacity;
-        @Getter
         public final BigInteger totalPassiveDrain;
 
         public DimensionalRelayNodeBank(MetaMachine machine, List<ICapacityComponentData> components) {
@@ -304,7 +295,7 @@ public class DemodulationHubMachine extends WorkableMultiblockMachine
 
         @Override
         public MachineTraitType<?> getTraitType() {
-            return TYPE;
+            return null;
         }
     }
 
