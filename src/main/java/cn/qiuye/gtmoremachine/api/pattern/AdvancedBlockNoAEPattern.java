@@ -44,7 +44,6 @@ import org.jetbrains.annotations.Nullable;
 import oshi.util.tuples.Triplet;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiPredicate;
@@ -121,7 +120,7 @@ public class AdvancedBlockNoAEPattern extends BlockPattern {
             return;
         }
         int minZ = -centerOffset[4];
-        clearWorldState(worldState);
+        worldState.clean();
         MultiblockControllerMachine controller = worldState.getController();
         BlockPos centerPos = controller.self().getBlockPos();
         Direction facing = controller.self().getFrontFacing();
@@ -153,7 +152,7 @@ public class AdvancedBlockNoAEPattern extends BlockPattern {
                         if (predicate.isAny()) continue;
                         BlockPos pos = setActualRelativeOffset(x, y, z, facing, upwardsFacing, isUseMirror)
                                 .offset(centerPos.getX(), centerPos.getY(), centerPos.getZ());
-                        updateWorldState(worldState, pos, predicate);
+                        if (!worldState.update(pos, predicate)) continue;
                         ItemStack itemStack = null;
                         if (!world.isEmptyBlock(pos)) {
                             Block block = world.getBlockState(pos).getBlock();
@@ -416,24 +415,6 @@ public class AdvancedBlockNoAEPattern extends BlockPattern {
         }
 
         return new Pair<>(handler, foundSlot);
-    }
-
-    private void clearWorldState(MultiblockState worldState) {
-        try {
-            Class<?> clazz = Class.forName("com.gregtechceu.gtceu.api.pattern.MultiblockState");
-            Method method = clazz.getDeclaredMethod("clean");
-            method.setAccessible(true);
-            method.invoke(worldState);
-        } catch (Exception ignored) {}
-    }
-
-    private void updateWorldState(MultiblockState worldState, BlockPos posIn, TraceabilityPredicate predicate) {
-        try {
-            Class<?> clazz = Class.forName("com.gregtechceu.gtceu.api.pattern.MultiblockState");
-            Method method = clazz.getDeclaredMethod("update", BlockPos.class, TraceabilityPredicate.class);
-            method.setAccessible(true);
-            method.invoke(worldState, posIn, predicate);
-        } catch (Exception ignored) {}
     }
 
     private BlockPos setActualRelativeOffset(int x, int y, int z, Direction facing, Direction upwardsFacing,
