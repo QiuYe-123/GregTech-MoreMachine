@@ -149,7 +149,7 @@ public class WirelessNotifiableCWUContainer extends NotifiableComputationContain
 
     @Override
     public List<Integer> handleRecipeInner(IO io, GTRecipe recipe, List<Integer> left,
-                                           boolean simulate) {
+                                                     boolean simulate) {
         IOpticalComputationProvider provider = getOpticalNetProvider();
         if (provider == null) return left;
 
