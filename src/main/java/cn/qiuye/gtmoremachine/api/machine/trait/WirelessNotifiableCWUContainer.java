@@ -1,4 +1,4 @@
-package cn.qiuye.gtmoremachine.common.block.machine.trait;
+package cn.qiuye.gtmoremachine.api.machine.trait;
 
 import cn.qiuye.gtmoremachine.GTmm;
 import cn.qiuye.gtmoremachine.api.misc.wireless.cwu.WirelessCWUContainer;

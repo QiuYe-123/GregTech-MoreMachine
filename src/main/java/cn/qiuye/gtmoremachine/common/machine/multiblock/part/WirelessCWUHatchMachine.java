@@ -1,7 +1,7 @@
 package cn.qiuye.gtmoremachine.common.machine.multiblock.part;
 
 import cn.qiuye.gtmoremachine.api.capability.IGTMMJadeIF;
-import cn.qiuye.gtmoremachine.common.block.machine.trait.WirelessNotifiableComputationContainer;
+import cn.qiuye.gtmoremachine.api.machine.trait.WirelessNotifiableComputationContainer;
 
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;

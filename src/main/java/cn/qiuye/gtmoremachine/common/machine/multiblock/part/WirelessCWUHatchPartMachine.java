@@ -1,8 +1,8 @@
 package cn.qiuye.gtmoremachine.common.machine.multiblock.part;
 
-import cn.qiuye.gtmoremachine.api.machine.IWirelessCWUContainerHolder;
+import cn.qiuye.gtmoremachine.api.machine.trait.WirelessNotifiableCWUContainer;
+import cn.qiuye.gtmoremachine.api.machine.trait.feature.IWirelessCWUContainerHolder;
 import cn.qiuye.gtmoremachine.api.misc.wireless.cwu.WirelessCWUContainer;
-import cn.qiuye.gtmoremachine.common.block.machine.trait.WirelessNotifiableCWUContainer;
 import cn.qiuye.gtmoremachine.utils.TeamUtils;
 
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;

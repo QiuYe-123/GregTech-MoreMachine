@@ -1,6 +1,6 @@
 package cn.qiuye.gtmoremachine.api.misc.wireless.energy.record;
 
-import cn.qiuye.gtmoremachine.api.misc.wireless.energy.Interface.ITransferData;
+import cn.qiuye.gtmoremachine.api.misc.wireless.energy.feature.ITransferData;
 
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 

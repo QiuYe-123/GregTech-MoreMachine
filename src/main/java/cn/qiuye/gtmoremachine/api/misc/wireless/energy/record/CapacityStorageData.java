@@ -1,6 +1,6 @@
 package cn.qiuye.gtmoremachine.api.misc.wireless.energy.record;
 
-import cn.qiuye.gtmoremachine.api.misc.wireless.energy.Interface.ICapacitylimitData;
+import cn.qiuye.gtmoremachine.api.misc.wireless.energy.feature.ICapacitylimitData;
 
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 

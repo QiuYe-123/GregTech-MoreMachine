@@ -1,6 +1,6 @@
 package cn.qiuye.gtmoremachine.common.machine.electric;
 
-import cn.qiuye.gtmoremachine.api.machine.IWirelessEnergyContainerHolder;
+import cn.qiuye.gtmoremachine.api.machine.trait.feature.IWirelessEnergyContainerHolder;
 import cn.qiuye.gtmoremachine.api.misc.wireless.energy.WirelessEnergyContainer;
 import cn.qiuye.gtmoremachine.utils.TeamUtils;
 

@@ -1,4 +1,4 @@
-package cn.qiuye.gtmoremachine.common.machine.trait;
+package cn.qiuye.gtmoremachine.api.machine.trait;
 
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;

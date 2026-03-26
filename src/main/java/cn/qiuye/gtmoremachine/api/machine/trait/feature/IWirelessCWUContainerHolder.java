@@ -1,4 +1,4 @@
-package cn.qiuye.gtmoremachine.api.machine;
+package cn.qiuye.gtmoremachine.api.machine.trait.feature;
 
 import cn.qiuye.gtmoremachine.api.capability.cwu.ICWUBindable;
 import cn.qiuye.gtmoremachine.api.misc.wireless.cwu.WirelessCWUContainer;

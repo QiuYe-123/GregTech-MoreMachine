@@ -1,8 +1,9 @@
-package cn.qiuye.gtmoremachine.api.misc.wireless.energy.Interface;
+package cn.qiuye.gtmoremachine.api.misc.wireless.cwu.feature;
 
+import cn.qiuye.gtmoremachine.api.gui.monitor.Format;
+import cn.qiuye.gtmoremachine.utils.NumberUtils;
 import cn.qiuye.gtmoremachine.utils.TeamUtils;
 
-import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 
 import com.lowdragmc.lowdraglib.gui.widget.ComponentPanelWidget;
@@ -13,17 +14,17 @@ import net.minecraft.network.chat.Style;
 
 import java.util.UUID;
 
-public interface IDimensionTransferData {
+public interface ITransferData {
 
     UUID UUID();
 
-    int Voltagelevel();
+    int Throughput();
 
     MetaMachine machine();
 
-    default Component getInfo() {
+    default Component getInfo(Format format) {
         MetaMachine machine = machine();
-        int Voltagelevel = Voltagelevel();
+        int cwu = Throughput();
         String pos = machine.getBlockPos().toShortString();
         return Component.translatable(machine.getBlockState().getBlock().getDescriptionId())
                 .withStyle(Style.EMPTY.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
@@ -31,7 +32,7 @@ public interface IDimensionTransferData {
                                 machine.getLevel().dimension().location()).append(" [").append(pos).append("] ")
                                 .append(Component.translatable("gtmoremachine.machine.wireless_monitor.tooltip.0",
                                         TeamUtils.getName(machine.getLevel(), UUID()))))))
-                .append(GTValues.VNF[Voltagelevel])
+                .append((cwu > 0 ? " +" : " ") + NumberUtils.formatInt(cwu, format))
                 .append(ComponentPanelWidget.withButton(Component.literal(" [ ] "), pos));
     }
 }

@@ -1,7 +1,7 @@
 package cn.qiuye.gtmoremachine.integration.jade.provider;
 
 import cn.qiuye.gtmoremachine.GTmm;
-import cn.qiuye.gtmoremachine.api.machine.IWirelessEnergyContainerHolder;
+import cn.qiuye.gtmoremachine.api.machine.trait.feature.IWirelessEnergyContainerHolder;
 import cn.qiuye.gtmoremachine.utils.BigIntegerUtils;
 import cn.qiuye.gtmoremachine.utils.FormattingUtil;
 import cn.qiuye.gtmoremachine.utils.NumberUtils;

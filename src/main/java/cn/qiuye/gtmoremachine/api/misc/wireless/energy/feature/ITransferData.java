@@ -1,4 +1,4 @@
-package cn.qiuye.gtmoremachine.api.misc.wireless.energy.Interface;
+package cn.qiuye.gtmoremachine.api.misc.wireless.energy.feature;
 
 import cn.qiuye.gtmoremachine.api.gui.monitor.Format;
 import cn.qiuye.gtmoremachine.utils.FormattingUtil;
@@ -17,20 +17,17 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.UUID;
 
-public interface ICapacitylimitData {
+public interface ITransferData {
 
     UUID UUID();
 
-    BigInteger StorageCapacity();
-
-    BigInteger PassiveDrain();
+    BigInteger Throughput();
 
     MetaMachine machine();
 
     default Component getInfo(Format format) {
         MetaMachine machine = machine();
-        BigDecimal euStorage = new BigDecimal(StorageCapacity());
-        BigDecimal euPassiveDrain = new BigDecimal(PassiveDrain());
+        BigDecimal eut = new BigDecimal(Throughput());
         String pos = machine.getBlockPos().toShortString();
         return Component.translatable(machine.getBlockState().getBlock().getDescriptionId())
                 .withStyle(Style.EMPTY.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
@@ -38,16 +35,10 @@ public interface ICapacitylimitData {
                                 machine.getLevel().dimension().location()).append(" [").append(pos).append("] ")
                                 .append(Component.translatable("gtmoremachine.machine.wireless_monitor.tooltip.0",
                                         TeamUtils.getName(machine.getLevel(), UUID()))))))
-                .append(NumberUtils.formatBigDecimalNumberOrSic(euStorage, format))
-                .append(" EU (")
-                .append(NumberUtils.formatBigDecimalNumberOrSic(FormattingUtil.voltageAmperage(euStorage), format) + " A ")
-                .append(FormattingUtil.voltageName(euStorage)).append(")")
-                .append("\n")
-                .append("被动耗能")
-                .append(NumberUtils.formatBigDecimalNumberOrSic(euPassiveDrain, format))
-                .append(" EU (")
-                .append(NumberUtils.formatBigDecimalNumberOrSic(FormattingUtil.voltageAmperage(euPassiveDrain), format) + " A ")
-                .append(FormattingUtil.voltageName(euPassiveDrain)).append(")")
+                .append((eut.compareTo(BigDecimal.ZERO) > 0 ? " +" : " ") + NumberUtils.formatBigDecimalNumberOrSic(eut, format))
+                .append(" EU/t (")
+                .append(NumberUtils.formatBigDecimalNumberOrSic(FormattingUtil.voltageAmperage(eut), format) + " A ")
+                .append(FormattingUtil.voltageName(eut)).append(")")
                 .append(ComponentPanelWidget.withButton(Component.literal(" [ ] "), pos));
     }
 }

@@ -1,7 +1,7 @@
 package cn.qiuye.gtmoremachine.common.cover;
 
-import cn.qiuye.gtmoremachine.api.machine.IWirelessEnergyContainerHolder;
-import cn.qiuye.gtmoremachine.api.machine.WirelessEnergyReceiveCoverHolder;
+import cn.qiuye.gtmoremachine.api.machine.trait.feature.IWirelessEnergyContainerHolder;
+import cn.qiuye.gtmoremachine.api.machine.trait.feature.WirelessEnergyReceiveCoverHolder;
 import cn.qiuye.gtmoremachine.api.misc.wireless.energy.WirelessEnergyContainer;
 
 import com.gregtechceu.gtceu.api.GTValues;
