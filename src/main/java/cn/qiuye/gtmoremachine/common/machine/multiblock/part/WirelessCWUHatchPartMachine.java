@@ -38,9 +38,9 @@ public class WirelessCWUHatchPartMachine extends MultiblockPartMachine implement
 
     private final WirelessNotifiableCWUContainer trait;
 
-    public WirelessCWUHatchPartMachine(BlockEntityCreationInfo holder, IO io) {
+    public WirelessCWUHatchPartMachine(BlockEntityCreationInfo holder, boolean transmitter) {
         super(holder);
-        this.trait = new WirelessNotifiableCWUContainer(this, this.getWirelessCWUContainerCache(), io, false);
+        this.trait = new WirelessNotifiableCWUContainer(this, IO.IN, transmitter);
     }
 
     @Override

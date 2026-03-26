@@ -60,11 +60,10 @@ public class WirelessNotifiableCWUContainer extends NotifiableRecipeHandlerTrait
     protected long lastTimeStamp;
     private int currentOutputCwu = 0, lastOutputCwu = 0;
 
-    public WirelessNotifiableCWUContainer(MetaMachine machine, @Nullable WirelessCWUContainer wirelessCWUContainerCache, IO handlerIO, boolean transmitter) {
+    public WirelessNotifiableCWUContainer(MetaMachine machine, IO handlerIO, boolean transmitter) {
         super(machine);
         this.handlerIO = handlerIO;
         this.transmitter = transmitter;
-        this.wirelessCWUContainerCache = wirelessCWUContainerCache;
 
         this.lastTimeStamp = Long.MIN_VALUE;
     }

@@ -41,18 +41,7 @@ public class WirelessCWUHatchMachine extends MultiblockPartMachine implements ID
     public WirelessCWUHatchMachine(BlockEntityCreationInfo holder, boolean transmitter) {
         super(holder);
         this.transmitter = transmitter;
-        this.computationContainer = createComputationContainer(transmitter);
-    }
-
-    protected WirelessNotifiableComputationContainer createComputationContainer(Object... args) {
-        IO io = IO.IN;
-        if (args.length > 1 && args[args.length - 2] instanceof IO newIo) {
-            io = newIo;
-        }
-        if (args.length > 0 && args[args.length - 1] instanceof Boolean transmitter) {
-            return new WirelessNotifiableComputationContainer(this, io, transmitter);
-        }
-        throw new IllegalArgumentException();
+        this.computationContainer = new WirelessNotifiableComputationContainer(this, IO.IN, transmitter);
     }
 
     @Override
