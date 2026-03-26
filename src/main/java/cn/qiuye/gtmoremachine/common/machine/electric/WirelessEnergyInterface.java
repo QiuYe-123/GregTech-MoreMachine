@@ -48,7 +48,10 @@ public class WirelessEnergyInterface extends TieredIOPartMachine implements IWir
 
     public WirelessEnergyInterface(BlockEntityCreationInfo holder) {
         super(holder, GTValues.MAX, IO.IN);
-        this.energyContainer = createEnergyContainer();
+        this.energyContainer = NotifiableEnergyContainer.receiverContainer(this, Long.MAX_VALUE,
+                GTValues.VEX[tier], 67108864);
+        this.energyContainer.setSideInputCondition(s -> s == getFrontFacing() && isWorkingEnabled());
+        this.energyContainer.setCapabilityValidator(s -> s == null || s == getFrontFacing());
     }
 
     protected NotifiableEnergyContainer createEnergyContainer() {
@@ -107,6 +110,7 @@ public class WirelessEnergyInterface extends TieredIOPartMachine implements IWir
         if (item.isEmpty()) return InteractionResult.PASS;
         if (item.is(GTItems.TOOL_DATA_STICK.asItem())) {
             setOwnerUUID(context.getPlayer().getUUID());
+            setWirelessEnergyContainerCache(null);
             if (isRemote()) {
                 context.getPlayer().sendSystemMessage(Component.translatable("gtmoremachine.machine.wireless_energy_hatch.tooltip.bind", TeamUtils.getName(context.getPlayer())));
             }
