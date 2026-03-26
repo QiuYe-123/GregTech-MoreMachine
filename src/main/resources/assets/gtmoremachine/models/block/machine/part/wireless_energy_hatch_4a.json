@@ -1,6 +1,6 @@
 {
-	"parent": "gtceu:block/overlay/front",
-	"textures": {
-		"overlay": "gtmoremachine:block/overlay/machine/overlay_energy_on_wireless_4a"
-	}
+  "parent": "gtceu:block/overlay/front",
+  "textures": {
+    "overlay": "gtmoremachine:block/overlay/machine/overlay_energy_on_wireless_4a"
+  }
 }

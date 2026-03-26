@@ -91,13 +91,9 @@ legacyForge {
     }
 }
 
-jar {
-    exclude "**/.cache"
-    exclude "**/SimplifiedToTraditional.properties"
-}
-
 idea {
     module {
+        name = rootProject.name
         downloadSources = true
         downloadJavadoc = true
     }

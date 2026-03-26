@@ -13,9 +13,9 @@ import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredIOPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableEnergyContainer;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.common.data.GTItems;
+import com.gregtechceu.gtceu.utils.ExtendedUseOnContext;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
@@ -24,8 +24,6 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 
 import lombok.Getter;
@@ -49,7 +47,6 @@ public class WirelessEnergyHatchPartMachine extends TieredIOPartMachine implemen
     public final NotifiableEnergyContainer energyContainer;
     @Getter
     protected int amperage;
-    @Getter
     private final boolean leaser;
     private TickableSubscription updEnergySubs;
 
@@ -61,9 +58,11 @@ public class WirelessEnergyHatchPartMachine extends TieredIOPartMachine implemen
     }
 
     protected NotifiableEnergyContainer createEnergyContainer() {
-        long multiplier = isLeaser() ? 64L : 16L;
-        long capacity = GTValues.VEX[tier] * multiplier * amperage;
-        return io == IO.IN ? NotifiableEnergyContainer.receiverContainer(this, capacity, GTValues.VEX[tier], amperage) : NotifiableEnergyContainer.emitterContainer(this, capacity, GTValues.VEX[tier], amperage);
+        long multiplier = this.leaser ? 64L : 16L;
+        long capacity = GTValues.VEX[this.tier] * multiplier * this.amperage;
+        return this.io == IO.IN ?
+                NotifiableEnergyContainer.receiverContainer(this, capacity, GTValues.VEX[this.tier], this.amperage) :
+                NotifiableEnergyContainer.emitterContainer(this, capacity, GTValues.VEX[this.tier], this.amperage);
     }
 
     @Override
@@ -126,14 +125,14 @@ public class WirelessEnergyHatchPartMachine extends TieredIOPartMachine implemen
     }
 
     @Override
-    public InteractionResult onUse(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+    public InteractionResult onUseWithItem(ExtendedUseOnContext context) {
         if (isRemote()) return InteractionResult.PASS;
-        ItemStack item = player.getItemInHand(hand);
+        ItemStack item = context.getItemInHand();
         if (item.isEmpty()) return InteractionResult.PASS;
         if (item.is(GTItems.TOOL_DATA_STICK.asItem())) {
-            setOwnerUUID(player.getUUID());
+            setOwnerUUID(context.getPlayer().getUUID());
             setWirelessEnergyContainerCache(null);
-            player.sendSystemMessage(Component.translatable("gtmoremachine.machine.wireless_energy_hatch.tooltip.bind", TeamUtils.getName(player)));
+            context.getPlayer().sendSystemMessage(Component.translatable("gtmoremachine.machine.wireless_energy_hatch.tooltip.bind", TeamUtils.getName(context.getPlayer())));
             updateEnergySubscription();
             return InteractionResult.SUCCESS;
         } else if (GTmm.isDev() && item.is(Items.STICK)) {
@@ -148,11 +147,11 @@ public class WirelessEnergyHatchPartMachine extends TieredIOPartMachine implemen
     }
 
     @Override
-    public boolean onLeftClick(Player player, Level world, InteractionHand hand, BlockPos pos, Direction direction) {
+    public boolean onLeftClick(Player player, InteractionHand hand, @Nullable Direction face) {
         if (isRemote()) return false;
-        ItemStack is = player.getItemInHand(hand);
-        if (is.isEmpty()) return false;
-        if (is.is(GTItems.TOOL_DATA_STICK.asItem())) {
+        ItemStack item = player.getItemInHand(hand);
+        if (item.isEmpty()) return false;
+        if (item.is(GTItems.TOOL_DATA_STICK.asItem())) {
             setOwnerUUID(null);
             setWirelessEnergyContainerCache(null);
             player.sendSystemMessage(Component.translatable("gtmoremachine.machine.wireless_energy_hatch.tooltip.unbind"));
