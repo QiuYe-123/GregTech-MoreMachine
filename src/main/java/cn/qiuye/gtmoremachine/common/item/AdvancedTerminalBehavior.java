@@ -94,7 +94,7 @@ public class AdvancedTerminalBehavior implements IItemUIFactory {
             autoBuildSetting.setUseDemolish(tag.getBoolean("IsUseDemolish"));
             String block = tag.getString("blocks");
             if (!block.isEmpty()) {
-                autoBuildSetting.tierBlock = MAP.get(BlockMap.namePrefix + block);
+                autoBuildSetting.tierBlock = MAP.get(block);
                 autoBuildSetting.blocks = new ObjectOpenHashSet<>(autoBuildSetting.tierBlock);
             }
         }
