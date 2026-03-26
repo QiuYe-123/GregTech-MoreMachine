@@ -20,7 +20,6 @@ import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTraitType;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
-import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.utils.ExtendedUseOnContext;
 
@@ -38,6 +37,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
+import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
 import java.math.BigDecimal;
@@ -53,7 +53,7 @@ public class DemodulationHubMachine extends WorkableMultiblockMachine
 
     public static final String CAPACITY_COMPONENT_HEADER = "DRNComponent_";
 
-    @SaveField
+    @Getter
     private DimensionalRelayNodeBank capacityBank;
     private WirelessEnergyContainer wirelessEnergyContainerCache;
     private final ConditionalSubscriptionHandler tickSubscription;
@@ -89,11 +89,11 @@ public class DemodulationHubMachine extends WorkableMultiblockMachine
     // ============== Computed Properties ==============
 
     public BigInteger getTotalCapacity() {
-        return capacityBank == null ? BigInteger.ZERO : capacityBank.totalCapacity;
+        return this.getCapacityBank().getTotalCapacity();
     }
 
     public BigInteger getTotalPassiveDrain() {
-        return capacityBank == null ? BigInteger.ZERO : capacityBank.totalPassiveDrain;
+        return this.getCapacityBank().getTotalPassiveDrain();
     }
 
     // ============== Player Interaction ==============
@@ -285,9 +285,9 @@ public class DemodulationHubMachine extends WorkableMultiblockMachine
             return TYPE;
         }
 
-        @SaveField
+        @Getter
         public final BigInteger totalCapacity;
-        @SaveField
+        @Getter
         public final BigInteger totalPassiveDrain;
 
         public DimensionalRelayNodeBank(MetaMachine machine, List<ICapacityComponentData> components) {

@@ -208,7 +208,6 @@ public class WirelessEnergyContainer {
         }
         this.capacity = change;
         this.passiveDrain = passiveDrain;
-        if (this.storage.compareTo(this.capacity) > 0) this.storage = this.capacity;
         WirelessEnergySavedData.INSTANCE.setDirty(true);
     }
 
