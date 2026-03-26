@@ -38,7 +38,7 @@ public class WirelessCWUProvider extends CapabilityBlockProvider<IWirelessCWUCon
     @Override
     protected @Nullable IWirelessCWUContainerHolder getCapability(Level level, BlockPos pos, @Nullable Direction side) {
         var metamachine = MetaMachine.getMachine(level, pos);
-        if (metamachine instanceof WirelessCWUHatchPartMachine bindable && bindable.display()) {
+        if (metamachine instanceof IWirelessCWUContainerHolder bindable && bindable.display()) {
             return bindable;
         }
         return null;
@@ -56,19 +56,20 @@ public class WirelessCWUProvider extends CapabilityBlockProvider<IWirelessCWUCon
     @Override
     protected void addTooltip(CompoundTag capData, ITooltip tooltip, Player player, BlockAccessor block, BlockEntity blockEntity, IPluginConfig config) {
         if (!capData.getBoolean("isCWUBindable")) return;
-
         if (!capData.hasUUID("UUID")) {
             tooltip.add(Component.translatable("gtmoremachine.machine.wireless_energy_hatch.tooltip.1"));
-            return;
+        } else {
+            BigInteger cwu = BigIntegerUtils.setBigIntegerValue(capData.getString("cwu"));
+            UUID uuid = capData.getUUID("UUID");
+            if (TeamUtils.hasOwner(block.getLevel(), uuid)) {
+                tooltip.add(Component.translatable("gtmoremachine.machine.wireless_energy_hatch.tooltip.2", TeamUtils.getName(block.getLevel(), uuid)));
+                tooltip.add(Component.translatable("gtmoremachine.machine.wireless_cwu_monitor.tooltip.1",
+                        Component.literal(NumberUtils.formatBigIntegerNumberOrSic(cwu)).withStyle(ChatFormatting.GOLD)));
+            } else {
+                tooltip.add(Component.translatable("gtmoremachine.machine.wireless_energy_hatch.tooltip.3", uuid));
+                tooltip.add(Component.translatable("gtmoremachine.machine.wireless_cwu_monitor.tooltip.1",
+                        Component.literal(NumberUtils.formatBigIntegerNumberOrSic(cwu)).withStyle(ChatFormatting.GOLD)));
+            }
         }
-
-        BigInteger cwu = BigIntegerUtils.setBigIntegerValue(capData.getString("cwu"));
-        UUID uuid = capData.getUUID("UUID");
-        Component ownerInfo = TeamUtils.hasOwner(block.getLevel(), uuid) ? TeamUtils.getName(block.getLevel(), uuid) : Component.nullToEmpty(uuid.toString());
-        String ownerKeySuffix = TeamUtils.hasOwner(block.getLevel(), uuid) ? "2" : "3";
-
-        tooltip.add(Component.translatable("gtmoremachine.machine.wireless_energy_hatch.tooltip." + ownerKeySuffix, ownerInfo));
-        tooltip.add(Component.translatable("gtmoremachine.machine.wireless_cwu_monitor.tooltip.1",
-                Component.literal(NumberUtils.formatBigIntegerNumberOrSic(cwu)).withStyle(ChatFormatting.GOLD)));
     }
 }

@@ -47,16 +47,18 @@ public class WirelessOpticalComputationHatchProvider extends CapabilityBlockProv
     @Override
     protected void addTooltip(CompoundTag capData, ITooltip tooltip, Player player, BlockAccessor block, BlockEntity blockEntity, IPluginConfig config) {
         if (!capData.getBoolean("isGTMMJadeIF")) return;
-
-        boolean isTransmitter = capData.getBoolean("isTransmitter");
-        boolean isBinded = capData.getBoolean("isBinded");
-        String keyPrefix = isTransmitter ? "gtmoremachine.transmitter_hatch" : "gtmoremachine.machine.receiver_hatch";
-        String keySuffix = isBinded ? "bind" : "unbind";
-
-        if (isBinded) {
-            tooltip.add(Component.translatable(keyPrefix + "." + keySuffix, capData.getString("pos")));
+        if (capData.getBoolean("isBinded")) {
+            if (capData.getBoolean("isTransmitter")) {
+                tooltip.add(Component.translatable("gtmoremachine.machine.transmitter_hatch.bind", capData.getString("pos")));
+            } else {
+                tooltip.add(Component.translatable("gtmoremachine.machine.receiver_hatch.bind", capData.getString("pos")));
+            }
         } else {
-            tooltip.add(Component.translatable(keyPrefix + "." + keySuffix));
+            if (capData.getBoolean("isTransmitter")) {
+                tooltip.add(Component.translatable("gtmoremachine.machine.transmitter_hatch.unbind"));
+            } else {
+                tooltip.add(Component.translatable("gtmoremachine.machine.receiver_hatch.unbind"));
+            }
         }
     }
 }

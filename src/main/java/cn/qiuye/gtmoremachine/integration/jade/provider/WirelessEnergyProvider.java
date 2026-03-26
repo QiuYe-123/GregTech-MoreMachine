@@ -55,7 +55,7 @@ public class WirelessEnergyProvider extends CapabilityBlockProvider<IWirelessEne
     @Override
     protected void write(CompoundTag data, IWirelessEnergyContainerHolder capability) {
         if (capability.getUUID() != null) {
-            data.putBoolean("isBindable", true);
+            data.putBoolean("IEnergyBindable", true);
             data.putUUID("uuid", capability.getUUID());
             data.putBoolean("cover", capability.cover());
             data.putString("energy", BigIntegerUtils.getStringValue(capability.getWirelessEnergyContainer().getStorage()));
@@ -64,25 +64,46 @@ public class WirelessEnergyProvider extends CapabilityBlockProvider<IWirelessEne
 
     @Override
     protected void addTooltip(CompoundTag capData, ITooltip tooltip, Player player, BlockAccessor block, BlockEntity blockEntity, IPluginConfig config) {
-        if (!capData.getBoolean("isBindable")) return;
-
+        if (!capData.getBoolean("IEnergyBindable")) return;
         boolean cover = capData.getBoolean("cover");
-        String baseKey = cover ? "gtmoremachine.machine.wireless_energy_cover.tooltip" : "gtmoremachine.machine.wireless_energy_hatch.tooltip";
-
         if (!capData.hasUUID("uuid")) {
-            tooltip.add(Component.translatable(baseKey + ".1"));
-            return;
+            if (cover) {
+                tooltip.add(Component.translatable("gtmoremachine.machine.wireless_energy_cover.tooltip.1"));
+            } else {
+                tooltip.add(Component.translatable("gtmoremachine.machine.wireless_energy_hatch.tooltip.1"));
+            }
+        } else {
+            BigDecimal energy = BigIntegerUtils.setBigDecimalValue(capData.getString("energy"));
+            UUID uuid = capData.getUUID("uuid");
+            if (TeamUtils.hasOwner(block.getLevel(), uuid)) {
+                if (cover) {
+                    tooltip.add(Component.translatable("gtmoremachine.machine.wireless_energy_cover.tooltip.2", TeamUtils.getName(block.getLevel(), uuid)));
+                    tooltip.add(Component.translatable("config.jade.plugin_gtmoremachine.wireless_energy_hatch_provider.tooltip.1",
+                            Component.literal(NumberUtils.formatBigDecimalNumberOrSic(energy)).withStyle(ChatFormatting.GOLD),
+                            Component.literal(NumberUtils.formatBigDecimalNumberOrSic(FormattingUtil.voltageAmperage(energy))),
+                            FormattingUtil.voltageName(energy)));
+                } else {
+                    tooltip.add(Component.translatable("gtmoremachine.machine.wireless_energy_hatch.tooltip.2", TeamUtils.getName(block.getLevel(), uuid)));
+                    tooltip.add(Component.translatable("config.jade.plugin_gtmoremachine.wireless_energy_hatch_provider.tooltip.1",
+                            Component.literal(NumberUtils.formatBigDecimalNumberOrSic(energy)).withStyle(ChatFormatting.GOLD),
+                            Component.literal(NumberUtils.formatBigDecimalNumberOrSic(FormattingUtil.voltageAmperage(energy))),
+                            FormattingUtil.voltageName(energy)));
+                }
+            } else {
+                if (cover) {
+                    tooltip.add(Component.translatable("gtmoremachine.machine.wireless_energy_cover.tooltip.3", uuid));
+                    tooltip.add(Component.translatable("config.jade.plugin_gtmoremachine.wireless_energy_hatch_provider.tooltip.1",
+                            Component.literal(NumberUtils.formatBigDecimalNumberOrSic(energy)).withStyle(ChatFormatting.GOLD),
+                            Component.literal(NumberUtils.formatBigDecimalNumberOrSic(FormattingUtil.voltageAmperage(energy))),
+                            FormattingUtil.voltageName(energy)));
+                } else {
+                    tooltip.add(Component.translatable("gtmoremachine.machine.wireless_energy_hatch.tooltip.3", uuid));
+                    tooltip.add(Component.translatable("config.jade.plugin_gtmoremachine.wireless_energy_hatch_provider.tooltip.1",
+                            Component.literal(NumberUtils.formatBigDecimalNumberOrSic(energy)).withStyle(ChatFormatting.GOLD),
+                            Component.literal(NumberUtils.formatBigDecimalNumberOrSic(FormattingUtil.voltageAmperage(energy))),
+                            FormattingUtil.voltageName(energy)));
+                }
+            }
         }
-
-        BigDecimal energy = BigIntegerUtils.setBigDecimalValue(capData.getString("energy"));
-        UUID uuid = capData.getUUID("uuid");
-        Component ownerInfo = TeamUtils.hasOwner(block.getLevel(), uuid) ? TeamUtils.getName(block.getLevel(), uuid) : Component.nullToEmpty(uuid.toString());
-        String ownerKeySuffix = TeamUtils.hasOwner(block.getLevel(), uuid) ? "2" : "3";
-
-        tooltip.add(Component.translatable(baseKey + "." + ownerKeySuffix, ownerInfo));
-        tooltip.add(Component.translatable("config.jade.plugin_gtmoremachine.wireless_energy_hatch_provider.tooltip.1",
-                Component.literal(NumberUtils.formatBigDecimalNumberOrSic(energy)).withStyle(ChatFormatting.GOLD),
-                Component.literal(NumberUtils.formatBigDecimalNumberOrSic(FormattingUtil.voltageAmperage(energy))),
-                FormattingUtil.voltageName(energy)));
     }
 }
