@@ -14,17 +14,16 @@ import net.minecraft.world.item.crafting.Ingredient;
 
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenCustomHashMap;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
 public class CatalystItemStackHandler extends NotifiableItemStackHandler {
 
-    public CatalystItemStackHandler(MetaMachine machine, int slots, @NotNull IO handlerIO, @NotNull IO capabilityIO) {
+    public CatalystItemStackHandler(MetaMachine machine, int slots, IO handlerIO, IO capabilityIO) {
         super(machine, slots, handlerIO, capabilityIO, CustomItemStackHandler::new);
     }
 
-    public CatalystItemStackHandler(MetaMachine machine, int slots, @NotNull IO handlerIO) {
+    public CatalystItemStackHandler(MetaMachine machine, int slots, IO handlerIO) {
         this(machine, slots, handlerIO, handlerIO);
     }
 

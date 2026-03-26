@@ -13,13 +13,18 @@ import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableComputationContainer;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 
-import org.jetbrains.annotations.NotNull;
+import net.minecraft.MethodsReturnNonnullByDefault;
+
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public class WirelessNotifiableComputationContainer extends NotifiableComputationContainer {
 
     private int currentOutputCwu = 0, lastOutputCwu = 0;
@@ -29,7 +34,7 @@ public class WirelessNotifiableComputationContainer extends NotifiableComputatio
     }
 
     @Override
-    public int requestCWUt(int cwut, boolean simulate, @NotNull Collection<IOpticalComputationProvider> seen) {
+    public int requestCWUt(int cwut, boolean simulate, Collection<IOpticalComputationProvider> seen) {
         var latestTimeStamp = getMachine().getOffsetTimer();
         if (lastTimeStamp < latestTimeStamp) {
             lastOutputCwu = currentOutputCwu;
@@ -77,7 +82,7 @@ public class WirelessNotifiableComputationContainer extends NotifiableComputatio
     }
 
     @Override
-    public int getMaxCWUt(@NotNull Collection<IOpticalComputationProvider> seen) {
+    public int getMaxCWUt(Collection<IOpticalComputationProvider> seen) {
         seen.add(this);
         if (handlerIO == IO.IN) {
             if (isTransmitter()) {
@@ -120,7 +125,7 @@ public class WirelessNotifiableComputationContainer extends NotifiableComputatio
     }
 
     @Override
-    public boolean canBridge(@NotNull Collection<IOpticalComputationProvider> seen) {
+    public boolean canBridge(Collection<IOpticalComputationProvider> seen) {
         seen.add(this);
         if (handlerIO == IO.IN) {
             if (isTransmitter()) {

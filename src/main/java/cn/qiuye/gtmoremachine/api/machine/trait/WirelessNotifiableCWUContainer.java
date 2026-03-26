@@ -4,7 +4,6 @@ import cn.qiuye.gtmoremachine.GTmm;
 import cn.qiuye.gtmoremachine.api.misc.wireless.cwu.WirelessCWUContainer;
 
 import com.gregtechceu.gtceu.api.capability.GTCapability;
-import com.gregtechceu.gtceu.api.capability.IOpticalComputationHatch;
 import com.gregtechceu.gtceu.api.capability.IOpticalComputationProvider;
 import com.gregtechceu.gtceu.api.capability.IOpticalComputationReceiver;
 import com.gregtechceu.gtceu.api.capability.recipe.CWURecipeCapability;
@@ -16,8 +15,7 @@ import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
-import com.gregtechceu.gtceu.api.machine.trait.MachineTraitType;
-import com.gregtechceu.gtceu.api.machine.trait.NotifiableRecipeHandlerTrait;
+import com.gregtechceu.gtceu.api.machine.trait.NotifiableComputationContainer;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
@@ -37,35 +35,17 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class WirelessNotifiableCWUContainer extends NotifiableRecipeHandlerTrait<Integer> implements IOpticalComputationHatch, IOpticalComputationReceiver {
-
-    public static final MachineTraitType<WirelessNotifiableCWUContainer> TYPE = new MachineTraitType<>(
-            WirelessNotifiableCWUContainer.class);
-
-    @Override
-    public MachineTraitType<WirelessNotifiableCWUContainer> getTraitType() {
-        return TYPE;
-    }
+public class WirelessNotifiableCWUContainer extends NotifiableComputationContainer {
 
     @Getter
     @Setter
     @Nullable
     public WirelessCWUContainer wirelessCWUContainerCache;
 
-    @Getter
-    protected IO handlerIO;
-    @Getter
-    protected boolean transmitter;
-
-    protected long lastTimeStamp;
     private int currentOutputCwu = 0, lastOutputCwu = 0;
 
     public WirelessNotifiableCWUContainer(MetaMachine machine, IO handlerIO, boolean transmitter) {
-        super(machine);
-        this.handlerIO = handlerIO;
-        this.transmitter = transmitter;
-
-        this.lastTimeStamp = Long.MIN_VALUE;
+        super(machine, handlerIO, transmitter);
     }
 
     @Override
@@ -168,8 +148,8 @@ public class WirelessNotifiableCWUContainer extends NotifiableRecipeHandlerTrait
     }
 
     @Override
-    public @Nullable List<Integer> handleRecipeInner(IO io, GTRecipe recipe, List<Integer> left,
-                                                     boolean simulate) {
+    public List<Integer> handleRecipeInner(IO io, GTRecipe recipe, List<Integer> left,
+                                           boolean simulate) {
         IOpticalComputationProvider provider = getOpticalNetProvider();
         if (provider == null) return left;
 
