@@ -92,6 +92,6 @@ public class WirelessCWUContainer {
     }
 
     public int getfreeCWU() {
-        return BigIntegerUtils.getIntValue(storage) / 10;
+        return BigIntegerUtils.getIntValue(storage) / 20;
     }
 }

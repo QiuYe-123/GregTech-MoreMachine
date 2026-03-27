@@ -3,13 +3,8 @@ package cn.qiuye.gtmoremachine.api.machine.trait;
 import cn.qiuye.gtmoremachine.GTmm;
 import cn.qiuye.gtmoremachine.api.misc.wireless.cwu.WirelessCWUContainer;
 
-import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.capability.IOpticalComputationProvider;
-import com.gregtechceu.gtceu.api.capability.IOpticalComputationReceiver;
-import com.gregtechceu.gtceu.api.capability.recipe.CWURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.capability.recipe.IRecipeCapabilityHolder;
-import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
@@ -17,11 +12,8 @@ import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableComputationContainer;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
-import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
-import net.minecraft.core.Direction;
-import net.minecraft.world.level.block.entity.BlockEntity;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -85,7 +77,7 @@ public class WirelessNotifiableCWUContainer extends NotifiableComputationContain
                 }
             } else {
                 // Ask the attached Transmitter hatch, if it exists
-                IOpticalComputationProvider provider = getOpticalNetProvider();
+                IOpticalComputationProvider provider = null;
                 if (provider == null) return 0;
                 return provider.requestCWUt(cwut, simulate, seen);
             }
@@ -132,7 +124,7 @@ public class WirelessNotifiableCWUContainer extends NotifiableComputationContain
                 }
             } else {
                 // Ask the attached Transmitter hatch, if it exists
-                IOpticalComputationProvider provider = getOpticalNetProvider();
+                IOpticalComputationProvider provider = null;
                 if (provider == null) return 0;
                 return provider.getMaxCWUt(seen);
             }
@@ -149,8 +141,8 @@ public class WirelessNotifiableCWUContainer extends NotifiableComputationContain
 
     @Override
     public List<Integer> handleRecipeInner(IO io, GTRecipe recipe, List<Integer> left,
-                                                     boolean simulate) {
-        IOpticalComputationProvider provider = getOpticalNetProvider();
+                                           boolean simulate) {
+        IOpticalComputationProvider provider = getComputationProvider();
         if (provider == null) return left;
 
         int sum = left.stream().mapToInt(Integer::intValue).sum();
@@ -184,58 +176,5 @@ public class WirelessNotifiableCWUContainer extends NotifiableComputationContain
             sum = sum - canInput;
         }
         return sum <= 0 ? null : Collections.singletonList(sum);
-    }
-
-    @Override
-    public List<Object> getContents() {
-        return List.of(lastOutputCwu);
-    }
-
-    @Override
-    public double getTotalContentAmount() {
-        return lastOutputCwu;
-    }
-
-    @Override
-    public RecipeCapability<Integer> getCapability() {
-        return CWURecipeCapability.CAP;
-    }
-
-    @Override
-    public @Nullable IOpticalComputationProvider getComputationProvider() {
-        if (this.handlerIO.support(IO.OUT)) {
-            return this;
-        }
-        if (machine instanceof IOpticalComputationReceiver receiver) {
-            return receiver.getComputationProvider();
-        } else if (machine instanceof IOpticalComputationProvider provider) {
-            return provider;
-        } else if (machine instanceof IRecipeCapabilityHolder recipeCapabilityHolder) {
-            var cwuCap = recipeCapabilityHolder.getCapabilitiesFlat(IO.IN, CWURecipeCapability.CAP);
-            if (!cwuCap.isEmpty()) {
-                var provider = (IOpticalComputationProvider) cwuCap.get(0);
-                if (provider != this) {
-                    return provider;
-                }
-            }
-        }
-        for (Direction direction : GTUtil.DIRECTIONS) {
-            BlockEntity blockEntity = machine.getLevel().getBlockEntity(machine.getBlockPos().relative(direction));
-            if (blockEntity == null) continue;
-
-            // noinspection DataFlowIssue can be null just fine.
-            IOpticalComputationProvider provider = blockEntity
-                    .getCapability(GTCapability.CAPABILITY_COMPUTATION_PROVIDER, direction.getOpposite()).orElse(null);
-            // noinspection ConstantValue can be null because above.
-            if (provider != null && provider != this) {
-                return provider;
-            }
-        }
-        return null;
-    }
-
-    @Nullable
-    private IOpticalComputationProvider getOpticalNetProvider() {
-        return null;
     }
 }

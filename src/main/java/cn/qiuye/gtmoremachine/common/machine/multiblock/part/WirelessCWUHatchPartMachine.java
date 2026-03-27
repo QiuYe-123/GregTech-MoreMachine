@@ -8,6 +8,7 @@ import cn.qiuye.gtmoremachine.utils.TeamUtils;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.utils.ExtendedUseOnContext;
 
@@ -36,6 +37,7 @@ public class WirelessCWUHatchPartMachine extends MultiblockPartMachine implement
     @Nullable
     private WirelessCWUContainer wirelessCWUContainerCache;
 
+    @SaveField
     private final WirelessNotifiableCWUContainer trait;
 
     public WirelessCWUHatchPartMachine(BlockEntityCreationInfo holder, boolean transmitter) {

@@ -36,6 +36,7 @@ public class WirelessCWUHatchMachine extends MultiblockPartMachine implements ID
     private BlockPos transmitterPos;
     @SaveField
     private BlockPos receiverPos;
+    @SaveField
     protected WirelessNotifiableComputationContainer computationContainer;
 
     public WirelessCWUHatchMachine(BlockEntityCreationInfo holder, boolean transmitter) {
