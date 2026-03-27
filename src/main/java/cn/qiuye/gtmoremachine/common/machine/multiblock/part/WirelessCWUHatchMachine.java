@@ -30,13 +30,14 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 public class WirelessCWUHatchMachine extends MultiblockPartMachine implements IDataStickInteractable, IGTMMJadeIF {
 
+    @Getter
     private final boolean transmitter;
 
     @SaveField
     private BlockPos transmitterPos;
     @SaveField
     private BlockPos receiverPos;
-    @SaveField
+
     protected WirelessNotifiableComputationContainer computationContainer;
 
     public WirelessCWUHatchMachine(BlockEntityCreationInfo holder, boolean transmitter) {
