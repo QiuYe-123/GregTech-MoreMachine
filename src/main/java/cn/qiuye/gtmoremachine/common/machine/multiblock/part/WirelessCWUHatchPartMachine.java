@@ -84,6 +84,20 @@ public class WirelessCWUHatchPartMachine extends MultiblockPartMachine implement
     }
 
     @Override
+    public void onLoad() {
+        super.onLoad();
+        setWirelessCWUContainerCache(null);
+        this.computationContainer.setWirelessCWUContainerCache(getWirelessCWUContainer());
+    }
+
+    @Override
+    public void onUnload() {
+        super.onUnload();
+        setWirelessCWUContainerCache(null);
+        this.computationContainer.setWirelessCWUContainerCache(getWirelessCWUContainer());
+    }
+
+    @Override
     public @Nullable UUID getUUID() {
         return this.getOwnerUUID();
     }
