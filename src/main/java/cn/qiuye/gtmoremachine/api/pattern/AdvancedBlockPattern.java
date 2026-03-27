@@ -24,9 +24,11 @@ import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.Property;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
@@ -133,7 +135,7 @@ public class AdvancedBlockPattern extends BlockPattern {
         boolean isUseAE = autoBuildSetting.isUseAE();
 
         Object2IntOpenHashMap<SimplePredicate> cacheGlobal = worldState.getGlobalCount();
-        Object2IntOpenHashMap<SimplePredicate> cacheLayer = worldState.getGlobalCount();
+        Object2IntOpenHashMap<SimplePredicate> cacheLayer = worldState.getLayerCount();
         Object2ObjectOpenHashMap<BlockPos, Object> blocks = new Object2ObjectOpenHashMap<>();
         ObjectOpenHashSet<BlockPos> placeBlockPos = new ObjectOpenHashSet<>();
         blocks.put(centerPos, controller);
@@ -204,10 +206,7 @@ public class AdvancedBlockPattern extends BlockPattern {
                             for (SimplePredicate limit : predicate.limited) {
                                 if (limit.candidates != null && !autoBuildSetting.isPlaceHatch(limit.candidates.get())) continue;
                                 if (limit.maxLayerCount != -1 && cacheLayer.getOrDefault(limit, Integer.MAX_VALUE) == limit.maxLayerCount) continue;
-                                if (limit.maxCount != -1 &&
-                                        cacheGlobal.getOrDefault(limit, Integer.MAX_VALUE) == limit.maxCount) {
-                                    continue;
-                                }
+                                if (limit.maxCount != -1 && cacheGlobal.getOrDefault(limit, Integer.MAX_VALUE) == limit.maxCount) continue;
                                 cacheLayer.addTo(limit, 1);
                                 cacheGlobal.addTo(limit, 1);
                                 infos = ArrayUtils.addAll(infos, limit.candidates == null ? null : limit.candidates.get());
@@ -229,10 +228,11 @@ public class AdvancedBlockPattern extends BlockPattern {
                         }
 
                         // check inventory
-                        Triplet<ItemStack, IItemHandler, Integer> result = foundItem(player, candidates, item -> item instanceof BlockItem, isUseAE);
-                        ItemStack found = result.getA();
-                        IItemHandler handler = result.getB();
-                        int foundSlot = result.getC();
+                        Triplet<ItemStack, IItemHandler, Integer> itemresult = foundItem(player, candidates, isUseAE);
+                        Triplet<Fluid, IItemHandler, Integer> fluidresult = foundfluid(player, candidates, isUseAE);
+                        ItemStack found = itemresult.getA();
+                        IItemHandler handler = itemresult.getB();
+                        int foundSlot = itemresult.getC();
 
                         if (found == null) continue;
 
@@ -407,8 +407,8 @@ public class AdvancedBlockPattern extends BlockPattern {
 
     public static Triplet<ItemStack, IItemHandler, Integer> foundItem(Player player,
                                                                       List<ItemStack> candidates,
-                                                                      Predicate<Item> test,
                                                                       boolean isUseAE) {
+        Predicate<Item> test = item -> item instanceof BlockItem;
         ItemStack found = null;
         IItemHandler handler = null;
         int foundSlot = -1;
@@ -427,6 +427,24 @@ public class AdvancedBlockPattern extends BlockPattern {
                 found = null;
             }
         }
+        return new Triplet<>(found, handler, foundSlot);
+    }
+
+    private static Triplet<Fluid, IItemHandler, Integer> foundfluid(Player player,
+                                                                    List<ItemStack> candidates,
+                                                                    boolean isUseAE) {
+        Predicate<Item> test = item -> item instanceof BlockItem blockItem && blockItem.getBlock() instanceof LiquidBlock || item instanceof BucketItem;
+        Fluid found = null;
+        IItemHandler handler = null;
+        int foundSlot = -1;
+        if (!player.isCreative()) {
+            var foundHandler = getFluidStackWithHandler(candidates,
+                    player.getCapability(ForgeCapabilities.ITEM_HANDLER), test, player, isUseAE);
+            if (foundHandler != null) {
+                foundSlot = foundHandler.firstInt();
+                handler = foundHandler.second();
+            }
+        } else {}
         return new Triplet<>(found, handler, foundSlot);
     }
 
@@ -526,6 +544,44 @@ public class AdvancedBlockPattern extends BlockPattern {
             }
         }
         return new BlockPos(c1[0], c1[1], c1[2]);
+    }
+
+    private static IntObjectPair<IItemHandler> getFluidStackWithHandler(List<ItemStack> candidates,
+                                                                        LazyOptional<IItemHandler> cap,
+                                                                        Predicate<Item> test,
+                                                                        Player player,
+                                                                        boolean isUseAE) {
+        IItemHandler handler = cap.resolve().orElse(null);
+        if (handler == null) return null;
+        for (int i = 0; i < handler.getSlots(); i++) {
+            @NotNull
+            ItemStack stack = handler.getStackInSlot(i);
+            if (stack.isEmpty()) continue;
+
+            @NotNull
+            LazyOptional<IItemHandler> stackCap = stack.getCapability(ForgeCapabilities.ITEM_HANDLER);
+            if (stackCap.isPresent()) {
+                var rt = getFluidStackWithHandler(candidates, stackCap, test, player, isUseAE);
+                if (rt != null) return rt;
+            } else if (isUseAE && stack.getItem() instanceof WirelessTerminalItem terminalItem && stack.hasTag() && stack.getTag().contains("accessPoint", 10)) {
+                IGrid grid = terminalItem.getLinkedGrid(stack, player.level(), player);
+                if (grid != null) {
+                    MEStorage storage = grid.getStorageService().getInventory();
+                    for (ItemStack candidate : candidates) {
+                        if (storage.extract(AEItemKey.of(candidate), 1, Actionable.MODULATE, null) > 0) {
+                            NonNullList<ItemStack> stacks = NonNullList.withSize(1, candidate);
+                            IItemHandler handler1 = new ItemStackHandler(stacks);
+                            return IntObjectPair.of(0, handler1);
+                        }
+                    }
+                }
+
+            } else if (candidates.stream().anyMatch(candidate -> ItemStack.isSameItemSameTags(candidate, stack)) &&
+                    !stack.isEmpty() && test.test(stack.getItem())) {
+                        return IntObjectPair.of(i, handler);
+                    }
+        }
+        return null;
     }
 
     @Nullable
