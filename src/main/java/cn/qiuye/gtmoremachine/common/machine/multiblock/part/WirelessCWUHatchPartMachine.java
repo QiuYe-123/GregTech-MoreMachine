@@ -38,11 +38,11 @@ public class WirelessCWUHatchPartMachine extends MultiblockPartMachine implement
     private WirelessCWUContainer wirelessCWUContainerCache;
 
     @SaveField
-    private final WirelessNotifiableCWUContainer trait;
+    private final WirelessNotifiableCWUContainer computationContainer;
 
     public WirelessCWUHatchPartMachine(BlockEntityCreationInfo holder, boolean transmitter) {
         super(holder);
-        this.trait = new WirelessNotifiableCWUContainer(this, IO.IN, transmitter);
+        this.computationContainer = new WirelessNotifiableCWUContainer(this, IO.IN, transmitter);
     }
 
     @Override
@@ -58,7 +58,7 @@ public class WirelessCWUHatchPartMachine extends MultiblockPartMachine implement
         if (item.is(GTItems.TOOL_DATA_STICK.asItem())) {
             setOwnerUUID(context.getPlayer().getUUID());
             setWirelessCWUContainerCache(null);
-            this.trait.setWirelessCWUContainerCache(getWirelessCWUContainer());
+            this.computationContainer.setWirelessCWUContainerCache(getWirelessCWUContainer());
             if (isRemote()) {
                 context.getPlayer().sendSystemMessage(Component.translatable("gtmoremachine.machine.wireless_energy_hatch.tooltip.bind", TeamUtils.getName(context.getPlayer())));
             }
@@ -72,7 +72,7 @@ public class WirelessCWUHatchPartMachine extends MultiblockPartMachine implement
         if (player.getItemInHand(hand).is(GTItems.TOOL_DATA_STICK.asItem())) {
             setOwnerUUID(null);
             setWirelessCWUContainerCache(null);
-            this.trait.setWirelessCWUContainerCache(getWirelessCWUContainer());
+            this.computationContainer.setWirelessCWUContainerCache(getWirelessCWUContainer());
             if (isRemote()) {
                 player.sendSystemMessage(Component.translatable("gtmoremachine.machine.wireless_energy_hatch.tooltip.unbind"));
             }
