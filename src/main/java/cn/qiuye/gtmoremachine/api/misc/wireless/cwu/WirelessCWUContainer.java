@@ -1,8 +1,9 @@
 package cn.qiuye.gtmoremachine.api.misc.wireless.cwu;
 
+import cn.qiuye.gtmoremachine.api.gui.monitor.Status;
+import cn.qiuye.gtmoremachine.api.misc.time.TimeStat;
 import cn.qiuye.gtmoremachine.api.misc.wireless.cwu.feature.ITransferData;
 import cn.qiuye.gtmoremachine.api.misc.wireless.cwu.record.BasicTransferData;
-import cn.qiuye.gtmoremachine.api.misc.wireless.time.TimeStat;
 import cn.qiuye.gtmoremachine.data.wireless.cwu.WirelessCWUSavedData;
 import cn.qiuye.gtmoremachine.utils.BigIntegerUtils;
 import cn.qiuye.gtmoremachine.utils.TeamUtils;
@@ -34,39 +35,30 @@ public class WirelessCWUContainer {
 
     private final UUID UUID;
 
-    private final TimeStat allCWUStat;
-
-    private final TimeStat inCWUStat;
-
-    private final TimeStat outCWUStat;
+    private final TimeStat CWUStat;
 
     public WirelessCWUContainer(UUID uuid, BigInteger storage) {
         this.storage = storage;
         this.UUID = uuid;
-        this.allCWUStat = new TimeStat(0);
-        this.inCWUStat = new TimeStat(0);
-        this.outCWUStat = new TimeStat(0);
+        this.CWUStat = new TimeStat(0);
     }
 
     private WirelessCWUContainer(UUID uuid) {
         this.UUID = uuid;
         this.storage = BigInteger.ZERO;
         int currentTick = server.getTickCount();
-        this.allCWUStat = new TimeStat(currentTick);
-        this.inCWUStat = new TimeStat(currentTick);
-        this.outCWUStat = new TimeStat(currentTick);
+        this.CWUStat = new TimeStat(currentTick);
     }
 
     public int upload(int cwu, @Nullable MetaMachine machine) {
         if (cwu <= 0) return 0;
         if (machine != null) {
-            allCWUStat.update(BigInteger.valueOf(cwu), server.getTickCount());
-            inCWUStat.update(BigInteger.valueOf(cwu), server.getTickCount());
+            CWUStat.update(BigInteger.valueOf(cwu), server.getTickCount());
         }
         if (observed && machine != null) {
             TRANSFER_DATA.put(machine, new BasicTransferData(UUID, cwu, machine));
         }
-        storage = new BigInteger(String.valueOf(inCWUStat.getAvg())).add(new BigInteger(String.valueOf(outCWUStat.getAvg())));
+        storage = CWUStat.getAvg(Status.All).toBigInteger();
         WirelessCWUSavedData.INSTANCE.setDirty(true);
         return 0;
     }
@@ -75,13 +67,12 @@ public class WirelessCWUContainer {
         int change = Math.min(BigIntegerUtils.getIntValue(storage) / 10, cwu);
         if (change <= 0) return 0;
         if (machine != null) {
-            allCWUStat.update(BigInteger.valueOf(change).negate(), server.getTickCount());
-            outCWUStat.update(BigInteger.valueOf(change).negate(), server.getTickCount());
+            CWUStat.update(BigInteger.valueOf(change).negate(), server.getTickCount());
         }
         if (observed && machine != null) {
             TRANSFER_DATA.put(machine, new BasicTransferData(UUID, -cwu, machine));
         }
-        storage = new BigInteger(String.valueOf(inCWUStat.getAvg())).add(new BigInteger(String.valueOf(outCWUStat.getAvg())));
+        storage = CWUStat.getAvg(Status.All).toBigInteger();
         WirelessCWUSavedData.INSTANCE.setDirty(true);
         return change;
     }

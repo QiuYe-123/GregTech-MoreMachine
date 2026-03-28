@@ -2,8 +2,8 @@ package cn.qiuye.gtmoremachine.api.misc.wireless.energy.feature;
 
 import cn.qiuye.gtmoremachine.api.gui.monitor.*;
 import cn.qiuye.gtmoremachine.api.machine.trait.feature.IWirelessEnergyContainerHolder;
+import cn.qiuye.gtmoremachine.api.misc.time.TimeStat;
 import cn.qiuye.gtmoremachine.api.misc.wireless.energy.WirelessEnergyContainer;
-import cn.qiuye.gtmoremachine.api.misc.wireless.time.TimeStat;
 import cn.qiuye.gtmoremachine.config.GTMMConfig;
 import cn.qiuye.gtmoremachine.utils.BigIntegerUtils;
 import cn.qiuye.gtmoremachine.utils.FormattingUtil;
@@ -49,40 +49,33 @@ public interface IWirelessMonitor extends IWirelessEnergyContainerHolder {
                     FormattingUtil.voltageName(new BigDecimal(rate))));
         }
 
-        TimeStat allstat = container.getAllEnergyStat();
-        TimeStat instat = container.getInEnergyStat();
-        TimeStat outstat = container.getOutEnergyStat();
-        TimeStat stat = switch (powerStatus) {
-            case All -> allstat;
-            case In -> instat;
-            case Out -> outstat;
-        };
+        TimeStat stat = container.getEnergyStat();
         textListCache.add(Component.translatable("gtmoremachine.machine.wireless_monitor.tooltip.net_power",
                 getPowerStatusText(powerStatus)));
 
-        BigDecimal avgMinute = stat.getMinuteAvg();
+        BigDecimal avgMinute = stat.getMinuteAvg(powerStatus);
         textListCache.add(FormattingUtil.formatWithConstantWidth("gtmoremachine.machine.wireless_energy_monitor.tooltip.last_minute",
                 Component.literal(NumberUtils.formatBigDecimalNumberOrSic(avgMinute, format)).withStyle(ChatFormatting.DARK_AQUA),
                 Component.literal(NumberUtils.formatBigDecimalNumberOrSic(FormattingUtil.voltageAmperage(avgMinute), format)),
                 FormattingUtil.voltageName(avgMinute)));
-        BigDecimal avgHour = stat.getHourAvg();
+        BigDecimal avgHour = stat.getHourAvg(powerStatus);
         textListCache.add(FormattingUtil.formatWithConstantWidth("gtmoremachine.machine.wireless_energy_monitor.tooltip.last_hour",
                 Component.literal(NumberUtils.formatBigDecimalNumberOrSic(avgHour, format)).withStyle(ChatFormatting.YELLOW),
                 Component.literal(NumberUtils.formatBigDecimalNumberOrSic(FormattingUtil.voltageAmperage(avgHour), format)),
                 FormattingUtil.voltageName(avgHour)));
-        BigDecimal avgDay = stat.getDayAvg();
+        BigDecimal avgDay = stat.getDayAvg(powerStatus);
         textListCache.add(FormattingUtil.formatWithConstantWidth("gtmoremachine.machine.wireless_energy_monitor.tooltip.last_day",
                 Component.literal(NumberUtils.formatBigDecimalNumberOrSic(avgDay, format)).withStyle(ChatFormatting.DARK_GREEN),
                 Component.literal(NumberUtils.formatBigDecimalNumberOrSic(FormattingUtil.voltageAmperage(avgDay), format)),
                 FormattingUtil.voltageName(avgDay)));
         // average useage
-        BigDecimal avgEnergy = stat.getAvg();
+        BigDecimal avgEnergy = stat.getAvg(powerStatus);
         textListCache.add(FormattingUtil.formatWithConstantWidth("gtmoremachine.machine.wireless_energy_monitor.tooltip.now",
                 Component.literal(NumberUtils.formatBigDecimalNumberOrSic(avgEnergy, format)).withStyle(ChatFormatting.DARK_PURPLE),
                 Component.literal(NumberUtils.formatBigDecimalNumberOrSic(FormattingUtil.voltageAmperage(avgEnergy), format)),
                 FormattingUtil.voltageName(avgEnergy)));
 
-        BigDecimal allAvgEnergy = allstat.getAvg();
+        BigDecimal allAvgEnergy = stat.getAvg(Status.All);
         int compare = allAvgEnergy.compareTo(BigDecimal.valueOf(0));
         BigInteger multiply = allAvgEnergy.abs().toBigInteger().multiply(BigInteger.valueOf(20));
         if (compare > 0) {

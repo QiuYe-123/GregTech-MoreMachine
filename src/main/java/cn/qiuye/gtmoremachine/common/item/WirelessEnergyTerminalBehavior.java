@@ -204,9 +204,9 @@ public class WirelessEnergyTerminalBehavior implements IItemUIFactory, IItemHUDP
             this.uuid = uuid;
             var container = getWirelessEnergyContainer();
             if (container != null) {
-                all = container.getAllEnergyStat().getAvg();
-                in = container.getInEnergyStat().getAvg();
-                out = container.getOutEnergyStat().getAvg();
+                all = container.getEnergyStat().getAvg(Status.All);
+                in = container.getEnergyStat().getAvg(Status.In);
+                out = container.getEnergyStat().getAvg(Status.Out);
                 storage = container.getStorage();
             }
         }

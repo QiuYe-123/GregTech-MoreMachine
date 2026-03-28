@@ -4,8 +4,8 @@ import cn.qiuye.gtmoremachine.api.gui.monitor.Format;
 import cn.qiuye.gtmoremachine.api.gui.monitor.Statistics;
 import cn.qiuye.gtmoremachine.api.gui.monitor.Status;
 import cn.qiuye.gtmoremachine.api.machine.trait.feature.IWirelessCWUContainerHolder;
+import cn.qiuye.gtmoremachine.api.misc.time.TimeStat;
 import cn.qiuye.gtmoremachine.api.misc.wireless.cwu.WirelessCWUContainer;
-import cn.qiuye.gtmoremachine.api.misc.wireless.time.TimeStat;
 import cn.qiuye.gtmoremachine.utils.FormattingUtil;
 import cn.qiuye.gtmoremachine.utils.NumberUtils;
 import cn.qiuye.gtmoremachine.utils.TeamUtils;
@@ -34,28 +34,21 @@ public interface IWirelessMonitor extends IWirelessCWUContainerHolder {
         textListCache.add(FormattingUtil.formatWithConstantWidth("gtmoremachine.machine.wireless_cwu_monitor.tooltip.1",
                 Component.literal(NumberUtils.formatBigIntegerNumberOrSic(CWUToTal, format)).withStyle(ChatFormatting.GOLD)));
 
-        TimeStat allstat = container.getAllCWUStat();
-        TimeStat instat = container.getInCWUStat();
-        TimeStat outstat = container.getOutCWUStat();
-        TimeStat stat = switch (CWUStatus) {
-            case All -> allstat;
-            case In -> instat;
-            case Out -> outstat;
-        };
+        TimeStat stat = container.getCWUStat();
         textListCache.add(Component.translatable("gtmoremachine.machine.wireless_monitor.tooltip.net_cwu",
                 getCWUStatusText(CWUStatus)));
 
-        BigDecimal avgMinute = stat.getMinuteAvg();
+        BigDecimal avgMinute = stat.getMinuteAvg(CWUStatus);
         textListCache.add(FormattingUtil.formatWithConstantWidth("gtmoremachine.machine.wireless_cwu_monitor.tooltip.last_minute",
                 Component.literal(NumberUtils.formatBigDecimalNumberOrSic(avgMinute, format)).withStyle(ChatFormatting.DARK_AQUA)));
-        BigDecimal avgHour = stat.getHourAvg();
+        BigDecimal avgHour = stat.getHourAvg(CWUStatus);
         textListCache.add(FormattingUtil.formatWithConstantWidth("gtmoremachine.machine.wireless_cwu_monitor.tooltip.last_hour",
                 Component.literal(NumberUtils.formatBigDecimalNumberOrSic(avgHour, format)).withStyle(ChatFormatting.YELLOW)));
-        BigDecimal avgDay = stat.getDayAvg();
+        BigDecimal avgDay = stat.getDayAvg(CWUStatus);
         textListCache.add(FormattingUtil.formatWithConstantWidth("gtmoremachine.machine.wireless_cwu_monitor.tooltip.last_day",
                 Component.literal(NumberUtils.formatBigDecimalNumberOrSic(avgDay, format)).withStyle(ChatFormatting.DARK_GREEN)));
         // average useage
-        BigDecimal avgEnergy = stat.getAvg();
+        BigDecimal avgEnergy = stat.getAvg(CWUStatus);
         textListCache.add(FormattingUtil.formatWithConstantWidth("gtmoremachine.machine.wireless_cwu_monitor.tooltip.now",
                 Component.literal(NumberUtils.formatBigDecimalNumberOrSic(avgEnergy, format)).withStyle(ChatFormatting.DARK_PURPLE)));
 
