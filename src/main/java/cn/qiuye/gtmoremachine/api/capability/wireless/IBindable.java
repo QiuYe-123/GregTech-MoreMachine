@@ -1,4 +1,4 @@
-package cn.qiuye.gtmoremachine.api.capability;
+package cn.qiuye.gtmoremachine.api.capability.wireless;
 
 import java.util.UUID;
 

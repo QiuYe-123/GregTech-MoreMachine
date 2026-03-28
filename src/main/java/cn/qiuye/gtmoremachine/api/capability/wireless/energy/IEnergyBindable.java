@@ -1,6 +1,6 @@
-package cn.qiuye.gtmoremachine.api.capability.energy;
+package cn.qiuye.gtmoremachine.api.capability.wireless.energy;
 
-import cn.qiuye.gtmoremachine.api.capability.IBindable;
+import cn.qiuye.gtmoremachine.api.capability.wireless.IBindable;
 
 public interface IEnergyBindable extends IBindable {
 

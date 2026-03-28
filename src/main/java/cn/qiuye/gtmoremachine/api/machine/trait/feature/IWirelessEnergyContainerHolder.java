@@ -1,6 +1,6 @@
 package cn.qiuye.gtmoremachine.api.machine.trait.feature;
 
-import cn.qiuye.gtmoremachine.api.capability.energy.IEnergyBindable;
+import cn.qiuye.gtmoremachine.api.capability.wireless.energy.IEnergyBindable;
 import cn.qiuye.gtmoremachine.api.misc.wireless.energy.WirelessEnergyContainer;
 
 import javax.annotation.Nullable;
