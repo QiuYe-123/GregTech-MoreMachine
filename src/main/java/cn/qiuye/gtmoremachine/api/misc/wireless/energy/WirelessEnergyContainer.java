@@ -1,5 +1,6 @@
 package cn.qiuye.gtmoremachine.api.misc.wireless.energy;
 
+import cn.qiuye.gtmoremachine.api.capability.wireless.energy.IWirelessLoss;
 import cn.qiuye.gtmoremachine.api.misc.time.TimeStat;
 import cn.qiuye.gtmoremachine.api.misc.wireless.energy.feature.ICapacitylimitData;
 import cn.qiuye.gtmoremachine.api.misc.wireless.energy.feature.IDimensionTransferData;
@@ -23,7 +24,6 @@ import net.minecraft.world.level.Level;
 
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import lombok.Getter;
-import org.jetbrains.annotations.Nullable;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -92,12 +92,13 @@ public class WirelessEnergyContainer {
         return this.removeEnergy(energy, machine);
     }
 
-    public long addEnergy(long energy, @Nullable MetaMachine machine) {
+    public long addEnergy(long energy, MetaMachine machine) {
         long change = energy;
         if (GTMMConfig.INSTANCE.isWirelessRateEnable) change = Math.min(BigIntegerUtils.getLongValue(rate), energy);
         if (GTMMConfig.INSTANCE.isWirelessCapacitylimitEnable && storage.add(BigInteger.valueOf(change)).compareTo(capacity) > 0) change = BigIntegerUtils.getLongValue(capacity.subtract(storage));
-        if (change <= 0) return 0;
-        storage = storage.add(BigInteger.valueOf(change));
+        long loss = remainingEnergy(change, true, machine);
+        if (loss <= 0) return 0;
+        storage = storage.add(BigInteger.valueOf(loss));
         WirelessEnergySavedData.INSTANCE.setDirty(true);
         if (machine != null) {
             EnergyStat.update(BigInteger.valueOf(change), server.getTickCount());
@@ -108,11 +109,12 @@ public class WirelessEnergyContainer {
         return change;
     }
 
-    public long removeEnergy(long energy, @Nullable MetaMachine machine) {
+    public long removeEnergy(long energy, MetaMachine machine) {
         long change = Math.min(BigIntegerUtils.getLongValue(storage), energy);
         if (GTMMConfig.INSTANCE.isWirelessRateEnable) change = Math.min(BigIntegerUtils.getLongValue(storage), Math.min(BigIntegerUtils.getLongValue(rate), energy));
-        if (change <= 0) return 0;
-        storage = storage.subtract(BigInteger.valueOf(change));
+        long loss = remainingEnergy(change, false, machine);
+        if (loss <= 0) return 0;
+        storage = storage.subtract(BigInteger.valueOf(loss));
         WirelessEnergySavedData.INSTANCE.setDirty(true);
         if (machine != null) {
             EnergyStat.update(BigInteger.valueOf(change).negate(), server.getTickCount());
@@ -123,7 +125,7 @@ public class WirelessEnergyContainer {
         return change;
     }
 
-    public BigInteger addEnergy(BigInteger energy, @Nullable MetaMachine machine) {
+    public BigInteger addEnergy(BigInteger energy, MetaMachine machine) {
         BigInteger change = energy;
         if (GTMMConfig.INSTANCE.isWirelessCapacitylimitEnable && storage.add(change).compareTo(capacity) > 0) change = capacity.subtract(storage);
         if (change.compareTo(BigInteger.ZERO) <= 0) return BigInteger.ZERO;
@@ -138,7 +140,7 @@ public class WirelessEnergyContainer {
         return change;
     }
 
-    public BigInteger removeEnergy(BigInteger energy, @Nullable MetaMachine machine) {
+    public BigInteger removeEnergy(BigInteger energy, MetaMachine machine) {
         BigInteger change = storage.min(energy);
         if (change.compareTo(BigInteger.ZERO) <= 0) return BigInteger.ZERO;
         storage = storage.subtract(change);
@@ -219,8 +221,23 @@ public class WirelessEnergyContainer {
         if (machine instanceof ITieredMachine velataeTier) {
             Level level = machine.getLevel();
             if (level == null) return true;
-            return this.dimension.getInt(machine.getLevel().dimension().location()) <= velataeTier.getTier();
+            return this.dimension.getInt(machine.getLevel().dimension().location()) < velataeTier.getTier();
         }
         return true;
+    }
+
+    private long remainingEnergy(long energy, boolean io, MetaMachine machine) {
+        if (machine instanceof IWirelessLoss lossMachine) {
+            long loss = lossMachine.LossNumber();
+            return switch (lossMachine.LossType()) {
+                case Fixed -> io ? energy - loss : energy + loss;
+                case Percentage -> {
+                    double factor = io ? loss / 100.0 : loss / 100.0 + 1;
+                    yield Math.round(energy * factor);
+                }
+                case None -> energy;
+            };
+        }
+        return energy;
     }
 }

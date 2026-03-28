@@ -1,5 +1,7 @@
 package cn.qiuye.gtmoremachine.api.misc.wireless.energy.feature;
 
+import cn.qiuye.gtmoremachine.api.annotation.GTMMDataGeneratorScanned;
+import cn.qiuye.gtmoremachine.api.annotation.language.GTMMRegisterLanguage;
 import cn.qiuye.gtmoremachine.api.gui.monitor.Format;
 import cn.qiuye.gtmoremachine.utils.FormattingUtil;
 import cn.qiuye.gtmoremachine.utils.NumberUtils;
@@ -17,7 +19,11 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.UUID;
 
+@GTMMDataGeneratorScanned
 public interface ICapacitylimitData {
+
+    @GTMMRegisterLanguage(en = "Passive energy consumption", cn = "被动耗能")
+    String passive = "gtmoremachine.machine.wireless_monitor.tooltip.2";
 
     UUID UUID();
 
@@ -43,7 +49,7 @@ public interface ICapacitylimitData {
                 .append(NumberUtils.formatBigDecimalNumberOrSic(FormattingUtil.voltageAmperage(euStorage), format) + " A ")
                 .append(FormattingUtil.voltageName(euStorage)).append(")")
                 .append("\n")
-                .append("被动耗能")
+                .append(Component.translatable(passive))
                 .append(NumberUtils.formatBigDecimalNumberOrSic(euPassiveDrain, format))
                 .append(" EU (")
                 .append(NumberUtils.formatBigDecimalNumberOrSic(FormattingUtil.voltageAmperage(euPassiveDrain), format) + " A ")

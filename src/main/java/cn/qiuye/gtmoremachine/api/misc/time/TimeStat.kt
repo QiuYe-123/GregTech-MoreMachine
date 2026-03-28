@@ -88,8 +88,8 @@ class TimeStat(windowStart: Int = 0) {
     fun getDayAvg(statu: Status): BigDecimal = getAvg(day, statu)
 
     private fun getAvg(timeWheel: TimeWheel, statu: Status): BigDecimal = when (statu) {
-        Status.All -> timeWheel.avgChangedByTick
-        Status.In -> timeWheel.avgInputByTick
-        Status.Out -> timeWheel.avgOutputByTick
+        All -> timeWheel.avgChangedByTick
+        In -> timeWheel.avgInputByTick
+        Out -> timeWheel.avgOutputByTick
     }
 }
