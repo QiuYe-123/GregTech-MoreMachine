@@ -97,7 +97,7 @@ public class WirelessEnergyContainer {
         long change = energy;
         if (GTMMConfig.INSTANCE.isWirelessRateEnable) change = Math.min(BigIntegerUtils.getLongValue(rate), energy);
         if (GTMMConfig.INSTANCE.isWirelessCapacitylimitEnable && storage.add(BigInteger.valueOf(change)).compareTo(capacity) > 0) change = BigIntegerUtils.getLongValue(capacity.subtract(storage));
-        LossEnergy loss = remainingEnergy(change, true, machine);
+        LossEnergy loss = remainingEnergy(change, machine).getAfterEnergy();
         if (loss.getCabinEnergy() <= 0) return 0;
         change = loss.getWirelessEnergy();
         storage = storage.add(BigInteger.valueOf(change));
@@ -114,7 +114,7 @@ public class WirelessEnergyContainer {
     public long removeEnergy(long energy, MetaMachine machine) {
         long change = Math.min(BigIntegerUtils.getLongValue(storage), energy);
         if (GTMMConfig.INSTANCE.isWirelessRateEnable) change = Math.min(BigIntegerUtils.getLongValue(storage), Math.min(BigIntegerUtils.getLongValue(rate), energy));
-        LossEnergy loss = remainingEnergy(change, false, machine);
+        LossEnergy loss = remainingEnergy(change, machine);
         if (loss.getCabinEnergy() <= 0) return 0;
         change = loss.getWirelessEnergy();
         storage = storage.subtract(BigInteger.valueOf(change));
@@ -229,7 +229,7 @@ public class WirelessEnergyContainer {
         return true;
     }
 
-    private LossEnergy remainingEnergy(long energy, boolean io, MetaMachine machine) {
+    private LossEnergy remainingEnergy(long energy, MetaMachine machine) {
         if (!(machine instanceof IWirelessLoss lossMachine)) {
             return new LossEnergy(energy, energy);
         }
@@ -239,10 +239,6 @@ public class WirelessEnergyContainer {
             case Percentage -> Math.max(Math.round(energy * (1 - loss / 100.0)), 0);
             case None -> energy;
         };
-        if (io) {
-            return new LossEnergy(afterLoss, energy);
-        } else {
-            return new LossEnergy(energy, afterLoss);
-        }
+        return new LossEnergy(afterLoss, energy);
     }
 }
