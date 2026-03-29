@@ -8,6 +8,7 @@ import cn.qiuye.gtmoremachine.api.misc.wireless.energy.feature.ITransferData;
 import cn.qiuye.gtmoremachine.api.misc.wireless.energy.record.BasicTransferData;
 import cn.qiuye.gtmoremachine.api.misc.wireless.energy.record.CapacityStorageData;
 import cn.qiuye.gtmoremachine.api.misc.wireless.energy.record.DimensionBoundData;
+import cn.qiuye.gtmoremachine.api.misc.wireless.energy.record.LossEnergy;
 import cn.qiuye.gtmoremachine.api.misc.wireless.energy.record.StoragePercentageData;
 import cn.qiuye.gtmoremachine.config.GTMMConfig;
 import cn.qiuye.gtmoremachine.data.wireless.energy.WirelessEnergySavedData;
@@ -96,9 +97,10 @@ public class WirelessEnergyContainer {
         long change = energy;
         if (GTMMConfig.INSTANCE.isWirelessRateEnable) change = Math.min(BigIntegerUtils.getLongValue(rate), energy);
         if (GTMMConfig.INSTANCE.isWirelessCapacitylimitEnable && storage.add(BigInteger.valueOf(change)).compareTo(capacity) > 0) change = BigIntegerUtils.getLongValue(capacity.subtract(storage));
-        long loss = remainingEnergy(change, true, machine);
-        if (loss <= 0) return 0;
-        storage = storage.add(BigInteger.valueOf(loss));
+        LossEnergy loss = remainingEnergy(change, true, machine);
+        if (loss.getCabinEnergy() <= 0) return 0;
+        change = loss.getWirelessEnergy();
+        storage = storage.add(BigInteger.valueOf(change));
         WirelessEnergySavedData.INSTANCE.setDirty(true);
         if (machine != null) {
             EnergyStat.update(BigInteger.valueOf(change), server.getTickCount());
@@ -106,23 +108,24 @@ public class WirelessEnergyContainer {
         if (observed && machine != null) {
             TRANSFER_DATA.put(machine, new BasicTransferData(UUID, new BigInteger(String.valueOf(change)), machine));
         }
-        return change;
+        return loss.getCabinEnergy();
     }
 
     public long removeEnergy(long energy, MetaMachine machine) {
         long change = Math.min(BigIntegerUtils.getLongValue(storage), energy);
         if (GTMMConfig.INSTANCE.isWirelessRateEnable) change = Math.min(BigIntegerUtils.getLongValue(storage), Math.min(BigIntegerUtils.getLongValue(rate), energy));
-        long loss = remainingEnergy(change, false, machine);
-        if (loss <= 0) return 0;
-        storage = storage.subtract(BigInteger.valueOf(loss));
+        LossEnergy loss = remainingEnergy(change, false, machine);
+        if (loss.getCabinEnergy() <= 0) return 0;
+        change = loss.getWirelessEnergy();
+        storage = storage.subtract(BigInteger.valueOf(change));
         WirelessEnergySavedData.INSTANCE.setDirty(true);
         if (machine != null) {
-            EnergyStat.update(BigInteger.valueOf(change).negate(), server.getTickCount());
+            EnergyStat.update(BigInteger.valueOf(change), server.getTickCount());
         }
         if (observed && machine != null) {
             TRANSFER_DATA.put(machine, new BasicTransferData(UUID, new BigInteger(String.valueOf(-change)), machine));
         }
-        return change;
+        return loss.getCabinEnergy();
     }
 
     public BigInteger addEnergy(BigInteger energy, MetaMachine machine) {
@@ -146,7 +149,7 @@ public class WirelessEnergyContainer {
         storage = storage.subtract(change);
         WirelessEnergySavedData.INSTANCE.setDirty(true);
         if (machine != null) {
-            EnergyStat.update(change.negate(), server.getTickCount());
+            EnergyStat.update(change, server.getTickCount());
         }
         if (observed && machine != null) {
             TRANSFER_DATA.put(machine, new BasicTransferData(UUID, change.negate(), machine));
@@ -226,18 +229,20 @@ public class WirelessEnergyContainer {
         return true;
     }
 
-    private long remainingEnergy(long energy, boolean io, MetaMachine machine) {
-        if (machine instanceof IWirelessLoss lossMachine) {
-            long loss = lossMachine.LossNumber();
-            return switch (lossMachine.LossType()) {
-                case Fixed -> io ? energy - loss : energy + loss;
-                case Percentage -> {
-                    double factor = io ? loss / 100.0 : loss / 100.0 + 1;
-                    yield Math.round(energy * factor);
-                }
-                case None -> energy;
-            };
+    private LossEnergy remainingEnergy(long energy, boolean io, MetaMachine machine) {
+        if (!(machine instanceof IWirelessLoss lossMachine)) {
+            return new LossEnergy(energy, energy);
         }
-        return energy;
+        long loss = lossMachine.LossNumber();
+        long afterLoss = switch (lossMachine.LossType()) {
+            case Fixed -> Math.max(energy - loss, 0);
+            case Percentage -> Math.max(Math.round(energy * (1 - loss / 100.0)), 0);
+            case None -> energy;
+        };
+        if (io) {
+            return new LossEnergy(afterLoss, energy);
+        } else {
+            return new LossEnergy(energy, afterLoss);
+        }
     }
 }

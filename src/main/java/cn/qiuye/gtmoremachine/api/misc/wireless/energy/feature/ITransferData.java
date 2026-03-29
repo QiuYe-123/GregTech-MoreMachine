@@ -54,8 +54,7 @@ public interface ITransferData {
                     .append(NumberUtils.formatLong(lossmachine.LossNumber(), format))
                     .append(" EU (")
                     .append(NumberUtils.formatBigDecimalNumberOrSic(FormattingUtil.voltageAmperage(lossmachine.LossNumber()), format) + " A ")
-                    .append(FormattingUtil.voltageName(lossmachine.LossNumber())).append(")")
-                    .append(ComponentPanelWidget.withButton(Component.literal(" [ ] "), pos));
+                    .append(FormattingUtil.voltageName(lossmachine.LossNumber())).append(")");
         }
 
         return laste.copy().append(ComponentPanelWidget.withButton(Component.literal(" [ ] "), pos));

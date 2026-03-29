@@ -67,7 +67,7 @@ public class WirelessCWUContainer {
         int change = Math.min(BigIntegerUtils.getIntValue(storage) / 10, cwu);
         if (change <= 0) return 0;
         if (machine != null) {
-            CWUStat.update(BigInteger.valueOf(change).negate(), server.getTickCount());
+            CWUStat.update(BigInteger.valueOf(change), server.getTickCount());
         }
         if (observed && machine != null) {
             TRANSFER_DATA.put(machine, new BasicTransferData(UUID, -cwu, machine));
