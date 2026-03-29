@@ -38,6 +38,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
 import lombok.Getter;
+import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
 
 import java.math.BigDecimal;
@@ -55,6 +56,8 @@ public class DemodulationHubMachine extends WorkableMultiblockMachine
 
     @Getter
     private DimensionalRelayNodeBank capacityBank;
+    @Getter
+    @Setter
     private WirelessEnergyContainer wirelessEnergyContainerCache;
     private final ConditionalSubscriptionHandler tickSubscription;
 
@@ -74,16 +77,6 @@ public class DemodulationHubMachine extends WorkableMultiblockMachine
     @Override
     public boolean Capacity() {
         return true;
-    }
-
-    @Override
-    public void setWirelessEnergyContainerCache(WirelessEnergyContainer container) {
-        this.wirelessEnergyContainerCache = container;
-    }
-
-    @Override
-    public WirelessEnergyContainer getWirelessEnergyContainerCache() {
-        return wirelessEnergyContainerCache;
     }
 
     // ============== Computed Properties ==============
@@ -181,7 +174,7 @@ public class DemodulationHubMachine extends WorkableMultiblockMachine
 
     @Override
     public void onStructureInvalid() {
-        tickSubscription.updateSubscription();
+        tickSubscription.unsubscribe();
 
         WirelessEnergyContainer container = getWirelessEnergyContainer();
         if (container != null) {

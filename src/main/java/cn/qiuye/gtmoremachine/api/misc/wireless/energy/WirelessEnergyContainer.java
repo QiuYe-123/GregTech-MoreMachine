@@ -195,6 +195,7 @@ public class WirelessEnergyContainer {
         BigInteger change = BigInteger.ZERO;
         BigInteger passiveDrain = BigInteger.ZERO;
         for (ICapacitylimitData data : CAPACITY_STORAGE_DATA.values()) {
+            if (!data.UUID().equals(this.UUID)) continue;
             if (data.StorageCapacity() != null) change = change.add(data.StorageCapacity());
             if (data.PassiveDrain() != null) passiveDrain = passiveDrain.add(data.PassiveDrain());
         }

@@ -140,7 +140,7 @@ public class DimensionalRelayNodeMachine extends WorkableMultiblockMachine
 
     @Override
     public void onStructureInvalid() {
-        tickSubscription.updateSubscription();
+        tickSubscription.unsubscribe();
 
         WirelessEnergyContainer container = getWirelessEnergyContainer();
         if (container != null) {
