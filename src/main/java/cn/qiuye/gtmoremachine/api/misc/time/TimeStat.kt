@@ -81,13 +81,13 @@ class TimeStat(windowStart: Int = 0) {
         Out -> this.avgOutput
     }
 
-    fun getMinuteAvg(statu: Status): BigDecimal = getAvg(minute, statu)
+    fun getMinuteAvg(statu: Status) = getAvg(minute, statu)
 
-    fun getHourAvg(statu: Status): BigDecimal = getAvg(hour, statu)
+    fun getHourAvg(statu: Status) = getAvg(hour, statu)
 
-    fun getDayAvg(statu: Status): BigDecimal = getAvg(day, statu)
+    fun getDayAvg(statu: Status) = getAvg(day, statu)
 
-    private fun getAvg(timeWheel: TimeWheel, statu: Status): BigDecimal = when (statu) {
+    private fun getAvg(timeWheel: TimeWheel, statu: Status) = when (statu) {
         All -> timeWheel.avgChangedByTick
         In -> timeWheel.avgInputByTick
         Out -> timeWheel.avgOutputByTick

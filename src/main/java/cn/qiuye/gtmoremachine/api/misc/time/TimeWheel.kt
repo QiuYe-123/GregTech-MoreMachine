@@ -1,5 +1,6 @@
 package cn.qiuye.gtmoremachine.api.misc.time
 
+import org.jetbrains.annotations.ApiStatus
 import java.math.BigDecimal
 import java.math.BigInteger
 import java.math.RoundingMode
@@ -59,6 +60,12 @@ class TimeWheel(slotResolution: Int, private val slotNum: Int, windowStart: Int)
         if (firstUpdateTick == -1) firstUpdateTick = lastUpdateTick
     }
 
+    @get:ApiStatus.ScheduledForRemoval(inVersion = "2.1.0")
+    @Deprecated(
+        message = "Use avgChangedByTick instead. This property will be removed in 2.1.0.",
+        replaceWith = ReplaceWith("avgChangedByTick"),
+        level = DeprecationLevel.HIDDEN,
+    )
     val avgByTick: BigDecimal
         get() {
             if (lastUpdateTick - firstUpdateTick < slotResolution * slotNum) {
@@ -82,27 +89,27 @@ class TimeWheel(slotResolution: Int, private val slotNum: Int, windowStart: Int)
         }
 
     /** 获取变化量（净流量）平均值 / 刻 */
-    val avgChangedByTick: BigDecimal
+    val avgChangedByTick
         get() = calculateAvg(this.changedSum)
 
     /** 获取输入平均值 / 刻 */
-    val avgInputByTick: BigDecimal
+    val avgInputByTick
         get() = calculateAvg(this.inputSum)
 
     /** 获取输出平均值 / 刻 */
-    val avgOutputByTick: BigDecimal
+    val avgOutputByTick
         get() = calculateAvg(this.outputSum)
 
     /** 获取每个时间片内的净变化量历史（inputSum - outputSum） */
-    val changedHistory: List<BigInteger>
+    val changedHistory
         get() = this.slots.map { it.inputSum - it.outputSum }
 
     /** 获取每个时间片内的输入量历史 */
-    val inputHistory: List<BigInteger>
+    val inputHistory
         get() = this.slots.map { it.inputSum }
 
     /** 获取每个时间片内的输出量历史 */
-    val outputHistory: List<BigInteger>
+    val outputHistory
         get() = this.slots.map { it.outputSum }
 
     // 私有辅助方法：计算实际覆盖的时间跨度（刻数）
