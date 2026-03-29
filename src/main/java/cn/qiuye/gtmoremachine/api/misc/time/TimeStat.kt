@@ -15,7 +15,7 @@ class TimeStat(windowStart: Int = 0) {
     private var lastInputCache: BigInteger = BigInteger.ZERO
     private var lastOutputCache: BigInteger = BigInteger.ZERO
 
-    var avgChanged: BigDecimal = BigDecimal.ZERO
+    private var avgChanged: BigDecimal = BigDecimal.ZERO
     private var avgInput: BigDecimal = BigDecimal.ZERO
     private var avgOutput: BigDecimal = BigDecimal.ZERO
 
