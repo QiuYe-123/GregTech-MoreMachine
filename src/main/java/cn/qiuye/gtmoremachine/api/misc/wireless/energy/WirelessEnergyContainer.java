@@ -106,7 +106,7 @@ public class WirelessEnergyContainer {
             EnergyStat.update(BigInteger.valueOf(change), server.getTickCount());
         }
         if (observed && machine != null) {
-            TRANSFER_DATA.put(machine, new BasicTransferData(UUID, new BigInteger(String.valueOf(change)), machine));
+            TRANSFER_DATA.put(machine, new BasicTransferData(UUID, BigInteger.valueOf(change), machine));
         }
         return loss.getCabinEnergy();
     }
@@ -120,10 +120,10 @@ public class WirelessEnergyContainer {
         storage = storage.subtract(BigInteger.valueOf(change));
         WirelessEnergySavedData.INSTANCE.setDirty(true);
         if (machine != null) {
-            EnergyStat.update(BigInteger.valueOf(change), server.getTickCount());
+            EnergyStat.update(BigInteger.valueOf(-change), server.getTickCount());
         }
         if (observed && machine != null) {
-            TRANSFER_DATA.put(machine, new BasicTransferData(UUID, new BigInteger(String.valueOf(-change)), machine));
+            TRANSFER_DATA.put(machine, new BasicTransferData(UUID, BigInteger.valueOf(-change), machine));
         }
         return loss.getCabinEnergy();
     }
@@ -149,7 +149,7 @@ public class WirelessEnergyContainer {
         storage = storage.subtract(change);
         WirelessEnergySavedData.INSTANCE.setDirty(true);
         if (machine != null) {
-            EnergyStat.update(change, server.getTickCount());
+            EnergyStat.update(change.negate(), server.getTickCount());
         }
         if (observed && machine != null) {
             TRANSFER_DATA.put(machine, new BasicTransferData(UUID, change.negate(), machine));
