@@ -31,15 +31,14 @@ public class ForgeCommonEventListener {
                     if (refreshBinding) {
                         BigInteger rate;
                         GlobalPos pos = container.getBindPos();
-                        if (pos != null) {
-                            MetaMachine machine = MetaMachine.getMachine(event.getServer().getLevel(pos.dimension()), pos.pos());
-                            assert machine != null;
+                        MetaMachine machine = MetaMachine.getMachine(event.getServer().getLevel(pos.dimension()), pos.pos());
+                        if (machine != null) {
                             rate = WirelessEnergyBindingToolBehavior.Companion.getRate(machine);
                             container.setDimensional(14, rate.compareTo(BigInteger.ZERO) > 0, machine);
                             container.setRate(rate);
                         }
                     }
-                    container.PassiveDrainEnergy(container.getPassiveDrain());
+                    container.PassiveDrainEnergy();
 
                     container.getEnergyStat().tick();
                 }

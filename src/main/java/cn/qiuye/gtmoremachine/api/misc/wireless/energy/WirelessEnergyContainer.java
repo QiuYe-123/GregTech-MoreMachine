@@ -95,47 +95,47 @@ public class WirelessEnergyContainer {
 
     public long addEnergy(long energy, MetaMachine machine) {
         long change = energy;
-        if (GTMMConfig.INSTANCE.isWirelessRateEnable) change = Math.min(BigIntegerUtils.getLongValue(rate), energy);
-        if (GTMMConfig.INSTANCE.isWirelessCapacitylimitEnable && storage.add(BigInteger.valueOf(change)).compareTo(capacity) > 0) change = BigIntegerUtils.getLongValue(capacity.subtract(storage));
+        if (GTMMConfig.INSTANCE.isWirelessRateEnable) change = Math.min(BigIntegerUtils.getLongValue(this.rate), energy);
+        if (GTMMConfig.INSTANCE.isWirelessCapacitylimitEnable && this.storage.add(BigInteger.valueOf(change)).compareTo(this.capacity) > 0) change = BigIntegerUtils.getLongValue(this.capacity.subtract(this.storage));
         LossEnergy loss = remainingEnergy(change, machine).getAfterEnergy();
         if (loss.getCabinEnergy() <= 0) return 0;
         change = loss.getWirelessEnergy();
-        storage = storage.add(BigInteger.valueOf(change));
+        this.storage = this.storage.add(BigInteger.valueOf(change));
         WirelessEnergySavedData.INSTANCE.setDirty(true);
         if (machine != null) {
-            EnergyStat.update(BigInteger.valueOf(change), server.getTickCount());
+            this.EnergyStat.update(BigInteger.valueOf(change), server.getTickCount());
         }
         if (observed && machine != null) {
-            TRANSFER_DATA.put(machine, new BasicTransferData(UUID, BigInteger.valueOf(change), machine));
+            TRANSFER_DATA.put(machine, new BasicTransferData(this.UUID, BigInteger.valueOf(change), machine));
         }
         return loss.getCabinEnergy();
     }
 
     public long removeEnergy(long energy, MetaMachine machine) {
-        long change = Math.min(BigIntegerUtils.getLongValue(storage), energy);
-        if (GTMMConfig.INSTANCE.isWirelessRateEnable) change = Math.min(BigIntegerUtils.getLongValue(storage), Math.min(BigIntegerUtils.getLongValue(rate), energy));
+        long change = Math.min(BigIntegerUtils.getLongValue(this.storage), energy);
+        if (GTMMConfig.INSTANCE.isWirelessRateEnable) change = Math.min(BigIntegerUtils.getLongValue(this.storage), Math.min(BigIntegerUtils.getLongValue(this.rate), energy));
         LossEnergy loss = remainingEnergy(change, machine);
         if (loss.getCabinEnergy() <= 0) return 0;
         change = loss.getWirelessEnergy();
-        storage = storage.subtract(BigInteger.valueOf(change));
+        this.storage = this.storage.subtract(BigInteger.valueOf(change));
         WirelessEnergySavedData.INSTANCE.setDirty(true);
         if (machine != null) {
-            EnergyStat.update(BigInteger.valueOf(-change), server.getTickCount());
+            this.EnergyStat.update(BigInteger.valueOf(-change), server.getTickCount());
         }
         if (observed && machine != null) {
-            TRANSFER_DATA.put(machine, new BasicTransferData(UUID, BigInteger.valueOf(-change), machine));
+            TRANSFER_DATA.put(machine, new BasicTransferData(this.UUID, BigInteger.valueOf(-change), machine));
         }
         return loss.getCabinEnergy();
     }
 
     public BigInteger addEnergy(BigInteger energy, MetaMachine machine) {
         BigInteger change = energy;
-        if (GTMMConfig.INSTANCE.isWirelessCapacitylimitEnable && storage.add(change).compareTo(capacity) > 0) change = capacity.subtract(storage);
+        if (GTMMConfig.INSTANCE.isWirelessCapacitylimitEnable && this.storage.add(change).compareTo(this.capacity) > 0) change = this.capacity.subtract(this.storage);
         if (change.compareTo(BigInteger.ZERO) <= 0) return BigInteger.ZERO;
-        storage = storage.add(change);
+        this.storage = this.storage.add(change);
         WirelessEnergySavedData.INSTANCE.setDirty(true);
         if (machine != null) {
-            EnergyStat.update(change, server.getTickCount());
+            this.EnergyStat.update(change, server.getTickCount());
         }
         if (observed && machine != null) {
             TRANSFER_DATA.put(machine, new BasicTransferData(UUID, change, machine));
@@ -144,29 +144,29 @@ public class WirelessEnergyContainer {
     }
 
     public BigInteger removeEnergy(BigInteger energy, MetaMachine machine) {
-        BigInteger change = storage.min(energy);
+        BigInteger change = this.storage.min(energy);
         if (change.compareTo(BigInteger.ZERO) <= 0) return BigInteger.ZERO;
-        storage = storage.subtract(change);
+        this.storage = this.storage.subtract(change);
         WirelessEnergySavedData.INSTANCE.setDirty(true);
         if (machine != null) {
-            EnergyStat.update(change.negate(), server.getTickCount());
+            this.EnergyStat.update(change.negate(), server.getTickCount());
         }
         if (observed && machine != null) {
-            TRANSFER_DATA.put(machine, new BasicTransferData(UUID, change.negate(), machine));
+            TRANSFER_DATA.put(machine, new BasicTransferData(this.UUID, change.negate(), machine));
         }
         return change;
     }
 
-    public void PassiveDrainEnergy(BigInteger energy) {
-        BigInteger change = storage.min(energy);
+    public void PassiveDrainEnergy() {
+        BigInteger change = this.storage.min(this.passiveDrain);
         if (change.compareTo(BigInteger.ZERO) <= 0) return;
-        storage = storage.subtract(change);
+        this.storage = this.storage.subtract(change);
         WirelessEnergySavedData.INSTANCE.setDirty(true);
-        EnergyStat.update(change.negate(), server.getTickCount());
+        this.EnergyStat.update(change.negate(), server.getTickCount());
     }
 
     public void setStorage(BigInteger energy) {
-        storage = energy;
+        this.storage = energy;
         WirelessEnergySavedData.INSTANCE.setDirty(true);
     }
 
@@ -188,7 +188,7 @@ public class WirelessEnergyContainer {
 
     public void setCapacity(BigInteger StorageCapacity, BigInteger PassiveDrain, boolean Bind, MetaMachine machine) {
         if (Bind) {
-            if (machine != null) CAPACITY_STORAGE_DATA.put(machine, new CapacityStorageData(UUID, StorageCapacity, PassiveDrain, machine));
+            if (machine != null) CAPACITY_STORAGE_DATA.put(machine, new CapacityStorageData(this.UUID, StorageCapacity, PassiveDrain, machine));
         } else {
             if (machine != null) CAPACITY_STORAGE_DATA.remove(machine);
         }
@@ -208,7 +208,7 @@ public class WirelessEnergyContainer {
         ResourceLocation tierdimension = machine.getLevel().dimension().location();
         if (Bind) {
             if (this.dimension.getInt(tierdimension) <= Voltagelevel || !this.dimension.containsKey(tierdimension)) {
-                DIMENSIONAL_TRANSFER_DATA.put(machine, new DimensionBoundData(UUID, Voltagelevel, machine));
+                DIMENSIONAL_TRANSFER_DATA.put(machine, new DimensionBoundData(this.UUID, Voltagelevel, machine));
                 this.dimension.put(tierdimension, Voltagelevel);
             }
         } else {
