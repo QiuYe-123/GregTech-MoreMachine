@@ -2,10 +2,10 @@ package cn.qiuye.gtmoremachine.api.machine.multiblock;
 
 import org.jetbrains.annotations.NotNull;
 
-public interface IEnergyCommunicationUnitBlock {
+public interface IECUBlock {
 
     int getTier();
 
     @NotNull
-    String getEnergyCommunicationUnitBlockName();
+    String getECUBlockName();
 }

@@ -298,7 +298,7 @@ public class AdvancedBlockPattern extends BlockPattern {
 
     /**
      * 自动拆除多方块结构
-     * 
+     *
      * @param player           执行拆除的玩家
      * @param worldState       多方块状态
      * @param autoBuildSetting 总参数

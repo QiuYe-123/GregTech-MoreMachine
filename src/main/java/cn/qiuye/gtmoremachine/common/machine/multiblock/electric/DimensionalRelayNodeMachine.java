@@ -1,7 +1,7 @@
 package cn.qiuye.gtmoremachine.common.machine.multiblock.electric;
 
 import cn.qiuye.gtmoremachine.api.machine.IWirelessEnergyContainerHolder;
-import cn.qiuye.gtmoremachine.api.machine.multiblock.IEnergyCommunicationUnitBlock;
+import cn.qiuye.gtmoremachine.api.machine.multiblock.IECUBlock;
 import cn.qiuye.gtmoremachine.api.misc.wireless.energy.WirelessEnergyContainer;
 import cn.qiuye.gtmoremachine.utils.TeamUtils;
 
@@ -132,7 +132,7 @@ public class DimensionalRelayNodeMachine extends WorkableMultiblockMachine
     public void onStructureFormed() {
         super.onStructureFormed();
 
-        IEnergyCommunicationUnitBlock ecuType = getMultiblockState().getMatchContext().get("ECUType");
+        IECUBlock ecuType = getMultiblockState().getMatchContext().get("ECUType");
         if (ecuType != null) {
             this.currentTier = ecuType.getTier();
         }
