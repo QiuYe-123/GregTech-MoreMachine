@@ -48,7 +48,7 @@ public class GTMMPredicates {
                 if (state.is(entry.getValue().get())) {
                     ICCData wecc = entry.getKey();
                     if (wecc.getTier() != -1 && wecc.getCapacity().compareTo(BigInteger.ZERO) > 0) {
-                        String key = DemodulationHubMachine.CAPACITY_COMPONENT_HEADER + wecc.getCapacityComponentName();
+                        String key = DemodulationHubMachine.CAPACITY_COMPONENT_HEADER + wecc.getCCName();
                         DemodulationHubMachine.ComponentMatchWrapper wrapper = blockWorldState.getMatchContext().get(key);
                         if (wrapper == null) wrapper = new DemodulationHubMachine.ComponentMatchWrapper(wecc);
                         blockWorldState.getMatchContext().set(key, wrapper.increment());
