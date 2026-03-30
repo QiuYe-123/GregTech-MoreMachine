@@ -65,9 +65,14 @@ class TimeWheel(slotResolution: Int, private val slotNum: Int, windowStart: Int)
 	@Deprecated(
 		message = "Use avgChangedByTick instead. This property will be removed in 2.1.0.",
 		replaceWith = ReplaceWith("avgChangedByTick"),
-		level = DeprecationLevel.HIDDEN,
+		level = DeprecationLevel.ERROR,
 	)
 	val avgByTick: BigDecimal
+		@Deprecated(
+			message = "Use avgChangedByTick instead. This property will be removed in 2.1.0.",
+			replaceWith = ReplaceWith("getAvgChangedByTick()"),
+			level = DeprecationLevel.ERROR,
+		)
 		get() {
 			if (lastUpdateTick - firstUpdateTick < slotResolution * slotNum) {
 				return BigDecimal(changedSum).divide(
