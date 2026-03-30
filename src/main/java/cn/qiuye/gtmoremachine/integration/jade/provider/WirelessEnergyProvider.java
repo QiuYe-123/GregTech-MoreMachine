@@ -15,7 +15,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -31,7 +30,7 @@ import java.util.UUID;
 public class WirelessEnergyProvider extends CapabilityBlockProvider<IWirelessEnergyContainerHolder> {
 
     public WirelessEnergyProvider() {
-        super(ResourceLocation.tryBuild(GTmm.MOD_ID, FormattingUtil.toLowerCaseUnderscore("wireless_energy_provider")));
+        super(GTmm.id("wireless_energy_provider"));
     }
 
     @Override

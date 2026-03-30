@@ -3,7 +3,6 @@ package cn.qiuye.gtmoremachine.integration.jade.provider;
 import cn.qiuye.gtmoremachine.GTmm;
 import cn.qiuye.gtmoremachine.api.machine.trait.feature.IWirelessCWUContainerHolder;
 import cn.qiuye.gtmoremachine.utils.BigNumberUtils;
-import cn.qiuye.gtmoremachine.utils.FormattingUtil;
 import cn.qiuye.gtmoremachine.utils.NumberUtils;
 import cn.qiuye.gtmoremachine.utils.TeamUtils;
 
@@ -15,7 +14,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -31,7 +29,7 @@ import java.util.UUID;
 public class WirelessCWUProvider extends CapabilityBlockProvider<IWirelessCWUContainerHolder> {
 
     public WirelessCWUProvider() {
-        super(ResourceLocation.tryBuild(GTmm.MOD_ID, FormattingUtil.toLowerCaseUnderscore("wireless_cwu_provider")));
+        super(GTmm.id("wireless_cwu_provider"));
     }
 
     @Override
