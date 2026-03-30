@@ -20,24 +20,14 @@ import java.math.BigInteger
 import javax.annotation.ParametersAreNonnullByDefault
 
 @ParametersAreNonnullByDefault
-class CapacityComponentBlock(properties: Properties, @field:Getter val data: ICCData) : Block(properties) {
+class WECCBlock(properties: Properties, @field:Getter val data: ICCData) : Block(properties) {
 	override fun appendHoverText(stack: ItemStack, level: BlockGetter?, tooltip: MutableList<Component>, flag: TooltipFlag) {
 		super.appendHoverText(stack, level, tooltip, flag)
 		if (this.data.getTier() == -1) {
 			tooltip.add(Component.translatable("block.gtmoremachine.capacity_component.tooltip_empty"))
 		} else {
-			tooltip.add(
-				Component.translatable(
-					"block.gtmoremachine.capacity_component.tooltip_filled",
-					FormattingUtil.formatNumbers(this.data.getCapacity()),
-				),
-			)
-			tooltip.add(
-				Component.translatable(
-					"block.gtmoremachine.capacity_component.tooltip_passive_drain",
-					FormattingUtil.formatNumbers(this.data.getLossEnergy()),
-				),
-			)
+			tooltip.add(Component.translatable("block.gtmoremachine.capacity_component.tooltip_filled", FormattingUtil.formatNumbers(this.data.getCapacity())))
+			tooltip.add(Component.translatable("block.gtmoremachine.capacity_component.tooltip_passive_drain", FormattingUtil.formatNumbers(this.data.getLossEnergy())))
 		}
 	}
 

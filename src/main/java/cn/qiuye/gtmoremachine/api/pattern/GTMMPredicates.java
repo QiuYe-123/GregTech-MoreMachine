@@ -1,10 +1,9 @@
 package cn.qiuye.gtmoremachine.api.pattern;
 
 import cn.qiuye.gtmoremachine.api.GTMMAPI;
-import cn.qiuye.gtmoremachine.api.machine.multiblock.ICapacityComponentData;
-import cn.qiuye.gtmoremachine.common.block.CapacityComponentBlock;
+import cn.qiuye.gtmoremachine.api.machine.multiblock.ICCData;
+import cn.qiuye.gtmoremachine.common.block.WECCBlock;
 import cn.qiuye.gtmoremachine.common.machine.multiblock.electric.DemodulationHubMachine;
-import cn.qiuye.gtmoremachine.common.machine.multiblock.electric.DemodulationHubMachine.ComponentMatchWrapper;
 
 import com.gregtechceu.gtceu.api.pattern.TraceabilityPredicate;
 import com.gregtechceu.gtceu.api.pattern.error.PatternStringError;
@@ -45,9 +44,9 @@ public class GTMMPredicates {
     public static TraceabilityPredicate WirelessEnergyCapacityComponent() {
         return new TraceabilityPredicate(blockWorldState -> {
             BlockState state = blockWorldState.getBlockState();
-            for (Map.Entry<ICapacityComponentData, Supplier<CapacityComponentBlock>> entry : GTMMAPI.WECC.entrySet()) {
+            for (Map.Entry<ICCData, Supplier<WECCBlock>> entry : GTMMAPI.WECC.entrySet()) {
                 if (state.is(entry.getValue().get())) {
-                    ICapacityComponentData wecc = entry.getKey();
+                    ICCData wecc = entry.getKey();
                     if (wecc.getTier() != -1 && wecc.getCapacity().compareTo(BigInteger.ZERO) > 0) {
                         String key = DemodulationHubMachine.CAPACITY_COMPONENT_HEADER + wecc.getCapacityComponentName();
                         DemodulationHubMachine.ComponentMatchWrapper wrapper = blockWorldState.getMatchContext().get(key);

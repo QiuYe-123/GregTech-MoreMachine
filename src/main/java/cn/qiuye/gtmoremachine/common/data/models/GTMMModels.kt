@@ -3,8 +3,8 @@ package cn.qiuye.gtmoremachine.common.data.models
 import cn.qiuye.gtmoremachine.GTmm
 import cn.qiuye.gtmoremachine.api.machine.multiblock.ICCData
 import cn.qiuye.gtmoremachine.api.machine.multiblock.IECUBlock
-import cn.qiuye.gtmoremachine.common.block.CapacityComponentBlock
 import cn.qiuye.gtmoremachine.common.block.ECUBlock
+import cn.qiuye.gtmoremachine.common.block.WECCBlock
 
 import net.minecraft.world.level.block.Block
 
@@ -30,8 +30,8 @@ object GTMMModels {
 		}
 
 	@JvmStatic
-	fun createWECCBlockModel(weccData: ICCData): NonNullBiConsumer<DataGenContext<Block, CapacityComponentBlock>, RegistrateBlockstateProvider> =
-		NonNullBiConsumer { ctx: DataGenContext<Block, CapacityComponentBlock>, prov: RegistrateBlockstateProvider ->
+	fun createWECCBlockModel(weccData: ICCData): NonNullBiConsumer<DataGenContext<Block, WECCBlock>, RegistrateBlockstateProvider> =
+		NonNullBiConsumer { ctx: DataGenContext<Block, WECCBlock>, prov: RegistrateBlockstateProvider ->
 			prov.simpleBlock(
 				ctx.getEntry(),
 				prov.models().cubeBottomTop(

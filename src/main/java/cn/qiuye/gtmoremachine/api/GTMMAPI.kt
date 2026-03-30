@@ -4,8 +4,8 @@ import cn.qiuye.gtmoremachine.GTmm
 import cn.qiuye.gtmoremachine.api.addon.AddonFinder
 import cn.qiuye.gtmoremachine.api.machine.multiblock.ICCData
 import cn.qiuye.gtmoremachine.api.machine.multiblock.IECUBlock
-import cn.qiuye.gtmoremachine.common.block.CapacityComponentBlock
 import cn.qiuye.gtmoremachine.common.block.ECUBlock
+import cn.qiuye.gtmoremachine.common.block.WECCBlock
 
 import org.jetbrains.annotations.ApiStatus
 
@@ -20,7 +20,7 @@ object GTMMAPI {
 	val ECU = HashMap<IECUBlock, Supplier<ECUBlock>>()
 
 	@JvmField
-	val WECC = HashMap<ICCData, Supplier<CapacityComponentBlock>>()
+	val WECC = HashMap<ICCData, Supplier<WECCBlock>>()
 
 	@ApiStatus.Internal
 	@JvmStatic

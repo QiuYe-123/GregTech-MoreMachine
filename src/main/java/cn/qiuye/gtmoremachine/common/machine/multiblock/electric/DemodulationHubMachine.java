@@ -1,6 +1,6 @@
 package cn.qiuye.gtmoremachine.common.machine.multiblock.electric;
 
-import cn.qiuye.gtmoremachine.api.machine.multiblock.ICapacityComponentData;
+import cn.qiuye.gtmoremachine.api.machine.multiblock.ICCData;
 import cn.qiuye.gtmoremachine.api.machine.trait.feature.IWirelessEnergyContainerHolder;
 import cn.qiuye.gtmoremachine.api.misc.wireless.energy.WirelessEnergyContainer;
 import cn.qiuye.gtmoremachine.utils.NumberUtils;
@@ -142,7 +142,7 @@ public class DemodulationHubMachine extends WorkableMultiblockMachine
     public void onStructureFormed() {
         super.onStructureFormed();
 
-        List<ICapacityComponentData> components = new ArrayList<>();
+        List<ICCData> components = new ArrayList<>();
 
         for (Map.Entry<String, Object> battery : getMultiblockState().getMatchContext().entrySet()) {
             if (battery.getKey().startsWith(CAPACITY_COMPONENT_HEADER) &&
@@ -283,17 +283,17 @@ public class DemodulationHubMachine extends WorkableMultiblockMachine
         @Getter
         public final BigInteger totalPassiveDrain;
 
-        public DimensionalRelayNodeBank(MetaMachine machine, List<ICapacityComponentData> components) {
+        public DimensionalRelayNodeBank(MetaMachine machine, List<ICCData> components) {
             super(machine);
             this.totalCapacity = components.stream()
-                    .map(ICapacityComponentData::getCapacity)
+                    .map(ICCData::getCapacity)
                     .reduce(BigInteger.ZERO, BigInteger::add);
             this.totalPassiveDrain = components.stream()
-                    .map(ICapacityComponentData::getLossEnergy)
+                    .map(ICCData::getLossEnergy)
                     .reduce(BigInteger.ZERO, BigInteger::add);
         }
 
-        public DimensionalRelayNodeBank rebuild(List<ICapacityComponentData> component) {
+        public DimensionalRelayNodeBank rebuild(List<ICCData> component) {
             if (component.isEmpty()) {
                 throw new IllegalArgumentException("Cannot rebuild bank with no batteries!");
             }
@@ -305,10 +305,10 @@ public class DemodulationHubMachine extends WorkableMultiblockMachine
 
     public static class ComponentMatchWrapper {
 
-        public final ICapacityComponentData componentData;
+        public final ICCData componentData;
         public int amount = 1;
 
-        public ComponentMatchWrapper(ICapacityComponentData componentData) {
+        public ComponentMatchWrapper(ICCData componentData) {
             this.componentData = componentData;
         }
 
