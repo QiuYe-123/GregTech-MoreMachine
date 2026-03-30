@@ -32,7 +32,8 @@ public class ForgeCommonEventListener {
                         BigInteger rate;
                         GlobalPos pos = container.getBindPos();
                         if (pos != null) {
-                            MetaMachine machine = WirelessEnergyBindingToolBehavior.Companion.getmachine(event.getServer().getLevel(pos.dimension()), pos.pos());
+                            MetaMachine machine = MetaMachine.getMachine(event.getServer().getLevel(pos.dimension()), pos.pos());
+                            assert machine != null;
                             rate = WirelessEnergyBindingToolBehavior.Companion.getRate(machine);
                             container.setDimensional(14, rate.compareTo(BigInteger.ZERO) > 0, machine);
                             container.setRate(rate);

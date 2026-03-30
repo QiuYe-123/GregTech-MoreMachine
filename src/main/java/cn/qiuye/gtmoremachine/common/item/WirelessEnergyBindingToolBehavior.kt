@@ -10,13 +10,11 @@ import com.gregtechceu.gtceu.api.machine.MetaMachine
 import com.gregtechceu.gtceu.common.machine.electric.BatteryBufferMachine
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.PowerSubstationMachine
 
-import net.minecraft.core.BlockPos
 import net.minecraft.core.GlobalPos
 import net.minecraft.network.chat.Component
 import net.minecraft.world.InteractionResult
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.context.UseOnContext
-import net.minecraft.world.level.BlockGetter
 
 import java.math.BigInteger
 
@@ -26,7 +24,7 @@ class WirelessEnergyBindingToolBehavior : IInteractionItem {
         if (!GTMMConfig.INSTANCE.isWirelessRateEnable) return InteractionResult.PASS
 
         val pos = context.clickedPos
-        val machine = getmachine(context.level, pos) ?: return InteractionResult.PASS
+        val machine = MetaMachine.getMachine(context.level, pos) ?: return InteractionResult.PASS
         val rate = getRate(machine)
         if (rate <= BigInteger.ZERO) return InteractionResult.PASS
 
@@ -57,7 +55,7 @@ class WirelessEnergyBindingToolBehavior : IInteractionItem {
             }
             else -> BigInteger.ZERO
         }
-        fun getmachine(level: BlockGetter, pos: BlockPos): MetaMachine? = MetaMachine.getMachine(level, pos)
+
         private fun calculateBatteryRate(machine: BatteryBufferMachine): BigInteger {
             val inv = machine.batteryInventory
             var rate = BigInteger.ZERO
