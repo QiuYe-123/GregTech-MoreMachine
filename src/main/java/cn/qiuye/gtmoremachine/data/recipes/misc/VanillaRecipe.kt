@@ -17,25 +17,25 @@ import java.util.function.Consumer
 
 object VanillaRecipe {
 
-    fun init(provider: Consumer<FinishedRecipe>) {
-        VanillaRecipeHelper.addShapedRecipe(
-            provider, true, GTmm.id("advanced_terminal"), GTMMItems.ADVANCED_TERMINAL.asStack(),
-            "SGS", "PBP", "PWP",
-            'S', MaterialEntry(TagPrefix.screw, GTMaterials.Steel),
-            'G', Tags.Items.GLASS_PANES,
-            'B', ItemStack(Items.BOOK),
-            'P', MaterialEntry(TagPrefix.plate, GTMaterials.Steel),
-            'W', MaterialEntry(TagPrefix.wireGtSingle, GTMaterials.Tin),
-        )
+	fun init(provider: Consumer<FinishedRecipe>) {
+		VanillaRecipeHelper.addShapedRecipe(
+			provider, true, GTmm.id("advanced_terminal"), GTMMItems.ADVANCED_TERMINAL.asStack(),
+			"SGS", "PBP", "PWP",
+			'S', MaterialEntry(TagPrefix.screw, GTMaterials.Steel),
+			'G', Tags.Items.GLASS_PANES,
+			'B', ItemStack(Items.BOOK),
+			'P', MaterialEntry(TagPrefix.plate, GTMaterials.Steel),
+			'W', MaterialEntry(TagPrefix.wireGtSingle, GTMaterials.Tin),
+		)
 
-        VanillaRecipeHelper.addShapedRecipe(
-            provider,
-            true,
-            GTmm.id("wireless_energy_binding_tool"),
-            GTMMItems.WIRELESS_ENERGY_BINDING_TOOL.asStack(),
-            "A",
-            'A',
-            Items.PAPER,
-        )
-    }
+		VanillaRecipeHelper.addShapedRecipe(
+			provider,
+			true,
+			GTmm.id("wireless_energy_binding_tool"),
+			GTMMItems.WIRELESS_ENERGY_BINDING_TOOL.asStack(),
+			"A",
+			'A',
+			Items.PAPER,
+		)
+	}
 }

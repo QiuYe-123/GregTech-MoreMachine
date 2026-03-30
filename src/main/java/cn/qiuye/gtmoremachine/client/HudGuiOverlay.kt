@@ -16,30 +16,24 @@ import lombok.NoArgsConstructor
 
 @NoArgsConstructor
 class HudGuiOverlay : IGuiOverlay {
-    override fun render(
-        forgeGui: ForgeGui,
-        guiGraphics: GuiGraphics,
-        partialTick: Float,
-        screenWidth: Int,
-        screenHeight: Int,
-    ) {
-        val mc = Minecraft.getInstance()
-        if (mc.isWindowActive && mc.level != null && !mc.options.renderDebug && !mc.options.hideGui) {
-            renderHUDMetaItem(getItemEquipped(mc.player!!, GTMMItems.WIRELESS_ENERGY_TERMINAL.asItem()), guiGraphics)
-        }
-    }
+	override fun render(forgeGui: ForgeGui, guiGraphics: GuiGraphics, partialTick: Float, screenWidth: Int, screenHeight: Int) {
+		val mc = Minecraft.getInstance()
+		if (mc.isWindowActive && mc.level != null && !mc.options.renderDebug && !mc.options.hideGui) {
+			renderHUDMetaItem(getItemEquipped(mc.player!!, GTMMItems.WIRELESS_ENERGY_TERMINAL.asItem()), guiGraphics)
+		}
+	}
 
-    companion object {
+	companion object {
 
-        private fun renderHUDMetaItem(stack: ItemStack, guiGraphics: GuiGraphics?) {
-            if (stack.item is ComponentItem) {
-                val componentItem = stack.item as ComponentItem
-                for (behaviour in componentItem.getComponents()) {
-                    if (behaviour is IItemHUDProvider) {
-                        IItemHUDProvider.tryDrawHud(behaviour, stack, guiGraphics)
-                    }
-                }
-            }
-        }
-    }
+		private fun renderHUDMetaItem(stack: ItemStack, guiGraphics: GuiGraphics?) {
+			if (stack.item is ComponentItem) {
+				val componentItem = stack.item as ComponentItem
+				for (behaviour in componentItem.getComponents()) {
+					if (behaviour is IItemHUDProvider) {
+						IItemHUDProvider.tryDrawHud(behaviour, stack, guiGraphics)
+					}
+				}
+			}
+		}
+	}
 }

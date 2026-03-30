@@ -10,14 +10,14 @@ import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet
 
 object Hatch {
 
-    @JvmStatic
-    val BlockSet: Set<Block> = ObjectOpenHashSet<Block>().apply {
-        GTRegistries.MACHINES.forEach { d ->
-            val block = d.block
-            val machine = d.blockEntityType.create(BlockPos.ZERO, block.defaultBlockState())
-            if (machine is MultiblockPartMachine) {
-                add(block)
-            }
-        }
-    }
+	@JvmStatic
+	val BlockSet: Set<Block> = ObjectOpenHashSet<Block>().apply {
+		GTRegistries.MACHINES.forEach { d ->
+			val block = d.block
+			val machine = d.blockEntityType.create(BlockPos.ZERO, block.defaultBlockState())
+			if (machine is MultiblockPartMachine) {
+				add(block)
+			}
+		}
+	}
 }

@@ -4,7 +4,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.math.BigInteger;
 
-public interface ICapacityComponentData {
+public interface ICCData {
 
     int getTier();
 
@@ -13,5 +13,5 @@ public interface ICapacityComponentData {
     BigInteger getLossEnergy();
 
     @NotNull
-    String getCapacityComponentName();
+    String getCCName();
 }

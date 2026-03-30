@@ -2,10 +2,10 @@ package cn.qiuye.gtmoremachine.api
 
 import cn.qiuye.gtmoremachine.GTmm
 import cn.qiuye.gtmoremachine.api.addon.AddonFinder
-import cn.qiuye.gtmoremachine.api.machine.multiblock.ICapacityComponentData
-import cn.qiuye.gtmoremachine.api.machine.multiblock.IEnergyCommunicationUnitBlock
+import cn.qiuye.gtmoremachine.api.machine.multiblock.ICCData
+import cn.qiuye.gtmoremachine.api.machine.multiblock.IECUBlock
 import cn.qiuye.gtmoremachine.common.block.CapacityComponentBlock
-import cn.qiuye.gtmoremachine.common.block.EnergyCommunicationUnitBlock
+import cn.qiuye.gtmoremachine.common.block.ECUBlock
 
 import org.jetbrains.annotations.ApiStatus
 
@@ -14,18 +14,18 @@ import java.util.function.Supplier
 
 object GTMMAPI {
 
-    lateinit var instance: GTmm
+	lateinit var instance: GTmm
 
-    @JvmField
-    val ECU = HashMap<IEnergyCommunicationUnitBlock, Supplier<EnergyCommunicationUnitBlock>>()
+	@JvmField
+	val ECU = HashMap<IECUBlock, Supplier<ECUBlock>>()
 
-    @JvmField
-    val WECC = HashMap<ICapacityComponentData, Supplier<CapacityComponentBlock>>()
+	@JvmField
+	val WECC = HashMap<ICCData, Supplier<CapacityComponentBlock>>()
 
-    @ApiStatus.Internal
-    @JvmStatic
-    fun capacityComponentBlock(tier: Int, isapacity: Boolean): BigInteger {
-        AddonFinder.addons
-        return AddonFinder.modTierMap.maxByOrNull { it.key }!!.value.getCapacityComponentBlock(tier, isapacity)
-    }
+	@ApiStatus.Internal
+	@JvmStatic
+	fun capacityComponentBlock(tier: Int, isapacity: Boolean): BigInteger {
+		AddonFinder.addons
+		return AddonFinder.modTierMap.maxByOrNull { it.key }!!.value.getCapacityComponentBlock(tier, isapacity)
+	}
 }
