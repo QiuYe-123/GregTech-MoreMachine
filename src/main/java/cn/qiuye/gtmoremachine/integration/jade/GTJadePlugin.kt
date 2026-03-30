@@ -19,10 +19,7 @@ class GTJadePlugin : IWailaPlugin {
 	override fun register(registration: IWailaCommonRegistration) {
 		registration.registerBlockDataProvider(WirelessEnergyProvider(), MetaMachine::class.java)
 		registration.registerBlockDataProvider(WirelessCWUProvider(), MetaMachine::class.java)
-		registration.registerBlockDataProvider(
-			WirelessOpticalComputationHatchProvider(),
-			MetaMachine::class.java,
-		)
+		registration.registerBlockDataProvider(WirelessOpticalComputationHatchProvider(), MetaMachine::class.java)
 	}
 
 	override fun registerClient(registration: IWailaClientRegistration) {
