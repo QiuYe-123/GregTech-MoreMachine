@@ -3,7 +3,7 @@ package cn.qiuye.gtmoremachine.utils
 import java.math.BigDecimal
 import java.math.BigInteger
 
-object BigIntegerUtils {
+object BigNumberUtils {
 
 	@JvmField
 	val big_integer_max_kong: BigInteger = BigInteger.valueOf(Long.MAX_VALUE)
@@ -42,8 +42,8 @@ object BigIntegerUtils {
 	}
 
 	@JvmStatic
-	fun setBigIntegerValue(defaultValue: String): BigInteger = BigInteger(defaultValue, 16)
+	fun getBigIntegerValue(defaultValue: String): BigInteger = BigInteger(defaultValue, 16)
 
 	@JvmStatic
-	fun setBigDecimalValue(defaultValue: String): BigDecimal = BigDecimal(BigInteger(defaultValue, 16))
+	fun getBigDecimalValue(defaultValue: String): BigDecimal = BigDecimal(BigInteger(defaultValue, 16))
 }

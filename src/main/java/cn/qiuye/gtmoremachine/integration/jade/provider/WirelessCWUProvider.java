@@ -2,7 +2,7 @@ package cn.qiuye.gtmoremachine.integration.jade.provider;
 
 import cn.qiuye.gtmoremachine.GTmm;
 import cn.qiuye.gtmoremachine.api.machine.trait.feature.IWirelessCWUContainerHolder;
-import cn.qiuye.gtmoremachine.utils.BigIntegerUtils;
+import cn.qiuye.gtmoremachine.utils.BigNumberUtils;
 import cn.qiuye.gtmoremachine.utils.FormattingUtil;
 import cn.qiuye.gtmoremachine.utils.NumberUtils;
 import cn.qiuye.gtmoremachine.utils.TeamUtils;
@@ -48,7 +48,7 @@ public class WirelessCWUProvider extends CapabilityBlockProvider<IWirelessCWUCon
         if (capability.getUUID() != null) {
             data.putBoolean("isCWUBindable", true);
             data.putUUID("UUID", capability.getUUID());
-            data.putString("cwu", BigIntegerUtils.getStringValue(capability.getWirelessCWUContainer().getStorage()));
+            data.putString("cwu", BigNumberUtils.getStringValue(capability.getWirelessCWUContainer().getStorage()));
         }
     }
 
@@ -58,7 +58,7 @@ public class WirelessCWUProvider extends CapabilityBlockProvider<IWirelessCWUCon
         if (!capData.hasUUID("UUID")) {
             tooltip.add(Component.translatable("gtmoremachine.machine.wireless_energy_hatch.tooltip.1"));
         } else {
-            BigInteger cwu = BigIntegerUtils.setBigIntegerValue(capData.getString("cwu"));
+            BigInteger cwu = BigNumberUtils.getBigIntegerValue(capData.getString("cwu"));
             UUID uuid = capData.getUUID("UUID");
             if (TeamUtils.hasOwner(block.getLevel(), uuid)) {
                 tooltip.add(Component.translatable("gtmoremachine.machine.wireless_energy_hatch.tooltip.2", TeamUtils.getName(block.getLevel(), uuid)));

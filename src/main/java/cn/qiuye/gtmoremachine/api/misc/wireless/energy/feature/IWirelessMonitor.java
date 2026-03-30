@@ -5,7 +5,7 @@ import cn.qiuye.gtmoremachine.api.machine.trait.feature.IWirelessEnergyContainer
 import cn.qiuye.gtmoremachine.api.misc.time.TimeStat;
 import cn.qiuye.gtmoremachine.api.misc.wireless.energy.WirelessEnergyContainer;
 import cn.qiuye.gtmoremachine.config.GTMMConfig;
-import cn.qiuye.gtmoremachine.utils.BigIntegerUtils;
+import cn.qiuye.gtmoremachine.utils.BigNumberUtils;
 import cn.qiuye.gtmoremachine.utils.FormattingUtil;
 import cn.qiuye.gtmoremachine.utils.NumberUtils;
 import cn.qiuye.gtmoremachine.utils.TeamUtils;
@@ -144,8 +144,8 @@ public interface IWirelessMonitor extends IWirelessEnergyContainerHolder {
     Level getLevel();
 
     private static Component getTimeToFillDrainText(BigInteger timeToFillSeconds) {
-        if (timeToFillSeconds.compareTo(BigIntegerUtils.big_integer_max_kong) > 0) {
-            timeToFillSeconds = BigIntegerUtils.big_integer_max_kong;
+        if (timeToFillSeconds.compareTo(BigNumberUtils.big_integer_max_kong) > 0) {
+            timeToFillSeconds = BigNumberUtils.big_integer_max_kong;
         }
 
         Duration duration = Duration.ofSeconds(timeToFillSeconds.longValue());

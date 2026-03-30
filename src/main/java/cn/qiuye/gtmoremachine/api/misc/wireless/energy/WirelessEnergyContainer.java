@@ -12,7 +12,7 @@ import cn.qiuye.gtmoremachine.api.misc.wireless.energy.record.LossEnergy;
 import cn.qiuye.gtmoremachine.api.misc.wireless.energy.record.StoragePercentageData;
 import cn.qiuye.gtmoremachine.config.GTMMConfig;
 import cn.qiuye.gtmoremachine.data.wireless.energy.WirelessEnergySavedData;
-import cn.qiuye.gtmoremachine.utils.BigIntegerUtils;
+import cn.qiuye.gtmoremachine.utils.BigNumberUtils;
 import cn.qiuye.gtmoremachine.utils.TeamUtils;
 
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
@@ -95,8 +95,8 @@ public class WirelessEnergyContainer {
 
     public long addEnergy(long energy, MetaMachine machine) {
         long change = energy;
-        if (GTMMConfig.INSTANCE.isWirelessRateEnable) change = Math.min(BigIntegerUtils.getLongValue(this.rate), energy);
-        if (GTMMConfig.INSTANCE.isWirelessCapacitylimitEnable && this.storage.add(BigInteger.valueOf(change)).compareTo(this.capacity) > 0) change = BigIntegerUtils.getLongValue(this.capacity.subtract(this.storage));
+        if (GTMMConfig.INSTANCE.isWirelessRateEnable) change = Math.min(BigNumberUtils.getLongValue(this.rate), energy);
+        if (GTMMConfig.INSTANCE.isWirelessCapacitylimitEnable && this.storage.add(BigInteger.valueOf(change)).compareTo(this.capacity) > 0) change = BigNumberUtils.getLongValue(this.capacity.subtract(this.storage));
         LossEnergy loss = remainingEnergy(change, machine).getAfterEnergy();
         if (loss.getCabinEnergy() <= 0) return 0;
         change = loss.getWirelessEnergy();
@@ -112,8 +112,8 @@ public class WirelessEnergyContainer {
     }
 
     public long removeEnergy(long energy, MetaMachine machine) {
-        long change = Math.min(BigIntegerUtils.getLongValue(this.storage), energy);
-        if (GTMMConfig.INSTANCE.isWirelessRateEnable) change = Math.min(BigIntegerUtils.getLongValue(this.storage), Math.min(BigIntegerUtils.getLongValue(this.rate), energy));
+        long change = Math.min(BigNumberUtils.getLongValue(this.storage), energy);
+        if (GTMMConfig.INSTANCE.isWirelessRateEnable) change = Math.min(BigNumberUtils.getLongValue(this.storage), Math.min(BigNumberUtils.getLongValue(this.rate), energy));
         LossEnergy loss = remainingEnergy(change, machine);
         if (loss.getCabinEnergy() <= 0) return 0;
         change = loss.getWirelessEnergy();

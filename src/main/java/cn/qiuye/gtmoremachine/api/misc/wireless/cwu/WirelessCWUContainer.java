@@ -5,7 +5,7 @@ import cn.qiuye.gtmoremachine.api.misc.time.TimeStat;
 import cn.qiuye.gtmoremachine.api.misc.wireless.cwu.feature.ITransferData;
 import cn.qiuye.gtmoremachine.api.misc.wireless.cwu.record.BasicTransferData;
 import cn.qiuye.gtmoremachine.data.wireless.cwu.WirelessCWUSavedData;
-import cn.qiuye.gtmoremachine.utils.BigIntegerUtils;
+import cn.qiuye.gtmoremachine.utils.BigNumberUtils;
 import cn.qiuye.gtmoremachine.utils.TeamUtils;
 
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
@@ -64,7 +64,7 @@ public class WirelessCWUContainer {
     }
 
     public int download(int cwu, @Nullable MetaMachine machine) {
-        int change = Math.min(BigIntegerUtils.getIntValue(storage) / 10, cwu);
+        int change = Math.min(BigNumberUtils.getIntValue(storage) / 10, cwu);
         if (change <= 0) return 0;
         if (machine != null) {
             CWUStat.update(BigInteger.valueOf(change), server.getTickCount());
@@ -83,6 +83,6 @@ public class WirelessCWUContainer {
     }
 
     public int getfreeCWU() {
-        return BigIntegerUtils.getIntValue(storage) / 20;
+        return BigNumberUtils.getIntValue(storage) / 20;
     }
 }
