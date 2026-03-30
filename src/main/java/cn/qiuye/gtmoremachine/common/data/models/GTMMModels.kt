@@ -15,9 +15,7 @@ import com.tterrag.registrate.util.nullness.NonNullBiConsumer
 object GTMMModels {
 
 	@JvmStatic
-	fun createECUModel(
-		ecuBlockDate: IECUBlock,
-	): NonNullBiConsumer<DataGenContext<Block, ECUBlock>, RegistrateBlockstateProvider> =
+	fun createECUModel(ecuBlockDate: IECUBlock): NonNullBiConsumer<DataGenContext<Block, ECUBlock>, RegistrateBlockstateProvider> =
 		NonNullBiConsumer { ctx: DataGenContext<Block, ECUBlock>, prov: RegistrateBlockstateProvider ->
 			prov.simpleBlock(
 				ctx.getEntry(),
@@ -32,9 +30,7 @@ object GTMMModels {
 		}
 
 	@JvmStatic
-	fun createWECCBlockModel(
-		weccData: ICCData,
-	): NonNullBiConsumer<DataGenContext<Block, CapacityComponentBlock>, RegistrateBlockstateProvider> =
+	fun createWECCBlockModel(weccData: ICCData): NonNullBiConsumer<DataGenContext<Block, CapacityComponentBlock>, RegistrateBlockstateProvider> =
 		NonNullBiConsumer { ctx: DataGenContext<Block, CapacityComponentBlock>, prov: RegistrateBlockstateProvider ->
 			prov.simpleBlock(
 				ctx.getEntry(),
