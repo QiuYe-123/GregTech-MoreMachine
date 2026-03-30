@@ -16,18 +16,18 @@ import snownee.jade.api.WailaPlugin
 @WailaPlugin
 class GTJadePlugin : IWailaPlugin {
 
-    override fun register(registration: IWailaCommonRegistration) {
-        registration.registerBlockDataProvider(WirelessEnergyProvider(), MetaMachine::class.java)
-        registration.registerBlockDataProvider(WrelessCWUProvider(), MetaMachine::class.java)
-        registration.registerBlockDataProvider(
-            WirelessOpticalComputationHatchProvider(),
-            MetaMachine::class.java,
-        )
-    }
+	override fun register(registration: IWailaCommonRegistration) {
+		registration.registerBlockDataProvider(WirelessEnergyProvider(), MetaMachine::class.java)
+		registration.registerBlockDataProvider(WrelessCWUProvider(), MetaMachine::class.java)
+		registration.registerBlockDataProvider(
+			WirelessOpticalComputationHatchProvider(),
+			MetaMachine::class.java,
+		)
+	}
 
-    override fun registerClient(registration: IWailaClientRegistration) {
-        registration.registerBlockComponent(WirelessEnergyProvider(), MetaMachineBlock::class.java)
-        registration.registerBlockComponent(WrelessCWUProvider(), MetaMachineBlock::class.java)
-        registration.registerBlockComponent(WirelessOpticalComputationHatchProvider(), MetaMachineBlock::class.java)
-    }
+	override fun registerClient(registration: IWailaClientRegistration) {
+		registration.registerBlockComponent(WirelessEnergyProvider(), MetaMachineBlock::class.java)
+		registration.registerBlockComponent(WrelessCWUProvider(), MetaMachineBlock::class.java)
+		registration.registerBlockComponent(WirelessOpticalComputationHatchProvider(), MetaMachineBlock::class.java)
+	}
 }

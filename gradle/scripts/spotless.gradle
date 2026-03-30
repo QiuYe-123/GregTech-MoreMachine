@@ -17,20 +17,28 @@ spotless {
         toggleOffOn()
         importOrderFile(orderFile)
         removeUnusedImports('cleanthat-javaparser-unnecessaryimport')
+        trimTrailingWhitespace()
+        leadingSpacesToTabs()
         endWithNewline()
         eclipse('4.31').configFile(formatFile)
     }
     kotlin {
         target'src/main/java/**/*.kt', 'src/test/java/**/*.kt'
-        ktlint('1.4.1').setEditorConfigPath("$rootDir/gradle/spotless/spotless.ktlint")
+
+        def orderFile = file("$rootDir/gradle/spotless/spotless.ktlint")
+        ktlint().setEditorConfigPath(orderFile)
 
         toggleOffOn()
+        trimTrailingWhitespace()
+        leadingSpacesToTabs()
         endWithNewline()
     }
     json {
         target('src/*/resources/**/*.json', 'src/*/resources/**/*.mcmeta')
         targetExclude 'src/generated/resources/**'
-        leadingTabsToSpaces(2)
+        biome()
+        trimTrailingWhitespace()
+        leadingSpacesToTabs()
         endWithNewline()
     }
 }

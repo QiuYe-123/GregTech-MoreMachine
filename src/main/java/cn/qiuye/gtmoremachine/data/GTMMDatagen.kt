@@ -9,11 +9,11 @@ import com.tterrag.registrate.providers.ProviderType
 
 object GTMMDatagen {
 
-    @JvmStatic
-    fun initPost() {
-        if (GTmm.isDataGen()) {
-            GTMM.addDataGenerator(ProviderType.LANG, LangHandler::enInitialize)
-            GTMM.addDataGenerator(ChineseLangProvider.LANG, LangHandler::cnInitialize)
-        }
-    }
+	@JvmStatic
+	fun initPost() {
+		if (GTmm.isDataGen()) {
+			GTMM.addDataGenerator(ProviderType.LANG, LangHandler::enInitialize)
+			GTMM.addDataGenerator(ChineseLangProvider.LANG, LangHandler::cnInitialize)
+		}
+	}
 }

@@ -11,12 +11,12 @@ import java.util.function.Consumer
 
 object GTMMRecipes {
 
-    @JvmStatic
-    fun init(provider: Consumer<FinishedRecipe>) {
-        if (GTmm.Mods.isAE2Loaded()) {
-            AE2AssemblerRecipe.init(provider)
-        }
-        AssemblerRecipe.init(provider)
-        VanillaRecipe.init(provider)
-    }
+	@JvmStatic
+	fun init(provider: Consumer<FinishedRecipe>) {
+		if (GTmm.Mods.isAE2Loaded()) {
+			AE2AssemblerRecipe.init(provider)
+		}
+		AssemblerRecipe.init(provider)
+		VanillaRecipe.init(provider)
+	}
 }
