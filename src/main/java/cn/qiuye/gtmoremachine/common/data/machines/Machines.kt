@@ -4,13 +4,13 @@ import cn.qiuye.gtmoremachine.GTmm
 
 object Machines {
 
-    @JvmStatic
-    fun init() {
-        CustomMachines.init()
-        WirelessMachines.init()
-        CreativeMachines.init()
-        if (GTmm.Mods.isAE2Loaded()) {
-            GTMMAEMachines.init()
-        }
-    }
+	@JvmStatic
+	fun init() {
+		CustomMachines.init()
+		WirelessMachines.init()
+		CreativeMachines.init()
+		if (GTmm.Mods.isAE2Loaded()) {
+			GTMMAEMachines.init()
+		}
+	}
 }

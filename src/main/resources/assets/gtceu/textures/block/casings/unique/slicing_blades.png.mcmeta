@@ -1,5 +1,5 @@
 {
-  "ldlib": {
-    "connection": "gtceu:block/casings/unique/slicing_blades_ctm"
-  }
+	"ldlib": {
+		"connection": "gtceu:block/casings/unique/slicing_blades_ctm"
+	}
 }
