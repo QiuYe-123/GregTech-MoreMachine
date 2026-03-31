@@ -208,8 +208,8 @@ public class WirelessEnergyContainer {
         ResourceLocation tierdimension = machine.getLevel().dimension().location();
         if (Bind) {
             if (this.dimension.getInt(tierdimension) <= Voltagelevel || !this.dimension.containsKey(tierdimension)) {
-                DIMENSIONAL_TRANSFER_DATA.put(machine, new DimensionBoundData(this.UUID, Voltagelevel, machine));
                 this.dimension.put(tierdimension, Voltagelevel);
+                DIMENSIONAL_TRANSFER_DATA.put(machine, new DimensionBoundData(this.UUID, Voltagelevel, machine));
             }
         } else {
             if (this.dimension.getInt(tierdimension) > Voltagelevel) {
