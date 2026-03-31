@@ -4,8 +4,6 @@ import cn.qiuye.gtmoremachine.integration.jade.provider.WirelessCWUProvider
 import cn.qiuye.gtmoremachine.integration.jade.provider.WirelessEnergyProvider
 import cn.qiuye.gtmoremachine.integration.jade.provider.WirelessOpticalComputationHatchProvider
 
-import com.gregtechceu.gtceu.api.machine.MetaMachine
-
 import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.entity.BlockEntity
 
