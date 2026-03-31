@@ -23,12 +23,12 @@ class WirelessEnergyBindingToolBehavior : IInteractionItem {
 		if (context.level.isClientSide) return InteractionResult.PASS
 		if (!GTMMConfig.INSTANCE.isWirelessRateEnable) return InteractionResult.PASS
 
+		val container = WirelessEnergyContainer.getOrCreateContainer(context.player!!.uuid)
+
 		val pos = context.clickedPos
 		val machine = MetaMachine.getMachine(context.level, pos) ?: return InteractionResult.PASS
 		val rate = getRate(machine)
 		if (rate <= BigInteger.ZERO) return InteractionResult.PASS
-
-		val container = WirelessEnergyContainer.getOrCreateContainer(context.player!!.uuid)
 		container.setRate(rate)
 		container.setBindPos(GlobalPos.of(context.level.dimension(), pos))
 		container.setDimensional(14, true, machine)

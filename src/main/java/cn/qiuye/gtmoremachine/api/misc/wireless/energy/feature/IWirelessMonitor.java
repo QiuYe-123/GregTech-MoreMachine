@@ -105,6 +105,7 @@ public interface IWirelessMonitor extends IWirelessEnergyContainerHolder {
                 ComponentPanelWidget.withButton(getSortingRulesText(sorting), "sortingrules", getSortingRulescolor(sorting)),
                 ComponentPanelWidget.withButton(getTypeText(type), "type", getTypecolor(type))));
 
+        WirelessEnergyContainer.observed = true;
         if (type == Type.PowerInteraction) {
             for (Map.Entry<MetaMachine, ITransferData> m : getTransferList(sorting)) {
                 UUID uuid = m.getValue().UUID();
@@ -119,8 +120,6 @@ public interface IWirelessMonitor extends IWirelessEnergyContainerHolder {
                     }
                 }
             }
-
-            WirelessEnergyContainer.observed = true;
             WirelessEnergyContainer.TRANSFER_DATA.clear();
         } else if (type == Type.Capacitycomponent) {
             for (Map.Entry<MetaMachine, ICapacitylimitData> m : getCapacitylimitList(sorting)) {
@@ -136,6 +135,7 @@ public interface IWirelessMonitor extends IWirelessEnergyContainerHolder {
                     textListCache.add(m.getValue().getInfo());
                 }
             }
+            WirelessEnergyContainer.DIMENSIONAL_TRANSFER_DATA.clear();
         }
 
         return textListCache;

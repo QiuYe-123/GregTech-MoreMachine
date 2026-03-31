@@ -128,7 +128,7 @@ class TimeWheel(slotResolution: Int, private val slotNum: Int, windowStart: Int)
 			ticksElapsed.toLong()
 		} else {
 			(this.slotNum - 1).toLong() * this.slotResolution +
-				(this.lastUpdateTick % this.slotResolution)
+				(this.lastUpdateTick % this.slotResolution) + 1
 		}
 	}
 
