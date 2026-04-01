@@ -27,6 +27,7 @@ import com.lowdragmc.lowdraglib.gui.widget.TextFieldWidget;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
@@ -50,7 +51,7 @@ public class CreativeEnergyHatchPartMachine extends TieredIOPartMachine implemen
     @SaveField
     private long maxEnergy;
     @SaveField
-    private long voltage = 0;
+    private long voltage;
     @SaveField
     @Getter
     private int amps = 1;
@@ -59,54 +60,48 @@ public class CreativeEnergyHatchPartMachine extends TieredIOPartMachine implemen
 
     public CreativeEnergyHatchPartMachine(BlockEntityCreationInfo holder) {
         super(holder, GTValues.MAX, IO.IN);
-        this.energyContainer = createEnergyContainer();
+        this.voltage = GTValues.VEX[setTier];
+        this.maxEnergy = this.voltage * this.amps;
+        this.energyContainer = new InfinityEnergyContainer(this, this.maxEnergy, this.voltage, this.amps, 0L, 0L);
     }
 
     //////////////////////////////////////
     // ***** Initialization ******//
     //////////////////////////////////////
 
-    protected NotifiableEnergyContainer createEnergyContainer() {
-        NotifiableEnergyContainer container;
-        this.voltage = GTValues.VEX[setTier];
-        this.maxEnergy = this.voltage * this.amps;
-        container = new InfinityEnergyContainer(this, this.maxEnergy, this.voltage, this.amps, 0L, 0L);
-        return container;
-    }
-
     @Override
     public ModularUI createUI(Player entityPlayer) {
         return new ModularUI(176, 136, this, entityPlayer)
                 .background(GuiTextures.BACKGROUND)
                 .widget(new LabelWidget(7, 32, "gtceu.creative.energy.voltage"))
-                .widget(new TextFieldWidget(9, 47, 152, 16, () -> String.valueOf(voltage),
+                .widget(new TextFieldWidget(9, 47, 152, 16, () -> String.valueOf(this.voltage),
                         value -> {
                             setVoltage(Long.parseLong(value));
-                            setTier = GTUtil.getTierByVoltage(this.voltage);
+                            this.setTier = GTUtil.getTierByVoltage(this.voltage);
                         }).setNumbersOnly(8L, Long.MAX_VALUE))
                 .widget(new LabelWidget(7, 74, "gtceu.creative.energy.amperage"))
                 .widget(new ButtonWidget(7, 87, 20, 20,
                         new GuiTextureGroup(ResourceBorderTexture.BUTTON_COMMON, new TextTexture("-")),
-                        cd -> setAmps(--amps == -1 ? 0 : amps)))
-                .widget(new TextFieldWidget(31, 89, 114, 16, () -> String.valueOf(amps),
+                        cd -> setAmps(--this.amps == -1 ? 0 : this.amps)))
+                .widget(new TextFieldWidget(31, 89, 114, 16, () -> String.valueOf(this.amps),
                         value -> setAmps(Integer.parseInt(value))).setNumbersOnly(1, 67108864))
                 .widget(new ButtonWidget(149, 87, 20, 20,
                         new GuiTextureGroup(ResourceBorderTexture.BUTTON_COMMON, new TextTexture("+")),
                         cd -> {
-                            if (amps < Integer.MAX_VALUE) {
-                                setAmps(++amps);
+                            if (this.amps < Integer.MAX_VALUE) {
+                                setAmps(++this.amps);
                             }
                         }))
 
                 .widget(new SelectorWidget(7, 7, 50, 20, Arrays.stream(GTValues.VNF).toList(), -1)
                         .setOnChanged(tier -> {
-                            setTier = ArrayUtils.indexOf(GTValues.VNF, tier);
-                            setVoltage(GTValues.VEX[setTier]);
+                            this.setTier = ArrayUtils.indexOf(GTValues.VNF, tier);
+                            setVoltage(GTValues.VEX[this.setTier]);
                         })
-                        .setSupplier(() -> GTValues.VNF[setTier])
+                        .setSupplier(() -> GTValues.VNF[this.setTier])
                         .setButtonBackground(ResourceBorderTexture.BUTTON_COMMON)
                         .setBackground(ColorPattern.BLACK.rectTexture())
-                        .setValue(GTValues.VNF[setTier]));
+                        .setValue(GTValues.VNF[this.setTier]));
     }
 
     private void setVoltage(long voltage) {
@@ -150,6 +145,12 @@ public class CreativeEnergyHatchPartMachine extends TieredIOPartMachine implemen
     //////////////////////////////////////
     // ********** Misc **********//
     //////////////////////////////////////
+
+    @Override
+    public void load(CompoundTag tag) {
+        super.load(tag);
+        this.updateEnergyContainer();
+    }
 
     @Override
     public int tintColor(int index) {
