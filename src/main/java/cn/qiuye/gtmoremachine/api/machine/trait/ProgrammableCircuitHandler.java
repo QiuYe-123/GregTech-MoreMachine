@@ -27,12 +27,12 @@ public class ProgrammableCircuitHandler extends NotifiableItemStackHandler {
     @Override
     @NotNull
     public List<Object> getContents() {
-        return Collections.singletonList(storage.getStackInSlot(0));
+        return Collections.singletonList(this.storage.getStackInSlot(0));
     }
 
     @Override
     public double getTotalContentAmount() {
-        return storage.getStackInSlot(0).getCount();
+        return this.storage.getStackInSlot(0).getCount();
     }
 
     @NotNull
@@ -43,9 +43,9 @@ public class ProgrammableCircuitHandler extends NotifiableItemStackHandler {
 
     private static class ItemStackHandler extends CustomItemStackHandler {
 
-        private final Object machine;
+        private final MetaMachine machine;
 
-        private ItemStackHandler(int size, Object machine) {
+        private ItemStackHandler(int size, MetaMachine machine) {
             super(size);
             this.machine = machine;
         }
@@ -60,7 +60,7 @@ public class ProgrammableCircuitHandler extends NotifiableItemStackHandler {
         public ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
             if (stack.is(GTMMAEItems.VIRTUAL_ITEM_PROVIDER.get())) {
                 boolean allow = true;
-                if (machine instanceof SimpleTieredMachine tieredMachine) {
+                if (this.machine instanceof SimpleTieredMachine tieredMachine) {
                     allow = false;
                     for (CoverBehavior cover : tieredMachine.getCoverContainer().getCovers()) {
                         if (cover instanceof ProgrammableCover) {

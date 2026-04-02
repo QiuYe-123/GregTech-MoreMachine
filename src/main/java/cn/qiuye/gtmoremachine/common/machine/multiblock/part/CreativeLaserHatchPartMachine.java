@@ -46,7 +46,7 @@ import static net.minecraft.ChatFormatting.*;
 public class CreativeLaserHatchPartMachine extends TieredIOPartMachine implements IDataInfoProvider {
 
     @SaveField
-    private NotifiableLaserContainer buffer;
+    private final NotifiableLaserContainer buffer;
     @Nullable
     protected ISubscription LaserListener;
     protected TickableSubscription explosionSubs;
@@ -89,39 +89,39 @@ public class CreativeLaserHatchPartMachine extends TieredIOPartMachine implement
 
     public CreativeLaserHatchPartMachine(BlockEntityCreationInfo holder) {
         super(holder, GTValues.MAX, IO.IN);
-        this.voltage = GTValues.VEX[setTier];
-        this.maxEnergy = voltage * amps;
-        this.buffer = NotifiableLaserContainer.receiverContainer(this, this.maxEnergy, voltage, amps);
+        this.voltage = GTValues.VEX[this.setTier];
+        this.maxEnergy = this.voltage * this.amps;
+        this.buffer = NotifiableLaserContainer.receiverContainer(this, this.maxEnergy, this.voltage, this.amps);
     }
 
     @Override
     public void onUnload() {
         super.onUnload();
-        if (LaserListener != null) {
-            LaserListener.unsubscribe();
-            LaserListener = null;
+        if (this.LaserListener != null) {
+            this.LaserListener.unsubscribe();
+            this.LaserListener = null;
         }
     }
 
     @Override
     public void onLoad() {
         super.onLoad();
-        LaserListener = buffer.addChangedListener(this::AddEngerySubscription);
+        this.LaserListener = this.buffer.addChangedListener(this::AddEngerySubscription);
         AddEngerySubscription();
     }
 
     protected void AddEngerySubscription() {
-        explosionSubs = subscribeServerTick(explosionSubs, this::addEng);
+        this.explosionSubs = subscribeServerTick(this.explosionSubs, this::addEng);
     }
 
     protected void addEng() {
-        if (buffer.getInputVoltage() != voltage || buffer.getInputAmperage() != amps) {
-            maxEnergy = voltage * amps;
-            buffer.resetBasicInfo(maxEnergy, voltage, amps, 0, 0);
-            buffer.setEnergyStored(0);
+        if (this.buffer.getInputVoltage() != this.voltage || this.buffer.getInputAmperage() != this.amps) {
+            this.maxEnergy = this.voltage * this.amps;
+            this.buffer.resetBasicInfo(this.maxEnergy, this.voltage, this.amps, 0, 0);
+            this.buffer.setEnergyStored(0);
         }
-        if (buffer.getEnergyStored() < this.maxEnergy) {
-            buffer.setEnergyStored(this.maxEnergy);
+        if (this.buffer.getEnergyStored() < this.maxEnergy) {
+            this.buffer.setEnergyStored(this.maxEnergy);
         }
     }
 
@@ -135,41 +135,41 @@ public class CreativeLaserHatchPartMachine extends TieredIOPartMachine implement
         return new ModularUI(176, 136, this, entityPlayer)
                 .background(GuiTextures.BACKGROUND)
                 .widget(new LabelWidget(7, 32, "gtceu.creative.energy.voltage"))
-                .widget(new TextFieldWidget(9, 47, 152, 16, () -> String.valueOf(voltage),
+                .widget(new TextFieldWidget(9, 47, 152, 16, () -> String.valueOf(this.voltage),
                         value -> {
-                            voltage = Long.parseLong(value);
-                            setTier = GTUtil.getTierByVoltage(voltage);
+                            this.voltage = Long.parseLong(value);
+                            this.setTier = GTUtil.getTierByVoltage(this.voltage);
                         }).setNumbersOnly(8192L, Long.MAX_VALUE))
                 .widget(new LabelWidget(7, 74, "gtceu.creative.energy.amperage"))
                 .widget(new ButtonWidget(7, 87, 20, 20,
                         new GuiTextureGroup(ResourceBorderTexture.BUTTON_COMMON, new TextTexture("-")),
-                        cd -> amps = --amps == -1 ? 0 : amps))
-                .widget(new TextFieldWidget(31, 89, 114, 16, () -> String.valueOf(amps),
-                        value -> amps = Integer.parseInt(value)).setNumbersOnly(1, 67108864))
+                        cd -> this.amps = --this.amps == -1 ? 0 : this.amps))
+                .widget(new TextFieldWidget(31, 89, 114, 16, () -> String.valueOf(this.amps),
+                        value -> this.amps = Integer.parseInt(value)).setNumbersOnly(1, 67108864))
                 .widget(new ButtonWidget(149, 87, 20, 20,
                         new GuiTextureGroup(ResourceBorderTexture.BUTTON_COMMON, new TextTexture("+")),
                         cd -> {
-                            if (amps < Integer.MAX_VALUE) {
-                                amps++;
+                            if (this.amps < Integer.MAX_VALUE) {
+                                this.amps++;
                             }
                         }))
 
                 .widget(new SelectorWidget(7, 7, 30, 20, Arrays.stream(VNF).toList(), -1)
                         .setOnChanged(tier -> {
-                            setTier = ArrayUtils.indexOf(VNF, tier) + 5;
-                            voltage = GTValues.VEX[setTier];
+                            this.setTier = ArrayUtils.indexOf(VNF, tier) + 5;
+                            this.voltage = GTValues.VEX[this.setTier];
                         })
-                        .setSupplier(() -> VNF[setTier - 5])
+                        .setSupplier(() -> VNF[this.setTier - 5])
                         .setButtonBackground(ResourceBorderTexture.BUTTON_COMMON)
                         .setBackground(ColorPattern.BLACK.rectTexture())
-                        .setValue(VNF[setTier - 5]));
+                        .setValue(VNF[this.setTier - 5]));
     }
 
     @Override
     public List<Component> getDataInfo(PortableScannerBehavior.DisplayMode mode) {
         if (mode == PortableScannerBehavior.DisplayMode.SHOW_ALL || mode == PortableScannerBehavior.DisplayMode.SHOW_ELECTRICAL_INFO) {
             return Collections.singletonList(Component.literal(
-                    String.format("%d/%d EU", buffer.getEnergyStored(), buffer.getEnergyCapacity())));
+                    String.format("%d/%d EU", this.buffer.getEnergyStored(), this.buffer.getEnergyCapacity())));
         }
         return new ArrayList<>();
     }

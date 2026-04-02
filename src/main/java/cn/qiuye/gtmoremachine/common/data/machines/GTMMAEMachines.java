@@ -7,7 +7,6 @@ import cn.qiuye.gtmoremachine.integration.ae.machine.multiblock.part.MEOutputPar
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.data.RotationState;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
@@ -34,7 +33,7 @@ public class GTMMAEMachines {
             .register();
 
     public static final MachineDefinition[] PROGRAMMABLEC_HATCH = registerTieredMachines(
-            "programmablec_hatch", (holder, tier) -> new ProgrammableHatchPartMachine(holder, tier, IO.IN),
+            "programmablec_hatch", ProgrammableHatchPartMachine::new,
             (tier, builder) -> builder
                     .langValue("%s Programmablec Hatch".formatted(GTValues.VNF[tier]))
                     .rotationState(RotationState.ALL)
@@ -49,7 +48,7 @@ public class GTMMAEMachines {
             DUAL_HATCH_TIERS);
 
     public static final MachineDefinition[] PROGRAMMABLEC_DUALHATCH = registerTieredMachines(
-            "programmablec_dualhatch", (holder, tier) -> new ProgrammableDualHatchPartMachine(holder, tier, IO.IN),
+            "programmablec_dualhatch", ProgrammableDualHatchPartMachine::new,
             (tier, builder) -> builder
                     .langValue("%s Programmablec Dual Hatch".formatted(GTValues.VNF[tier]))
                     .rotationState(RotationState.ALL)
