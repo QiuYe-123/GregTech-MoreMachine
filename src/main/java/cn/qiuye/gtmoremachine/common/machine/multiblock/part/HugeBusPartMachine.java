@@ -57,7 +57,7 @@ public class HugeBusPartMachine extends TieredIOPartMachine implements IDistinct
     public static final int INV_MULTIPLE = 2;
     @Getter
     @SaveField
-    protected final NotifiableItemStackHandler inventory;
+    protected NotifiableItemStackHandler inventory;
     @Nullable
     protected TickableSubscription autoIOSubs;
     protected ISubscription inventorySubs;
@@ -98,8 +98,8 @@ public class HugeBusPartMachine extends TieredIOPartMachine implements IDistinct
         };
     }
 
-    protected NotifiableItemStackHandler createCircuitItemHandler(Object... args) {
-        if (args.length > 0 && args[0] instanceof IO io && io == IO.IN) {
+    protected NotifiableItemStackHandler createCircuitItemHandler(IO io) {
+        if (io == IO.IN) {
             return new NotifiableItemStackHandler(this, 1, IO.IN, IO.NONE)
                     .setFilter(IntCircuitBehaviour::isIntegratedCircuit);
         } else {

@@ -8,17 +8,15 @@ import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.DualHatchPartMachine;
 
-import org.jetbrains.annotations.NotNull;
-
 public class ProgrammableHatchPartMachine extends DualHatchPartMachine {
 
-    public ProgrammableHatchPartMachine(BlockEntityCreationInfo holder, int tier, IO io) {
-        super(holder, tier, io);
+    public ProgrammableHatchPartMachine(BlockEntityCreationInfo holder, int tier) {
+        super(holder, tier, IO.IN);
     }
 
     @Override
-    protected @NotNull NotifiableItemStackHandler createInventory() {
-        return new NotifiableItemStackHandler(this, getInventorySize(), io).setFilter(itemStack -> !itemStack.is(GTMMAEItems.VIRTUAL_ITEM_PROVIDER.get()));
+    protected NotifiableItemStackHandler createInventory() {
+        return new NotifiableItemStackHandler(this, getInventorySize(), this.io).setFilter(itemStack -> !itemStack.is(GTMMAEItems.VIRTUAL_ITEM_PROVIDER.get()));
     }
 
     @Override
