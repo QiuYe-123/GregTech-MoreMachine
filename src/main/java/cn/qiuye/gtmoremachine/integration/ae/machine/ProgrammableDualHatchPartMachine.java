@@ -8,10 +8,6 @@ import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 
-import net.minecraft.MethodsReturnNonnullByDefault;
-
-import javax.annotation.ParametersAreNonnullByDefault;
-
 public class ProgrammableDualHatchPartMachine extends HugeDualHatchPartMachine {
 
     public ProgrammableDualHatchPartMachine(BlockEntityCreationInfo holder, int tier) {
