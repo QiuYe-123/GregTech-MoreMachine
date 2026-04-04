@@ -20,58 +20,58 @@ class TimeStat(windowStart: Int = 0) {
 	private var avgOutput: BigDecimal = BigDecimal.ZERO
 
 	fun tick() {
-		if (minute.tock()) {
-			if (hour.tock()) {
-				day.tock()
+		if (this.minute.tock()) {
+			if (this.hour.tock()) {
+				this.day.tock()
 			}
 		}
-		val divisor = minute.slotResolution.toLong()
-		avgChanged =
-			if (lastChangedCache.compareTo(BigInteger.ZERO) ==
+		val divisor = this.minute.slotResolution.toLong()
+		this.avgChanged =
+			if (this.lastChangedCache.compareTo(BigInteger.ZERO) ==
 				0
 			) {
 				BigDecimal.ZERO
 			} else {
-				BigDecimal(lastChangedCache).divide(
+				BigDecimal(this.lastChangedCache).divide(
 					BigDecimal.valueOf(divisor),
 					RoundingMode.HALF_UP,
 				)
 			}
-		avgInput =
-			if (lastInputCache.compareTo(BigInteger.ZERO) == 0) {
+		this.avgInput =
+			if (this.lastInputCache.compareTo(BigInteger.ZERO) == 0) {
 				BigDecimal.ZERO
 			} else {
-				BigDecimal(lastInputCache).divide(
+				BigDecimal(this.lastInputCache).divide(
 					BigDecimal.valueOf(divisor),
 					RoundingMode.HALF_UP,
 				)
 			}
-		avgOutput =
-			if (lastOutputCache.compareTo(BigInteger.ZERO) ==
+		this.avgOutput =
+			if (this.lastOutputCache.compareTo(BigInteger.ZERO) ==
 				0
 			) {
 				BigDecimal.ZERO
 			} else {
-				BigDecimal(lastOutputCache).divide(
+				BigDecimal(this.lastOutputCache).divide(
 					BigDecimal.valueOf(divisor),
 					RoundingMode.HALF_UP,
 				)
 			}
 
-		lastChangedCache = BigInteger.ZERO
-		lastInputCache = BigInteger.ZERO
-		lastOutputCache = BigInteger.ZERO
+		this.lastChangedCache = BigInteger.ZERO
+		this.lastInputCache = BigInteger.ZERO
+		this.lastOutputCache = BigInteger.ZERO
 	}
 
 	fun update(value: BigInteger, currentTick: Int) {
-		minute.update(value, currentTick)
-		hour.update(value, currentTick)
-		day.update(value, currentTick)
-		lastChangedCache = lastChangedCache.add(value)
+		this.minute.update(value, currentTick)
+		this.hour.update(value, currentTick)
+		this.day.update(value, currentTick)
+		this.lastChangedCache = this.lastChangedCache.add(value)
 		if (value > BigInteger.ZERO) {
-			lastInputCache = lastInputCache.add(value)
+			this.lastInputCache = this.lastInputCache.add(value)
 		} else if (value < BigInteger.ZERO) {
-			lastOutputCache = lastOutputCache.add(value.negate())
+			this.lastOutputCache = this.lastOutputCache.add(value.negate())
 		}
 	}
 

@@ -26,39 +26,37 @@ class TimeWheel(slotResolution: Int, private val slotNum: Int, windowStart: Int)
 	private var currentIndex: Int
 
 	init {
-		this.currentIndex = startIndex
-		slots = ArrayDeque<Slot>(slotNum)
-		slots.offer(Slot())
+		this.currentIndex = this.startIndex
+		this.slots = ArrayDeque<Slot>(this.slotNum)
+		this.slots.offer(Slot())
 	}
 
 	fun tock(): Boolean {
-		if (slots.size == slotNum) {
-			val s: Slot? = slots.poll()
-			if (s != null) {
-				changedSum = changedSum.subtract(s.inputSum).add(s.outputSum)
-				inputSum = inputSum.subtract(s.inputSum)
-				outputSum = outputSum.subtract(s.outputSum)
-			}
+		if (this.slots.size == this.slotNum) {
+			val s: Slot = this.slots.poll()
+			this.changedSum = this.changedSum.subtract(s.inputSum).add(s.outputSum)
+			this.inputSum = this.inputSum.subtract(s.inputSum)
+			this.outputSum = this.outputSum.subtract(s.outputSum)
 		}
-		slots.offer(Slot())
-		currentIndex = (currentIndex + 1) % slotNum
-		return currentIndex == startIndex
+		this.slots.offer(Slot())
+		this.currentIndex = (this.currentIndex + 1) % this.slotNum
+		return this.currentIndex == this.startIndex
 	}
 
 	fun update(value: BigInteger, currentTick: Int) {
-		val slot: Slot = slots.peekLast() ?: return
+		val slot: Slot = this.slots.peekLast() ?: return
 		if (value > BigInteger.ZERO) {
 			slot.inputSum = slot.inputSum.add(value)
-			inputSum = inputSum.add(value)
-			changedSum = changedSum.add(value)
+			this.inputSum = this.inputSum.add(value)
+			this.changedSum = this.changedSum.add(value)
 		} else if (value < BigInteger.ZERO) {
 			val positiveValue = value.negate()
 			slot.outputSum = slot.outputSum.add(positiveValue)
-			outputSum = outputSum.add(positiveValue)
-			changedSum = changedSum.add(value)
+			this.outputSum = this.outputSum.add(positiveValue)
+			this.changedSum = this.changedSum.add(value)
 		}
 		this.lastUpdateTick = currentTick
-		if (firstUpdateTick == -1) firstUpdateTick = lastUpdateTick
+		if (this.firstUpdateTick == -1) this.firstUpdateTick = this.lastUpdateTick
 	}
 
 	@get:ApiStatus.ScheduledForRemoval(inVersion = "2.1.0")
