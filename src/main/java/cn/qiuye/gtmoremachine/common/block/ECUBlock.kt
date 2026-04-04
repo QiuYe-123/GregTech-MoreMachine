@@ -1,6 +1,6 @@
 package cn.qiuye.gtmoremachine.common.block
 
-import cn.qiuye.gtmoremachine.api.machine.multiblock.IECUBlock
+import cn.qiuye.gtmoremachine.api.machine.multiblock.feature.IECUBlock
 
 import com.gregtechceu.gtceu.api.GTValues
 

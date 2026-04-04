@@ -1,7 +1,7 @@
 package cn.qiuye.gtmoremachine.common.block
 
 import cn.qiuye.gtmoremachine.api.GTMMAPI
-import cn.qiuye.gtmoremachine.api.machine.multiblock.ICCData
+import cn.qiuye.gtmoremachine.api.machine.multiblock.feature.ICCData
 
 import com.gregtechceu.gtceu.api.GTValues
 import com.gregtechceu.gtceu.utils.FormattingUtil

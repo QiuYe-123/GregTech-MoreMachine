@@ -1,13 +1,12 @@
 package cn.qiuye.gtmoremachine.common.machine.multiblock.electric;
 
-import cn.qiuye.gtmoremachine.api.machine.multiblock.ICCData;
+import cn.qiuye.gtmoremachine.api.machine.multiblock.feature.ICCData;
 import cn.qiuye.gtmoremachine.api.machine.trait.feature.IWirelessEnergyContainerHolder;
 import cn.qiuye.gtmoremachine.api.misc.wireless.energy.WirelessEnergyContainer;
 import cn.qiuye.gtmoremachine.utils.TeamUtils;
 
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.fancy.FancyMachineUIWidget;
 import com.gregtechceu.gtceu.api.machine.ConditionalSubscriptionHandler;
 import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IDisplayUIMachine;
@@ -30,7 +29,6 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -131,21 +129,11 @@ public class DimensionalRelayNodeMachine extends WorkableMultiblockMachine
         }
 
         tickSubscription.updateSubscription();
-
-        WirelessEnergyContainer container = getWirelessEnergyContainer();
-        if (container != null) {
-            container.setDimensional(this.currentTier, true, this);
-        }
     }
 
     @Override
     public void onStructureInvalid() {
         tickSubscription.unsubscribe();
-
-        WirelessEnergyContainer container = getWirelessEnergyContainer();
-        if (container != null) {
-            container.setDimensional(0, false, this);
-        }
 
         this.currentTier = -1;
         super.onStructureInvalid();
@@ -154,10 +142,13 @@ public class DimensionalRelayNodeMachine extends WorkableMultiblockMachine
     // ============== Status Update ==============
 
     protected void updateMachineStatus() {
-        Level level = getLevel();
-        if (level != null && !level.isClientSide) {
-            if (isWorkingEnabled() && isFormed()) {
-                recipeLogic.setStatus(RecipeLogic.Status.WORKING);
+        WirelessEnergyContainer container = getWirelessEnergyContainer();
+        if (container != null) {
+            container.setDimensional(this.currentTier, this.isFormed(), this);
+        }
+        if (!getLevel().isClientSide) {
+            if (getOffsetTimer() % 20 == 0) {
+                getRecipeLogic().setStatus(RecipeLogic.Status.WORKING);
             }
         }
     }
@@ -179,13 +170,12 @@ public class DimensionalRelayNodeMachine extends WorkableMultiblockMachine
 
     @Override
     public ModularUI createUI(Player entityPlayer) {
-        return new ModularUI(198, 208, this, entityPlayer)
-                .widget(new FancyMachineUIWidget(this, 198, 208));
+        return IFancyUIMachine.super.createUI(entityPlayer);
     }
 
     @Override
     public void addDisplayText(List<Component> textList) {
-        if (isFormed()) {
+        if (this.isFormed()) {
             // 预留，可添加显示信息
         } else {
             Component tooltip = Component.translatable("gtceu.multiblock.invalid_structure.tooltip")

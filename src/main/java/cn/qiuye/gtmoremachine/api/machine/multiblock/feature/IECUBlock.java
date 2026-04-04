@@ -1,4 +1,4 @@
-package cn.qiuye.gtmoremachine.api.machine.multiblock;
+package cn.qiuye.gtmoremachine.api.machine.multiblock.feature;
 
 import org.jetbrains.annotations.NotNull;
 

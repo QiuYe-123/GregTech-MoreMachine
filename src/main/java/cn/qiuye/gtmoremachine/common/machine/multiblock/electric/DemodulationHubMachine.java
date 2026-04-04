@@ -1,6 +1,8 @@
 package cn.qiuye.gtmoremachine.common.machine.multiblock.electric;
 
-import cn.qiuye.gtmoremachine.api.machine.multiblock.ICCData;
+import cn.qiuye.gtmoremachine.api.machine.multiblock.feature.ICCData;
+import cn.qiuye.gtmoremachine.api.machine.multiblock.feature.IDimensionalBank;
+import cn.qiuye.gtmoremachine.api.machine.multiblock.record.DimensionalBank;
 import cn.qiuye.gtmoremachine.api.machine.trait.feature.IWirelessEnergyContainerHolder;
 import cn.qiuye.gtmoremachine.api.misc.wireless.energy.WirelessEnergyContainer;
 import cn.qiuye.gtmoremachine.utils.NumberUtils;
@@ -8,8 +10,6 @@ import cn.qiuye.gtmoremachine.utils.TeamUtils;
 
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.fancy.FancyMachineUIWidget;
-import com.gregtechceu.gtceu.api.gui.fancy.IFancyUIProvider;
 import com.gregtechceu.gtceu.api.gui.fancy.TooltipsPanel;
 import com.gregtechceu.gtceu.api.machine.ConditionalSubscriptionHandler;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
@@ -50,7 +50,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class DemodulationHubMachine extends WorkableMultiblockMachine
-                                    implements IFancyUIMachine, IDisplayUIMachine, IWirelessEnergyContainerHolder {
+                                    implements IFancyUIMachine, IDisplayUIMachine, IDimensionalBank, IWirelessEnergyContainerHolder {
 
     public static final String CAPACITY_COMPONENT_HEADER = "DRNComponent_";
 
@@ -58,6 +58,7 @@ public class DemodulationHubMachine extends WorkableMultiblockMachine
     private DimensionalRelayNodeBank capacityBank;
     @Getter
     @Setter
+    @Nullable
     private WirelessEnergyContainer wirelessEnergyContainerCache;
     private final ConditionalSubscriptionHandler tickSubscription;
 
@@ -98,13 +99,12 @@ public class DemodulationHubMachine extends WorkableMultiblockMachine
         if (item.isEmpty()) return InteractionResult.PASS;
 
         if (item.is(GTItems.TOOL_DATA_STICK.get())) {
-            setOwnerUUID(context.getPlayer().getUUID());
-            setWirelessEnergyContainerCache(null);
-
             WirelessEnergyContainer container = getWirelessEnergyContainer();
             if (container != null) {
-                container.setCapacity(this.getTotalCapacity(), this.getTotalPassiveDrain(), true, this);
+                container.setCapacity(this.isFormed(), this);
             }
+            setOwnerUUID(context.getPlayer().getUUID());
+            setWirelessEnergyContainerCache(null);
 
             context.getPlayer().sendSystemMessage(Component.translatable(
                     "gtmoremachine.machine.wireless_energy_hatch.tooltip.bind",
@@ -121,13 +121,12 @@ public class DemodulationHubMachine extends WorkableMultiblockMachine
         if (item.isEmpty()) return false;
 
         if (item.is(GTItems.TOOL_DATA_STICK.get())) {
-            setOwnerUUID(null);
-            wirelessEnergyContainerCache = null;
-
             WirelessEnergyContainer container = getWirelessEnergyContainer();
             if (container != null) {
-                container.setCapacity(BigInteger.ZERO, BigInteger.ZERO, false, this);
+                container.setCapacity(false, this);
             }
+            setOwnerUUID(null);
+            setWirelessEnergyContainerCache(null);
 
             player.sendSystemMessage(Component.translatable(
                     "gtmoremachine.machine.wireless_energy_hatch.tooltip.unbind"));
@@ -165,21 +164,11 @@ public class DemodulationHubMachine extends WorkableMultiblockMachine
         }
 
         tickSubscription.updateSubscription();
-
-        WirelessEnergyContainer container = getWirelessEnergyContainer();
-        if (container != null) {
-            container.setCapacity(this.getTotalCapacity(), this.getTotalPassiveDrain(), true, this);
-        }
     }
 
     @Override
     public void onStructureInvalid() {
         tickSubscription.unsubscribe();
-
-        WirelessEnergyContainer container = getWirelessEnergyContainer();
-        if (container != null) {
-            container.setCapacity(BigInteger.ZERO, BigInteger.ZERO, false, this);
-        }
 
         super.onStructureInvalid();
     }
@@ -187,6 +176,10 @@ public class DemodulationHubMachine extends WorkableMultiblockMachine
     // ============== Status Update ==============
 
     protected void updateMachineStatus() {
+        WirelessEnergyContainer container = getWirelessEnergyContainer();
+        if (container != null) {
+            container.setCapacity(this.isFormed(), this);
+        }
         if (!getLevel().isClientSide) {
             if (getOffsetTimer() % 20 == 0) {
                 getRecipeLogic().setStatus(RecipeLogic.Status.WORKING);
@@ -211,8 +204,7 @@ public class DemodulationHubMachine extends WorkableMultiblockMachine
 
     @Override
     public ModularUI createUI(Player entityPlayer) {
-        return new ModularUI(198, 208, this, entityPlayer)
-                .widget(new FancyMachineUIWidget(this, 198, 208));
+        return IFancyUIMachine.super.createUI(entityPlayer);
     }
 
     @Override
@@ -244,12 +236,6 @@ public class DemodulationHubMachine extends WorkableMultiblockMachine
     }
 
     @Override
-    public List<IFancyUIProvider> getSubTabs() {
-        return getParts().stream().filter(IFancyUIProvider.class::isInstance).map(IFancyUIProvider.class::cast)
-                .toList();
-    }
-
-    @Override
     public void attachTooltips(TooltipsPanel tooltipsPanel) {
         for (IMultiPart part : getParts()) {
             part.attachFancyTooltipsToController(this, tooltipsPanel);
@@ -266,7 +252,12 @@ public class DemodulationHubMachine extends WorkableMultiblockMachine
         // 固定为工作状态
     }
 
-    // ============== Inner Class: DimensionalRelayNodeBank ==============
+    @Override
+    public DimensionalBank getDimensionalRelayNodeBank() {
+        return new DimensionalBank(this.getTotalCapacity(), this.getTotalPassiveDrain());
+    }
+
+    // ============== Inner Class: DimensionalBank ==============
 
     public static class DimensionalRelayNodeBank extends MachineTrait {
 
@@ -279,9 +270,9 @@ public class DemodulationHubMachine extends WorkableMultiblockMachine
         }
 
         @Getter
-        public final BigInteger totalCapacity;
+        private final BigInteger totalCapacity;
         @Getter
-        public final BigInteger totalPassiveDrain;
+        private final BigInteger totalPassiveDrain;
 
         public DimensionalRelayNodeBank(MetaMachine machine, List<ICCData> components) {
             super(machine);

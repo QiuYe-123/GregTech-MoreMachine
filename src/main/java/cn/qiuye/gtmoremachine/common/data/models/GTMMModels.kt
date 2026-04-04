@@ -1,8 +1,8 @@
 package cn.qiuye.gtmoremachine.common.data.models
 
 import cn.qiuye.gtmoremachine.GTmm
-import cn.qiuye.gtmoremachine.api.machine.multiblock.ICCData
-import cn.qiuye.gtmoremachine.api.machine.multiblock.IECUBlock
+import cn.qiuye.gtmoremachine.api.machine.multiblock.feature.ICCData
+import cn.qiuye.gtmoremachine.api.machine.multiblock.feature.IECUBlock
 import cn.qiuye.gtmoremachine.common.block.ECUBlock
 import cn.qiuye.gtmoremachine.common.block.WECCBlock
 

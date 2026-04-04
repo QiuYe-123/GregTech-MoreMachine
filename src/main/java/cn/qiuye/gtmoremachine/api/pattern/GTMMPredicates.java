@@ -1,7 +1,7 @@
 package cn.qiuye.gtmoremachine.api.pattern;
 
 import cn.qiuye.gtmoremachine.api.GTMMAPI;
-import cn.qiuye.gtmoremachine.api.machine.multiblock.ICCData;
+import cn.qiuye.gtmoremachine.api.machine.multiblock.feature.ICCData;
 import cn.qiuye.gtmoremachine.common.block.WECCBlock;
 import cn.qiuye.gtmoremachine.common.machine.multiblock.electric.DemodulationHubMachine;
 

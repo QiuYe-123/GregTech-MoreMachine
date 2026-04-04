@@ -1,6 +1,8 @@
 package cn.qiuye.gtmoremachine.api.misc.wireless.energy;
 
 import cn.qiuye.gtmoremachine.api.capability.wireless.energy.IWirelessLoss;
+import cn.qiuye.gtmoremachine.api.machine.multiblock.feature.IDimensionalBank;
+import cn.qiuye.gtmoremachine.api.machine.multiblock.record.DimensionalBank;
 import cn.qiuye.gtmoremachine.api.misc.time.TimeStat;
 import cn.qiuye.gtmoremachine.api.misc.wireless.energy.feature.ICapacitylimitData;
 import cn.qiuye.gtmoremachine.api.misc.wireless.energy.feature.IDimensionTransferData;
@@ -186,18 +188,21 @@ public class WirelessEnergyContainer {
         return new StoragePercentageData(storage.divide(capacity, MathContext.DECIMAL32).multiply(BigDecimal.valueOf(100)), this.storage, this.capacity);
     }
 
-    public void setCapacity(BigInteger StorageCapacity, BigInteger PassiveDrain, boolean Bind, MetaMachine machine) {
+    public void setCapacity(boolean Bind, MetaMachine machine) {
         if (Bind) {
-            if (machine != null) CAPACITY_STORAGE_DATA.put(machine, new CapacityStorageData(this.UUID, StorageCapacity, PassiveDrain, machine));
+            if (machine instanceof IDimensionalBank DimensionalBankmachine) {
+                DimensionalBank NodeBank = DimensionalBankmachine.getDimensionalRelayNodeBank();
+                CAPACITY_STORAGE_DATA.put(machine, new CapacityStorageData(this.UUID, NodeBank.totalCapacity(), NodeBank.totalPassiveDrain(), machine));
+            }
         } else {
-            if (machine != null) CAPACITY_STORAGE_DATA.remove(machine);
+            CAPACITY_STORAGE_DATA.remove(machine);
         }
         BigInteger change = BigInteger.ZERO;
         BigInteger passiveDrain = BigInteger.ZERO;
         for (ICapacitylimitData data : CAPACITY_STORAGE_DATA.values()) {
             if (!data.UUID().equals(this.UUID)) continue;
-            if (data.StorageCapacity() != null) change = change.add(data.StorageCapacity());
-            if (data.PassiveDrain() != null) passiveDrain = passiveDrain.add(data.PassiveDrain());
+            change = change.add(data.StorageCapacity());
+            passiveDrain = passiveDrain.add(data.PassiveDrain());
         }
         this.capacity = change;
         this.passiveDrain = passiveDrain;
@@ -213,7 +218,6 @@ public class WirelessEnergyContainer {
             }
         } else {
             if (this.dimension.getInt(tierdimension) > Voltagelevel) {
-                DIMENSIONAL_TRANSFER_DATA.remove(machine);
                 this.dimension.removeInt(tierdimension);
             }
         }
