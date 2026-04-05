@@ -25,6 +25,7 @@ import java.text.NumberFormat
 import java.util.*
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicInteger
+import kotlin.math.abs
 
 object FormattingUtil {
 	val DECIMAL_FORMAT_1F = DecimalFormat("#,##0.#")
@@ -100,11 +101,31 @@ object FormattingUtil {
 	}
 
 	@JvmStatic
+	fun voltageName(avgEnergy: Long): Component {
+		val floorTier = GTUtil.getFloorTierByVoltage(
+			abs(avgEnergy),
+		).toInt()
+		return Component.literal(GTValues.VNF[floorTier])
+	}
+
+	@JvmStatic
 	fun voltageAmperage(avgEnergy: BigDecimal): BigDecimal {
 		val floorTier = GTUtil.getFloorTierByVoltage(
 			avgEnergy.min(BigDecimal.valueOf(Long.MAX_VALUE)).abs().toLong(),
 		).toInt()
 		return avgEnergy.abs().divide(
+			BigDecimal.valueOf(GTValues.VEX[floorTier]),
+			1,
+			RoundingMode.FLOOR,
+		)
+	}
+
+	@JvmStatic
+	fun voltageAmperage(avgEnergy: Long): BigDecimal {
+		val floorTier = GTUtil.getFloorTierByVoltage(
+			abs(avgEnergy),
+		).toInt()
+		return BigDecimal.valueOf(abs(avgEnergy)).divide(
 			BigDecimal.valueOf(GTValues.VEX[floorTier]),
 			1,
 			RoundingMode.FLOOR,

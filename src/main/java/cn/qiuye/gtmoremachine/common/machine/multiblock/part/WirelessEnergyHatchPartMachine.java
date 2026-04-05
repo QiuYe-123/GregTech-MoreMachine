@@ -1,7 +1,7 @@
 package cn.qiuye.gtmoremachine.common.machine.multiblock.part;
 
 import cn.qiuye.gtmoremachine.GTmm;
-import cn.qiuye.gtmoremachine.api.machine.IWirelessEnergyContainerHolder;
+import cn.qiuye.gtmoremachine.api.machine.trait.feature.IWirelessEnergyContainerHolder;
 import cn.qiuye.gtmoremachine.api.misc.wireless.energy.WirelessEnergyContainer;
 import cn.qiuye.gtmoremachine.utils.TeamUtils;
 
@@ -105,7 +105,7 @@ public class WirelessEnergyHatchPartMachine extends TieredIOPartMachine implemen
         if (changeStored <= 0) return;
         WirelessEnergyContainer container = getWirelessEnergyContainer();
         if (container == null) return;
-        changeStored = container.removeEnergy(this.tier, changeStored, this);
+        changeStored = container.removeTierEnergy(changeStored, this);
         if (changeStored > 0) energyContainer.setEnergyStored(currentStored + changeStored);
     }
 
@@ -115,7 +115,7 @@ public class WirelessEnergyHatchPartMachine extends TieredIOPartMachine implemen
         var changeStored = Math.min(energyContainer.getOutputVoltage() * energyContainer.getOutputAmperage(), currentStored);
         WirelessEnergyContainer container = getWirelessEnergyContainer();
         if (container == null) return;
-        changeStored = container.addEnergy(this.tier, changeStored, this);
+        changeStored = container.addTierEnergy(changeStored, this);
         if (changeStored > 0) energyContainer.setEnergyStored(currentStored - changeStored);
     }
 

@@ -1,7 +1,7 @@
 package cn.qiuye.gtmoremachine.common.cover;
 
-import cn.qiuye.gtmoremachine.api.machine.IWirelessEnergyContainerHolder;
-import cn.qiuye.gtmoremachine.api.machine.WirelessEnergyReceiveCoverHolder;
+import cn.qiuye.gtmoremachine.api.machine.trait.feature.IWirelessEnergyContainerHolder;
+import cn.qiuye.gtmoremachine.api.machine.trait.feature.WirelessEnergyReceiveCoverHolder;
 import cn.qiuye.gtmoremachine.api.misc.wireless.energy.WirelessEnergyContainer;
 
 import com.gregtechceu.gtceu.api.GTValues;
@@ -38,6 +38,7 @@ public class WirelessEnergyReceiveCover extends CoverBehavior implements IWirele
 
     @Getter
     @Setter
+    @Nullable
     private WirelessEnergyContainer WirelessEnergyContainerCache;
 
     private MetaMachine machine;
@@ -94,7 +95,7 @@ public class WirelessEnergyReceiveCover extends CoverBehavior implements IWirele
     public void onRemoved() {
         super.onRemoved();
         machine = null;
-        WirelessEnergyContainerCache = null;
+        setWirelessEnergyContainerCache(null);
         if (subscription != null) {
             subscription.unsubscribe();
             subscription = null;
@@ -115,14 +116,14 @@ public class WirelessEnergyReceiveCover extends CoverBehavior implements IWirele
                 if (changeStored <= 0) return;
                 WirelessEnergyContainer container = getWirelessEnergyContainer();
                 if (container == null) return;
-                long changeenergy = container.removeEnergy(this.tier, changeStored, machine);
+                long changeenergy = container.removeTierEnergy(changeStored, machine);
                 if (changeenergy > 0) energyContainer.acceptEnergyFromNetwork(null, changeenergy / this.amperage, this.amperage);
             } else {
                 var changeStored = Math.min(this.machineMaxEnergy - energyContainer.getEnergyStored(), this.energyPerTick);
                 if (changeStored <= 0) return;
                 WirelessEnergyContainer container = getWirelessEnergyContainer();
                 if (container == null) return;
-                long changeenergy = container.removeEnergy(this.tier, changeStored, machine);
+                long changeenergy = container.removeTierEnergy(changeStored, machine);
                 if (changeenergy > 0) energyContainer.addEnergy(changeenergy);
             }
         }

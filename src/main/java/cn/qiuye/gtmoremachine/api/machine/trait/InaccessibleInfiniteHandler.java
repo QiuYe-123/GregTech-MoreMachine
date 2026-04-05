@@ -12,7 +12,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 
 import appeng.api.stacks.AEItemKey;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
 import java.util.List;
@@ -68,7 +67,7 @@ public class InaccessibleInfiniteHandler extends NotifiableItemStackHandler {
     }
 
     @Override
-    public @NotNull List<Object> getContents() {
+    public List<Object> getContents() {
         return Collections.emptyList();
     }
 
@@ -109,15 +108,15 @@ public class InaccessibleInfiniteHandler extends NotifiableItemStackHandler {
         }
 
         @Override
-        public @NotNull ItemStack getStackInSlot(int slot) {
+        public ItemStack getStackInSlot(int slot) {
             return ItemStack.EMPTY;
         }
 
         @Override
-        public void setStackInSlot(int slot, @NotNull ItemStack stack) {}
+        public void setStackInSlot(int slot, ItemStack stack) {}
 
         @Override
-        public @NotNull ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
+        public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
             var key = AEItemKey.of(stack);
             int count = stack.getCount();
             long oldValue = internalBuffer.storage.getOrDefault(key, 0);
@@ -132,7 +131,7 @@ public class InaccessibleInfiniteHandler extends NotifiableItemStackHandler {
     }
 
     @Override
-    public @NotNull ItemStack extractItem(int slot, int amount, boolean simulate) {
+    public ItemStack extractItem(int slot, int amount, boolean simulate) {
         return ItemStack.EMPTY;
     }
 }

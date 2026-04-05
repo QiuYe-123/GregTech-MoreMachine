@@ -1,6 +1,6 @@
 package cn.qiuye.gtmoremachine.common.machine.multiblock.part;
 
-import cn.qiuye.gtmoremachine.common.machine.trait.CatalystFluidStackHandler;
+import cn.qiuye.gtmoremachine.api.machine.trait.CatalystFluidStackHandler;
 import cn.qiuye.gtmoremachine.utils.NumberUtils;
 
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;

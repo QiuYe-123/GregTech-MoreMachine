@@ -93,7 +93,6 @@ legacyForge {
 
 idea {
     module {
-        name = rootProject.name
         downloadSources = true
         downloadJavadoc = true
     }

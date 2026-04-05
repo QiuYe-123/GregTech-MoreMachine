@@ -1,7 +1,7 @@
 package cn.qiuye.gtmoremachine.common.machine.multiblock.part;
 
 import cn.qiuye.gtmoremachine.api.capability.IGTMMJadeIF;
-import cn.qiuye.gtmoremachine.common.block.machine.trait.WirelessNotifiableComputationContainer;
+import cn.qiuye.gtmoremachine.api.machine.trait.WirelessNotifiableComputationContainer;
 
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
@@ -30,29 +30,20 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 public class WirelessCWUHatchMachine extends MultiblockPartMachine implements IDataStickInteractable, IGTMMJadeIF {
 
+    @Getter
     private final boolean transmitter;
 
     @SaveField
     private BlockPos transmitterPos;
     @SaveField
     private BlockPos receiverPos;
+
     protected WirelessNotifiableComputationContainer computationContainer;
 
     public WirelessCWUHatchMachine(BlockEntityCreationInfo holder, boolean transmitter) {
         super(holder);
         this.transmitter = transmitter;
-        this.computationContainer = createComputationContainer(transmitter);
-    }
-
-    protected WirelessNotifiableComputationContainer createComputationContainer(Object... args) {
-        IO io = IO.IN;
-        if (args.length > 1 && args[args.length - 2] instanceof IO newIo) {
-            io = newIo;
-        }
-        if (args.length > 0 && args[args.length - 1] instanceof Boolean transmitter) {
-            return new WirelessNotifiableComputationContainer(this, io, transmitter);
-        }
-        throw new IllegalArgumentException();
+        this.computationContainer = new WirelessNotifiableComputationContainer(this, IO.IN, transmitter);
     }
 
     @Override
