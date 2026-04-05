@@ -1,0 +1,294 @@
+package cn.qiuye.gtmoremachine.api.misc.wireless.energy.feature;
+
+import cn.qiuye.gtmoremachine.api.gui.monitor.*;
+import cn.qiuye.gtmoremachine.api.machine.trait.feature.IWirelessEnergyContainerHolder;
+import cn.qiuye.gtmoremachine.api.misc.time.TimeStat;
+import cn.qiuye.gtmoremachine.api.misc.wireless.energy.WirelessEnergyContainer;
+import cn.qiuye.gtmoremachine.config.GTMMConfig;
+import cn.qiuye.gtmoremachine.utils.BigNumberUtils;
+import cn.qiuye.gtmoremachine.utils.FormattingUtil;
+import cn.qiuye.gtmoremachine.utils.NumberUtils;
+import cn.qiuye.gtmoremachine.utils.TeamUtils;
+
+import com.gregtechceu.gtceu.api.machine.MetaMachine;
+
+import com.lowdragmc.lowdraglib.gui.widget.ComponentPanelWidget;
+
+import net.minecraft.ChatFormatting;
+import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.level.Level;
+
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.time.Duration;
+import java.util.*;
+
+import javax.annotation.ParametersAreNonnullByDefault;
+
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
+public interface IWirelessMonitor extends IWirelessEnergyContainerHolder {
+
+    default List<Component> getDisplayText(Statistics statistics, Format format, Status powerStatus, Sorting sorting, Type type) {
+        List<Component> textListCache = new ArrayList<>();
+        WirelessEnergyContainer container = getWirelessEnergyContainer();
+        if (container == null) return List.of();
+        BigInteger energyTotal = container.getStorage();
+        textListCache.add(Component.translatable("gtmoremachine.machine.wireless_monitor.tooltip.0",
+                TeamUtils.getName(getLevel(), getUUID())).withStyle(ChatFormatting.AQUA));
+        textListCache.add(FormattingUtil.formatWithConstantWidth("gtmoremachine.machine.wireless_energy_monitor.tooltip.1",
+                Component.literal(NumberUtils.formatBigIntegerNumberOrSic(energyTotal, format)).withStyle(ChatFormatting.GOLD),
+                Component.literal(NumberUtils.formatBigDecimalNumberOrSic(FormattingUtil.voltageAmperage(new BigDecimal(energyTotal)), format)),
+                FormattingUtil.voltageName(new BigDecimal(energyTotal))));
+        if (GTMMConfig.INSTANCE.isWirelessRateEnable) {
+            BigInteger rate = container.getRate();
+            textListCache.add(FormattingUtil.formatWithConstantWidth("gtmoremachine.machine.wireless_energy_monitor.tooltip.2",
+                    Component.literal(NumberUtils.formatBigIntegerNumberOrSic(rate, format)).withStyle(ChatFormatting.GRAY),
+                    Component.literal(NumberUtils.formatBigDecimalNumberOrSic(FormattingUtil.voltageAmperage(new BigDecimal(rate)), format)),
+                    FormattingUtil.voltageName(new BigDecimal(rate))));
+        }
+
+        TimeStat stat = container.getEnergyStat();
+        textListCache.add(Component.translatable("gtmoremachine.machine.wireless_monitor.tooltip.net_power",
+                getPowerStatusText(powerStatus)));
+
+        BigDecimal avgMinute = stat.getMinuteAvg(powerStatus);
+        textListCache.add(FormattingUtil.formatWithConstantWidth("gtmoremachine.machine.wireless_energy_monitor.tooltip.last_minute",
+                Component.literal(NumberUtils.formatBigDecimalNumberOrSic(avgMinute, format)).withStyle(ChatFormatting.DARK_AQUA),
+                Component.literal(NumberUtils.formatBigDecimalNumberOrSic(FormattingUtil.voltageAmperage(avgMinute), format)),
+                FormattingUtil.voltageName(avgMinute)));
+        BigDecimal avgHour = stat.getHourAvg(powerStatus);
+        textListCache.add(FormattingUtil.formatWithConstantWidth("gtmoremachine.machine.wireless_energy_monitor.tooltip.last_hour",
+                Component.literal(NumberUtils.formatBigDecimalNumberOrSic(avgHour, format)).withStyle(ChatFormatting.YELLOW),
+                Component.literal(NumberUtils.formatBigDecimalNumberOrSic(FormattingUtil.voltageAmperage(avgHour), format)),
+                FormattingUtil.voltageName(avgHour)));
+        BigDecimal avgDay = stat.getDayAvg(powerStatus);
+        textListCache.add(FormattingUtil.formatWithConstantWidth("gtmoremachine.machine.wireless_energy_monitor.tooltip.last_day",
+                Component.literal(NumberUtils.formatBigDecimalNumberOrSic(avgDay, format)).withStyle(ChatFormatting.DARK_GREEN),
+                Component.literal(NumberUtils.formatBigDecimalNumberOrSic(FormattingUtil.voltageAmperage(avgDay), format)),
+                FormattingUtil.voltageName(avgDay)));
+        // average useage
+        BigDecimal avgEnergy = stat.getAvg(powerStatus);
+        textListCache.add(FormattingUtil.formatWithConstantWidth("gtmoremachine.machine.wireless_energy_monitor.tooltip.now",
+                Component.literal(NumberUtils.formatBigDecimalNumberOrSic(avgEnergy, format)).withStyle(ChatFormatting.DARK_PURPLE),
+                Component.literal(NumberUtils.formatBigDecimalNumberOrSic(FormattingUtil.voltageAmperage(avgEnergy), format)),
+                FormattingUtil.voltageName(avgEnergy)));
+
+        BigDecimal allAvgEnergy = stat.getAvg(Status.All);
+        int compare = allAvgEnergy.compareTo(BigDecimal.valueOf(0));
+        BigInteger multiply = allAvgEnergy.abs().toBigInteger().multiply(BigInteger.valueOf(20));
+        if (compare > 0) {
+            textListCache.add(Component.translatable("gtceu.multiblock.power_substation.time_to_fill",
+                    GTMMConfig.INSTANCE.isWirelessCapacitylimitEnable ?
+                            getTimeToFillDrainText((container.getCapacity().subtract(energyTotal)).divide(multiply)) :
+                            Component.translatable("gtmoremachine.machine.wireless_energy_monitor.tooltip.time_to_fill"))
+                    .withStyle(ChatFormatting.GRAY));
+        } else if (compare < 0) {
+            textListCache.add(Component.translatable("gtceu.multiblock.power_substation.time_to_drain",
+                    getTimeToFillDrainText(energyTotal.divide(multiply)))
+                    .withStyle(ChatFormatting.GRAY));
+        } else {
+            textListCache.add(Component.translatable("gtceu.multiblock.power_substation.time_to_drain",
+                    Component.translatable("gtceu.multiblock.power_substation.time_forever")).withStyle(ChatFormatting.GRAY));
+        }
+
+        if (GTMMConfig.INSTANCE.isWirelessRateEnable && container.getBindPos() != null) {
+            String pos = container.getBindPos().pos().toShortString();
+            textListCache.add(Component.translatable("gtmoremachine.machine.wireless_energy_hatch.tooltip.2",
+                    Component.translatable("recipe.condition.dimension.tooltip", container.getBindPos().dimension().location().toString()).append(" [").append(pos).append("] ")).withStyle(ChatFormatting.GRAY));
+        }
+        textListCache.add(Component.translatable("gtmoremachine.machine.wireless_monitor.tooltip.statistics.energy",
+                ComponentPanelWidget.withButton(getStatisticsText(statistics), "statistics", getStaticscolor(statistics)),
+                ComponentPanelWidget.withButton(getFormatText(format), "format", getFormatcolor(format)),
+                ComponentPanelWidget.withButton(getPowerStatusText(powerStatus), "powerStatus", getPowerStatuscolor(powerStatus)),
+                ComponentPanelWidget.withButton(getSortingRulesText(sorting), "sortingrules", getSortingRulescolor(sorting)),
+                ComponentPanelWidget.withButton(getTypeText(type), "type", getTypecolor(type))));
+
+        WirelessEnergyContainer.observed = true;
+        if (type == Type.PowerInteraction) {
+            for (Map.Entry<MetaMachine, ITransferData> m : getTransferList(sorting)) {
+                UUID uuid = m.getValue().UUID();
+                BigInteger through = m.getValue().Throughput();
+                if (statistics == Statistics.Global || uuid.equals(TeamUtils.getTeamUUID(this.getUUID()))) {
+                    if (powerStatus == Status.All) {
+                        textListCache.add(m.getValue().getInfo(format));
+                    } else if (powerStatus == Status.In && through.compareTo(BigInteger.ZERO) > 0) {
+                        textListCache.add(m.getValue().getInfo(format));
+                    } else if (powerStatus == Status.Out && through.compareTo(BigInteger.ZERO) < 0) {
+                        textListCache.add(m.getValue().getInfo(format));
+                    }
+                }
+            }
+            WirelessEnergyContainer.TRANSFER_DATA.clear();
+        } else if (type == Type.Capacitycomponent) {
+            for (Map.Entry<MetaMachine, ICapacitylimitData> m : getCapacitylimitList(sorting)) {
+                UUID uuid = m.getValue().UUID();
+                if (statistics == Statistics.Global || uuid.equals(TeamUtils.getTeamUUID(this.getUUID()))) {
+                    textListCache.add(m.getValue().getInfo(format));
+                }
+            }
+        } else if (type == Type.RelayNode) {
+            for (Map.Entry<MetaMachine, IDimensionTransferData> m : getDimensionTransferList(sorting)) {
+                UUID uuid = m.getValue().UUID();
+                if (statistics == Statistics.Global || uuid.equals(TeamUtils.getTeamUUID(this.getUUID()))) {
+                    textListCache.add(m.getValue().getInfo());
+                }
+            }
+            WirelessEnergyContainer.DIMENSIONAL_TRANSFER_DATA.clear();
+        }
+
+        return textListCache;
+    }
+
+    Level getLevel();
+
+    private static Component getTimeToFillDrainText(BigInteger timeToFillSeconds) {
+        if (timeToFillSeconds.compareTo(BigNumberUtils.big_integer_max_kong) > 0) {
+            timeToFillSeconds = BigNumberUtils.big_integer_max_kong;
+        }
+
+        Duration duration = Duration.ofSeconds(timeToFillSeconds.longValue());
+        String key;
+        long fillTime;
+        if (duration.getSeconds() <= 180) {
+            fillTime = duration.getSeconds();
+            key = "gtceu.multiblock.power_substation.time_seconds";
+        } else if (duration.toMinutes() <= 180) {
+            fillTime = duration.toMinutes();
+            key = "gtceu.multiblock.power_substation.time_minutes";
+        } else if (duration.toHours() <= 72) {
+            fillTime = duration.toHours();
+            key = "gtceu.multiblock.power_substation.time_hours";
+        } else if (duration.toDays() <= 730) { // 2 years
+            fillTime = duration.toDays();
+            key = "gtceu.multiblock.power_substation.time_days";
+        } else if (duration.toDays() / 365 < 1_000_000) {
+            fillTime = duration.toDays() / 365;
+            key = "gtceu.multiblock.power_substation.time_years";
+        } else {
+            return Component.translatable("gtceu.multiblock.power_substation.time_forever");
+        }
+
+        return Component.translatable(key, NumberUtils.formatLong(fillTime));
+    }
+
+    private List<Map.Entry<MetaMachine, ITransferData>> getTransferList(Sorting sorting) {
+        return WirelessEnergyContainer.TRANSFER_DATA.entrySet()
+                .stream()
+                .sorted((entry1, entry2) -> {
+                    BigInteger throughput1 = entry1.getValue().Throughput();
+                    BigInteger throughput2 = entry2.getValue().Throughput();
+                    if (sorting == Sorting.Ascending) {
+                        return throughput1.compareTo(throughput2);
+                    } else {
+                        return throughput2.compareTo(throughput1);
+                    }
+                })
+                .toList();
+    }
+
+    private List<Map.Entry<MetaMachine, ICapacitylimitData>> getCapacitylimitList(Sorting sorting) {
+        return WirelessEnergyContainer.CAPACITY_STORAGE_DATA.entrySet()
+                .stream()
+                .sorted((entry1, entry2) -> {
+                    BigInteger capacity1 = entry1.getValue().StorageCapacity();
+                    BigInteger capacity2 = entry2.getValue().StorageCapacity();
+                    if (sorting == Sorting.Ascending) {
+                        return capacity1.compareTo(capacity2);
+                    } else {
+                        return capacity2.compareTo(capacity1);
+                    }
+                })
+                .toList();
+    }
+
+    private List<Map.Entry<MetaMachine, IDimensionTransferData>> getDimensionTransferList(Sorting sorting) {
+        return WirelessEnergyContainer.DIMENSIONAL_TRANSFER_DATA.entrySet()
+                .stream()
+                .sorted((entry1, entry2) -> {
+                    int voltage1 = entry1.getValue().Voltagelevel();
+                    int voltage2 = entry2.getValue().Voltagelevel();
+                    if (sorting == Sorting.Ascending) {
+                        return Integer.compare(voltage1, voltage2);
+                    } else {
+                        return Integer.compare(voltage2, voltage1);
+                    }
+                })
+                .toList();
+    }
+
+    private static Component getStatisticsText(Statistics statistics) {
+        return switch (statistics) {
+            case Global -> Component.translatable("gtmoremachine.machine.wireless_energy_monitor.tooltip.all");
+            case Team -> Component.translatable("gtmoremachine.machine.wireless_energy_monitor.tooltip.team");
+        };
+    }
+
+    private static int getStaticscolor(Statistics statistics) {
+        return switch (statistics) {
+            case Global -> ChatFormatting.YELLOW.getColor();
+            case Team -> ChatFormatting.GOLD.getColor();
+        };
+    }
+
+    private static Component getFormatText(Format format) {
+        return switch (format) {
+            case Science -> Component.translatable("gtmoremachine.machine.wireless_energy_monitor.tooltip.science");
+            case Unit -> Component.translatable("gtmoremachine.machine.wireless_energy_monitor.tooltip.unit");
+        };
+    }
+
+    private static int getFormatcolor(Format format) {
+        return switch (format) {
+            case Science -> ChatFormatting.AQUA.getColor();
+            case Unit -> ChatFormatting.RED.getColor();
+        };
+    }
+
+    private static Component getPowerStatusText(Status powerStatus) {
+        return switch (powerStatus) {
+            case All -> Component.translatable("gtmoremachine.machine.wireless_energy_monitor.tooltip.power_all");
+            case In -> Component.translatable("gtmoremachine.machine.wireless_energy_monitor.tooltip.power_in");
+            case Out -> Component.translatable("gtmoremachine.machine.wireless_energy_monitor.tooltip.power_out");
+        };
+    }
+
+    private static int getPowerStatuscolor(Status powerStatus) {
+        return switch (powerStatus) {
+            case All -> ChatFormatting.GREEN.getColor();
+            case In -> ChatFormatting.BLUE.getColor();
+            case Out -> ChatFormatting.DARK_RED.getColor();
+        };
+    }
+
+    private static Component getSortingRulesText(Sorting sorting) {
+        return switch (sorting) {
+            case Ascending -> Component.translatable("gtmoremachine.machine.wireless_energy_monitor.tooltip.ascending");
+            case Descendingorder -> Component.translatable("gtmoremachine.machine.wireless_energy_monitor.tooltip.descendingorder");
+        };
+    }
+
+    private static int getSortingRulescolor(Sorting sorting) {
+        return switch (sorting) {
+            case Ascending -> ChatFormatting.GREEN.getColor();
+            case Descendingorder -> ChatFormatting.RED.getColor();
+        };
+    }
+
+    private static Component getTypeText(Type type) {
+        return switch (type) {
+            case PowerInteraction -> Component.translatable("gtmoremachine.machine.wireless_energy_monitor.tooltip.powerinteraction");
+            case Capacitycomponent -> Component.translatable("gtmoremachine.machine.wireless_energy_monitor.tooltip.capacitycomponent");
+            case RelayNode -> Component.translatable("gtmoremachine.machine.wireless_energy_monitor.tooltip.relaynode");
+        };
+    }
+
+    private static int getTypecolor(Type type) {
+        return switch (type) {
+            case PowerInteraction -> ChatFormatting.GREEN.getColor();
+            case Capacitycomponent -> ChatFormatting.BLUE.getColor();
+            case RelayNode -> ChatFormatting.DARK_RED.getColor();
+        };
+    }
+}

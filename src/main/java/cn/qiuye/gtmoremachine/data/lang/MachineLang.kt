@@ -174,7 +174,6 @@ object MachineLang {
 		)
 		addCNEN("gui.gtmoremachine.me_export_buffer.item_status.full", "物品存储空间已满", "Item storage space is full.")
 		addCNEN("gui.gtmoremachine.me_export_buffer.fluid_status.full", "流体存储空间已满", "Fluid storage space is full.")
-		addCNEN("gtmoremachine.machine.wireless_monitor.tooltip.0", "所有者：%s", "Owner: %s")
 		addCNEN("gtmoremachine.machine.wireless_monitor.tooltip.net_power", "平均净功率：%s", "Average Net Power: %s")
 		addCNEN("gtmoremachine.machine.wireless_monitor.tooltip.net_cwu", "平均净CWU：%s", "Average Net CWU: %s")
 		addCNEN(

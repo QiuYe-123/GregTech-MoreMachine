@@ -31,23 +31,19 @@ public class ForgeCommonEventListener {
                     if (refreshBinding) {
                         BigInteger rate;
                         GlobalPos pos = container.getBindPos();
-                        if (pos != null) {
-                            MetaMachine machine = WirelessEnergyBindingToolBehavior.Companion.getmachine(event.getServer().getLevel(pos.dimension()), pos.pos());
+                        MetaMachine machine = MetaMachine.getMachine(event.getServer().getLevel(pos.dimension()), pos.pos());
+                        if (machine != null) {
                             rate = WirelessEnergyBindingToolBehavior.Companion.getRate(machine);
                             container.setDimensional(14, rate.compareTo(BigInteger.ZERO) > 0, machine);
                             container.setRate(rate);
                         }
                     }
-                    container.PassiveDrainEnergy(container.getPassiveDrain());
+                    container.PassiveDrainEnergy();
 
-                    container.getAllEnergyStat().tick();
-                    container.getInEnergyStat().tick();
-                    container.getOutEnergyStat().tick();
+                    container.getEnergyStat().tick();
                 }
                 for (WirelessCWUContainer container : WirelessCWUSavedData.INSTANCE.containerMap.values()) {
-                    container.getAllCWUStat().tick();
-                    container.getInCWUStat().tick();
-                    container.getOutCWUStat().tick();
+                    container.getCWUStat().tick();
                 }
             }
         } else {

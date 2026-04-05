@@ -1,6 +1,6 @@
 package cn.qiuye.gtmoremachine.common.machine.electric;
 
-import cn.qiuye.gtmoremachine.api.machine.IWirelessEnergyContainerHolder;
+import cn.qiuye.gtmoremachine.api.machine.trait.feature.IWirelessEnergyContainerHolder;
 import cn.qiuye.gtmoremachine.api.misc.wireless.energy.WirelessEnergyContainer;
 import cn.qiuye.gtmoremachine.utils.TeamUtils;
 
@@ -10,10 +10,9 @@ import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredIOPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableEnergyContainer;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.utils.ExtendedUseOnContext;
-
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
@@ -44,12 +43,15 @@ public class WirelessEnergyInterface extends TieredIOPartMachine implements IWir
     @Nullable
     private WirelessEnergyContainer WirelessEnergyContainerCache;
 
-    @Persisted
+    @SaveField
     public final NotifiableEnergyContainer energyContainer;
 
     public WirelessEnergyInterface(BlockEntityCreationInfo holder) {
         super(holder, GTValues.MAX, IO.IN);
-        this.energyContainer = createEnergyContainer();
+        this.energyContainer = NotifiableEnergyContainer.receiverContainer(this, Long.MAX_VALUE,
+                GTValues.VEX[tier], 67108864);
+        this.energyContainer.setSideInputCondition(s -> s == getFrontFacing() && isWorkingEnabled());
+        this.energyContainer.setCapabilityValidator(s -> s == null || s == getFrontFacing());
     }
 
     protected NotifiableEnergyContainer createEnergyContainer() {
@@ -108,6 +110,7 @@ public class WirelessEnergyInterface extends TieredIOPartMachine implements IWir
         if (item.isEmpty()) return InteractionResult.PASS;
         if (item.is(GTItems.TOOL_DATA_STICK.asItem())) {
             setOwnerUUID(context.getPlayer().getUUID());
+            setWirelessEnergyContainerCache(null);
             if (isRemote()) {
                 context.getPlayer().sendSystemMessage(Component.translatable("gtmoremachine.machine.wireless_energy_hatch.tooltip.bind", TeamUtils.getName(context.getPlayer())));
             }

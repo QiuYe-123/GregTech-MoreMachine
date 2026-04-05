@@ -2,7 +2,6 @@ package cn.qiuye.gtmoremachine.integration.jade.provider;
 
 import cn.qiuye.gtmoremachine.GTmm;
 import cn.qiuye.gtmoremachine.api.capability.IGTMMJadeIF;
-import cn.qiuye.gtmoremachine.utils.FormattingUtil;
 
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.integration.jade.provider.CapabilityBlockProvider;
@@ -11,7 +10,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -24,7 +22,7 @@ import snownee.jade.api.config.IPluginConfig;
 public class WirelessOpticalComputationHatchProvider extends CapabilityBlockProvider<IGTMMJadeIF> {
 
     public WirelessOpticalComputationHatchProvider() {
-        super(ResourceLocation.tryBuild(GTmm.MOD_ID, FormattingUtil.toLowerCaseUnderscore("wireless_optical_computation_hatch_provider")));
+        super(GTmm.id("wireless_optical_computation_hatch_provider"));
     }
 
     @Override
@@ -49,7 +47,7 @@ public class WirelessOpticalComputationHatchProvider extends CapabilityBlockProv
         if (!capData.getBoolean("isGTMMJadeIF")) return;
         if (capData.getBoolean("isBinded")) {
             if (capData.getBoolean("isTransmitter")) {
-                tooltip.add(Component.translatable("gtmoremachine.transmitter_hatch.bind", capData.getString("pos")));
+                tooltip.add(Component.translatable("gtmoremachine.machine.transmitter_hatch.bind", capData.getString("pos")));
             } else {
                 tooltip.add(Component.translatable("gtmoremachine.machine.receiver_hatch.bind", capData.getString("pos")));
             }

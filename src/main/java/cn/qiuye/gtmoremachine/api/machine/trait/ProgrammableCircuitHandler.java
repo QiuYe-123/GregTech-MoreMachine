@@ -11,13 +11,16 @@ import com.gregtechceu.gtceu.api.machine.SimpleTieredMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.world.item.ItemStack;
-
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
 import java.util.List;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public class ProgrammableCircuitHandler extends NotifiableItemStackHandler {
 
     public ProgrammableCircuitHandler(MetaMachine machine) {
@@ -25,7 +28,6 @@ public class ProgrammableCircuitHandler extends NotifiableItemStackHandler {
     }
 
     @Override
-    @NotNull
     public List<Object> getContents() {
         return Collections.singletonList(this.storage.getStackInSlot(0));
     }
@@ -35,7 +37,6 @@ public class ProgrammableCircuitHandler extends NotifiableItemStackHandler {
         return this.storage.getStackInSlot(0).getCount();
     }
 
-    @NotNull
     @Override
     public ItemStack getStackInSlot(int slot) {
         return ItemStack.EMPTY;
@@ -55,9 +56,8 @@ public class ProgrammableCircuitHandler extends NotifiableItemStackHandler {
             return 1;
         }
 
-        @NotNull
         @Override
-        public ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
+        public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
             if (stack.is(GTMMAEItems.VIRTUAL_ITEM_PROVIDER.get())) {
                 boolean allow = true;
                 if (this.machine instanceof SimpleTieredMachine tieredMachine) {
@@ -77,7 +77,6 @@ public class ProgrammableCircuitHandler extends NotifiableItemStackHandler {
             return stack;
         }
 
-        @NotNull
         @Override
         public ItemStack extractItem(int slot, int amount, boolean simulate) {
             return simulate ? super.extractItem(slot, amount, true) : ItemStack.EMPTY;

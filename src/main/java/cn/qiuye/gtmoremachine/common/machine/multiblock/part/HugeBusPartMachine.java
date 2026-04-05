@@ -2,9 +2,9 @@ package cn.qiuye.gtmoremachine.common.machine.multiblock.part;
 
 import cn.qiuye.gtmoremachine.api.machine.fancyconfigurator.ButtonConfigurator;
 import cn.qiuye.gtmoremachine.api.machine.fancyconfigurator.InventoryFancyConfigurator;
+import cn.qiuye.gtmoremachine.api.machine.trait.CatalystItemStackHandler;
 import cn.qiuye.gtmoremachine.api.misc.UnlimitedItemStackTransfer;
 import cn.qiuye.gtmoremachine.api.transfer.UnlimitItemTransferHelper;
-import cn.qiuye.gtmoremachine.common.machine.trait.CatalystItemStackHandler;
 import cn.qiuye.gtmoremachine.utils.NumberUtils;
 
 import com.gregtechceu.gtceu.api.GTValues;
