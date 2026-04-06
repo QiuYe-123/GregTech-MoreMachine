@@ -324,7 +324,6 @@ public class AdvancedBlockNoAEPattern extends BlockPattern {
         if (!collectedItems.isEmpty() && !player.isCreative()) {
             giveItemsToPlayer(player, collectedItems);
         }
-        controller.checkPatternWithTryLock();
     }
 
     /**
