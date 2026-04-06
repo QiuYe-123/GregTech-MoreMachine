@@ -61,16 +61,16 @@ public class AdvancedTerminalBehavior implements IItemUIFactory {
                 var autoBuildSetting = getAutoBuildSetting(context.getPlayer().getMainHandItem());
 
                 if (GTmm.Mods.isAE2Loaded()) {
-                    if (!controller.isFormed() || autoBuildSetting.isUseDemolish()) {
+                    if (!controller.isFormed()) {
                         AdvancedBlockPattern.getAdvancedBlockPattern(controller.getPattern()).autoBuild(context.getPlayer(), controller.getMultiblockState(), autoBuildSetting);
-                    } else if (metaMachine instanceof WorkableMultiblockMachine machine && autoBuildSetting.isReplaceMode()) {
+                    } else if (metaMachine instanceof WorkableMultiblockMachine machine && (autoBuildSetting.isReplaceMode() || autoBuildSetting.isUseDemolish())) {
                         AdvancedBlockPattern.getAdvancedBlockPattern(controller.getPattern()).autoBuild(context.getPlayer(), controller.getMultiblockState(), autoBuildSetting);
                         machine.onPartUnload();
                     }
                 } else {
-                    if (!controller.isFormed() || autoBuildSetting.isUseDemolish()) {
+                    if (!controller.isFormed()) {
                         AdvancedBlockNoAEPattern.getAdvancedBlockPattern(controller.getPattern()).autoBuild(context.getPlayer(), controller.getMultiblockState(), autoBuildSetting);
-                    } else if (metaMachine instanceof WorkableMultiblockMachine machine && autoBuildSetting.isReplaceMode()) {
+                    } else if (metaMachine instanceof WorkableMultiblockMachine machine && (autoBuildSetting.isReplaceMode() || autoBuildSetting.isUseDemolish())) {
                         AdvancedBlockNoAEPattern.getAdvancedBlockPattern(controller.getPattern()).autoBuild(context.getPlayer(), controller.getMultiblockState(), autoBuildSetting);
                         machine.onPartUnload();
                     }
@@ -233,6 +233,7 @@ public class AdvancedTerminalBehavior implements IItemUIFactory {
         if (!tag.isEmpty() && tag.contains("NoHatchMode")) {
             return tag.getBoolean("NoHatchMode");
         } else {
+            setBuildHatches(true, itemStack);
             return true;
         }
     }
@@ -314,7 +315,7 @@ public class AdvancedTerminalBehavior implements IItemUIFactory {
         private int Tier, repeatCount;
         private boolean noHatchMode, replaceMode, isUseAE, isFlipped, isUseDemolish;
 
-        public AutoBuildSetting() {
+        protected AutoBuildSetting() {
             this.tierBlocks = new Object2IntOpenHashMap<>();
             this.Tier = 0;
             this.repeatCount = 0;
