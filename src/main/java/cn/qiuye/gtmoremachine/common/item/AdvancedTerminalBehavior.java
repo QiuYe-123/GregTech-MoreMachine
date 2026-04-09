@@ -44,8 +44,6 @@ import java.util.*;
 import static cn.qiuye.gtmoremachine.common.block.BlockMap.MAP;
 import static net.minecraft.network.chat.Component.translatable;
 
-@Getter
-@Setter
 public class AdvancedTerminalBehavior implements IItemUIFactory {
 
     public AdvancedTerminalBehavior() {}
@@ -308,7 +306,7 @@ public class AdvancedTerminalBehavior implements IItemUIFactory {
     @Getter
     public static class AutoBuildSetting {
 
-        Object2IntOpenHashMap<String> tierBlocks;
+        Object2IntOpenHashMap<String> tierBlocks = new Object2IntOpenHashMap<>();
 
         Block[] tierBlock;
         Set<Block> blocks = Collections.emptySet();
@@ -316,7 +314,6 @@ public class AdvancedTerminalBehavior implements IItemUIFactory {
         private boolean noHatchMode, replaceMode, isUseAE, isFlipped, isUseDemolish;
 
         protected AutoBuildSetting() {
-            this.tierBlocks = new Object2IntOpenHashMap<>();
             this.Tier = 0;
             this.repeatCount = 0;
             this.noHatchMode = true;
