@@ -46,6 +46,8 @@ import static net.minecraft.network.chat.Component.translatable;
 
 public class AdvancedTerminalBehavior implements IItemUIFactory {
 
+    public static final String valuePrefix = "gtmoremachine.adv_terminal.";
+
     public AdvancedTerminalBehavior() {}
 
     @Override
@@ -160,7 +162,7 @@ public class AdvancedTerminalBehavior implements IItemUIFactory {
                 tag.putString("blocks", s);
                 tag.putInt("Tier", i);
                 handItem.setTag(tag);
-                blockLabel.setComponent(Component.literal(" (").append(translatable(BlockMap.namePrefix + "." + s))
+                blockLabel.setComponent(Component.literal(" (").append(translatable(BlockMap.blockmap_valuePrefix + "." + s))
                         .append(Component.literal(" : "))
                         .append(MAP.get(s)[i].getName())
                         .append(Component.literal(")")));
@@ -180,7 +182,7 @@ public class AdvancedTerminalBehavior implements IItemUIFactory {
             var block = tag.getString("blocks");
             if (!block.isEmpty()) {
                 int tier = tag.getInt("Tier");
-                return Component.literal("(").append(translatable(BlockMap.namePrefix + "." + block))
+                return Component.literal("(").append(translatable(BlockMap.blockmap_valuePrefix + "." + block))
                         .append(Component.literal(" : "))
                         .append(MAP.get(block)[tier].getName())
                         .append(Component.literal(")"));

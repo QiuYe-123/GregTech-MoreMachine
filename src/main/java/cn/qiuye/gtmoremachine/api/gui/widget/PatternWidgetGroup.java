@@ -1,6 +1,9 @@
 package cn.qiuye.gtmoremachine.api.gui.widget;
 
+import cn.qiuye.gtmoremachine.api.annotation.GTMMDataGeneratorScanned;
+import cn.qiuye.gtmoremachine.api.annotation.language.GTMMRegisterLanguage;
 import cn.qiuye.gtmoremachine.common.block.BlockMap;
+import cn.qiuye.gtmoremachine.common.item.AdvancedTerminalBehavior;
 
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.widget.ToggleButtonWidget;
@@ -34,8 +37,18 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiConsumer;
 import java.util.function.BooleanSupplier;
 
+@GTMMDataGeneratorScanned
 @SuppressWarnings("ConstantConditions")
 public class PatternWidgetGroup extends WidgetGroup {
+
+    private static final String valuePrefix = AdvancedTerminalBehavior.valuePrefix + "block";
+
+    @GTMMRegisterLanguage(en = "Cancel", cn = "取消")
+    private static final String cancel = valuePrefix + ".cancel";
+    @GTMMRegisterLanguage(en = "Confirm", cn = "确认")
+    private static final String confirm = valuePrefix + ".confirm";
+    @GTMMRegisterLanguage(en = "Select Block", cn = "选择方块")
+    private static final String select = valuePrefix + ".select";
 
     // ==================== 静态纹理按钮 ====================
     public static final GuiTextureGroup BUTTON_LEFT_NORMAL = new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, new TextTexture("◀"));
@@ -137,7 +150,7 @@ public class PatternWidgetGroup extends WidgetGroup {
         editToggle.setTexture(
                 new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, new TextTexture("✎")),
                 new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, new TextTexture("✘")));
-        editToggle.setHoverTooltips(Component.translatable("gtocore.adv_terminal.block.select"));
+        editToggle.setHoverTooltips(Component.translatable(select));
         this.addWidget(editToggle);
     }
 
@@ -188,7 +201,7 @@ public class PatternWidgetGroup extends WidgetGroup {
                     pressed -> {});
             toggle.setTexture(isSelected.getAsBoolean() ? BUTTON_LEFT_SELECTED : BUTTON_LEFT_NORMAL,
                     isSelected.getAsBoolean() ? BUTTON_RIGHT_SELECTED : BUTTON_RIGHT_NORMAL);
-            toggle.setHoverTooltips(Component.translatable("gtocore.adv_terminal.category.select"));
+            toggle.setHoverTooltips(Component.translatable(select));
 
             BooleanConsumer onToggle = enabled -> {
                 if (enabled) {
@@ -250,9 +263,9 @@ public class PatternWidgetGroup extends WidgetGroup {
             });
 
             if (selected) {
-                row.toggleButton.setHoverTooltips(Component.translatable("gtocore.adv_terminal.block.cancel"));
+                row.toggleButton.setHoverTooltips(Component.translatable(cancel));
             } else {
-                row.toggleButton.setHoverTooltips(Component.translatable("gtocore.adv_terminal.block.confirm"));
+                row.toggleButton.setHoverTooltips(Component.translatable(confirm));
             }
 
             rowIndex++;

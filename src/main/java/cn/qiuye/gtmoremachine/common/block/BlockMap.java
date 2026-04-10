@@ -3,6 +3,7 @@ package cn.qiuye.gtmoremachine.common.block;
 import cn.qiuye.gtmoremachine.api.GTMMAPI;
 import cn.qiuye.gtmoremachine.api.annotation.GTMMScanned;
 import cn.qiuye.gtmoremachine.api.annotation.language.GTMMRegisterLanguage;
+import cn.qiuye.gtmoremachine.common.item.AdvancedTerminalBehavior;
 import cn.qiuye.gtmoremachine.config.GTMMConfig;
 
 import com.gregtechceu.gtceu.api.GTCEuAPI;
@@ -29,25 +30,25 @@ public class BlockMap {
     public static Block[] LAMP;
     public static Block[] BORLAMP;
 
-    public static final String namePrefix = "gtmoremachine.adv_terminal.block_map";
+    public static final String blockmap_valuePrefix = AdvancedTerminalBehavior.valuePrefix + "blockmap";
 
-    @GTMMRegisterLanguage(namePrefix = namePrefix, cn = "线圈", en = "Heating Coils")
+    @GTMMRegisterLanguage(valuePrefix = blockmap_valuePrefix, cn = "线圈", en = "Heating Coils")
     public static final String heating_coils = "heating_coils";
-    @GTMMRegisterLanguage(namePrefix = namePrefix, cn = "过滤方块", en = "Cleanroom Filters")
+    @GTMMRegisterLanguage(valuePrefix = blockmap_valuePrefix, cn = "过滤方块", en = "Cleanroom Filters")
     public static final String cleanroom_filters = "cleanroom_filters";
-    @GTMMRegisterLanguage(namePrefix = namePrefix, cn = "电容", en = "Batteries")
+    @GTMMRegisterLanguage(valuePrefix = blockmap_valuePrefix, cn = "电容", en = "Batteries")
     public static final String batteries = "batteries";
-    @GTMMRegisterLanguage(namePrefix = namePrefix, cn = "灯", en = "Lamp")
+    @GTMMRegisterLanguage(valuePrefix = blockmap_valuePrefix, cn = "灯", en = "Lamp")
     public static final String lamp = "lamp";
-    @GTMMRegisterLanguage(namePrefix = namePrefix, cn = "无框灯", en = "Borderless Lamp")
+    @GTMMRegisterLanguage(valuePrefix = blockmap_valuePrefix, cn = "无框灯", en = "Borderless Lamp")
     public static final String borlamp = "borlamp";
-    @GTMMRegisterLanguage(namePrefix = namePrefix, cn = "消声仓", en = "Muffler Hatch")
+    @GTMMRegisterLanguage(valuePrefix = blockmap_valuePrefix, cn = "消声仓", en = "Muffler Hatch")
     public static final String muffler_hatch = "muffler_hatch";
-    @GTMMRegisterLanguage(namePrefix = namePrefix, cn = "转子支架", en = "Rotor Holder")
+    @GTMMRegisterLanguage(valuePrefix = blockmap_valuePrefix, cn = "转子支架", en = "Rotor Holder")
     public static final String rotor_hatch = "rotor_hatch";
-    @GTMMRegisterLanguage(namePrefix = namePrefix, cn = "能源通讯单元", en = "Energy Communication Unit")
+    @GTMMRegisterLanguage(valuePrefix = blockmap_valuePrefix, cn = "能源通讯单元", en = "Energy Communication Unit")
     public static final String ecu = "ecu";
-    @GTMMRegisterLanguage(namePrefix = namePrefix, cn = "电网容量组件", en = "Wireless Energy Capacity Component")
+    @GTMMRegisterLanguage(valuePrefix = blockmap_valuePrefix, cn = "电网容量组件", en = "Wireless Energy Capacity Component")
     public static final String wecc = "wecc";
 
     public static void build() {
