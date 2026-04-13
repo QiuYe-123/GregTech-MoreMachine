@@ -67,20 +67,12 @@ public class AdvancedBlockNoAEPattern extends BlockPattern {
             Field blockMatchesField = clazz.getDeclaredField("blockMatches");
             blockMatchesField.setAccessible(true);
             TraceabilityPredicate[][][] blockMatches = (TraceabilityPredicate[][][]) blockMatchesField.get(blockPattern);
-            // structureDir
-            Field structureDirField = clazz.getDeclaredField("structureDir");
-            structureDirField.setAccessible(true);
-            RelativeDirection[] structureDir = (RelativeDirection[]) structureDirField.get(blockPattern);
-            // aisleRepetitions
-            Field aisleRepetitionsField = clazz.getDeclaredField("aisleRepetitions");
-            aisleRepetitionsField.setAccessible(true);
-            int[][] aisleRepetitions = (int[][]) aisleRepetitionsField.get(blockPattern);
             // centerOffset
             Field centerOffsetField = clazz.getDeclaredField("centerOffset");
             centerOffsetField.setAccessible(true);
             int[] centerOffset = (int[]) centerOffsetField.get(blockPattern);
 
-            return new AdvancedBlockNoAEPattern(blockMatches, structureDir, aisleRepetitions, centerOffset);
+            return new AdvancedBlockNoAEPattern(blockMatches, blockPattern.structureDir, blockPattern.aisleRepetitions, centerOffset);
         } catch (Exception ignored) {}
         return null;
     }

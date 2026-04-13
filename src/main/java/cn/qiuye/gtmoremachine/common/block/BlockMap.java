@@ -1,9 +1,9 @@
 package cn.qiuye.gtmoremachine.common.block;
 
 import cn.qiuye.gtmoremachine.api.GTMMAPI;
+import cn.qiuye.gtmoremachine.api.GTMMValues;
 import cn.qiuye.gtmoremachine.api.annotation.GTMMScanned;
 import cn.qiuye.gtmoremachine.api.annotation.language.GTMMRegisterLanguage;
-import cn.qiuye.gtmoremachine.common.item.AdvancedTerminalBehavior;
 import cn.qiuye.gtmoremachine.config.GTMMConfig;
 
 import com.gregtechceu.gtceu.api.GTCEuAPI;
@@ -30,7 +30,7 @@ public class BlockMap {
     public static Block[] LAMP;
     public static Block[] BORLAMP;
 
-    public static final String blockmap_valuePrefix = AdvancedTerminalBehavior.valuePrefix + "blockmap";
+    public static final String blockmap_valuePrefix = GTMMValues.ADVTER_VALUE_PREFIX + "blockmap";
 
     @GTMMRegisterLanguage(valuePrefix = blockmap_valuePrefix, cn = "线圈", en = "Heating Coils")
     public static final String heating_coils = "heating_coils";

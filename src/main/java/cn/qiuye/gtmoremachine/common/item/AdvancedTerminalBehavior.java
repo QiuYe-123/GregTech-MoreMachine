@@ -24,7 +24,6 @@ import com.lowdragmc.lowdraglib.gui.texture.TextTexture;
 import com.lowdragmc.lowdraglib.gui.widget.*;
 import com.lowdragmc.lowdraglib.utils.BlockInfo;
 
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -32,6 +31,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.LiquidBlock;
 
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
@@ -46,12 +46,17 @@ import static net.minecraft.network.chat.Component.translatable;
 
 public class AdvancedTerminalBehavior implements IItemUIFactory {
 
-    public static final String valuePrefix = "gtmoremachine.adv_terminal.";
+    private static final String repeatCount = "repeatCount";
+    private static final String ReplaceMode = "isReplaceMode";
+    private static final String DemolitionMode = "isDemolitionMode";
+    private static final String UseAEMode = "isUseAEMode";
+    private static final String FlipMode = "isFlipMode";
+    private static final String NoHatch = "isNoHatchMode";
 
     public AdvancedTerminalBehavior() {}
 
     @Override
-    public InteractionResult useOn(UseOnContext context) {
+    public InteractionResult onItemUseFirst(ItemStack itemStack, UseOnContext context) {
         if (context.getPlayer() != null && context.getPlayer().isShiftKeyDown()) {
             var level = context.getLevel();
             var blockPos = context.getClickedPos();
@@ -118,41 +123,41 @@ public class AdvancedTerminalBehavior implements IItemUIFactory {
                 .addWidget(new ExtendLabelWidget(4, 5 + 16 * rowIndex, Component.translatable("item.gtmoremachine.advanced_terminal.setting.2"))
                         .setHoverTooltips(Component.translatable("item.gtmoremachine.advanced_terminal.setting.2.tooltip")))
                 .addWidget(new TerminalInputWidget(140, 5 + 16 * rowIndex++, 25, 16,
-                        () -> getRepeatCount(handItem), (v) -> setRepeatCount(v, handItem))
+                        () -> getIntTag(handItem, repeatCount), (v) -> setIntTag(handItem, repeatCount, v))
                         .setMin(0).setMax(1000))
                 .addWidget(new ExtendLabelWidget(4, 5 + 16 * rowIndex, Component.translatable("item.gtmoremachine.advanced_terminal.setting.3"))
                         .setHoverTooltips(Component.translatable("item.gtmoremachine.advanced_terminal.setting.3.tooltip")))
                 .addWidget(new SwitchWidget(140, 5 + 16 * rowIndex++, 25, 16,
-                        (c, v) -> setBuildHatches(v, handItem))
-                        .setPressed(getBuildHatches(handItem))
+                        (c, v) -> setBooleanTag(handItem, NoHatch, v))
+                        .setPressed(getBooleanTag(handItem, NoHatch))
                         .setTexture(new GuiTextureGroup(GuiTextures.BUTTON, new TextTexture("OFF")),
                                 new GuiTextureGroup(GuiTextures.BUTTON, new TextTexture("ON"))))
                 .addWidget(new ExtendLabelWidget(4, 5 + 16 * rowIndex, Component.translatable("item.gtmoremachine.advanced_terminal.setting.4"))
                         .setHoverTooltips(Component.translatable("item.gtmoremachine.advanced_terminal.setting.4.tooltip")))
                 .addWidget(new SwitchWidget(140, 5 + 16 * rowIndex++, 25, 16,
-                        (c, v) -> setReplaceMode(v, handItem))
-                        .setPressed(getReplaceMode(handItem))
+                        (c, v) -> setBooleanTag(handItem, ReplaceMode, v))
+                        .setPressed(getBooleanTag(handItem, ReplaceMode))
                         .setTexture(new GuiTextureGroup(GuiTextures.BUTTON, new TextTexture("OFF")),
                                 new GuiTextureGroup(GuiTextures.BUTTON, new TextTexture("ON"))))
                 .addWidget(new ExtendLabelWidget(4, 5 + 16 * rowIndex, Component.translatable("item.gtmoremachine.advanced_terminal.setting.5"))
                         .setHoverTooltips(Component.translatable("item.gtmoremachine.advanced_terminal.setting.5.tooltip")))
                 .addWidget(new SwitchWidget(140, 5 + 16 * rowIndex++, 25, 16,
-                        (c, v) -> setUseAE(v, handItem))
-                        .setPressed(getUseAE(handItem))
+                        (c, v) -> setBooleanTag(handItem, UseAEMode, v))
+                        .setPressed(getBooleanTag(handItem, UseAEMode))
                         .setTexture(new GuiTextureGroup(GuiTextures.BUTTON, new TextTexture("OFF")),
                                 new GuiTextureGroup(GuiTextures.BUTTON, new TextTexture("ON"))))
                 .addWidget(new LabelWidget(4, 5 + 16 * rowIndex, "item.gtmoremachine.advanced_terminal.setting.6")
                         .setHoverTooltips(Component.translatable("item.gtmoremachine.advanced_terminal.setting.6.tooltip")))
                 .addWidget(new SwitchWidget(140, 5 + 16 * rowIndex++, 25, 16,
-                        (c, v) -> setUseMirror(v, handItem))
-                        .setPressed(getUseMirror(handItem))
+                        (c, v) -> setBooleanTag(handItem, FlipMode, v))
+                        .setPressed(getBooleanTag(handItem, FlipMode))
                         .setTexture(new GuiTextureGroup(GuiTextures.BUTTON, new TextTexture("OFF")),
                                 new GuiTextureGroup(GuiTextures.BUTTON, new TextTexture("ON"))))
                 .addWidget(new LabelWidget(4, 5 + 16 * rowIndex, "item.gtmoremachine.advanced_terminal.setting.7")
                         .setHoverTooltips(Component.translatable("item.gtmoremachine.advanced_terminal.setting.7.tooltip")))
                 .addWidget(new SwitchWidget(140, 5 + 16 * rowIndex++, 25, 16,
-                        (c, v) -> setUseDemolish(v, handItem))
-                        .setPressed(getUseDemolish(handItem))
+                        (c, v) -> setBooleanTag(handItem, DemolitionMode, v))
+                        .setPressed(getBooleanTag(handItem, DemolitionMode))
                         .setTexture(new GuiTextureGroup(GuiTextures.BUTTON, new TextTexture("OFF")),
                                 new GuiTextureGroup(GuiTextures.BUTTON, new TextTexture("ON"))));
         var blockLabel = new ExtendLabelWidget(40, 21, getBlockComponent(handItem));
@@ -191,117 +196,30 @@ public class AdvancedTerminalBehavior implements IItemUIFactory {
         return Component.literal("");
     }
 
-    private void setBlockMap(Object2IntOpenHashMap<String> map, ItemStack itemStack) {
-        CompoundTag compound = new CompoundTag();
-        for (var entry : map.object2IntEntrySet()) {
-            compound.putInt(entry.getKey(), entry.getIntValue());
-        }
-        var tag = itemStack.getOrCreateTag();
-        tag.put("blockmap", compound);
-        itemStack.setTag(tag);
+    private int getIntTag(ItemStack itemStack, String key) {
+        return getIntTag(itemStack, key, 0);
     }
 
-    private Object2IntOpenHashMap<String> getBlockMap(ItemStack itemStack) {
-        Object2IntOpenHashMap<String> map = new Object2IntOpenHashMap<>();
+    private int getIntTag(ItemStack itemStack, String key, int def) {
         var tag = itemStack.getOrCreateTag();
-        if (!tag.isEmpty() && tag.contains("blockmap")) {
-            var blockTag = tag.getCompound("blockmap");
-            for (String key : blockTag.getAllKeys()) {
-                map.put(key, blockTag.getInt(key));
-            }
-        }
-        return map;
+        return tag.contains(key) ? tag.getInt(key) : def;
     }
 
-    private int getRepeatCount(ItemStack itemStack) {
-        var tag = itemStack.getOrCreateTag();
-        if (!tag.isEmpty() && tag.contains("RepeatCount")) {
-            return tag.getInt("RepeatCount");
-        } else {
-            return 0;
-        }
+    private void setIntTag(ItemStack itemStack, String key, int value) {
+        itemStack.getOrCreateTag().putInt(key, value);
     }
 
-    private void setRepeatCount(int repeatCount, ItemStack itemStack) {
-        var tag = itemStack.getOrCreateTag();
-        tag.putInt("RepeatCount", repeatCount);
-        itemStack.setTag(tag);
+    private boolean getBooleanTag(ItemStack itemStack, String key) {
+        return getBooleanTag(itemStack, key, false);
     }
 
-    private boolean getBuildHatches(ItemStack itemStack) {
+    private boolean getBooleanTag(ItemStack itemStack, String key, boolean def) {
         var tag = itemStack.getOrCreateTag();
-        if (!tag.isEmpty() && tag.contains("NoHatchMode")) {
-            return tag.getBoolean("NoHatchMode");
-        } else {
-            setBuildHatches(true, itemStack);
-            return true;
-        }
+        return tag.contains(key) ? tag.getBoolean(key) : def;
     }
 
-    private void setBuildHatches(boolean isBuildHatches, ItemStack itemStack) {
-        var tag = itemStack.getOrCreateTag();
-        tag.putBoolean("NoHatchMode", isBuildHatches);
-        itemStack.setTag(tag);
-    }
-
-    private boolean getReplaceMode(ItemStack itemStack) {
-        var tag = itemStack.getOrCreateTag();
-        if (!tag.isEmpty() && tag.contains("ReplaceMode")) {
-            return tag.getBoolean("ReplaceMode");
-        } else {
-            return false;
-        }
-    }
-
-    private void setReplaceMode(boolean isReplaceCoil, ItemStack itemStack) {
-        var tag = itemStack.getOrCreateTag();
-        tag.putBoolean("ReplaceMode", isReplaceCoil);
-        itemStack.setTag(tag);
-    }
-
-    private boolean getUseAE(ItemStack itemStack) {
-        var tag = itemStack.getOrCreateTag();
-        if (!tag.isEmpty() && tag.contains("IsUseAE")) {
-            return tag.getBoolean("IsUseAE");
-        } else {
-            return false;
-        }
-    }
-
-    private void setUseAE(boolean isUseAE, ItemStack itemStack) {
-        var tag = itemStack.getOrCreateTag();
-        tag.putBoolean("IsUseAE", isUseAE);
-        itemStack.setTag(tag);
-    }
-
-    private boolean getUseMirror(ItemStack itemStack) {
-        var tag = itemStack.getOrCreateTag();
-        if (!tag.isEmpty() && tag.contains("IsUseMirror")) {
-            return tag.getBoolean("IsUseMirror");
-        } else {
-            return false; // 默认值为 0 (否)
-        }
-    }
-
-    private void setUseMirror(boolean isUseMirror, ItemStack itemStack) {
-        var tag = itemStack.getOrCreateTag();
-        tag.putBoolean("IsUseMirror", isUseMirror);
-        itemStack.setTag(tag);
-    }
-
-    private boolean getUseDemolish(ItemStack itemStack) {
-        var tag = itemStack.getOrCreateTag();
-        if (!tag.isEmpty() && tag.contains("IsUseDemolish")) {
-            return tag.getBoolean("IsUseDemolish");
-        } else {
-            return false;
-        }
-    }
-
-    private void setUseDemolish(boolean isUseDemolish, ItemStack itemStack) {
-        var tag = itemStack.getOrCreateTag();
-        tag.putBoolean("IsUseDemolish", isUseDemolish);
-        itemStack.setTag(tag);
+    private void setBooleanTag(ItemStack itemStack, String key, boolean value) {
+        itemStack.getOrCreateTag().putBoolean(key, value);
     }
 
     @Setter
@@ -315,7 +233,7 @@ public class AdvancedTerminalBehavior implements IItemUIFactory {
         private int Tier, repeatCount;
         private boolean noHatchMode, replaceMode, isUseAE, isFlipped, isUseDemolish;
 
-        protected AutoBuildSetting() {
+        private AutoBuildSetting() {
             this.Tier = 0;
             this.repeatCount = 0;
             this.noHatchMode = true;
@@ -327,14 +245,24 @@ public class AdvancedTerminalBehavior implements IItemUIFactory {
 
         public List<ItemStack> apply(BlockInfo[] blockInfos) {
             List<ItemStack> candidates = new ObjectArrayList<>();
-            if (blockInfos != null) {
-                for (var info : blockInfos) {
-                    if (this.tierBlock != null && this.Tier >= 0 && blockInfos.length > 1 &&
-                            this.blocks.contains(info.getBlockState().getBlock())) {
-                        candidates.add(tierBlock[Math.min(this.Tier, blockInfos.length - 1)].asItem().getDefaultInstance());
-                        return candidates;
+            if (blockInfos != null && blockInfos.length > 0) {
+                if (this.tierBlocks != null && this.tierBlock.length > 1) {
+                    for (var info : blockInfos) {
+                        Block block = info.getBlockState().getBlock();
+                        String tierBlocks = BlockMap.getCategory(block);
+                        if (this.tierBlocks.getInt(tierBlocks) > 0 && this.blocks.contains(block)) {
+                            Block[] blocks1 = MAP.get(tierBlocks);
+                            if (blocks1 != null && blocks1.length > 0) {
+                                Block block2 = blocks1[Math.min(blocks1.length, this.tierBlocks.getInt(tierBlocks)) - 1];
+                                return Collections.singletonList(new ItemStack(block2));
+                            }
+                        }
                     }
-                    if (info.getBlockState().getBlock() != Blocks.AIR) candidates.add(info.getItemStackForm());
+                }
+                for (BlockInfo blockInfo : blockInfos) {
+                    Block block = blockInfo.getBlockState().getBlock();
+                    if (block instanceof LiquidBlock fluidBlock) candidates.add(fluidBlock.getFluid().getBucket().getDefaultInstance());
+                    else if (block != Blocks.AIR) candidates.add(block.asItem().getDefaultInstance());
                 }
             }
             return candidates;

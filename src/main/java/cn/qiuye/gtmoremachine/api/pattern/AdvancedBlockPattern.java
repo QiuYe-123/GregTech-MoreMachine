@@ -112,7 +112,6 @@ public class AdvancedBlockPattern extends BlockPattern {
         Object2ObjectOpenHashMap<BlockPos, Object> blocks = new Object2ObjectOpenHashMap<>();
         ObjectOpenHashSet<BlockPos> placeBlockPos = new ObjectOpenHashSet<>();
         blocks.put(centerPos, controller);
-        if (controller.isFormed() && autoBuildSetting.isReplaceMode()) controller.onStructureInvalid();
 
         int[] repeat = new int[this.fingerLength];
         for (int h = 0; h < this.fingerLength; h++) {

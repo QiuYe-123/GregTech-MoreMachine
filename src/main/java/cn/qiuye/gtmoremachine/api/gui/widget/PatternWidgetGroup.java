@@ -1,9 +1,9 @@
 package cn.qiuye.gtmoremachine.api.gui.widget;
 
+import cn.qiuye.gtmoremachine.api.GTMMValues;
 import cn.qiuye.gtmoremachine.api.annotation.GTMMDataGeneratorScanned;
 import cn.qiuye.gtmoremachine.api.annotation.language.GTMMRegisterLanguage;
 import cn.qiuye.gtmoremachine.common.block.BlockMap;
-import cn.qiuye.gtmoremachine.common.item.AdvancedTerminalBehavior;
 
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.widget.ToggleButtonWidget;
@@ -41,7 +41,7 @@ import java.util.function.BooleanSupplier;
 @SuppressWarnings("ConstantConditions")
 public class PatternWidgetGroup extends WidgetGroup {
 
-    private static final String valuePrefix = AdvancedTerminalBehavior.valuePrefix + "block";
+    private static final String valuePrefix = GTMMValues.ADVTER_VALUE_PREFIX + "block";
 
     @GTMMRegisterLanguage(en = "Cancel", cn = "取消")
     private static final String cancel = valuePrefix + ".cancel";
