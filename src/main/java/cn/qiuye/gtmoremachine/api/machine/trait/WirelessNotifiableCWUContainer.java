@@ -5,7 +5,6 @@ import cn.qiuye.gtmoremachine.api.misc.wireless.cwu.WirelessCWUContainer;
 
 import com.gregtechceu.gtceu.api.capability.IOpticalComputationProvider;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
@@ -36,8 +35,8 @@ public class WirelessNotifiableCWUContainer extends NotifiableComputationContain
 
     private int currentOutputCwu = 0, lastOutputCwu = 0;
 
-    public WirelessNotifiableCWUContainer(MetaMachine machine, IO handlerIO, boolean transmitter) {
-        super(machine, handlerIO, transmitter);
+    public WirelessNotifiableCWUContainer(IO handlerIO, boolean transmitter) {
+        super(handlerIO, transmitter);
     }
 
     @Override
@@ -52,9 +51,9 @@ public class WirelessNotifiableCWUContainer extends NotifiableComputationContain
         if (handlerIO == IO.IN) {
             if (isTransmitter()) {
                 // Ask the Multiblock controller, which *should* be an IOpticalComputationProvider
-                if (machine instanceof IOpticalComputationProvider provider) {
+                if (this.getMachine() instanceof IOpticalComputationProvider provider) {
                     return provider.requestCWUt(cwut, simulate, seen);
-                } else if (machine instanceof IMultiPart part) {
+                } else if (this.getMachine() instanceof IMultiPart part) {
                     if (!part.isFormed()) {
                         return 0;
                     }
@@ -96,9 +95,9 @@ public class WirelessNotifiableCWUContainer extends NotifiableComputationContain
         if (handlerIO == IO.IN) {
             if (isTransmitter()) {
                 // Ask the Multiblock controller, which *should* be an IOpticalComputationProvider
-                if (machine instanceof IOpticalComputationProvider provider) {
+                if (this.getMachine() instanceof IOpticalComputationProvider provider) {
                     return provider.getMaxCWUt(seen);
-                } else if (machine instanceof IMultiPart part) {
+                } else if (this.getMachine() instanceof IMultiPart part) {
                     if (!part.isFormed()) {
                         return 0;
                     }
@@ -152,10 +151,10 @@ public class WirelessNotifiableCWUContainer extends NotifiableComputationContain
                 if (recipe.data.getBoolean("duration_is_total_cwu")) {
                     int drawn = provider.requestCWUt(availableCWUt, simulate);
                     if (!simulate) {
-                        if (machine instanceof IRecipeLogicMachine rlm) {
+                        if (this.getMachine() instanceof IRecipeLogicMachine rlm) {
                             // first, remove the progress the recipe logic adds.
                             rlm.getRecipeLogic().setProgress(rlm.getRecipeLogic().getProgress() - 1 + drawn);
-                        } else if (machine instanceof IMultiPart multiPart) {
+                        } else if (this.getMachine() instanceof IMultiPart multiPart) {
                             for (MultiblockControllerMachine controller : multiPart.getControllers()) {
                                 if (controller instanceof IRecipeLogicMachine rlm) {
                                     rlm.getRecipeLogic().setProgress(rlm.getRecipeLogic().getProgress() - 1 + drawn);

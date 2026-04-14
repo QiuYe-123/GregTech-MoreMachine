@@ -6,7 +6,6 @@ import com.gregtechceu.gtceu.api.blockentity.IPaintable;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.widget.PhantomFluidWidget;
-import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IDistinctPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredIOPartMachine;
@@ -41,16 +40,16 @@ public class CreativeInputHatchPartMachine extends TieredIOPartMachine implement
     private final int slots;
     @Nullable
     protected TickableSubscription autoIOSubs;
-    private Map<Integer, FluidStack> fluidMap;
+    private final Map<Integer, FluidStack> fluidMap;
     @SaveField
-    private CustomFluidTank[] creativeTanks;
+    private final CustomFluidTank[] creativeTanks;
 
     // The `Object... args` parameter is necessary in case a superclass needs to pass any args along to createTank().
     // We can't use fields here because those won't be available while createTank() is called.
     public CreativeInputHatchPartMachine(BlockEntityCreationInfo holder) {
         super(holder, GTValues.MAX, IO.IN);
         this.slots = SLOT_COUNT;
-        this.tank = createTank();
+        this.tank = this.attachTrait(new InfinityFluidTank(SLOT_COUNT, Integer.MAX_VALUE, IO.IN));
         this.fluidMap = new HashMap<>();
         this.creativeTanks = new CustomFluidTank[SLOT_COUNT];
         for (int i = 0; i < this.creativeTanks.length; i++) {
@@ -61,10 +60,6 @@ public class CreativeInputHatchPartMachine extends TieredIOPartMachine implement
     //////////////////////////////////////
     // ***** Initialization ******//
     //////////////////////////////////////
-
-    protected NotifiableFluidTank createTank() {
-        return new InfinityFluidTank(this, SLOT_COUNT, Integer.MAX_VALUE, IO.IN);
-    }
 
     @Override
     public void onLoad() {
@@ -210,12 +205,12 @@ public class CreativeInputHatchPartMachine extends TieredIOPartMachine implement
 
     private static class InfinityFluidTank extends NotifiableFluidTank {
 
-        public InfinityFluidTank(MetaMachine machine, int slots, int capacity, IO io) {
-            super(machine, slots, capacity, io);
+        public InfinityFluidTank(int slots, int capacity, IO io) {
+            super(slots, capacity, io);
         }
 
         @Override
-        public List<FluidIngredient> handleRecipeInner(IO io, GTRecipe recipe, List<FluidIngredient> left, boolean simulate) {
+        public @Nullable List<FluidIngredient> handleRecipeInner(IO io, GTRecipe recipe, List<FluidIngredient> left, boolean simulate) {
             return super.handleRecipeInner(io, recipe, left, true);
         }
     }

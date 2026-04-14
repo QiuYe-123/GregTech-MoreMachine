@@ -16,15 +16,15 @@ public class ProgrammableHatchPartMachine extends DualHatchPartMachine {
 
     @Override
     protected NotifiableItemStackHandler createInventory() {
-        return new NotifiableItemStackHandler(this, getInventorySize(), this.io).setFilter(itemStack -> !itemStack.is(GTMMAEItems.VIRTUAL_ITEM_PROVIDER.get()));
+        return new NotifiableItemStackHandler(getInventorySize(), this.io).setFilter(itemStack -> !itemStack.is(GTMMAEItems.VIRTUAL_ITEM_PROVIDER.get()));
     }
 
     @Override
     protected NotifiableItemStackHandler createCircuitItemHandler(IO io) {
         if (io == IO.IN) {
-            return new ProgrammableCircuitHandler(this);
+            return new ProgrammableCircuitHandler();
         } else {
-            return new NotifiableItemStackHandler(this, 0, IO.NONE);
+            return new NotifiableItemStackHandler(0, IO.NONE);
         }
     }
 }

@@ -52,12 +52,12 @@ public class HugeDualHatchPartMachine extends HugeBusPartMachine {
 
     public HugeDualHatchPartMachine(@UnknownNullability BlockEntityCreationInfo holder, int tier, IO io) {
         super(holder, tier, io, 9);
-        this.tank = createTank();
-        this.shareTank = new CatalystFluidStackHandler(this, 9, 16000, IO.IN, IO.NONE);
+        this.tank = this.attachTrait(createTank());
+        this.shareTank = this.attachTrait(new CatalystFluidStackHandler(9, 16000, IO.IN, IO.NONE));
     }
 
     protected NotifiableFluidTank createTank() {
-        return new NotifiableFluidTank(this, this.getTankInventorySize(), Integer.MAX_VALUE, io) {
+        return new NotifiableFluidTank(this.getTankInventorySize(), Integer.MAX_VALUE, io) {
 
             @Override
             public boolean canCapOutput() {

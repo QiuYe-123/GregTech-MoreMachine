@@ -19,12 +19,12 @@ import java.util.List;
 
 public class CatalystItemStackHandler extends NotifiableItemStackHandler {
 
-    public CatalystItemStackHandler(MetaMachine machine, int slots, IO handlerIO, IO capabilityIO) {
-        super(machine, slots, handlerIO, capabilityIO, CustomItemStackHandler::new);
+    public CatalystItemStackHandler(int slots, IO handlerIO, IO capabilityIO) {
+        super(slots, handlerIO, capabilityIO, CustomItemStackHandler::new);
     }
 
     public CatalystItemStackHandler(MetaMachine machine, int slots, IO handlerIO) {
-        this(machine, slots, handlerIO, handlerIO);
+        this(slots, handlerIO, handlerIO);
     }
 
     @Override

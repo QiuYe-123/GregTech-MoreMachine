@@ -8,7 +8,6 @@ import com.gregtechceu.gtceu.api.blockentity.IPaintable;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.fancy.ConfiguratorPanel;
-import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.fancyconfigurator.CircuitFancyConfigurator;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IDistinctPart;
@@ -68,8 +67,9 @@ public class CreativeInputBusPartMachine extends TieredIOPartMachine implements 
 
     public CreativeInputBusPartMachine(BlockEntityCreationInfo holder, Function<Integer, ItemStackTransfer> transferFactory) {
         super(holder, GTValues.MAX, IO.IN);
-        this.inventory = createInventory();
-        this.circuitInventory = createCircuitItemHandler();
+        this.inventory = this.attachTrait(new InfinityItemStackHandler(getInventorySize(), io, io, UnlimitedItemStackTransfer::new));
+        this.circuitInventory = this.attachTrait(new NotifiableItemStackHandler(1, IO.IN, IO.NONE)
+                .setFilter(IntCircuitBehaviour::isIntegratedCircuit));
         this.creativeStorage = transferFactory.apply(this.getInventorySize());
         this.lstItem = new ArrayList<>();
     }
@@ -80,15 +80,6 @@ public class CreativeInputBusPartMachine extends TieredIOPartMachine implements 
 
     protected int getInventorySize() {
         return ITEM_SIZE * ITEM_SIZE;
-    }
-
-    protected NotifiableItemStackHandler createInventory() {
-        return new InfinityItemStackHandler(this, getInventorySize(), io, io, UnlimitedItemStackTransfer::new);
-    }
-
-    protected NotifiableItemStackHandler createCircuitItemHandler() {
-        return new NotifiableItemStackHandler(this, 1, IO.IN, IO.NONE)
-                .setFilter(IntCircuitBehaviour::isIntegratedCircuit);
     }
 
     @Override
@@ -285,12 +276,12 @@ public class CreativeInputBusPartMachine extends TieredIOPartMachine implements 
 
     private static class InfinityItemStackHandler extends NotifiableItemStackHandler {
 
-        public InfinityItemStackHandler(MetaMachine machine, int slots, IO handlerIO, IO capabilityIO, IntFunction<CustomItemStackHandler> storageFactory) {
-            super(machine, slots, handlerIO, capabilityIO, storageFactory);
+        public InfinityItemStackHandler(int slots, IO handlerIO, IO capabilityIO, IntFunction<CustomItemStackHandler> storageFactory) {
+            super(slots, handlerIO, capabilityIO, storageFactory);
         }
 
         @Override
-        public List<Ingredient> handleRecipeInner(IO io, GTRecipe recipe, List<Ingredient> left, boolean simulate) {
+        public @Nullable List<Ingredient> handleRecipeInner(IO io, GTRecipe recipe, List<Ingredient> left, boolean simulate) {
             return super.handleRecipeInner(io, recipe, left, true);
         }
     }

@@ -54,15 +54,15 @@ public class WirelessEnergyHatchPartMachine extends TieredIOPartMachine implemen
         super(holder, tier, io);
         this.amperage = amperage;
         this.leaser = isleaser;
-        this.energyContainer = createEnergyContainer();
+        this.energyContainer = this.attachTrait(createEnergyContainer());
     }
 
     protected NotifiableEnergyContainer createEnergyContainer() {
         long multiplier = this.leaser ? 64L : 16L;
         long capacity = GTValues.VEX[this.tier] * multiplier * this.amperage;
         return this.io == IO.IN ?
-                NotifiableEnergyContainer.receiverContainer(this, capacity, GTValues.VEX[this.tier], this.amperage) :
-                NotifiableEnergyContainer.emitterContainer(this, capacity, GTValues.VEX[this.tier], this.amperage);
+                NotifiableEnergyContainer.receiverContainer(capacity, GTValues.VEX[this.tier], this.amperage) :
+                NotifiableEnergyContainer.emitterContainer(capacity, GTValues.VEX[this.tier], this.amperage);
     }
 
     @Override
