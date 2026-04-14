@@ -14,6 +14,8 @@ import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.world.item.ItemStack;
 
+import lombok.Setter;
+
 import java.util.Collections;
 import java.util.List;
 
@@ -23,8 +25,9 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 public class ProgrammableCircuitHandler extends NotifiableItemStackHandler {
 
-    public ProgrammableCircuitHandler(MetaMachine machine) {
-        super(machine, 1, IO.IN, IO.IN, size -> new ItemStackHandler(size, machine));
+    public ProgrammableCircuitHandler() {
+        super(1, IO.IN, IO.IN, ItemStackHandler::new);
+        ((ItemStackHandler) this.storage).setMachine(this.getMachine());
     }
 
     @Override
@@ -44,11 +47,11 @@ public class ProgrammableCircuitHandler extends NotifiableItemStackHandler {
 
     private static class ItemStackHandler extends CustomItemStackHandler {
 
-        private final MetaMachine machine;
+        @Setter
+        private MetaMachine machine;
 
-        private ItemStackHandler(int size, MetaMachine machine) {
+        private ItemStackHandler(int size) {
             super(size);
-            this.machine = machine;
         }
 
         @Override

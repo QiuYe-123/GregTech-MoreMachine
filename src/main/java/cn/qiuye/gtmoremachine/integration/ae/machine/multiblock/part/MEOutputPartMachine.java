@@ -57,7 +57,7 @@ public class MEOutputPartMachine extends ItemBusPartMachine implements IGridConn
 
     public MEOutputPartMachine(BlockEntityCreationInfo holder) {
         super(holder, GTValues.LuV, IO.OUT);
-        this.fluidtank = createTank();
+        this.fluidtank = this.attachTrait(createTank());
         this.nodeHolder = createNodeHolder();
         this.actionSource = IActionSource.ofMachine(nodeHolder.getMainNode()::getNode);
     }
@@ -100,12 +100,12 @@ public class MEOutputPartMachine extends ItemBusPartMachine implements IGridConn
     @Override
     protected NotifiableItemStackHandler createInventory() {
         this.internalBuffer = new KeyStorage();
-        return new InaccessibleInfiniteHandler(this, internalBuffer);
+        return new InaccessibleInfiniteHandler(internalBuffer);
     }
 
     protected NotifiableFluidTank createTank() {
         this.internalTankBuffer = new KeyStorage();
-        return new InaccessibleInfiniteTank(this, internalTankBuffer);
+        return new InaccessibleInfiniteTank(internalTankBuffer);
     }
 
     @Override
