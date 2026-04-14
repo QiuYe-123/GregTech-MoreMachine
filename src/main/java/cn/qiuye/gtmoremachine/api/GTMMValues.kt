@@ -10,7 +10,7 @@ object GTMMValues {
 	const val ENABLED = "gtmoremachine.value.boolean.enabled"
 
 	@GTMMRegisterLanguage(cn = "已禁用", en = "Disabled")
-	const val DISABLED = "gtmoremachine.value.boolean.DISABLED"
+	const val DISABLED = "gtmoremachine.value.boolean.disabled"
 
 	const val ADVTER_VALUE_PREFIX = "gtmoremachine.adv_terminal."
 

@@ -551,7 +551,7 @@
   "gtmoremachine.multiblock.pattern.error.ecutypes": "§cAll heating Energy Communication Unit must be the same",
   "gtmoremachine.multiblock.pattern.error.wecc": "§cAll heating Wireless Energy Capacity Component must be the same",
   "gtmoremachine.universal.disabled": "Multiblock Sharing §4Disabled",
-  "gtmoremachine.value.boolean.DISABLED": "Disabled",
+  "gtmoremachine.value.boolean.disabled": "Disabled",
   "gtmoremachine.value.boolean.enabled": "Enabled",
   "gui.gtmoremachine.me_export_buffer.fluid_status.full": "Fluid storage space is full.",
   "gui.gtmoremachine.me_export_buffer.item_status.full": "Item storage space is full.",

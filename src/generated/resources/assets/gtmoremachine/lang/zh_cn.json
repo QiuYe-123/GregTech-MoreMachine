@@ -551,7 +551,7 @@
   "gtmoremachine.multiblock.pattern.error.ecutypes": "§c必须使用同种能源通讯单元",
   "gtmoremachine.multiblock.pattern.error.wecc": "§c必须使用相同的电网容量组件",
   "gtmoremachine.universal.disabled": "多方块结构共享：§4禁止",
-  "gtmoremachine.value.boolean.DISABLED": "已禁用",
+  "gtmoremachine.value.boolean.disabled": "已禁用",
   "gtmoremachine.value.boolean.enabled": "已启用",
   "gui.gtmoremachine.me_export_buffer.fluid_status.full": "流体存储空间已满",
   "gui.gtmoremachine.me_export_buffer.item_status.full": "物品存储空间已满",
