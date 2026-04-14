@@ -58,7 +58,7 @@ public class MEOutputPartMachine extends ItemBusPartMachine implements IGridConn
     public MEOutputPartMachine(BlockEntityCreationInfo holder) {
         super(holder, GTValues.LuV, IO.OUT);
         this.fluidtank = this.attachTrait(createTank());
-        this.nodeHolder = createNodeHolder();
+        this.nodeHolder = this.attachTrait(new GridNodeHolder(this));
         this.actionSource = IActionSource.ofMachine(nodeHolder.getMainNode()::getNode);
     }
 
@@ -66,10 +66,6 @@ public class MEOutputPartMachine extends ItemBusPartMachine implements IGridConn
     public void setOnline(boolean online) {
         isOnline = online;
         syncDataHolder.markClientSyncFieldDirty("isOnline");
-    }
-
-    protected GridNodeHolder createNodeHolder() {
-        return new GridNodeHolder(this);
     }
 
     @Override
