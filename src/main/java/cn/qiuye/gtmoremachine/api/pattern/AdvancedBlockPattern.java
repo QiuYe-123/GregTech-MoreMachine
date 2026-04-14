@@ -42,6 +42,7 @@ import appeng.api.storage.MEStorage;
 import appeng.items.tools.powered.WirelessTerminalItem;
 import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.ints.IntObjectPair;
+import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
 import it.unimi.dsi.fastutil.objects.*;
 import org.apache.commons.lang3.ArrayUtils;
 import org.jetbrains.annotations.NotNull;
@@ -96,19 +97,20 @@ public class AdvancedBlockPattern extends BlockPattern {
         BlockPos centerPos = controller.getBlockPos();
         Direction facing = controller.getFrontFacing();
         Direction upwardsFacing = controller.getUpwardsFacing();
-        boolean isFlipped = autoBuildSetting.isFlipMode();
-        boolean isUseAE = autoBuildSetting.isUseAEMode();
-
+        int FacingOrdinal = facing.ordinal();
         Object2IntOpenHashMap<SimplePredicate> cacheGlobal = worldState.getGlobalCount();
         Object2IntOpenHashMap<SimplePredicate> cacheLayer = worldState.getLayerCount();
         Object2ObjectOpenHashMap<BlockPos, Object> blocks = new Object2ObjectOpenHashMap<>();
+        LongOpenHashSet posset = new LongOpenHashSet(1024, 0.5f);
         ObjectOpenHashSet<BlockPos> placeBlockPos = new ObjectOpenHashSet<>();
         blocks.put(centerPos, controller);
+        boolean isFlipped = autoBuildSetting.isFlipMode();
+        boolean isUseAE = autoBuildSetting.isUseAEMode();
 
         int[] repeat = new int[this.fingerLength];
         for (int h = 0; h < this.fingerLength; h++) {
-            var minH = aisleRepetitions[h][0];
-            var maxH = aisleRepetitions[h][1];
+            var minH = this.aisleRepetitions[h][0];
+            var maxH = this.aisleRepetitions[h][1];
             if (minH != maxH) {
                 repeat[h] = Math.max(minH, Math.min(maxH, autoBuildSetting.getRepeatCount()));
             } else repeat[h] = minH;

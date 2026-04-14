@@ -15,7 +15,8 @@ import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.item.component.IItemUIFactory;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
-import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
+import com.gregtechceu.gtceu.client.renderer.MultiblockInWorldPreviewRenderer;
+import com.gregtechceu.gtceu.config.ConfigHolder;
 
 import com.lowdragmc.lowdraglib.gui.editor.ColorPattern;
 import com.lowdragmc.lowdraglib.gui.factory.HeldItemUIFactory;
@@ -25,11 +26,13 @@ import com.lowdragmc.lowdraglib.gui.texture.TextTexture;
 import com.lowdragmc.lowdraglib.gui.widget.*;
 import com.lowdragmc.lowdraglib.utils.BlockInfo;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.LiquidBlock;
@@ -60,33 +63,32 @@ public class AdvancedTerminalBehavior implements IItemUIFactory {
 
     @Override
     public InteractionResult onItemUseFirst(ItemStack itemStack, UseOnContext context) {
-        if (context.getPlayer() != null && context.getPlayer().isShiftKeyDown()) {
-            var level = context.getLevel();
-            var blockPos = context.getClickedPos();
-            var metaMachine = MetaMachine.getMachine(level, blockPos);
-            if (context.getPlayer() != null && !level.isClientSide() &&
-                    metaMachine instanceof MultiblockControllerMachine controller) {
-                var autoBuildSetting = getAutoBuildSetting(context.getPlayer().getMainHandItem());
-
-                if (GTmm.Mods.isAE2Loaded()) {
-                    if (!controller.isFormed()) {
-                        AdvancedBlockPattern.getAdvancedBlockPattern(controller.getPattern()).autoBuild(context.getPlayer(), controller.getMultiblockState(), autoBuildSetting);
-                    } else if (metaMachine instanceof WorkableMultiblockMachine machine && (autoBuildSetting.isReplaceMode() || autoBuildSetting.isDemolitionMode())) {
-                        AdvancedBlockPattern.getAdvancedBlockPattern(controller.getPattern()).autoBuild(context.getPlayer(), controller.getMultiblockState(), autoBuildSetting);
-                        machine.onPartUnload();
-                    }
-                } else {
-                    if (!controller.isFormed()) {
-                        AdvancedBlockNoAEPattern.getAdvancedBlockPattern(controller.getPattern()).autoBuild(context.getPlayer(), controller.getMultiblockState(), autoBuildSetting);
-                    } else if (metaMachine instanceof WorkableMultiblockMachine machine && (autoBuildSetting.isReplaceMode() || autoBuildSetting.isDemolitionMode())) {
-                        AdvancedBlockNoAEPattern.getAdvancedBlockPattern(controller.getPattern()).autoBuild(context.getPlayer(), controller.getMultiblockState(), autoBuildSetting);
-                        machine.onPartUnload();
-                    }
-                }
-            }
-            return InteractionResult.sidedSuccess(level.isClientSide);
+        var player = context.getPlayer();
+        var level = context.getLevel();
+        var pos = context.getClickedPos();
+        if (player != null && MetaMachine.getMachine(level, pos) instanceof MultiblockControllerMachine multi) {
+            var AutoBuildSetting = getAutoBuildSetting(itemStack);
+            this.Useing(AutoBuildSetting, multi, player, level, pos);
+            return InteractionResult.SUCCESS;
         }
         return InteractionResult.PASS;
+    }
+
+    private void Useing(AutoBuildSetting autoBuildSetting, MultiblockControllerMachine mcahine, Player player, Level level, BlockPos pos) {
+        var pattern = mcahine.getPattern();
+        if (player.isShiftKeyDown()) {
+            if (!level.isClientSide) {
+                mcahine.checkPatternWithTryLock();
+                if (GTmm.Mods.isAE2Loaded()) {
+                    AdvancedBlockPattern.getAdvancedBlockPattern(pattern).autoBuild(player, mcahine.getMultiblockState(), autoBuildSetting);
+                } else {
+                    AdvancedBlockNoAEPattern.getAdvancedBlockPattern(pattern).autoBuild(player, mcahine.getMultiblockState(), autoBuildSetting);
+                }
+                mcahine.onPartUnload();
+            }
+        } else if (level.isClientSide) {
+            MultiblockInWorldPreviewRenderer.showPreview(pos, mcahine, ConfigHolder.INSTANCE.client.inWorldPreviewDuration * 20);
+        }
     }
 
     private AutoBuildSetting getAutoBuildSetting(ItemStack mainHandItem) {
@@ -248,10 +250,10 @@ public class AdvancedTerminalBehavior implements IItemUIFactory {
     @Getter
     public static class AutoBuildSetting {
 
-        Object2IntOpenHashMap<String> tierBlocks = new Object2IntOpenHashMap<>();
+        private Object2IntOpenHashMap<String> tierBlocks = new Object2IntOpenHashMap<>();
 
-        Block[] tierBlock;
-        Set<Block> blocks = Collections.emptySet();
+        private Block[] tierBlock;
+        private Set<Block> blocks = Collections.emptySet();
         private int Tier, repeatCount;
         private boolean noHatchMode, replaceMode, UseAEMode, FlipMode, DemolitionMode;
 
