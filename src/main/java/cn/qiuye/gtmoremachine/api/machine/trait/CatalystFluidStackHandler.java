@@ -2,7 +2,6 @@ package cn.qiuye.gtmoremachine.api.machine.trait;
 
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
@@ -14,17 +13,18 @@ import net.minecraftforge.fluids.FluidStack;
 
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenCustomHashMap;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
 public class CatalystFluidStackHandler extends NotifiableFluidTank {
 
-    public CatalystFluidStackHandler(MetaMachine machine, int slots, int capacity, IO io, IO capabilityIO) {
-        super(machine, slots, capacity, io, capabilityIO);
+    public CatalystFluidStackHandler(int slots, int capacity, IO io, IO capabilityIO) {
+        super(slots, capacity, io, capabilityIO);
     }
 
     @Override
-    public List<FluidIngredient> handleRecipeInner(IO io, GTRecipe recipe, List<FluidIngredient> left, boolean simulate) {
+    public @Nullable List<FluidIngredient> handleRecipeInner(IO io, GTRecipe recipe, List<FluidIngredient> left, boolean simulate) {
         Object2IntMap<FluidStack> map = new Object2IntOpenCustomHashMap<>(FluidStackHashStrategy.comparingAllButAmount());
         CustomFluidTank[] storages = getStorages();
         for (CustomFluidTank storage : storages) {

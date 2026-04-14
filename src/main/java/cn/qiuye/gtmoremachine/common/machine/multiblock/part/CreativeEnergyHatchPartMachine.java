@@ -4,7 +4,6 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IDataInfoProvider;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredIOPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableEnergyContainer;
@@ -34,6 +33,7 @@ import net.minecraft.world.entity.player.Player;
 
 import lombok.Getter;
 import org.apache.commons.lang3.ArrayUtils;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -62,7 +62,7 @@ public class CreativeEnergyHatchPartMachine extends TieredIOPartMachine implemen
         super(holder, GTValues.MAX, IO.IN);
         this.voltage = GTValues.VEX[setTier];
         this.maxEnergy = this.voltage * this.amps;
-        this.energyContainer = new InfinityEnergyContainer(this, this.maxEnergy, this.voltage, this.amps, 0L, 0L);
+        this.energyContainer = new InfinityEnergyContainer(this.maxEnergy, this.voltage, this.amps, 0L, 0L);
     }
 
     //////////////////////////////////////
@@ -171,12 +171,12 @@ public class CreativeEnergyHatchPartMachine extends TieredIOPartMachine implemen
 
     private static class InfinityEnergyContainer extends NotifiableEnergyContainer {
 
-        public InfinityEnergyContainer(MetaMachine machine, long maxCapacity, long maxInputVoltage, long maxInputAmperage, long maxOutputVoltage, long maxOutputAmperage) {
-            super(machine, maxCapacity, maxInputVoltage, maxInputAmperage, maxOutputVoltage, maxOutputAmperage);
+        public InfinityEnergyContainer(long maxCapacity, long maxInputVoltage, long maxInputAmperage, long maxOutputVoltage, long maxOutputAmperage) {
+            super(maxCapacity, maxInputVoltage, maxInputAmperage, maxOutputVoltage, maxOutputAmperage);
         }
 
         @Override
-        public List<EnergyStack> handleRecipeInner(IO io, GTRecipe recipe, List<EnergyStack> left, boolean simulate) {
+        public @Nullable List<EnergyStack> handleRecipeInner(IO io, GTRecipe recipe, List<EnergyStack> left, boolean simulate) {
             return super.handleRecipeInner(io, recipe, left, true);
         }
 

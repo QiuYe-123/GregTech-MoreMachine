@@ -74,9 +74,9 @@ public class HugeBusPartMachine extends TieredIOPartMachine implements IDistinct
 
     public HugeBusPartMachine(BlockEntityCreationInfo holder, int tier, IO io, int shareSize) {
         super(holder, tier, io);
-        this.inventory = createInventory(io);
-        this.circuitInventory = createCircuitItemHandler(io);
-        this.shareInventory = new CatalystItemStackHandler(this, shareSize, IO.IN, IO.NONE);
+        this.inventory = this.attachTrait(createInventory(io));
+        this.circuitInventory = this.attachTrait(createCircuitItemHandler(io));
+        this.shareInventory = this.attachTrait(new CatalystItemStackHandler(shareSize, IO.IN, IO.NONE));
     }
 
     //////////////////////////////////////
@@ -89,7 +89,7 @@ public class HugeBusPartMachine extends TieredIOPartMachine implements IDistinct
     }
 
     protected NotifiableItemStackHandler createInventory(IO io) {
-        return new NotifiableItemStackHandler(this, getInventorySize(), io, io, UnlimitedItemStackTransfer::new) {
+        return new NotifiableItemStackHandler(getInventorySize(), io, io, UnlimitedItemStackTransfer::new) {
 
             @Override
             public boolean canCapOutput() {
@@ -100,10 +100,10 @@ public class HugeBusPartMachine extends TieredIOPartMachine implements IDistinct
 
     protected NotifiableItemStackHandler createCircuitItemHandler(IO io) {
         if (io == IO.IN) {
-            return new NotifiableItemStackHandler(this, 1, IO.IN, IO.NONE)
+            return new NotifiableItemStackHandler(1, IO.IN, IO.NONE)
                     .setFilter(IntCircuitBehaviour::isIntegratedCircuit);
         } else {
-            return new NotifiableItemStackHandler(this, 0, IO.NONE);
+            return new NotifiableItemStackHandler(0, IO.NONE);
         }
     }
 

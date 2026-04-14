@@ -12,13 +12,13 @@ public class ProgrammableDualHatchPartMachine extends HugeDualHatchPartMachine {
 
     public ProgrammableDualHatchPartMachine(BlockEntityCreationInfo holder, int tier) {
         super(holder, tier, IO.IN);
-        this.inventory = new NotifiableItemStackHandler(this, getInventorySize(), IO.IN)
+        this.inventory = new NotifiableItemStackHandler(getInventorySize(), IO.IN)
                 .setFilter(itemStack -> !itemStack.is(GTMMAEItems.VIRTUAL_ITEM_PROVIDER.get()));
     }
 
     @Override
     protected NotifiableItemStackHandler createInventory(IO io) {
-        return new NotifiableItemStackHandler(this, getInventorySize(), io) {
+        return new NotifiableItemStackHandler(getInventorySize(), io) {
 
             @Override
             public boolean canCapOutput() {
@@ -30,9 +30,9 @@ public class ProgrammableDualHatchPartMachine extends HugeDualHatchPartMachine {
     @Override
     protected NotifiableItemStackHandler createCircuitItemHandler(IO io) {
         if (io == IO.IN) {
-            return new ProgrammableCircuitHandler(this);
+            return new ProgrammableCircuitHandler();
         } else {
-            return new NotifiableItemStackHandler(this, 0, IO.NONE);
+            return new NotifiableItemStackHandler(0, IO.NONE);
         }
     }
 }

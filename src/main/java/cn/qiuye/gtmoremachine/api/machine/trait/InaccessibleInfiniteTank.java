@@ -1,7 +1,6 @@
 package cn.qiuye.gtmoremachine.api.machine.trait;
 
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
@@ -21,8 +20,8 @@ public class InaccessibleInfiniteTank extends NotifiableFluidTank {
 
     private final FluidStorageDelegate storage;
 
-    public InaccessibleInfiniteTank(MetaMachine holder, KeyStorage internalBuffer) {
-        super(holder, List.of(new FluidStorageDelegate(internalBuffer)), IO.OUT, IO.NONE);
+    public InaccessibleInfiniteTank(KeyStorage internalBuffer) {
+        super(List.of(new FluidStorageDelegate(internalBuffer)), IO.OUT, IO.NONE);
         internalBuffer.setOnContentsChanged(this::onContentsChanged);
         storage = (FluidStorageDelegate) getStorages()[0];
         allowSameFluids = true;

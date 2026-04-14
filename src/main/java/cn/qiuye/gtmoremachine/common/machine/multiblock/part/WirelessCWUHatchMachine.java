@@ -43,7 +43,7 @@ public class WirelessCWUHatchMachine extends MultiblockPartMachine implements ID
     public WirelessCWUHatchMachine(BlockEntityCreationInfo holder, boolean transmitter) {
         super(holder);
         this.transmitter = transmitter;
-        this.computationContainer = new WirelessNotifiableComputationContainer(this, IO.IN, transmitter);
+        this.computationContainer = this.attachTrait(new WirelessNotifiableComputationContainer(IO.IN, transmitter));
     }
 
     @Override

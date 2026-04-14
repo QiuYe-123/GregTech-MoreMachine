@@ -48,21 +48,10 @@ public class WirelessEnergyInterface extends TieredIOPartMachine implements IWir
 
     public WirelessEnergyInterface(BlockEntityCreationInfo holder) {
         super(holder, GTValues.MAX, IO.IN);
-        this.energyContainer = NotifiableEnergyContainer.receiverContainer(this, Long.MAX_VALUE,
-                GTValues.VEX[tier], 67108864);
+        this.energyContainer = this.attachTrait(NotifiableEnergyContainer.receiverContainer(Long.MAX_VALUE,
+                GTValues.VEX[tier], 67108864));
         this.energyContainer.setSideInputCondition(s -> s == getFrontFacing() && isWorkingEnabled());
         this.energyContainer.setCapabilityValidator(s -> s == null || s == getFrontFacing());
-    }
-
-    protected NotifiableEnergyContainer createEnergyContainer() {
-        NotifiableEnergyContainer container;
-
-        container = NotifiableEnergyContainer.receiverContainer(this, Long.MAX_VALUE,
-                GTValues.VEX[tier], 67108864);
-        container.setSideInputCondition(s -> s == getFrontFacing() && isWorkingEnabled());
-        container.setCapabilityValidator(s -> s == null || s == getFrontFacing());
-
-        return container;
     }
 
     @Override

@@ -34,9 +34,9 @@ public abstract class SimpleTieredMachineMixin extends WorkableTieredMachine {
             method = "<init>(Lcom/gregtechceu/gtceu/api/blockentity/BlockEntityCreationInfo;ILit/unimi/dsi/fastutil/ints/Int2IntFunction;)V",
             at = @At("RETURN"),
             remap = false)
-    private void replacecircuitInventory(BlockEntityCreationInfo holder, int tier, Int2IntFunction tankScalingFunction, CallbackInfo ci) {
+    private void replacecircuitInventory(BlockEntityCreationInfo info, int tier, Int2IntFunction tankScalingFunction, CallbackInfo ci) {
         if (GTmm.Mods.isAE2Loaded()) {
-            this.circuitInventory = new ProgrammableCircuitHandler((SimpleTieredMachine) (Object) this);
+            this.circuitInventory = this.attachTrait(new ProgrammableCircuitHandler());
             this.importItems.setFilter(i -> !i.is(GTMMAEItems.VIRTUAL_ITEM_PROVIDER.get()) || !i.hasTag());
         }
     }

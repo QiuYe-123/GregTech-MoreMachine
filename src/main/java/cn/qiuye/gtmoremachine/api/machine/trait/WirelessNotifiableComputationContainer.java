@@ -29,8 +29,8 @@ public class WirelessNotifiableComputationContainer extends NotifiableComputatio
 
     private int currentOutputCwu = 0, lastOutputCwu = 0;
 
-    public WirelessNotifiableComputationContainer(MetaMachine machine, IO handlerIO, boolean transmitter) {
-        super(machine, handlerIO, transmitter);
+    public WirelessNotifiableComputationContainer(IO handlerIO, boolean transmitter) {
+        super(handlerIO, transmitter);
     }
 
     @Override
@@ -46,9 +46,9 @@ public class WirelessNotifiableComputationContainer extends NotifiableComputatio
         if (handlerIO == IO.IN) {
             if (isTransmitter()) {
                 // Ask the Multiblock controller, which *should* be an IOpticalComputationProvider
-                if (machine instanceof IOpticalComputationProvider provider) {
+                if (this.getMachine() instanceof IOpticalComputationProvider provider) {
                     return provider.requestCWUt(cwut, simulate, seen);
-                } else if (machine instanceof IMultiPart part) {
+                } else if (this.getMachine() instanceof IMultiPart part) {
                     if (part.getControllers().isEmpty()) {
                         return 0;
                     }
@@ -87,9 +87,9 @@ public class WirelessNotifiableComputationContainer extends NotifiableComputatio
         if (handlerIO == IO.IN) {
             if (isTransmitter()) {
                 // Ask the Multiblock controller, which *should* be an IOpticalComputationProvider
-                if (machine instanceof IOpticalComputationProvider provider) {
+                if (this.getMachine() instanceof IOpticalComputationProvider provider) {
                     return provider.getMaxCWUt(seen);
-                } else if (machine instanceof IMultiPart part) {
+                } else if (this.getMachine() instanceof IMultiPart part) {
                     if (part.getControllers().isEmpty()) {
                         return 0;
                     }
@@ -130,9 +130,9 @@ public class WirelessNotifiableComputationContainer extends NotifiableComputatio
         if (handlerIO == IO.IN) {
             if (isTransmitter()) {
                 // Ask the Multiblock controller, which *should* be an IOpticalComputationProvider
-                if (machine instanceof IOpticalComputationProvider provider) {
+                if (this.getMachine() instanceof IOpticalComputationProvider provider) {
                     return provider.canBridge(seen);
-                } else if (machine instanceof IMultiPart part) {
+                } else if (this.getMachine() instanceof IMultiPart part) {
                     if (part.getControllers().isEmpty()) {
                         return false;
                     }
@@ -180,10 +180,10 @@ public class WirelessNotifiableComputationContainer extends NotifiableComputatio
                 if (recipe.data.getBoolean("duration_is_total_cwu")) {
                     int drawn = provider.requestCWUt(availableCWUt, simulate);
                     if (!simulate) {
-                        if (machine instanceof IRecipeLogicMachine rlm) {
+                        if (this.getMachine() instanceof IRecipeLogicMachine rlm) {
                             // first, remove the progress the recipe logic adds.
                             rlm.getRecipeLogic().setProgress(rlm.getRecipeLogic().getProgress() - 1 + drawn);
-                        } else if (machine instanceof IMultiPart multiPart) {
+                        } else if (this.getMachine() instanceof IMultiPart multiPart) {
                             for (MultiblockControllerMachine controller : multiPart.getControllers()) {
                                 if (controller instanceof IRecipeLogicMachine rlm) {
                                     rlm.getRecipeLogic().setProgress(rlm.getRecipeLogic().getProgress() - 1 + drawn);
@@ -208,8 +208,8 @@ public class WirelessNotifiableComputationContainer extends NotifiableComputatio
 
     @Nullable
     private IOpticalComputationProvider getOpticalNetProvider() {
-        if (machine instanceof WirelessCWUHatchMachine woc) {
-            var transmitterMachine = MetaMachine.getMachine(machine.getLevel(), woc.getTransmitterPos());
+        if (this.getMachine() instanceof WirelessCWUHatchMachine woc) {
+            var transmitterMachine = MetaMachine.getMachine(this.getMachine().getLevel(), woc.getTransmitterPos());
             if (transmitterMachine instanceof WirelessCWUHatchMachine transmitter) {
                 return transmitter.getComputationContainer();
             }
