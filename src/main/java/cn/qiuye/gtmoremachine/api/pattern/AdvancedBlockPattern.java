@@ -18,6 +18,7 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -28,6 +29,8 @@ import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.Property;
+import net.minecraft.world.level.chunk.LevelChunk;
+import net.minecraft.world.level.chunk.LevelChunkSection;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
@@ -85,7 +88,7 @@ public class AdvancedBlockPattern extends BlockPattern {
 
     public void autoBuild(Player player, MultiblockState worldState,
                           AdvancedTerminalBehavior.AutoBuildSetting autoBuildSetting) {
-        Level world = player.level();
+        Level worldlevel = player.level();
         if (autoBuildSetting.isDemolitionMode()) {
             autoDemolish(player, worldState, autoBuildSetting);
             return;
@@ -97,7 +100,7 @@ public class AdvancedBlockPattern extends BlockPattern {
         BlockPos centerPos = controller.getBlockPos();
         Direction facing = controller.getFrontFacing();
         Direction upwardsFacing = controller.getUpwardsFacing();
-        int FacingOrdinal = facing.ordinal();
+        int facingOrdinal = facing.ordinal();
         Object2IntOpenHashMap<SimplePredicate> cacheGlobal = worldState.getGlobalCount();
         Object2IntOpenHashMap<SimplePredicate> cacheLayer = worldState.getLayerCount();
         Object2ObjectOpenHashMap<BlockPos, Object> blocks = new Object2ObjectOpenHashMap<>();
@@ -116,6 +119,68 @@ public class AdvancedBlockPattern extends BlockPattern {
             } else repeat[h] = minH;
         }
 
+        List<ItemEntity> itemStacks = new ArrayList<>();
+
+        int aisleIndex = 0;
+        for (int currentZ = minZ; aisleIndex < this.fingerLength; aisleIndex++) {
+            for (int actualRepeats = 0; actualRepeats < repeat[aisleIndex]; actualRepeats++) {
+                cacheLayer.clear();
+                int yIndex = 0;
+                for (int y = -this.centerOffset[1]; yIndex < this.thumbLength; y++) {
+                    int xIndex = 0;
+                    for (int x = -this.centerOffset[0]; xIndex < this.palmLength; x++) {
+                        TraceabilityPredicate[][] slice = this.blockMatches[aisleIndex];
+                        if (slice != null) {
+                            TraceabilityPredicate[] row = slice[yIndex];
+                            if (row != null) {
+                                TraceabilityPredicate predicate = row[xIndex];
+                                if (predicate != null && !predicate.isAir()) {
+                                    var worldPos = this.setActualRelativeOffset(x, y, currentZ, facing, upwardsFacing, autoBuildSetting.isFlipMode())
+                                            .offset(centerPos.getX(), centerPos.getY(), centerPos.getZ());
+                                    worldState.update(worldPos, predicate);
+                                    long posLong = worldPos.asLong();
+                                    Item originalItem = null;
+                                    BlockState currentState = worldlevel.getBlockState(worldPos);
+                                    Block currentBlock = currentState.getBlock();
+
+                                    if (autoBuildSetting.isDemolitionMode()) {
+                                        if (currentBlock != Blocks.AIR) {
+                                            if (currentBlock instanceof LiquidBlock) {
+                                                forceRemoveBlock(worldlevel, worldPos);
+                                                continue;
+                                            }
+
+                                            boolean isExpected = false;
+
+                                            for (var sp : predicate.common) {
+                                                BlockInfo[] candidates = sp.candidates == null ? null : sp.candidates.get();
+
+                                                if (candidates != null) {
+                                                    for (BlockInfo candidate : candidates) {
+                                                        Block block = candidate.getBlockState().getBlock();
+                                                        if (block == currentBlock) {
+                                                            isExpected = true;
+                                                            break;
+                                                        }
+                                                    }
+                                                    if (isExpected) break;
+                                                }
+                                            }
+
+                                            if (!isExpected) {
+
+                                            }
+
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
         for (int c = 0, z = minZ, r; c < this.fingerLength; c++) {
             for (r = 0; r < repeat[c]; r++) {
                 cacheLayer.clear();
@@ -128,12 +193,12 @@ public class AdvancedBlockPattern extends BlockPattern {
                         if (!worldState.update(pos, predicate)) continue;
 
                         ItemStack itemStack = null;
-                        if (!world.isEmptyBlock(pos)) {
-                            Block block = world.getBlockState(pos).getBlock();
+                        if (!worldlevel.isEmptyBlock(pos)) {
+                            Block block = worldlevel.getBlockState(pos).getBlock();
                             if (autoBuildSetting.getBlocks().contains(block) && autoBuildSetting.isReplaceMode()) {
                                 itemStack = block.asItem().getDefaultInstance();
                             } else {
-                                blocks.put(pos, world.getBlockState(pos));
+                                blocks.put(pos, worldlevel.getBlockState(pos));
                                 for (SimplePredicate limit : predicate.limited) limit.testLimited(worldState);
                                 continue;
                             }
@@ -216,21 +281,21 @@ public class AdvancedBlockPattern extends BlockPattern {
                         }
 
                         if (autoBuildSetting.isReplaceMode() && itemStack != null) {
-                            world.removeBlock(pos, true);
+                            worldlevel.removeBlock(pos, true);
                             if (holderHandler != null) holderHandler.insertItem(holderSlot, itemStack, false);
                         }
 
                         BlockItem itemBlock = (BlockItem) found.getItem();
-                        BlockPlaceContext context = new BlockPlaceContext(world, player, InteractionHand.MAIN_HAND,
+                        BlockPlaceContext context = new BlockPlaceContext(worldlevel, player, InteractionHand.MAIN_HAND,
                                 found, BlockHitResult.miss(player.getEyePosition(0), Direction.UP, pos));
                         InteractionResult interactionResult = itemBlock.place(context);
                         if (interactionResult != InteractionResult.FAIL) {
                             placeBlockPos.add(pos);
                             if (handler != null) handler.extractItem(foundSlot, 1, false);
                         }
-                        if (world.getBlockEntity(pos) instanceof MetaMachine metaMachine) {
+                        if (worldlevel.getBlockEntity(pos) instanceof MetaMachine metaMachine) {
                             blocks.put(pos, metaMachine);
-                        } else blocks.put(pos, world.getBlockState(pos));
+                        } else blocks.put(pos, worldlevel.getBlockState(pos));
                     }
                 }
                 z++;
@@ -247,7 +312,7 @@ public class AdvancedBlockPattern extends BlockPattern {
                         Object object = blocks.get(p.relative(f));
                         return object == null ||
                                 (object instanceof BlockState && ((BlockState) object).getBlock() == Blocks.AIR);
-                    }, state -> world.setBlock(pos, state, 3));
+                    }, state -> worldlevel.setBlock(pos, state, 3));
                 } else if (block instanceof MetaMachine machine) {
                     resetFacing(pos, machine.getBlockState(), frontFacing, (p, f) -> {
                         Object object = blocks.get(p.relative(f));
@@ -255,7 +320,7 @@ public class AdvancedBlockPattern extends BlockPattern {
                             return machine.isFacingValid(f);
                         }
                         return false;
-                    }, state -> world.setBlock(pos, state, 3));
+                    }, state -> worldlevel.setBlock(pos, state, 3));
                 }
             }
         }));
@@ -611,5 +676,36 @@ public class AdvancedBlockPattern extends BlockPattern {
         }
         if (found == null) found = Direction.NORTH;
         consumer.accept(blockState.setValue(property, found));
+    }
+
+    private static void forceRemoveBlock(Level level, BlockPos pos) {
+        if (level.isOutsideBuildHeight(pos)) return;
+
+        LevelChunk chunk = level.getChunkAt(pos);
+        int y = pos.getY();
+        int sectionIndex = chunk.getSectionIndex(y);
+        LevelChunkSection section = chunk.getSections()[sectionIndex];
+        if (section.hasOnlyAir()) return;
+
+        int localX = pos.getX() & 15;
+        int localY = y & 15;
+        int localZ = pos.getZ() & 15;
+
+        BlockState oldState = section.getBlockState(localX, localY, localZ);
+        if (oldState.isAir()) return;
+
+        // 直接设为空气
+        section.setBlockState(localX, localY, localZ, Blocks.AIR.defaultBlockState());
+
+        // 触发方块移除逻辑（如掉落物品、机器卸载等）
+        oldState.onRemove(level, pos, Blocks.AIR.defaultBlockState(), false);
+
+        // 移除方块实体
+        if (oldState.hasBlockEntity()) {
+            level.removeBlockEntity(pos);
+        }
+
+        // 标记区块为未保存（确保更改持久化）
+        chunk.setUnsaved(true);
     }
 }
