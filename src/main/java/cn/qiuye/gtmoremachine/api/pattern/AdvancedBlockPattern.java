@@ -72,20 +72,12 @@ public class AdvancedBlockPattern extends BlockPattern {
             Field blockMatchesField = clazz.getDeclaredField("blockMatches");
             blockMatchesField.setAccessible(true);
             TraceabilityPredicate[][][] blockMatches = (TraceabilityPredicate[][][]) blockMatchesField.get(blockPattern);
-            // structureDir
-            Field structureDirField = clazz.getDeclaredField("structureDir");
-            structureDirField.setAccessible(true);
-            RelativeDirection[] structureDir = (RelativeDirection[]) structureDirField.get(blockPattern);
-            // aisleRepetitions
-            Field aisleRepetitionsField = clazz.getDeclaredField("aisleRepetitions");
-            aisleRepetitionsField.setAccessible(true);
-            int[][] aisleRepetitions = (int[][]) aisleRepetitionsField.get(blockPattern);
             // centerOffset
             Field centerOffsetField = clazz.getDeclaredField("centerOffset");
             centerOffsetField.setAccessible(true);
             int[] centerOffset = (int[]) centerOffsetField.get(blockPattern);
 
-            return new AdvancedBlockPattern(blockMatches, structureDir, aisleRepetitions, centerOffset);
+            return new AdvancedBlockPattern(blockMatches, blockPattern.structureDir, blockPattern.aisleRepetitions, centerOffset);
         } catch (Exception ignored) {}
         return null;
     }
@@ -93,7 +85,7 @@ public class AdvancedBlockPattern extends BlockPattern {
     public void autoBuild(Player player, MultiblockState worldState,
                           AdvancedTerminalBehavior.AutoBuildSetting autoBuildSetting) {
         Level world = player.level();
-        if (autoBuildSetting.isUseDemolish()) {
+        if (autoBuildSetting.isDemolitionMode()) {
             autoDemolish(player, worldState, autoBuildSetting);
             return;
         }
@@ -104,8 +96,8 @@ public class AdvancedBlockPattern extends BlockPattern {
         BlockPos centerPos = controller.getBlockPos();
         Direction facing = controller.getFrontFacing();
         Direction upwardsFacing = controller.getUpwardsFacing();
-        boolean isFlipped = autoBuildSetting.isFlipped();
-        boolean isUseAE = autoBuildSetting.isUseAE();
+        boolean isFlipped = autoBuildSetting.isFlipMode();
+        boolean isUseAE = autoBuildSetting.isUseAEMode();
 
         Object2IntOpenHashMap<SimplePredicate> cacheGlobal = worldState.getGlobalCount();
         Object2IntOpenHashMap<SimplePredicate> cacheLayer = worldState.getLayerCount();
@@ -285,7 +277,7 @@ public class AdvancedBlockPattern extends BlockPattern {
         BlockPos centerPos = controller.self().getBlockPos();
         Direction facing = controller.self().getFrontFacing();
         Direction upwardsFacing = controller.self().getUpwardsFacing();
-        boolean isUseMirror = autoBuildSetting.isFlipped();
+        boolean isUseMirror = autoBuildSetting.isFlipMode();
 
         // 使用与构建逻辑相同的重复次数计算方式
         int[] repeat = new int[this.fingerLength];
@@ -337,7 +329,7 @@ public class AdvancedBlockPattern extends BlockPattern {
         if (player.isCreative()) {
             return;
         }
-        boolean useAE = autoBuildSetting.isUseAE();
+        boolean useAE = autoBuildSetting.isUseAEMode();
         if (useAE) {
             // 只在非创造模式下才尝试插入AE网络
             IItemHandler handler = player.getCapability(ForgeCapabilities.ITEM_HANDLER).resolve().orElse(null);

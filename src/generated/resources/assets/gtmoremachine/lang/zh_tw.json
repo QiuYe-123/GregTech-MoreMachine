@@ -551,6 +551,8 @@
   "gtmoremachine.multiblock.pattern.error.ecutypes": "§c必鬚使用同種能源通訊單元",
   "gtmoremachine.multiblock.pattern.error.wecc": "§c必鬚使用相同的電網容量組件",
   "gtmoremachine.universal.disabled": "多方塊結構共享：§4禁止",
+  "gtmoremachine.value.boolean.DISABLED": "已禁用",
+  "gtmoremachine.value.boolean.enabled": "已啟用",
   "gui.gtmoremachine.me_export_buffer.fluid_status.full": "流體存儲空間已滿",
   "gui.gtmoremachine.me_export_buffer.item_status.full": "物品存儲空間已滿",
   "gui.gtmoremachine.share_inventory.desc.0": "打開催化劑槽",

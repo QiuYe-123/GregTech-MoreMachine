@@ -1,6 +1,7 @@
 package cn.qiuye.gtmoremachine.common.item;
 
 import cn.qiuye.gtmoremachine.GTmm;
+import cn.qiuye.gtmoremachine.api.GTMMValues;
 import cn.qiuye.gtmoremachine.api.gui.widget.BlockMapSelectorWidget;
 import cn.qiuye.gtmoremachine.api.gui.widget.ExtendLabelWidget;
 import cn.qiuye.gtmoremachine.api.gui.widget.TerminalInputWidget;
@@ -33,13 +34,15 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.LiquidBlock;
 
+import it.unimi.dsi.fastutil.booleans.BooleanConsumer;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+import it.unimi.dsi.fastutil.objects.ReferenceOpenHashSet;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.util.*;
+import java.util.function.BooleanSupplier;
 
 import static cn.qiuye.gtmoremachine.common.block.BlockMap.MAP;
 import static net.minecraft.network.chat.Component.translatable;
@@ -68,14 +71,14 @@ public class AdvancedTerminalBehavior implements IItemUIFactory {
                 if (GTmm.Mods.isAE2Loaded()) {
                     if (!controller.isFormed()) {
                         AdvancedBlockPattern.getAdvancedBlockPattern(controller.getPattern()).autoBuild(context.getPlayer(), controller.getMultiblockState(), autoBuildSetting);
-                    } else if (metaMachine instanceof WorkableMultiblockMachine machine && (autoBuildSetting.isReplaceMode() || autoBuildSetting.isUseDemolish())) {
+                    } else if (metaMachine instanceof WorkableMultiblockMachine machine && (autoBuildSetting.isReplaceMode() || autoBuildSetting.isDemolitionMode())) {
                         AdvancedBlockPattern.getAdvancedBlockPattern(controller.getPattern()).autoBuild(context.getPlayer(), controller.getMultiblockState(), autoBuildSetting);
                         machine.onPartUnload();
                     }
                 } else {
                     if (!controller.isFormed()) {
                         AdvancedBlockNoAEPattern.getAdvancedBlockPattern(controller.getPattern()).autoBuild(context.getPlayer(), controller.getMultiblockState(), autoBuildSetting);
-                    } else if (metaMachine instanceof WorkableMultiblockMachine machine && (autoBuildSetting.isReplaceMode() || autoBuildSetting.isUseDemolish())) {
+                    } else if (metaMachine instanceof WorkableMultiblockMachine machine && (autoBuildSetting.isReplaceMode() || autoBuildSetting.isDemolitionMode())) {
                         AdvancedBlockNoAEPattern.getAdvancedBlockPattern(controller.getPattern()).autoBuild(context.getPlayer(), controller.getMultiblockState(), autoBuildSetting);
                         machine.onPartUnload();
                     }
@@ -88,31 +91,34 @@ public class AdvancedTerminalBehavior implements IItemUIFactory {
 
     private AutoBuildSetting getAutoBuildSetting(ItemStack mainHandItem) {
         var autoBuildSetting = new AutoBuildSetting();
-        var tag = mainHandItem.getOrCreateTag();
-        if (!tag.isEmpty()) {
-            autoBuildSetting.setTier(tag.getInt("Tier"));
-            autoBuildSetting.setRepeatCount(tag.getInt("RepeatCount"));
-            autoBuildSetting.setNoHatchMode(tag.getBoolean("NoHatchMode"));
-            autoBuildSetting.setReplaceMode(tag.getBoolean("ReplaceMode"));
-            autoBuildSetting.setUseAE(tag.getBoolean("IsUseAE"));
-            autoBuildSetting.setFlipped(tag.getBoolean("IsUseMirror"));
-            autoBuildSetting.setUseDemolish(tag.getBoolean("IsUseDemolish"));
-            String block = tag.getString("blocks");
-            if (!block.isEmpty()) {
-                autoBuildSetting.setTierBlock(MAP.get(block));
-                autoBuildSetting.setBlocks(new ObjectOpenHashSet<>(autoBuildSetting.tierBlock));
+        autoBuildSetting.setRepeatCount(getIntTag(mainHandItem, repeatCount));
+        autoBuildSetting.setReplaceMode(getBooleanTag(mainHandItem, ReplaceMode));
+        autoBuildSetting.setDemolitionMode(getBooleanTag(mainHandItem, DemolitionMode));
+        autoBuildSetting.setUseAEMode(getBooleanTag(mainHandItem, UseAEMode));
+        autoBuildSetting.setFlipMode(getBooleanTag(mainHandItem, FlipMode));
+        autoBuildSetting.setNoHatchMode(getBooleanTag(mainHandItem, NoHatch, true));
+        var blocks = mainHandItem.getOrCreateTag().getCompound("blocks");
+        if (!blocks.isEmpty()) {
+            ReferenceOpenHashSet<Block> blockSet = new ReferenceOpenHashSet<>();
+            for (String key : BlockMap.MAP.keySet()) {
+                Block[] blockArray = BlockMap.MAP.get(key);
+                int blocktier = blocks.getInt(key);
+                if (blocktier > 0 && blocktier <= blockArray.length) {
+                    blockSet.addAll(Arrays.asList(blockArray));
+                }
+                autoBuildSetting.getTierBlocks().put(key, blocktier);
             }
+            autoBuildSetting.setBlocks(blockSet);
         }
         return autoBuildSetting;
     }
 
     @Override
     public ModularUI createUI(HeldItemUIFactory.HeldItemHolder heldItemHolder, Player player) {
-        return new ModularUI(176, 166, heldItemHolder, player).widget(createWidget(player));
+        return new ModularUI(176, 166, heldItemHolder, player).widget(createWidget(heldItemHolder.getHeld()));
     }
 
-    private Widget createWidget(Player player) {
-        final var handItem = player.getMainHandItem();
+    private Widget createWidget(final ItemStack handItem) {
         var group = new WidgetGroup(0, 0, 182 + 8, 133 + 8);
         int rowIndex = 1;
         var contain = new DraggableScrollableWidgetGroup(4, 4, 182, 133)
@@ -196,6 +202,22 @@ public class AdvancedTerminalBehavior implements IItemUIFactory {
         return Component.literal("");
     }
 
+    private static SwitchWidget Button(int x, int y, BooleanSupplier get, BooleanConsumer set) {
+        var widget = new SwitchWidget(x - 2, y - 2, 16, 16, null);
+        BooleanConsumer consumer = bol -> widget.setHoverTooltips(bol ? GTMMValues.ENABLED : GTMMValues.DISABLED);
+        widget.setOnPressCallback((c, v) -> {
+            if (!c.isRemote) set.accept(v.booleanValue());
+            else consumer.accept(v.booleanValue());
+        });
+        widget.setPressed(get.getAsBoolean())
+                .setBaseTexture(
+                        GuiTextures.BUTTON, GuiTextures.PROGRESS_BAR_SOLAR_STEAM.get(true).copy().getSubTexture(0.0, 0.0, 1.0, 0.5).scale(0.8F))
+                .setPressedTexture(
+                        GuiTextures.BUTTON, GuiTextures.PROGRESS_BAR_SOLAR_STEAM.get(true).copy().getSubTexture(0.0, 0.5, 1.0, 0.5).scale(0.8F));
+        consumer.accept(get.getAsBoolean());
+        return widget;
+    }
+
     private int getIntTag(ItemStack itemStack, String key) {
         return getIntTag(itemStack, key, 0);
     }
@@ -231,16 +253,16 @@ public class AdvancedTerminalBehavior implements IItemUIFactory {
         Block[] tierBlock;
         Set<Block> blocks = Collections.emptySet();
         private int Tier, repeatCount;
-        private boolean noHatchMode, replaceMode, isUseAE, isFlipped, isUseDemolish;
+        private boolean noHatchMode, replaceMode, UseAEMode, FlipMode, DemolitionMode;
 
         private AutoBuildSetting() {
             this.Tier = 0;
             this.repeatCount = 0;
             this.noHatchMode = true;
             this.replaceMode = false;
-            this.isUseAE = false;
-            this.isFlipped = false;
-            this.isUseDemolish = false;
+            this.UseAEMode = false;
+            this.FlipMode = false;
+            this.DemolitionMode = false;
         }
 
         public List<ItemStack> apply(BlockInfo[] blockInfos) {

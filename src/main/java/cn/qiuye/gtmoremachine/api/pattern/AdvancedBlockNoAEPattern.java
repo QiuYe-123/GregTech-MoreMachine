@@ -80,7 +80,7 @@ public class AdvancedBlockNoAEPattern extends BlockPattern {
     public void autoBuild(Player player, MultiblockState worldState,
                           AdvancedTerminalBehavior.AutoBuildSetting autoBuildSetting) {
         Level world = player.level();
-        if (autoBuildSetting.isUseDemolish()) {
+        if (autoBuildSetting.isDemolitionMode()) {
             autoDemolish(player, worldState, autoBuildSetting);
             return;
         }
@@ -90,7 +90,7 @@ public class AdvancedBlockNoAEPattern extends BlockPattern {
         BlockPos centerPos = controller.self().getBlockPos();
         Direction facing = controller.self().getFrontFacing();
         Direction upwardsFacing = controller.self().getUpwardsFacing();
-        boolean isUseMirror = autoBuildSetting.isFlipped();
+        boolean isUseMirror = autoBuildSetting.isFlipMode();
 
         Object2IntOpenHashMap<SimplePredicate> cacheGlobal = worldState.getGlobalCount();
         Object2IntOpenHashMap<SimplePredicate> cacheLayer = worldState.getLayerCount();
@@ -273,7 +273,7 @@ public class AdvancedBlockNoAEPattern extends BlockPattern {
         BlockPos centerPos = controller.self().getBlockPos();
         Direction facing = controller.self().getFrontFacing();
         Direction upwardsFacing = controller.self().getUpwardsFacing();
-        boolean isFlipped = autoBuildSetting.isFlipped();
+        boolean isFlipped = autoBuildSetting.isFlipMode();
 
         // 使用与构建逻辑相同的重复次数计算方式
         int[] repeat = new int[this.fingerLength];
