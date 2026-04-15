@@ -2,7 +2,6 @@ package cn.qiuye.gtmoremachine.api.pattern;
 
 import cn.qiuye.gtmoremachine.common.item.AdvancedTerminalBehavior;
 
-import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.pattern.BlockPattern;
 import com.gregtechceu.gtceu.api.pattern.MultiblockState;
@@ -10,25 +9,17 @@ import com.gregtechceu.gtceu.api.pattern.TraceabilityPredicate;
 import com.gregtechceu.gtceu.api.pattern.predicates.SimplePredicate;
 import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
 
-import com.lowdragmc.lowdraglib.utils.BlockInfo;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.Property;
-import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.IItemHandler;
@@ -107,151 +98,6 @@ public class AdvancedBlockNoAEPattern extends BlockPattern {
                 repeat[h] = Math.max(minH, Math.min(maxH, autoBuildSetting.getRepeatCount()));
             } else repeat[h] = minH;
         }
-
-        for (int c = 0, z = minZ++, r; c < this.fingerLength; c++) {
-            for (r = 0; r < repeat[c]; r++) {
-                cacheLayer.clear();
-                for (int b = 0, y = -centerOffset[1]; b < this.thumbLength; b++, y++) {
-                    for (int a = 0, x = -centerOffset[0]; a < this.palmLength; a++, x++) {
-                        TraceabilityPredicate predicate = this.blockMatches[c][b][a];
-                        if (predicate.isAny()) continue;
-                        BlockPos pos = setActualRelativeOffset(x, y, z, facing, upwardsFacing, isUseMirror)
-                                .offset(centerPos.getX(), centerPos.getY(), centerPos.getZ());
-                        if (!worldState.update(pos, predicate)) continue;
-                        ItemStack itemStack = null;
-                        if (!world.isEmptyBlock(pos)) {
-                            Block block = world.getBlockState(pos).getBlock();
-                            if (autoBuildSetting.getBlocks().contains(block) && autoBuildSetting.isReplaceMode()) {
-                                itemStack = block.asItem().getDefaultInstance();
-                            } else {
-                                blocks.put(pos, world.getBlockState(pos));
-                                for (SimplePredicate limit : predicate.limited) limit.testLimited(worldState);
-                                continue;
-                            }
-                        }
-
-                        boolean find = false;
-                        BlockInfo[] infos = new BlockInfo[0];
-                        for (var limit : predicate.limited) {
-                            if (limit.minLayerCount > 0 && autoBuildSetting.isPlaceHatch(limit.candidates.get())) {
-                                int curr = cacheLayer.getInt(limit);
-                                if (curr < limit.minLayerCount &&
-                                        (limit.maxLayerCount == -1 || curr < limit.maxLayerCount)) {
-                                    cacheLayer.addTo(limit, 1);
-                                } else continue;
-                            } else continue;
-                            infos = limit.candidates == null ? null : limit.candidates.get();
-                            find = true;
-                            break;
-                        }
-                        if (!find) {
-                            for (var limit : predicate.limited) {
-                                if (limit.minCount > 0 && autoBuildSetting.isPlaceHatch(limit.candidates.get())) {
-                                    int curr = cacheGlobal.getInt(limit);
-                                    if (curr < limit.minCount && (limit.maxCount == -1 || curr < limit.maxCount)) {
-                                        cacheGlobal.addTo(limit, 1);
-                                    } else continue;
-                                } else continue;
-                                infos = limit.candidates == null ? null : limit.candidates.get();
-                                find = true;
-                                break;
-                            }
-                        }
-                        if (!find) { // no limited
-                            for (SimplePredicate limit : predicate.limited) {
-                                if (!autoBuildSetting.isPlaceHatch(limit.candidates.get())) continue;
-                                if (limit.maxLayerCount != -1 &&
-                                        cacheLayer.getOrDefault(limit, Integer.MAX_VALUE) == limit.maxLayerCount) {
-                                    continue;
-                                }
-                                if (limit.maxCount != -1 &&
-                                        cacheGlobal.getOrDefault(limit, Integer.MAX_VALUE) == limit.maxCount) {
-                                    continue;
-                                }
-                                cacheLayer.addTo(limit, 1);
-                                cacheGlobal.addTo(limit, 1);
-                                infos = ArrayUtils.addAll(infos, limit.candidates == null ? null : limit.candidates.get());
-                            }
-                            for (SimplePredicate common : predicate.common) {
-                                if (common.candidates != null && predicate.common.size() > 1 && !autoBuildSetting.isPlaceHatch(common.candidates.get())) {
-                                    continue;
-                                }
-                                infos = ArrayUtils.addAll(infos, common.candidates == null ? null : common.candidates.get());
-                            }
-                        }
-
-                        List<ItemStack> candidates = autoBuildSetting.apply(infos);
-
-                        if (autoBuildSetting.isReplaceMode() && itemStack != null &&
-                                ItemStack.isSameItem(candidates.get(0), itemStack))
-                            continue;
-
-                        // check inventory
-                        Triplet<ItemStack, IItemHandler, Integer> result = foundItem(player, candidates, item -> item instanceof BlockItem);
-                        ItemStack found = result.getA();
-                        IItemHandler handler = result.getB();
-                        int foundSlot = result.getC();
-
-                        if (found == null) continue;
-
-                        // check can get old coilBlock
-                        IItemHandler holderHandler = null;
-                        int holderSlot = -1;
-                        if (autoBuildSetting.isReplaceMode() && itemStack != null) {
-                            Pair<IItemHandler, Integer> holderResult = foundHolderSlot(player, itemStack);
-                            holderHandler = holderResult.getFirst();
-                            holderSlot = holderResult.getSecond();
-
-                            if (holderHandler != null && holderSlot < 0) {
-                                continue;
-                            }
-                        }
-
-                        if (autoBuildSetting.isReplaceMode() && itemStack != null) {
-                            world.removeBlock(pos, true);
-                            if (holderHandler != null) holderHandler.insertItem(holderSlot, itemStack, false);
-                        }
-
-                        BlockItem itemBlock = (BlockItem) found.getItem();
-                        BlockPlaceContext context = new BlockPlaceContext(world, player, InteractionHand.MAIN_HAND,
-                                found, BlockHitResult.miss(player.getEyePosition(0), Direction.UP, pos));
-                        InteractionResult interactionResult = itemBlock.place(context);
-                        if (interactionResult != InteractionResult.FAIL) {
-                            placeBlockPos.add(pos);
-                            if (handler != null) handler.extractItem(foundSlot, 1, false);
-                        }
-                        if (world.getBlockEntity(pos) instanceof MetaMachine metaMachine) {
-                            blocks.put(pos, metaMachine);
-                        } else blocks.put(pos, world.getBlockState(pos));
-                    }
-                }
-                z++;
-            }
-        }
-        Direction frontFacing = controller.self().getFrontFacing();
-        blocks.object2ObjectEntrySet().fastForEach((entry -> {
-            // adjust facing
-            var pos = entry.getKey();
-            var block = entry.getValue();
-            if (!(block instanceof MultiblockControllerMachine)) {
-                if (block instanceof BlockState && placeBlockPos.contains(pos)) {
-                    resetFacing(pos, (BlockState) block, frontFacing, (p, f) -> {
-                        Object object = blocks.get(p.relative(f));
-                        return object == null ||
-                                (object instanceof BlockState && ((BlockState) object).getBlock() == Blocks.AIR);
-                    }, state -> world.setBlock(pos, state, 3));
-                } else if (block instanceof MetaMachine machine) {
-                    resetFacing(pos, machine.getBlockState(), frontFacing, (p, f) -> {
-                        Object object = blocks.get(p.relative(f));
-                        if (object == null || (object instanceof BlockState blockState && blockState.isAir())) {
-                            return machine.isFacingValid(f);
-                        }
-                        return false;
-                    }, state -> world.setBlock(pos, state, 3));
-                }
-            }
-        }));
-        controller.checkPattern();
     }
 
     /**

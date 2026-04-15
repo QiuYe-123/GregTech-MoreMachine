@@ -34,7 +34,6 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.LiquidBlock;
 
 import it.unimi.dsi.fastutil.booleans.BooleanConsumer;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
@@ -251,25 +250,23 @@ public class AdvancedTerminalBehavior implements IItemUIFactory {
 
         private Object2IntOpenHashMap<String> tierBlocks = new Object2IntOpenHashMap<>();
 
-        private Block[] tierBlock;
         private Set<Block> blocks = Collections.emptySet();
-        private int Tier, repeatCount;
-        private boolean noHatchMode, replaceMode, UseAEMode, FlipMode, DemolitionMode;
+        private int repeatCount;
+        private boolean noHatchMode, replaceMode, useAEMode, flipMode, demolitionMode;
 
         private AutoBuildSetting() {
-            this.Tier = 0;
             this.repeatCount = 0;
             this.noHatchMode = true;
             this.replaceMode = false;
-            this.UseAEMode = false;
-            this.FlipMode = false;
-            this.DemolitionMode = false;
+            this.useAEMode = false;
+            this.flipMode = false;
+            this.demolitionMode = false;
         }
 
         public List<Block> apply(Block[] blocks) {
             List<Block> candidates = new ObjectArrayList<>();
             if (blocks != null && blocks.length > 0) {
-                if (this.tierBlocks != null && this.tierBlock.length > 1) {
+                if (this.tierBlocks != null && blocks.length > 1) {
                     for (var block : blocks) {
                         String tierBlocks = BlockMap.getCategory(block);
                         if (this.tierBlocks.getInt(tierBlocks) > 0 && this.blocks.contains(block)) {
@@ -281,10 +278,7 @@ public class AdvancedTerminalBehavior implements IItemUIFactory {
                         }
                     }
                 }
-                for (Block block : blocks) {
-                    if (block instanceof LiquidBlock fluidBlock) candidates.add(fluidBlock);
-                    else if (block != Blocks.AIR) candidates.add(block);
-                }
+                Arrays.stream(blocks).filter(b -> b != Blocks.AIR).forEach(candidates::add);
             }
             return candidates;
         }
