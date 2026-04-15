@@ -3,6 +3,7 @@ package cn.qiuye.gtmoremachine.api.pattern;
 import cn.qiuye.gtmoremachine.common.item.AdvancedTerminalBehavior;
 
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.api.machine.feature.IDropSaveMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.pattern.BlockPattern;
 import com.gregtechceu.gtceu.api.pattern.MultiblockState;
@@ -54,6 +55,8 @@ import oshi.util.tuples.Triplet;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.BiPredicate;
 import java.util.function.Consumer;
@@ -134,6 +137,7 @@ public class AdvancedBlockPattern extends BlockPattern {
                             TraceabilityPredicate[] row = slice[yIndex];
                             if (row != null) {
                                 TraceabilityPredicate predicate = row[xIndex];
+                                label_check_predicate:
                                 if (predicate != null && !predicate.isAir()) {
                                     var worldPos = this.setActualRelativeOffset(x, y, currentZ, facing, upwardsFacing, autoBuildSetting.isFlipMode())
                                             .offset(centerPos.getX(), centerPos.getY(), centerPos.getZ());
@@ -143,36 +147,118 @@ public class AdvancedBlockPattern extends BlockPattern {
                                     BlockState currentState = worldlevel.getBlockState(worldPos);
                                     Block currentBlock = currentState.getBlock();
 
-                                    if (autoBuildSetting.isDemolitionMode()) {
-                                        if (currentBlock != Blocks.AIR) {
+                                    if (currentBlock != Blocks.AIR) {
+                                        if (autoBuildSetting.isDemolitionMode()) {
                                             if (currentBlock instanceof LiquidBlock) {
                                                 forceRemoveBlock(worldlevel, worldPos);
                                                 continue;
                                             }
 
-                                            boolean isExpected = false;
-
+                                            boolean blockMatchesPredicate = false;
+                                            label_check_common:
                                             for (var sp : predicate.common) {
-                                                BlockInfo[] candidates = sp.candidates == null ? null : sp.candidates.get();
+                                                Block[] candidates = sp.candidates == null ? null : Arrays.stream(sp.candidates.get()).map(i -> i.getBlockState().getBlock()).toArray(Block[]::new);
 
                                                 if (candidates != null) {
-                                                    for (BlockInfo candidate : candidates) {
-                                                        Block block = candidate.getBlockState().getBlock();
-                                                        if (block == currentBlock) {
-                                                            isExpected = true;
-                                                            break;
+                                                    for (Block candidate : candidates) {
+                                                        if (candidate == currentBlock) {
+                                                            blockMatchesPredicate = true;
+                                                            break label_check_common;
                                                         }
                                                     }
-                                                    if (isExpected) break;
                                                 }
                                             }
 
-                                            if (!isExpected) {
+                                            if (!blockMatchesPredicate) {
+                                                label_check_limited:
+                                                for (var sp : predicate.limited) {
+                                                    Block[] candidates = sp.candidates == null ? null : Arrays.stream(sp.candidates.get()).map(i -> i.getBlockState().getBlock()).toArray(Block[]::new);
 
+                                                    if (candidates != null) {
+                                                        for (Block candidate : candidates) {
+                                                            if (candidate == currentBlock) {
+                                                                blockMatchesPredicate = true;
+                                                                break label_check_limited;
+                                                            }
+                                                        }
+                                                    }
+                                                }
                                             }
 
+                                            if (!blockMatchesPredicate) continue;
+                                            ItemStack dropStack = new ItemStack(currentBlock);
+                                            if (currentState.hasBlockEntity() && worldlevel.getBlockEntity(worldPos) instanceof MetaMachine metaMachine) {
+                                                metaMachine.modifyDrops(Collections.singletonList(dropStack));
+                                                if (metaMachine instanceof IDropSaveMachine DropSave && DropSave.saveBreak()) {
+                                                    DropSave.saveToItem(dropStack.getOrCreateTag());
+                                                }
+                                            }
+
+                                            // TODO AE转存 无法存储则添加进入背包，无法添加直接掉落
+
+                                            worldlevel.setBlockAndUpdate(worldPos, Blocks.AIR.defaultBlockState());
+                                            continue;
+                                        }
+
+                                        if (!autoBuildSetting.isReplaceMode() || autoBuildSetting.getBlocks().contains(currentBlock)) {
+                                            posset.add(posLong);
+
+                                            for (var sp : predicate.limited) {
+                                                sp.testLimited(worldState);
+                                            }
+                                            break label_check_predicate;
+                                        }
+                                        originalItem = currentBlock.asItem();
+
+                                    } else if (autoBuildSetting.isDemolitionMode()) break label_check_predicate;
+
+                                    boolean foundCandidate = false;
+                                    Block[] candidatesToPlace = new Block[0];
+
+                                    for (var sp : predicate.limited) {
+                                        Block[] candidates = sp.candidates == null ? null : Arrays.stream(sp.candidates.get()).map(i -> i.getBlockState().getBlock()).toArray(Block[]::new);
+                                        if (candidates != null && sp.minLayerCount > 0 && (predicate.isSingle() || autoBuildSetting.isPlaceHatch(candidates))) {
+                                            int currentLayerCount = cacheLayer.getInt(sp);
+                                            if(currentLayerCount < sp.minLayerCount &&(sp.maxLayerCount == -1 || currentLayerCount< sp.maxLayerCount)) {
+                                                cacheLayer.addTo(sp, 1);
+                                                candidatesToPlace = candidates;
+                                                foundCandidate = true;
+                                                break;
+                                            }
                                         }
                                     }
+                                    if(!foundCandidate) {
+                                        for (var sp : predicate.limited) {
+                                            Block[] candidates = sp.candidates == null ? null : Arrays.stream(sp.candidates.get()).map(i -> i.getBlockState().getBlock()).toArray(Block[]::new);
+                                            if(candidates != null && sp.minCount > 0&&(predicate.isSingle() || autoBuildSetting.isPlaceHatch(candidates))) {
+                                                int currentLayerCount = cacheGlobal.getInt(sp);
+                                                if(currentLayerCount < sp.minCount &&(sp.maxCount == -1 || currentLayerCount< sp.maxCount)) {
+                                                    cacheGlobal.addTo(sp, 1);
+                                                    candidatesToPlace = candidates;
+                                                    foundCandidate = true;
+                                                    break;
+                                                }
+                                            }
+                                        }
+                                    }
+                                    if(!foundCandidate) {
+                                        for (var sp : predicate.limited) {
+                                            Block[] candidates = sp.candidates == null ? null : Arrays.stream(sp.candidates.get()).map(i -> i.getBlockState().getBlock()).toArray(Block[]::new);
+                                            if(candidates != null
+                                                    && (predicate.isSingle() || autoBuildSetting.isPlaceHatch(candidates))
+                                            &&(sp.maxLayerCount == -1 || cacheLayer.getOrDefault(sp, Integer.MAX_VALUE)!= sp.maxLayerCount)
+                                            &&(sp.maxCount == -1 || cacheGlobal.getOrDefault(sp,Integer.MAX_VALUE) > sp.maxCount)) {
+                                                cacheLayer.addTo(sp, 1);
+                                                cacheGlobal.addTo(sp, 1);
+                                                candidatesToPlace = ArrayUtils.addAll(candidatesToPlace,candidates);
+                                            }
+                                        }
+                                    }
+                                    List<Block> stacks = autoBuildSetting.apply(candidatesToPlace);
+                                    if(!autoBuildSetting.isReplaceMode() ||
+                                    || originalItem == null
+                                    || !(stacks.get(0).asItem() instanceof BlockItem blockItem)
+                                    ) {}
                                 }
                             }
                         }

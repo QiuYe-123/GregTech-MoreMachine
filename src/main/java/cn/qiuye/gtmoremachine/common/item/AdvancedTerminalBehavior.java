@@ -24,7 +24,6 @@ import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
 import com.lowdragmc.lowdraglib.gui.texture.TextTexture;
 import com.lowdragmc.lowdraglib.gui.widget.*;
-import com.lowdragmc.lowdraglib.utils.BlockInfo;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -267,36 +266,34 @@ public class AdvancedTerminalBehavior implements IItemUIFactory {
             this.DemolitionMode = false;
         }
 
-        public List<ItemStack> apply(BlockInfo[] blockInfos) {
-            List<ItemStack> candidates = new ObjectArrayList<>();
-            if (blockInfos != null && blockInfos.length > 0) {
+        public List<Block> apply(Block[] blocks) {
+            List<Block> candidates = new ObjectArrayList<>();
+            if (blocks != null && blocks.length > 0) {
                 if (this.tierBlocks != null && this.tierBlock.length > 1) {
-                    for (var info : blockInfos) {
-                        Block block = info.getBlockState().getBlock();
+                    for (var block : blocks) {
                         String tierBlocks = BlockMap.getCategory(block);
                         if (this.tierBlocks.getInt(tierBlocks) > 0 && this.blocks.contains(block)) {
                             Block[] blocks1 = MAP.get(tierBlocks);
                             if (blocks1 != null && blocks1.length > 0) {
                                 Block block2 = blocks1[Math.min(blocks1.length, this.tierBlocks.getInt(tierBlocks)) - 1];
-                                return Collections.singletonList(new ItemStack(block2));
+                                return Collections.singletonList(block2);
                             }
                         }
                     }
                 }
-                for (BlockInfo blockInfo : blockInfos) {
-                    Block block = blockInfo.getBlockState().getBlock();
-                    if (block instanceof LiquidBlock fluidBlock) candidates.add(fluidBlock.getFluid().getBucket().getDefaultInstance());
-                    else if (block != Blocks.AIR) candidates.add(block.asItem().getDefaultInstance());
+                for (Block block : blocks) {
+                    if (block instanceof LiquidBlock fluidBlock) candidates.add(fluidBlock);
+                    else if (block != Blocks.AIR) candidates.add(block);
                 }
             }
             return candidates;
         }
 
-        public boolean isPlaceHatch(BlockInfo[] blockInfos) {
+        public boolean isPlaceHatch(Block[] blocks) {
             if (!this.noHatchMode) return true;
-            if (blockInfos != null && blockInfos.length > 0) {
-                var blockInfo = blockInfos[0];
-                return !(blockInfo.getBlockState().getBlock() instanceof MetaMachineBlock machineBlock) ||
+            if (blocks != null && blocks.length > 0) {
+                var blockInfo = blocks[0];
+                return !(blockInfo instanceof MetaMachineBlock machineBlock) ||
                         !Hatch.getBlockSet().contains(machineBlock);
             }
             return true;
