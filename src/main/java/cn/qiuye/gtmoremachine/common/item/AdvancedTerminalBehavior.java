@@ -264,21 +264,28 @@ public class AdvancedTerminalBehavior implements IItemUIFactory {
         }
 
         public List<Block> apply(Block[] blocks) {
-            List<Block> candidates = new ObjectArrayList<>();
-            if (blocks != null && blocks.length > 0) {
-                if (this.tierBlocks != null && blocks.length > 1) {
-                    for (var block : blocks) {
-                        String tierBlocks = BlockMap.getCategory(block);
-                        if (this.tierBlocks.getInt(tierBlocks) > 0 && this.blocks.contains(block)) {
-                            Block[] blocks1 = MAP.get(tierBlocks);
-                            if (blocks1 != null && blocks1.length > 0) {
-                                Block block2 = blocks1[Math.min(blocks1.length, this.tierBlocks.getInt(tierBlocks)) - 1];
-                                return Collections.singletonList(block2);
-                            }
+            if (blocks == null || blocks.length == 0) {
+                return Collections.emptyList();
+            }
+            if (this.tierBlocks != null && blocks.length > 1) {
+                for (Block block : blocks) {
+                    String category = BlockMap.getCategory(block);
+                    int tier = this.tierBlocks.getInt(category);
+                    if (tier > 0 && this.blocks.contains(block)) {
+                        Block[] tieredBlocks = MAP.get(category);
+                        if (tieredBlocks != null && tieredBlocks.length > 0) {
+                            Block selected = tieredBlocks[Math.min(tieredBlocks.length, tier) - 1];
+                            return Collections.singletonList(selected);
                         }
                     }
                 }
-                Arrays.stream(blocks).filter(b -> b != Blocks.AIR).forEach(candidates::add);
+            }
+            // 未命中等级匹配逻辑，过滤空气方块并返回
+            List<Block> candidates = new ObjectArrayList<>();
+            for (Block block : blocks) {
+                if (block != Blocks.AIR) {
+                    candidates.add(block);
+                }
             }
             return candidates;
         }

@@ -35,7 +35,11 @@ import net.minecraftforge.items.ItemStackHandler;
 
 import appeng.api.config.Actionable;
 import appeng.api.networking.IGrid;
+import appeng.api.networking.security.IActionSource;
+import appeng.api.networking.storage.IStorageService;
+import appeng.api.stacks.AEFluidKey;
 import appeng.api.stacks.AEItemKey;
+import appeng.api.stacks.AEKey;
 import appeng.api.storage.MEStorage;
 import appeng.items.tools.powered.WirelessTerminalItem;
 import com.mojang.datafixers.util.Pair;
@@ -86,11 +90,6 @@ public class AdvancedBlockPattern extends BlockPattern {
     public void autoBuild(Player player, MultiblockState worldState,
                           AdvancedTerminalBehavior.AutoBuildSetting autoBuildSetting) {
         Level worldlevel = player.level();
-        if (autoBuildSetting.isDemolitionMode()) {
-            autoDemolish(player, worldState, autoBuildSetting);
-            return;
-        }
-
         int minZ = -centerOffset[4];
         worldState.clean();
         MultiblockControllerMachine controller = worldState.getController();
@@ -246,7 +245,22 @@ public class AdvancedBlockPattern extends BlockPattern {
                                         }
                                     }
                                     List<Block> stacks = autoBuildSetting.apply(candidatesToPlace);
-                                    if (!autoBuildSetting.isReplaceMode() || originalItem == null || !(stacks.get(0).asItem() instanceof BlockItem blockItem)) {}
+                                    List<AEKey> aeKeys = stacks.stream()
+                                            .map(block -> {
+                                                if (block instanceof LiquidBlock liquid) {
+                                                    return AEFluidKey.of(liquid.getFluid().getSource());
+                                                } else {
+                                                    return AEItemKey.of(block.asItem());
+                                                }
+                                            })
+                                            .toList();
+                                    if (!autoBuildSetting.isReplaceMode() || originalItem == null || !(aeKeys.get(0) instanceof AEItemKey firstKey) || !firstKey.getReadOnlyStack().is(originalItem)) {
+
+                                        List<ItemStack> itemCandidates = aeKeys.stream()
+                                                .filter(k -> k instanceof AEItemKey)
+                                                .map(k -> ((AEItemKey) k).toStack())
+                                                .toList();
+                                    }
                                 }
                             }
                         }
@@ -254,6 +268,60 @@ public class AdvancedBlockPattern extends BlockPattern {
                 }
             }
         }
+    }
+    // ================== 辅助方法 ==================
+
+    /**
+     * 从玩家背包（递归）或AE网络中查找物品
+     *
+     * @return Triplet<物品, 容器, 槽位>
+     */
+    private static Triplet<ItemStack, IItemHandler, Integer> findItemFromPlayerOrAE(Player player, List<ItemStack> candidates, IStorageService aeStorage) {
+        if (!player.isCreative()) {
+            IntObjectPair<IItemHandler> result = findItemRecursively(candidates, player.getCapability(ForgeCapabilities.ITEM_HANDLER), player, aeStorage);
+            if (result != null) {
+                IItemHandler handler = result.right();
+                int slot = result.leftInt();
+                return new Triplet<>(handler.getStackInSlot(slot).copy(), handler, slot);
+            }
+        } else {
+            for (ItemStack candidate : candidates) {
+                if (!candidate.isEmpty() && candidate.getItem() instanceof BlockItem) {
+                    return new Triplet<>(candidate.copy(), null, -1);
+                }
+            }
+        }
+        return new Triplet<>(null, null, -1);
+    }
+
+    @Nullable
+    private static IntObjectPair<IItemHandler> findItemRecursively(List<ItemStack> candidates, LazyOptional<IItemHandler> capability, Player player, IStorageService aeStorage) {
+        IItemHandler handler = capability.resolve().orElse(null);
+        if (handler == null) return null;
+        for (int slot = 0; slot < handler.getSlots(); slot++) {
+            ItemStack stack = handler.getStackInSlot(slot);
+            if (stack.isEmpty()) continue;
+            LazyOptional<IItemHandler> subCap = stack.getCapability(ForgeCapabilities.ITEM_HANDLER);
+            if (subCap.isPresent()) {
+                IntObjectPair<IItemHandler> subResult = findItemRecursively(candidates, subCap, player, aeStorage);
+                if (subResult != null) return subResult;
+            } else {
+                if (aeStorage != null) {
+                    for (ItemStack candidate : candidates) {
+                        long extracted = aeStorage.getInventory().extract(AEItemKey.of(candidate), 1, Actionable.MODULATE, IActionSource.ofPlayer(player));
+                        if (extracted > 0) {
+                            NonNullList<ItemStack> list = NonNullList.withSize(1, candidate);
+                            ItemStackHandler tempHandler = new ItemStackHandler(list);
+                            return IntObjectPair.of(0, tempHandler);
+                        }
+                    }
+                }
+                if (candidates.stream().anyMatch(c -> ItemStack.isSameItem(c, stack)) && !stack.isEmpty() && stack.getItem() instanceof BlockItem) {
+                    return IntObjectPair.of(slot, handler);
+                }
+            }
+        }
+        return null;
     }
 
     /**
