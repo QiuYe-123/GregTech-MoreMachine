@@ -14,10 +14,12 @@ import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
-import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
+import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -27,7 +29,7 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.chunk.LevelChunkSection;
-import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.IItemHandler;
@@ -36,18 +38,16 @@ import net.minecraftforge.items.ItemStackHandler;
 import appeng.api.config.Actionable;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.security.IActionSource;
-import appeng.api.networking.storage.IStorageService;
 import appeng.api.stacks.AEFluidKey;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
 import appeng.api.storage.MEStorage;
 import appeng.items.tools.powered.WirelessTerminalItem;
-import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.ints.IntObjectPair;
+import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
 import it.unimi.dsi.fastutil.objects.*;
 import org.apache.commons.lang3.ArrayUtils;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import oshi.util.tuples.Triplet;
 
@@ -58,7 +58,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.BiPredicate;
 import java.util.function.Consumer;
-import java.util.function.Predicate;
 
 public class AdvancedBlockPattern extends BlockPattern {
 
@@ -96,15 +95,10 @@ public class AdvancedBlockPattern extends BlockPattern {
         BlockPos centerPos = controller.getBlockPos();
         Direction facing = controller.getFrontFacing();
         Direction upwardsFacing = controller.getUpwardsFacing();
-        int facingOrdinal = facing.ordinal();
         Object2IntOpenHashMap<SimplePredicate> cacheGlobal = worldState.getGlobalCount();
         Object2IntOpenHashMap<SimplePredicate> cacheLayer = worldState.getLayerCount();
-        Object2ObjectOpenHashMap<BlockPos, Object> blocks = new Object2ObjectOpenHashMap<>();
+        Long2ObjectOpenHashMap<MetaMachine> blocks = new Long2ObjectOpenHashMap<>();
         LongOpenHashSet posset = new LongOpenHashSet(1024, 0.5f);
-        ObjectOpenHashSet<BlockPos> placeBlockPos = new ObjectOpenHashSet<>();
-        blocks.put(centerPos, controller);
-        boolean isFlipped = autoBuildSetting.isFlipMode();
-        boolean isUseAE = autoBuildSetting.isUseAEMode();
 
         int[] repeat = new int[this.fingerLength];
         for (int h = 0; h < this.fingerLength; h++) {
@@ -113,6 +107,11 @@ public class AdvancedBlockPattern extends BlockPattern {
             if (minH != maxH) {
                 repeat[h] = Math.max(minH, Math.min(maxH, autoBuildSetting.getRepeatCount()));
             } else repeat[h] = minH;
+        }
+
+        MEStorage meStorage = null;
+        if (autoBuildSetting.isUseAEMode()) {
+            meStorage = findFirstAETerminalStorage(player);
         }
 
         List<ItemEntity> itemStacks = new ArrayList<>();
@@ -187,8 +186,9 @@ public class AdvancedBlockPattern extends BlockPattern {
                                                 }
                                             }
 
-                                            // TODO AE转存 无法存储则添加进入背包，无法添加直接掉落
-
+                                            if ((meStorage == null || meStorage.insert(AEItemKey.of(dropStack), 1L, Actionable.MODULATE, IActionSource.ofPlayer(player)) == 0L) && !player.addItem(dropStack)) {
+                                                itemStacks.add(player.drop(dropStack, false));
+                                            }
                                             worldlevel.setBlockAndUpdate(worldPos, Blocks.AIR.defaultBlockState());
                                             continue;
                                         }
@@ -260,15 +260,98 @@ public class AdvancedBlockPattern extends BlockPattern {
                                                 .filter(k -> k instanceof AEItemKey)
                                                 .map(k -> ((AEItemKey) k).toStack())
                                                 .toList();
+
+                                        Triplet<ItemStack, IItemHandler, Integer> foundItem = findItemFromPlayerOrAE(player, itemCandidates, meStorage);
+                                        ItemStack stackToPlace = foundItem.getA();
+                                        IItemHandler sourceHandler = foundItem.getB();
+                                        int sourceSlot = foundItem.getC();
+
+                                        if (stackToPlace != null) {
+                                            boolean isCreative = player.isCreative();
+                                            if (isCreative || (sourceHandler != null && !sourceHandler.extractItem(sourceSlot, 1, true).isEmpty())) {
+                                                BlockState oldState = worldlevel.getBlockState(worldPos);
+                                                boolean isReplacing = autoBuildSetting.isReplaceMode() && originalItem != null;
+                                                if (isReplacing) {
+                                                    worldlevel.setBlock(worldPos, Blocks.AIR.defaultBlockState(), 2);
+                                                }
+                                                BlockItem blockItem = (BlockItem) stackToPlace.getItem();
+                                                BlockPlaceContext context = new BlockPlaceContext(
+                                                        worldlevel, player, InteractionHand.MAIN_HAND, stackToPlace,
+                                                        BlockHitResult.miss(player.getEyePosition(0), Direction.UP, worldPos));
+                                                InteractionResult result = blockItem.place(context);
+                                                if (result.consumesAction()) {
+                                                    if (!isCreative) {
+                                                        ItemStack extracted = sourceHandler.extractItem(sourceSlot, 1, false);
+                                                        if (extracted.isEmpty()) {
+                                                            // 提取失败，恢复原状态
+                                                            worldlevel.setBlock(worldPos, isReplacing ? oldState : Blocks.AIR.defaultBlockState(), 3);
+                                                            continue;
+                                                        }
+                                                    }
+                                                    // 替换模式：回收原物品
+                                                    if (isReplacing) {
+                                                        if (meStorage == null || meStorage.insert(AEItemKey.of(originalItem), 1, Actionable.MODULATE, IActionSource.ofPlayer(player)) == 0) {
+                                                            ItemStack originalStack = new ItemStack(originalItem, 1);
+                                                            if (!player.addItem(originalStack)) {
+                                                                itemStacks.add(player.drop(originalStack, false));
+                                                            }
+                                                        }
+                                                    }
+                                                    if (worldlevel.getBlockEntity(worldPos) instanceof MetaMachine metaMachine) {
+                                                        blocks.put(posLong, metaMachine);
+                                                    }
+                                                    posset.add(posLong);
+                                                } else if (isReplacing) {
+                                                    worldlevel.setBlock(worldPos, oldState, 3);
+                                                }
+                                            }
+                                        } else {
+                                            // 尝试流体
+                                            List<AEFluidKey> fluidKeys = aeKeys.stream()
+                                                    .filter(k -> k instanceof AEFluidKey)
+                                                    .map(k -> (AEFluidKey) k)
+                                                    .toList();
+                                            if (!fluidKeys.isEmpty()) {
+                                                if (player.getAbilities().instabuild) {
+                                                    worldlevel.setBlock(worldPos, fluidKeys.get(0).getFluid().defaultFluidState().createLegacyBlock(), 11);
+                                                } else if (meStorage != null && meStorage.extract(fluidKeys.get(0), 1000, Actionable.MODULATE, IActionSource.ofPlayer(player)) == 1000) {
+                                                    worldlevel.setBlock(worldPos, fluidKeys.get(0).getFluid().defaultFluidState().createLegacyBlock(), 11);
+                                                }
+                                            }
+                                        }
                                     }
                                 }
                             }
                         }
+                        xIndex++;
                     }
+                    yIndex++;
                 }
+                currentZ++;
             }
         }
+
+        // 处理掉落物实体
+        for (ItemEntity entity : itemStacks) {
+            if (entity != null) {
+                entity.setNoPickUpDelay();
+                entity.setPos(player.blockPosition().getX(), player.blockPosition().getY(), player.blockPosition().getZ());
+                worldlevel.addFreshEntity(entity);
+            }
+        }
+
+        // 调整新放置机器的朝向
+        Direction controllerFacing = controller.self().getFrontFacing();
+        blocks.long2ObjectEntrySet().fastForEach(entry -> {
+            long posLong = entry.getLongKey();
+            MetaMachine machine = entry.getValue();
+            BlockPos pos = BlockPos.of(posLong);
+            resetFacing(pos, machine.getBlockState(), controllerFacing,
+                    (p, dir) -> !posset.contains(p.relative(dir).asLong()) && machine.isFacingValid(dir),
+                    newState -> worldlevel.setBlock(pos, newState, 18));
+        });
     }
+
     // ================== 辅助方法 ==================
 
     /**
@@ -276,7 +359,7 @@ public class AdvancedBlockPattern extends BlockPattern {
      *
      * @return Triplet<物品, 容器, 槽位>
      */
-    private static Triplet<ItemStack, IItemHandler, Integer> findItemFromPlayerOrAE(Player player, List<ItemStack> candidates, IStorageService aeStorage) {
+    private static Triplet<ItemStack, IItemHandler, Integer> findItemFromPlayerOrAE(Player player, List<ItemStack> candidates, MEStorage aeStorage) {
         if (!player.isCreative()) {
             IntObjectPair<IItemHandler> result = findItemRecursively(candidates, player.getCapability(ForgeCapabilities.ITEM_HANDLER), player, aeStorage);
             if (result != null) {
@@ -295,7 +378,7 @@ public class AdvancedBlockPattern extends BlockPattern {
     }
 
     @Nullable
-    private static IntObjectPair<IItemHandler> findItemRecursively(List<ItemStack> candidates, LazyOptional<IItemHandler> capability, Player player, IStorageService aeStorage) {
+    private static IntObjectPair<IItemHandler> findItemRecursively(List<ItemStack> candidates, LazyOptional<IItemHandler> capability, Player player, MEStorage aeStorage) {
         IItemHandler handler = capability.resolve().orElse(null);
         if (handler == null) return null;
         for (int slot = 0; slot < handler.getSlots(); slot++) {
@@ -308,7 +391,7 @@ public class AdvancedBlockPattern extends BlockPattern {
             } else {
                 if (aeStorage != null) {
                     for (ItemStack candidate : candidates) {
-                        long extracted = aeStorage.getInventory().extract(AEItemKey.of(candidate), 1, Actionable.MODULATE, IActionSource.ofPlayer(player));
+                        long extracted = aeStorage.extract(AEItemKey.of(candidate), 1, Actionable.MODULATE, IActionSource.ofPlayer(player));
                         if (extracted > 0) {
                             NonNullList<ItemStack> list = NonNullList.withSize(1, candidate);
                             ItemStackHandler tempHandler = new ItemStackHandler(list);
@@ -322,176 +405,6 @@ public class AdvancedBlockPattern extends BlockPattern {
             }
         }
         return null;
-    }
-
-    /**
-     * 自动拆除多方块结构
-     *
-     * @param player           执行拆除的玩家
-     * @param worldState       多方块状态
-     * @param autoBuildSetting 总参数
-     */
-    public void autoDemolish(Player player, MultiblockState worldState, AdvancedTerminalBehavior.AutoBuildSetting autoBuildSetting) {
-        Level world = player.level();
-        int minZ = -centerOffset[4];
-        MultiblockControllerMachine controller = worldState.getController();
-        if (controller == null) {
-            return;
-        }
-        BlockPos centerPos = controller.self().getBlockPos();
-        Direction facing = controller.self().getFrontFacing();
-        Direction upwardsFacing = controller.self().getUpwardsFacing();
-        boolean isUseMirror = autoBuildSetting.isFlipMode();
-
-        // 使用与构建逻辑相同的重复次数计算方式
-        int[] repeat = new int[this.fingerLength];
-        for (int h = 0; h < this.fingerLength; h++) {
-            var minH = aisleRepetitions[h][0];
-            var maxH = aisleRepetitions[h][1];
-            if (minH != maxH) {
-                repeat[h] = Math.max(minH, Math.min(maxH, autoBuildSetting.getRepeatCount()));
-            } else {
-                repeat[h] = minH;
-            }
-        }
-
-        List<ItemStack> collectedItems = new ArrayList<>();
-        for (int c = 0, z = minZ++, r; c < this.fingerLength; c++) {
-            for (r = 0; r < repeat[c]; r++) {
-                for (int b = 0, y = -centerOffset[1]; b < this.thumbLength; b++, y++) {
-                    for (int a = 0, x = -centerOffset[0]; a < this.palmLength; a++, x++) {
-                        TraceabilityPredicate predicate = this.blockMatches[c][b][a];
-                        if (predicate.isAny()) continue;
-                        BlockPos pos = setActualRelativeOffset(x, y, z, facing, upwardsFacing, isUseMirror)
-                                .offset(centerPos.getX(), centerPos.getY(), centerPos.getZ());
-                        // 跳过控制器位置，不拆除控制器
-                        if (pos.equals(centerPos)) {
-                            continue;
-                        }
-                        if (!world.isEmptyBlock(pos)) {
-                            BlockState blockState = world.getBlockState(pos);
-                            if (!player.isCreative()) {
-                                List<ItemStack> drops = Block.getDrops(blockState, (ServerLevel) world, pos, world.getBlockEntity(pos));
-                                collectedItems.addAll(drops);
-                            }
-                            world.removeBlock(pos, false);
-                        }
-                    }
-                }
-                z++;
-            }
-        }
-        if (!collectedItems.isEmpty() && !player.isCreative()) {
-            giveItemsToPlayer(player, collectedItems, autoBuildSetting);
-        }
-    }
-
-    /**
-     * 将物品给予玩家，如果物品栏满了则掉落在地上
-     */
-    private void giveItemsToPlayer(Player player, List<ItemStack> items, AdvancedTerminalBehavior.AutoBuildSetting autoBuildSetting) {
-        if (player.isCreative()) {
-            return;
-        }
-        boolean useAE = autoBuildSetting.isUseAEMode();
-        if (useAE) {
-            // 只在非创造模式下才尝试插入AE网络
-            IItemHandler handler = player.getCapability(ForgeCapabilities.ITEM_HANDLER).resolve().orElse(null);
-            if (handler != null) {
-                for (int i = 0; i < handler.getSlots(); i++) {
-                    @NotNull
-                    ItemStack stack = handler.getStackInSlot(i);
-                    if (stack.isEmpty()) continue;
-                    if (stack.getItem() instanceof WirelessTerminalItem terminalItem && stack.hasTag() && stack.getTag().contains("accessPoint", 10)) {
-                        IGrid grid = terminalItem.getLinkedGrid(stack, player.level(), player);
-                        if (grid != null) {
-                            MEStorage storage = grid.getStorageService().getInventory();
-                            for (ItemStack candidate : items) {
-                                if (!candidate.isEmpty()) {
-                                    storage.insert(AEItemKey.of(candidate), candidate.getCount(), Actionable.MODULATE, null);
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        } else {
-            IItemHandler playerInventory = player.getCapability(ForgeCapabilities.ITEM_HANDLER).orElse(null);
-            for (ItemStack stack : items) {
-                if (stack.isEmpty()) continue;
-                // 尝试将物品放入玩家物品栏
-                ItemStack remaining = stack.copy();
-                for (int slot = 0; slot < playerInventory.getSlots() && !remaining.isEmpty(); slot++) {
-                    remaining = playerInventory.insertItem(slot, remaining, false);
-                }
-                // 如果物品栏满了，掉落剩余物品在地上
-                if (!remaining.isEmpty()) {
-                    player.drop(remaining, false);
-                }
-            }
-        }
-    }
-
-    public static Triplet<ItemStack, IItemHandler, Integer> foundItem(Player player,
-                                                                      List<ItemStack> candidates,
-                                                                      boolean isUseAE) {
-        Predicate<Item> test = item -> item instanceof BlockItem;
-        ItemStack found = null;
-        IItemHandler handler = null;
-        int foundSlot = -1;
-        if (!player.isCreative()) {
-            var foundHandler = getMatchStackWithHandler(candidates,
-                    player.getCapability(ForgeCapabilities.ITEM_HANDLER), test, player, isUseAE);
-            if (foundHandler != null) {
-                foundSlot = foundHandler.firstInt();
-                handler = foundHandler.second();
-                found = handler.getStackInSlot(foundSlot).copy();
-            }
-        } else {
-            for (ItemStack candidate : candidates) {
-                found = candidate.copy();
-                if (!found.isEmpty() && test.test(found.getItem())) break;
-                found = null;
-            }
-        }
-        return new Triplet<>(found, handler, foundSlot);
-    }
-
-    private static Triplet<Fluid, IItemHandler, Integer> foundfluid(Player player,
-                                                                    List<ItemStack> candidates,
-                                                                    boolean isUseAE) {
-        Predicate<Item> test = item -> item instanceof BlockItem blockItem && blockItem.getBlock() instanceof LiquidBlock || item instanceof BucketItem;
-        Fluid found = null;
-        IItemHandler handler = null;
-        int foundSlot = -1;
-        if (!player.isCreative()) {
-            var foundHandler = getFluidStackWithHandler(candidates,
-                    player.getCapability(ForgeCapabilities.ITEM_HANDLER), test, player, isUseAE);
-            if (foundHandler != null) {
-                foundSlot = foundHandler.firstInt();
-                handler = foundHandler.second();
-            }
-        } else {}
-        return new Triplet<>(found, handler, foundSlot);
-    }
-
-    private Pair<IItemHandler, Integer> foundHolderSlot(Player player, ItemStack coilItemStack) {
-        IItemHandler handler = null;
-        int foundSlot = -1;
-        if (!player.isCreative()) {
-            handler = player.getCapability(ForgeCapabilities.ITEM_HANDLER).orElse(null);
-            for (int i = 0; i < handler.getSlots(); i++) {
-                @NotNull
-                ItemStack stack = handler.getStackInSlot(i);
-                if (stack.isEmpty()) {
-                    if (foundSlot < 0) foundSlot = i;
-                } else if (ItemStack.isSameItemSameTags(coilItemStack, stack) && (stack.getCount() + 1) <= stack.getMaxStackSize()) {
-                    foundSlot = i;
-                }
-            }
-        }
-
-        return new Pair<>(handler, foundSlot);
     }
 
     private BlockPos setActualRelativeOffset(int x, int y, int z, Direction facing, Direction upwardsFacing,
@@ -573,83 +486,6 @@ public class AdvancedBlockPattern extends BlockPattern {
         return new BlockPos(c1[0], c1[1], c1[2]);
     }
 
-    private static IntObjectPair<IItemHandler> getFluidStackWithHandler(List<ItemStack> candidates,
-                                                                        LazyOptional<IItemHandler> cap,
-                                                                        Predicate<Item> test,
-                                                                        Player player,
-                                                                        boolean isUseAE) {
-        IItemHandler handler = cap.resolve().orElse(null);
-        if (handler == null) return null;
-        for (int i = 0; i < handler.getSlots(); i++) {
-            @NotNull
-            ItemStack stack = handler.getStackInSlot(i);
-            if (stack.isEmpty()) continue;
-
-            @NotNull
-            LazyOptional<IItemHandler> stackCap = stack.getCapability(ForgeCapabilities.ITEM_HANDLER);
-            if (stackCap.isPresent()) {
-                var rt = getFluidStackWithHandler(candidates, stackCap, test, player, isUseAE);
-                if (rt != null) return rt;
-            } else if (isUseAE && stack.getItem() instanceof WirelessTerminalItem terminalItem && stack.hasTag() && stack.getTag().contains("accessPoint", 10)) {
-                IGrid grid = terminalItem.getLinkedGrid(stack, player.level(), player);
-                if (grid != null) {
-                    MEStorage storage = grid.getStorageService().getInventory();
-                    for (ItemStack candidate : candidates) {
-                        if (storage.extract(AEItemKey.of(candidate), 1, Actionable.MODULATE, null) > 0) {
-                            NonNullList<ItemStack> stacks = NonNullList.withSize(1, candidate);
-                            IItemHandler handler1 = new ItemStackHandler(stacks);
-                            return IntObjectPair.of(0, handler1);
-                        }
-                    }
-                }
-
-            } else if (candidates.stream().anyMatch(candidate -> ItemStack.isSameItemSameTags(candidate, stack)) &&
-                    !stack.isEmpty() && test.test(stack.getItem())) {
-                        return IntObjectPair.of(i, handler);
-                    }
-        }
-        return null;
-    }
-
-    @Nullable
-    private static IntObjectPair<IItemHandler> getMatchStackWithHandler(List<ItemStack> candidates,
-                                                                        LazyOptional<IItemHandler> cap,
-                                                                        Predicate<Item> test,
-                                                                        Player player,
-                                                                        boolean isUseAE) {
-        IItemHandler handler = cap.resolve().orElse(null);
-        if (handler == null) return null;
-        for (int i = 0; i < handler.getSlots(); i++) {
-            @NotNull
-            ItemStack stack = handler.getStackInSlot(i);
-            if (stack.isEmpty()) continue;
-
-            @NotNull
-            LazyOptional<IItemHandler> stackCap = stack.getCapability(ForgeCapabilities.ITEM_HANDLER);
-            if (stackCap.isPresent()) {
-                var rt = getMatchStackWithHandler(candidates, stackCap, test, player, isUseAE);
-                if (rt != null) return rt;
-            } else if (isUseAE && stack.getItem() instanceof WirelessTerminalItem terminalItem && stack.hasTag() && stack.getTag().contains("accessPoint", 10)) {
-                IGrid grid = terminalItem.getLinkedGrid(stack, player.level(), player);
-                if (grid != null) {
-                    MEStorage storage = grid.getStorageService().getInventory();
-                    for (ItemStack candidate : candidates) {
-                        if (storage.extract(AEItemKey.of(candidate), 1, Actionable.MODULATE, null) > 0) {
-                            NonNullList<ItemStack> stacks = NonNullList.withSize(1, candidate);
-                            IItemHandler handler1 = new ItemStackHandler(stacks);
-                            return IntObjectPair.of(0, handler1);
-                        }
-                    }
-                }
-
-            } else if (candidates.stream().anyMatch(candidate -> ItemStack.isSameItemSameTags(candidate, stack)) &&
-                    !stack.isEmpty() && test.test(stack.getItem())) {
-                        return IntObjectPair.of(i, handler);
-                    }
-        }
-        return null;
-    }
-
     private void resetFacing(BlockPos pos, BlockState blockState, Direction facing,
                              BiPredicate<BlockPos, Direction> checker, Consumer<BlockState> consumer) {
         if (blockState.hasProperty(BlockStateProperties.FACING)) {
@@ -673,6 +509,32 @@ public class AdvancedBlockPattern extends BlockPattern {
         }
         if (found == null) found = Direction.NORTH;
         consumer.accept(blockState.setValue(property, found));
+    }
+
+    /**
+     * 从玩家背包中找到第一个可用的 AE 无线终端并返回其网络存储接口。
+     *
+     * @param player 玩家对象
+     * @return 可用的 MEStorage，若未找到或终端未链接则返回 null
+     */
+    @Nullable
+    private static MEStorage findFirstAETerminalStorage(Player player) {
+        LazyOptional<IItemHandler> cap = player.getCapability(ForgeCapabilities.ITEM_HANDLER);
+        IItemHandler inv = cap.resolve().orElse(null);
+        if (inv == null) return null;
+
+        for (int i = 0; i < inv.getSlots(); i++) {
+            ItemStack stack = inv.getStackInSlot(i);
+            if (stack.isEmpty()) continue;
+
+            if (stack.getItem() instanceof WirelessTerminalItem terminal && stack.hasTag() && stack.getTag().contains("accessPoint", 10)) {
+                IGrid grid = terminal.getLinkedGrid(stack, player.level(), player);
+                if (grid != null) {
+                    return grid.getStorageService().getInventory();
+                }
+            }
+        }
+        return null;
     }
 
     private static void forceRemoveBlock(Level level, BlockPos pos) {
