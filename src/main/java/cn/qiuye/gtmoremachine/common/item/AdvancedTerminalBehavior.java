@@ -21,8 +21,6 @@ import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.lowdragmc.lowdraglib.gui.editor.ColorPattern;
 import com.lowdragmc.lowdraglib.gui.factory.HeldItemUIFactory;
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
-import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
-import com.lowdragmc.lowdraglib.gui.texture.TextTexture;
 import com.lowdragmc.lowdraglib.gui.widget.*;
 
 import net.minecraft.core.BlockPos;
@@ -46,7 +44,6 @@ import java.util.*;
 import java.util.function.BooleanSupplier;
 
 import static cn.qiuye.gtmoremachine.common.block.BlockMap.MAP;
-import static net.minecraft.network.chat.Component.translatable;
 
 public class AdvancedTerminalBehavior implements IItemUIFactory {
 
@@ -135,39 +132,19 @@ public class AdvancedTerminalBehavior implements IItemUIFactory {
                         .setMin(0).setMax(1000))
                 .addWidget(new ExtendLabelWidget(4, 5 + 16 * rowIndex, Component.translatable("item.gtmoremachine.advanced_terminal.setting.3"))
                         .setHoverTooltips(Component.translatable("item.gtmoremachine.advanced_terminal.setting.3.tooltip")))
-                .addWidget(new SwitchWidget(140, 5 + 16 * rowIndex++, 25, 16,
-                        (c, v) -> setBooleanTag(handItem, NoHatch, v))
-                        .setPressed(getBooleanTag(handItem, NoHatch))
-                        .setTexture(new GuiTextureGroup(GuiTextures.BUTTON, new TextTexture("OFF")),
-                                new GuiTextureGroup(GuiTextures.BUTTON, new TextTexture("ON"))))
+                .addWidget(Button(140, 5 + 16 * rowIndex++, () -> getBooleanTag(handItem, NoHatch, true), v -> setBooleanTag(handItem, NoHatch, v)))
                 .addWidget(new ExtendLabelWidget(4, 5 + 16 * rowIndex, Component.translatable("item.gtmoremachine.advanced_terminal.setting.4"))
                         .setHoverTooltips(Component.translatable("item.gtmoremachine.advanced_terminal.setting.4.tooltip")))
-                .addWidget(new SwitchWidget(140, 5 + 16 * rowIndex++, 25, 16,
-                        (c, v) -> setBooleanTag(handItem, ReplaceMode, v))
-                        .setPressed(getBooleanTag(handItem, ReplaceMode))
-                        .setTexture(new GuiTextureGroup(GuiTextures.BUTTON, new TextTexture("OFF")),
-                                new GuiTextureGroup(GuiTextures.BUTTON, new TextTexture("ON"))))
+                .addWidget(Button(140, 5 + 16 * rowIndex++, () -> getBooleanTag(handItem, ReplaceMode), v -> setBooleanTag(handItem, ReplaceMode, v)))
                 .addWidget(new ExtendLabelWidget(4, 5 + 16 * rowIndex, Component.translatable("item.gtmoremachine.advanced_terminal.setting.5"))
                         .setHoverTooltips(Component.translatable("item.gtmoremachine.advanced_terminal.setting.5.tooltip")))
-                .addWidget(new SwitchWidget(140, 5 + 16 * rowIndex++, 25, 16,
-                        (c, v) -> setBooleanTag(handItem, UseAEMode, v))
-                        .setPressed(getBooleanTag(handItem, UseAEMode))
-                        .setTexture(new GuiTextureGroup(GuiTextures.BUTTON, new TextTexture("OFF")),
-                                new GuiTextureGroup(GuiTextures.BUTTON, new TextTexture("ON"))))
+                .addWidget(Button(140, 5 + 16 * rowIndex++, () -> getBooleanTag(handItem, UseAEMode), (v) -> setBooleanTag(handItem, UseAEMode, v)))
                 .addWidget(new LabelWidget(4, 5 + 16 * rowIndex, "item.gtmoremachine.advanced_terminal.setting.6")
                         .setHoverTooltips(Component.translatable("item.gtmoremachine.advanced_terminal.setting.6.tooltip")))
-                .addWidget(new SwitchWidget(140, 5 + 16 * rowIndex++, 25, 16,
-                        (c, v) -> setBooleanTag(handItem, FlipMode, v))
-                        .setPressed(getBooleanTag(handItem, FlipMode))
-                        .setTexture(new GuiTextureGroup(GuiTextures.BUTTON, new TextTexture("OFF")),
-                                new GuiTextureGroup(GuiTextures.BUTTON, new TextTexture("ON"))))
+                .addWidget(Button(140, 5 + 16 * rowIndex++, () -> getBooleanTag(handItem, FlipMode), (v) -> setBooleanTag(handItem, FlipMode, v)))
                 .addWidget(new LabelWidget(4, 5 + 16 * rowIndex, "item.gtmoremachine.advanced_terminal.setting.7")
                         .setHoverTooltips(Component.translatable("item.gtmoremachine.advanced_terminal.setting.7.tooltip")))
-                .addWidget(new SwitchWidget(140, 5 + 16 * rowIndex++, 25, 16,
-                        (c, v) -> setBooleanTag(handItem, DemolitionMode, v))
-                        .setPressed(getBooleanTag(handItem, DemolitionMode))
-                        .setTexture(new GuiTextureGroup(GuiTextures.BUTTON, new TextTexture("OFF")),
-                                new GuiTextureGroup(GuiTextures.BUTTON, new TextTexture("ON")))));
+                .addWidget(Button(140, 5 + 16 * rowIndex++, () -> getBooleanTag(handItem, DemolitionMode), (v) -> setBooleanTag(handItem, DemolitionMode, v))));
         group.setBackground(GuiTextures.BACKGROUND_INVERSE);
         return group;
     }
