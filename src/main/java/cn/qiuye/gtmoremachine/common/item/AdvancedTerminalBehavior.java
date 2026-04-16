@@ -2,8 +2,8 @@ package cn.qiuye.gtmoremachine.common.item;
 
 import cn.qiuye.gtmoremachine.GTmm;
 import cn.qiuye.gtmoremachine.api.GTMMValues;
-import cn.qiuye.gtmoremachine.api.gui.widget.BlockMapSelectorWidget;
 import cn.qiuye.gtmoremachine.api.gui.widget.ExtendLabelWidget;
+import cn.qiuye.gtmoremachine.api.gui.widget.PatternWidgetGroup;
 import cn.qiuye.gtmoremachine.api.gui.widget.TerminalInputWidget;
 import cn.qiuye.gtmoremachine.api.pattern.AdvancedBlockNoAEPattern;
 import cn.qiuye.gtmoremachine.api.pattern.AdvancedBlockPattern;
@@ -121,11 +121,13 @@ public class AdvancedTerminalBehavior implements IItemUIFactory {
     private Widget createWidget(final ItemStack handItem) {
         var group = new WidgetGroup(0, 0, 182 + 8, 133 + 8);
         int rowIndex = 1;
-        var contain = new DraggableScrollableWidgetGroup(4, 4, 182, 133)
-                .setBackground(GuiTextures.DISPLAY).setYScrollBarWidth(2)
-                .setYBarStyle(null, ColorPattern.T_WHITE.rectTexture().setRadius(1));
-        contain.addWidget(new ExtendLabelWidget(65, 8, Component.translatable("item.gtmoremachine.advanced_terminal.setting.title")))
-                .addWidget(new ExtendLabelWidget(4, 5 + 16 * rowIndex++, Component.translatable("item.gtmoremachine.advanced_terminal.setting.1")))
+        group.addWidget(new DraggableScrollableWidgetGroup(4, 4, 182, 133)
+                .setUseScissor(false)
+                .setBackground(GuiTextures.DISPLAY)
+                .setYScrollBarWidth(2)
+                .setYBarStyle(null, ColorPattern.T_WHITE.rectTexture().setRadius(1))
+                .addWidget(new ExtendLabelWidget(65, 8, Component.translatable("item.gtmoremachine.advanced_terminal.setting.title")))
+                .addWidget(new PatternWidgetGroup(96, 4, 76, 12, b -> group.setSelfPositionX(b ? -70 : 0), handItem))
                 .addWidget(new ExtendLabelWidget(4, 5 + 16 * rowIndex, Component.translatable("item.gtmoremachine.advanced_terminal.setting.2"))
                         .setHoverTooltips(Component.translatable("item.gtmoremachine.advanced_terminal.setting.2.tooltip")))
                 .addWidget(new TerminalInputWidget(140, 5 + 16 * rowIndex++, 25, 16,
@@ -165,41 +167,9 @@ public class AdvancedTerminalBehavior implements IItemUIFactory {
                         (c, v) -> setBooleanTag(handItem, DemolitionMode, v))
                         .setPressed(getBooleanTag(handItem, DemolitionMode))
                         .setTexture(new GuiTextureGroup(GuiTextures.BUTTON, new TextTexture("OFF")),
-                                new GuiTextureGroup(GuiTextures.BUTTON, new TextTexture("ON"))));
-        var blockLabel = new ExtendLabelWidget(40, 21, getBlockComponent(handItem));
-        var blockMap = new BlockMapSelectorWidget(group.getSizeHeight() + 4, contain.getSizeWidth(), (s, i) -> {
-            if (s != null && i != null) {
-                var tag = handItem.getOrCreateTag();
-                tag.putString("blocks", s);
-                tag.putInt("Tier", i);
-                handItem.setTag(tag);
-                blockLabel.setComponent(Component.literal(" (").append(translatable(BlockMap.blockmap_valuePrefix + "." + s))
-                        .append(Component.literal(" : "))
-                        .append(MAP.get(s)[i].getName())
-                        .append(Component.literal(")")));
-            }
-        });
-        blockMap.setInit(handItem);
-        var open = new SwitchWidget(4, 21, 30, 16, (c, f) -> blockMap.showType(f))
-                .setHoverTooltips(Component.translatable("item.gtmoremachine.advanced_terminal.setting.1.tooltip"));
-        contain.addWidget(open).addWidget(blockLabel);
-        group.addWidget(contain).addWidget(blockMap).setBackground(GuiTextures.BACKGROUND_INVERSE);
+                                new GuiTextureGroup(GuiTextures.BUTTON, new TextTexture("ON")))));
+        group.setBackground(GuiTextures.BACKGROUND_INVERSE);
         return group;
-    }
-
-    private static Component getBlockComponent(ItemStack itemStack) {
-        var tag = itemStack.getOrCreateTag();
-        if (!tag.isEmpty()) {
-            var block = tag.getString("blocks");
-            if (!block.isEmpty()) {
-                int tier = tag.getInt("Tier");
-                return Component.literal("(").append(translatable(BlockMap.blockmap_valuePrefix + "." + block))
-                        .append(Component.literal(" : "))
-                        .append(MAP.get(block)[tier].getName())
-                        .append(Component.literal(")"));
-            }
-        }
-        return Component.literal("");
     }
 
     private static SwitchWidget Button(int x, int y, BooleanSupplier get, BooleanConsumer set) {
@@ -291,11 +261,9 @@ public class AdvancedTerminalBehavior implements IItemUIFactory {
         }
 
         public boolean isPlaceHatch(Block[] blocks) {
-            if (!this.noHatchMode) return true;
-            if (blocks != null && blocks.length > 0) {
-                var blockInfo = blocks[0];
-                return !(blockInfo instanceof MetaMachineBlock machineBlock) ||
-                        !Hatch.getBlockSet().contains(machineBlock);
+            if (this.noHatchMode && blocks != null) {
+                return !(blocks[0] instanceof MetaMachineBlock machineBlock) ||
+                        Hatch.getBlockSet().contains(machineBlock);
             }
             return true;
         }

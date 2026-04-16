@@ -146,6 +146,11 @@ public class AdvancedBlockPattern extends BlockPattern {
                                                 continue;
                                             }
 
+                                            if (worldPos.equals(centerPos)) {
+                                                posset.add(posLong);
+                                                continue;
+                                            }
+
                                             boolean blockMatchesPredicate = false;
                                             label_check_common:
                                             for (var sp : predicate.common) {
@@ -240,6 +245,13 @@ public class AdvancedBlockPattern extends BlockPattern {
                                             if (candidates != null && (predicate.isSingle() || autoBuildSetting.isPlaceHatch(candidates)) && (sp.maxLayerCount == -1 || cacheLayer.getOrDefault(sp, Integer.MAX_VALUE) != sp.maxLayerCount) && (sp.maxCount == -1 || cacheGlobal.getOrDefault(sp, Integer.MAX_VALUE) > sp.maxCount)) {
                                                 cacheLayer.addTo(sp, 1);
                                                 cacheGlobal.addTo(sp, 1);
+                                                candidatesToPlace = ArrayUtils.addAll(candidatesToPlace, candidates);
+                                            }
+                                        }
+
+                                        for (var sp : predicate.common) {
+                                            Block[] candidates = sp.candidates == null ? null : Arrays.stream(sp.candidates.get()).map(i -> i.getBlockState().getBlock()).toArray(Block[]::new);
+                                            if (candidates != null && (predicate.isSingle() || autoBuildSetting.isPlaceHatch(candidates))) {
                                                 candidatesToPlace = ArrayUtils.addAll(candidatesToPlace, candidates);
                                             }
                                         }
