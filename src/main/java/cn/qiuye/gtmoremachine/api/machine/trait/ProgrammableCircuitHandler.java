@@ -27,6 +27,11 @@ public class ProgrammableCircuitHandler extends NotifiableItemStackHandler {
 
     public ProgrammableCircuitHandler() {
         super(1, IO.IN, IO.IN, ItemStackHandler::new);
+    }
+
+    @Override
+    public void setMachine(MetaMachine machine) {
+        super.setMachine(machine);
         ((ItemStackHandler) this.storage).setMachine(this.getMachine());
     }
 
