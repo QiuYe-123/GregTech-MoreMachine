@@ -157,10 +157,8 @@ public class AdvancedTerminalBehavior implements IItemUIFactory {
             else consumer.accept(v.booleanValue());
         });
         widget.setPressed(get.getAsBoolean())
-                .setBaseTexture(
-                        GuiTextures.BUTTON, GuiTextures.PROGRESS_BAR_SOLAR_STEAM.get(true).copy().getSubTexture(0.0, 0.0, 1.0, 0.5).scale(0.8F))
-                .setPressedTexture(
-                        GuiTextures.BUTTON, GuiTextures.PROGRESS_BAR_SOLAR_STEAM.get(true).copy().getSubTexture(0.0, 0.5, 1.0, 0.5).scale(0.8F));
+                .setBaseTexture(GuiTextures.BUTTON, GuiTextures.PROGRESS_BAR_SOLAR_STEAM.get(true).copy().getSubTexture(0.0, 0.0, 1.0, 0.5).scale(0.8F))
+                .setPressedTexture(GuiTextures.BUTTON, GuiTextures.PROGRESS_BAR_SOLAR_STEAM.get(true).copy().getSubTexture(0.0, 0.5, 1.0, 0.5).scale(0.8F));
         consumer.accept(get.getAsBoolean());
         return widget;
     }
