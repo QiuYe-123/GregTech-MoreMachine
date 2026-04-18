@@ -1,6 +1,5 @@
 package cn.qiuye.gtmoremachine.api.pattern
 
-import com.gregtechceu.gtceu.api.block.MetaMachineBlock
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition
 import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine
 import com.gregtechceu.gtceu.api.registry.GTRegistries
@@ -11,9 +10,6 @@ import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.entity.BlockEntity
 
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet
-
-import kotlin.apply
-import kotlin.collections.forEach
 
 object Hatch {
 
