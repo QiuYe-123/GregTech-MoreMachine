@@ -1,7 +1,6 @@
 package cn.qiuye.gtmoremachine.api.machine.trait;
 
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
@@ -13,8 +12,6 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 
 import appeng.api.stacks.AEFluidKey;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
 import java.util.List;
@@ -23,8 +20,8 @@ public class InaccessibleInfiniteTank extends NotifiableFluidTank {
 
     private final FluidStorageDelegate storage;
 
-    public InaccessibleInfiniteTank(MetaMachine holder, KeyStorage internalBuffer) {
-        super(holder, List.of(new FluidStorageDelegate(internalBuffer)), IO.OUT, IO.NONE);
+    public InaccessibleInfiniteTank(KeyStorage internalBuffer) {
+        super(List.of(new FluidStorageDelegate(internalBuffer)), IO.OUT, IO.NONE);
         internalBuffer.setOnContentsChanged(this::onContentsChanged);
         storage = (FluidStorageDelegate) getStorages()[0];
         allowSameFluids = true;
@@ -61,7 +58,7 @@ public class InaccessibleInfiniteTank extends NotifiableFluidTank {
     }
 
     @Override
-    public @NotNull List<Object> getContents() {
+    public List<Object> getContents() {
         return Collections.emptyList();
     }
 
@@ -76,12 +73,12 @@ public class InaccessibleInfiniteTank extends NotifiableFluidTank {
     }
 
     @Override
-    public @NotNull FluidStack getFluidInTank(int tank) {
+    public FluidStack getFluidInTank(int tank) {
         return FluidStack.EMPTY;
     }
 
     @Override
-    public void setFluidInTank(int tank, @NotNull FluidStack fluidStack) {}
+    public void setFluidInTank(int tank, FluidStack fluidStack) {}
 
     @Override
     public int getTankCapacity(int tank) {
@@ -89,12 +86,11 @@ public class InaccessibleInfiniteTank extends NotifiableFluidTank {
     }
 
     @Override
-    public boolean isFluidValid(int tank, @NotNull FluidStack stack) {
+    public boolean isFluidValid(int tank, FluidStack stack) {
         return true;
     }
 
     @Override
-    @Nullable
     public List<FluidIngredient> handleRecipeInner(IO io, GTRecipe recipe, List<FluidIngredient> left, boolean simulate) {
         if (io != IO.OUT) return left;
         FluidAction action = simulate ? FluidAction.SIMULATE : FluidAction.EXECUTE;

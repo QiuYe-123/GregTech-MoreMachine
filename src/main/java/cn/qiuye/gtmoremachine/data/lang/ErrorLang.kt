@@ -1,21 +1,23 @@
 package cn.qiuye.gtmoremachine.data.lang
 
-import com.tterrag.registrate.providers.RegistrateLangProvider
+import cn.qiuye.gtmoremachine.data.lang.LangHandler.addCNEN
 
 object ErrorLang {
 
-    fun init(provider: RegistrateLangProvider) {
-        initpatter(provider)
-    }
+	fun init() {
+		initpatter()
+	}
 
-    fun initpatter(provider: RegistrateLangProvider) {
-        provider.add(
-            "gtmoremachine.multiblock.pattern.error.ecutypes",
-            "§cAll heating Energy Communication Unit must be the same§r",
-        )
-        provider.add(
-            "gtmoremachine.multiblock.pattern.error.wecc",
-            "§cAll heating Wireless Energy Capacity Component must be the same§r",
-        )
-    }
+	fun initpatter() {
+		addCNEN(
+			"gtmoremachine.multiblock.pattern.error.ecutypes",
+			"§c必须使用同种能源通讯单元",
+			"§cAll heating Energy Communication Unit must be the same",
+		)
+		addCNEN(
+			"gtmoremachine.multiblock.pattern.error.wecc",
+			"§c必须使用相同的电网容量组件",
+			"§cAll heating Wireless Energy Capacity Component must be the same",
+		)
+	}
 }

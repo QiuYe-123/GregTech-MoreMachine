@@ -1,8 +1,8 @@
 package cn.qiuye.gtmoremachine.integration.jade.provider;
 
 import cn.qiuye.gtmoremachine.GTmm;
-import cn.qiuye.gtmoremachine.api.machine.IWirelessEnergyContainerHolder;
-import cn.qiuye.gtmoremachine.utils.BigIntegerUtils;
+import cn.qiuye.gtmoremachine.api.machine.trait.feature.IWirelessEnergyContainerHolder;
+import cn.qiuye.gtmoremachine.utils.BigNumberUtils;
 import cn.qiuye.gtmoremachine.utils.FormattingUtil;
 import cn.qiuye.gtmoremachine.utils.NumberUtils;
 import cn.qiuye.gtmoremachine.utils.TeamUtils;
@@ -15,7 +15,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -31,7 +30,7 @@ import java.util.UUID;
 public class WirelessEnergyProvider extends CapabilityBlockProvider<IWirelessEnergyContainerHolder> {
 
     public WirelessEnergyProvider() {
-        super(ResourceLocation.tryBuild(GTmm.MOD_ID, FormattingUtil.toLowerCaseUnderscore("wireless_energy_provider")));
+        super(GTmm.id("wireless_energy_provider"));
     }
 
     @Override
@@ -55,16 +54,16 @@ public class WirelessEnergyProvider extends CapabilityBlockProvider<IWirelessEne
     @Override
     protected void write(CompoundTag data, IWirelessEnergyContainerHolder capability) {
         if (capability.getUUID() != null) {
-            data.putBoolean("isBindable", true);
+            data.putBoolean("IEnergyBindable", true);
             data.putUUID("uuid", capability.getUUID());
             data.putBoolean("cover", capability.cover());
-            data.putString("energy", BigIntegerUtils.getStringValue(capability.getWirelessEnergyContainer().getStorage()));
+            data.putString("energy", BigNumberUtils.getStringValue(capability.getWirelessEnergyContainer().getStorage()));
         }
     }
 
     @Override
     protected void addTooltip(CompoundTag capData, ITooltip tooltip, Player player, BlockAccessor block, BlockEntity blockEntity, IPluginConfig config) {
-        if (!capData.getBoolean("isBindable")) return;
+        if (!capData.getBoolean("IEnergyBindable")) return;
         boolean cover = capData.getBoolean("cover");
         if (!capData.hasUUID("uuid")) {
             if (cover) {
@@ -73,7 +72,7 @@ public class WirelessEnergyProvider extends CapabilityBlockProvider<IWirelessEne
                 tooltip.add(Component.translatable("gtmoremachine.machine.wireless_energy_hatch.tooltip.1"));
             }
         } else {
-            BigDecimal energy = BigIntegerUtils.setBigDecimalValue(capData.getString("energy"));
+            BigDecimal energy = BigNumberUtils.getBigDecimalValue(capData.getString("energy"));
             UUID uuid = capData.getUUID("uuid");
             if (TeamUtils.hasOwner(block.getLevel(), uuid)) {
                 if (cover) {

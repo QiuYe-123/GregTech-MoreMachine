@@ -1,17 +1,15 @@
 package cn.qiuye.gtmoremachine.common.data;
 
 import cn.qiuye.gtmoremachine.api.GTMMAPI;
-import cn.qiuye.gtmoremachine.api.machine.multiblock.ICapacityComponentData;
-import cn.qiuye.gtmoremachine.api.machine.multiblock.IEnergyCommunicationUnitBlock;
-import cn.qiuye.gtmoremachine.common.block.BlockMap;
-import cn.qiuye.gtmoremachine.common.block.CapacityComponentBlock;
-import cn.qiuye.gtmoremachine.common.block.CapacityComponentBlock.CapacityComponentBlockPartType;
-import cn.qiuye.gtmoremachine.common.block.EnergyCommunicationUnitBlock;
-import cn.qiuye.gtmoremachine.common.block.EnergyCommunicationUnitBlock.EnergyCommunicationUnitPartType;
+import cn.qiuye.gtmoremachine.api.machine.multiblock.feature.ICCData;
+import cn.qiuye.gtmoremachine.api.machine.multiblock.feature.IECUBlock;
+import cn.qiuye.gtmoremachine.common.block.ECUBlock;
+import cn.qiuye.gtmoremachine.common.block.ECUBlock.ECUPartType;
+import cn.qiuye.gtmoremachine.common.block.WECCBlock;
+import cn.qiuye.gtmoremachine.common.block.WECCBlock.WECCBlockPartType;
 import cn.qiuye.gtmoremachine.common.data.models.GTMMModels;
 
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 
 import net.minecraft.world.item.BlockItem;
@@ -28,34 +26,34 @@ public class GTMMBlocks {
     }
 
     // ECU
-    public static final BlockEntry<EnergyCommunicationUnitBlock> ENERGY_COMMUNICATION_UNIT_LV = createEnergyCommunicationUnitBlock(EnergyCommunicationUnitPartType.LV);
-    public static final BlockEntry<EnergyCommunicationUnitBlock> ENERGY_COMMUNICATION_UNIT_MV = createEnergyCommunicationUnitBlock(EnergyCommunicationUnitPartType.MV);
-    public static final BlockEntry<EnergyCommunicationUnitBlock> ENERGY_COMMUNICATION_UNIT_HV = createEnergyCommunicationUnitBlock(EnergyCommunicationUnitPartType.HV);
-    public static final BlockEntry<EnergyCommunicationUnitBlock> ENERGY_COMMUNICATION_UNIT_EV = createEnergyCommunicationUnitBlock(EnergyCommunicationUnitPartType.EV);
-    public static final BlockEntry<EnergyCommunicationUnitBlock> ENERGY_COMMUNICATION_UNIT_IV = createEnergyCommunicationUnitBlock(EnergyCommunicationUnitPartType.IV);
-    public static final BlockEntry<EnergyCommunicationUnitBlock> ENERGY_COMMUNICATION_UNIT_LUV = createEnergyCommunicationUnitBlock(EnergyCommunicationUnitPartType.LUV);
-    public static final BlockEntry<EnergyCommunicationUnitBlock> ENERGY_COMMUNICATION_UNIT_ZPM = createEnergyCommunicationUnitBlock(EnergyCommunicationUnitPartType.ZPM);
-    public static final BlockEntry<EnergyCommunicationUnitBlock> ENERGY_COMMUNICATION_UNIT_UV = createEnergyCommunicationUnitBlock(EnergyCommunicationUnitPartType.UV);
-    public static final BlockEntry<EnergyCommunicationUnitBlock> ENERGY_COMMUNICATION_UNIT_UHV = createEnergyCommunicationUnitBlock(EnergyCommunicationUnitPartType.UHV);
-    public static final BlockEntry<EnergyCommunicationUnitBlock> ENERGY_COMMUNICATION_UNIT_UEV = createEnergyCommunicationUnitBlock(EnergyCommunicationUnitPartType.UEV);
-    public static final BlockEntry<EnergyCommunicationUnitBlock> ENERGY_COMMUNICATION_UNIT_UIV = createEnergyCommunicationUnitBlock(EnergyCommunicationUnitPartType.UIV);
-    public static final BlockEntry<EnergyCommunicationUnitBlock> ENERGY_COMMUNICATION_UNIT_UXV = createEnergyCommunicationUnitBlock(EnergyCommunicationUnitPartType.UXV);
-    public static final BlockEntry<EnergyCommunicationUnitBlock> ENERGY_COMMUNICATION_UNIT_OPV = createEnergyCommunicationUnitBlock(EnergyCommunicationUnitPartType.OPV);
-    public static final BlockEntry<EnergyCommunicationUnitBlock> ENERGY_COMMUNICATION_UNIT_MAX = createEnergyCommunicationUnitBlock(EnergyCommunicationUnitPartType.MAX);
+    public static final BlockEntry<ECUBlock> ENERGY_COMMUNICATION_UNIT_LV = createECUBlock(ECUPartType.LV);
+    public static final BlockEntry<ECUBlock> ENERGY_COMMUNICATION_UNIT_MV = createECUBlock(ECUPartType.MV);
+    public static final BlockEntry<ECUBlock> ENERGY_COMMUNICATION_UNIT_HV = createECUBlock(ECUPartType.HV);
+    public static final BlockEntry<ECUBlock> ENERGY_COMMUNICATION_UNIT_EV = createECUBlock(ECUPartType.EV);
+    public static final BlockEntry<ECUBlock> ENERGY_COMMUNICATION_UNIT_IV = createECUBlock(ECUPartType.IV);
+    public static final BlockEntry<ECUBlock> ENERGY_COMMUNICATION_UNIT_LUV = createECUBlock(ECUPartType.LUV);
+    public static final BlockEntry<ECUBlock> ENERGY_COMMUNICATION_UNIT_ZPM = createECUBlock(ECUPartType.ZPM);
+    public static final BlockEntry<ECUBlock> ENERGY_COMMUNICATION_UNIT_UV = createECUBlock(ECUPartType.UV);
+    public static final BlockEntry<ECUBlock> ENERGY_COMMUNICATION_UNIT_UHV = createECUBlock(ECUPartType.UHV);
+    public static final BlockEntry<ECUBlock> ENERGY_COMMUNICATION_UNIT_UEV = createECUBlock(ECUPartType.UEV);
+    public static final BlockEntry<ECUBlock> ENERGY_COMMUNICATION_UNIT_UIV = createECUBlock(ECUPartType.UIV);
+    public static final BlockEntry<ECUBlock> ENERGY_COMMUNICATION_UNIT_UXV = createECUBlock(ECUPartType.UXV);
+    public static final BlockEntry<ECUBlock> ENERGY_COMMUNICATION_UNIT_OPV = createECUBlock(ECUPartType.OPV);
+    public static final BlockEntry<ECUBlock> ENERGY_COMMUNICATION_UNIT_MAX = createECUBlock(ECUPartType.MAX);
 
-    private static BlockEntry<EnergyCommunicationUnitBlock> createEnergyCommunicationUnitBlock(IEnergyCommunicationUnitBlock EnergyCommunicationUnitDate) {
+    private static BlockEntry<ECUBlock> createECUBlock(IECUBlock ECUDate) {
         var entry = GTMM
-                .block("%s_energy_communication_unit".formatted(EnergyCommunicationUnitDate.getEnergyCommunicationUnitBlockName()),
-                        e -> new EnergyCommunicationUnitBlock(e, EnergyCommunicationUnitDate))
-                .lang("%s Energy Communication Unit".formatted(GTValues.VNF[EnergyCommunicationUnitDate.getTier()]))
+                .block("%s_energy_communication_unit".formatted(ECUDate.getECUBlockName()),
+                        e -> new ECUBlock(e, ECUDate))
+                .lang("%s Energy Communication Unit".formatted(GTValues.VNF[ECUDate.getTier()]))
                 .initialProperties(() -> Blocks.IRON_BLOCK)
                 .properties(p -> p.isValidSpawn((state, level, pos, ent) -> false))
-                .blockstate(GTMMModels.createEnergyCommunicationUnitModel(EnergyCommunicationUnitDate))
+                .blockstate(GTMMModels.createECUModel(ECUDate))
                 .tag(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WRENCH)
                 .item(BlockItem::new)
                 .build()
                 .register();
-        GTMMAPI.ECU.put(EnergyCommunicationUnitDate, entry);
+        GTMMAPI.ECU.put(ECUDate, entry);
         return entry;
     }
 
@@ -64,44 +62,37 @@ public class GTMMBlocks {
     }
 
     // WECC
-    public static final BlockEntry<CapacityComponentBlock> CAPACITYCOMPONENT_EMPTY_TIER = createCapacityComponentBlock(CapacityComponentBlockPartType.EMPTY_TIER);
-    public static final BlockEntry<CapacityComponentBlock> CAPACITYCOMPONENT_LV = createCapacityComponentBlock(CapacityComponentBlockPartType.LV);
-    public static final BlockEntry<CapacityComponentBlock> CAPACITYCOMPONENT_MV = createCapacityComponentBlock(CapacityComponentBlockPartType.MV);
-    public static final BlockEntry<CapacityComponentBlock> CAPACITYCOMPONENT_HV = createCapacityComponentBlock(CapacityComponentBlockPartType.HV);
-    public static final BlockEntry<CapacityComponentBlock> CAPACITYCOMPONENT_EV = createCapacityComponentBlock(CapacityComponentBlockPartType.EV);
-    public static final BlockEntry<CapacityComponentBlock> CAPACITYCOMPONENT_IV = createCapacityComponentBlock(CapacityComponentBlockPartType.IV);
-    public static final BlockEntry<CapacityComponentBlock> CAPACITYCOMPONENT_LUV = createCapacityComponentBlock(CapacityComponentBlockPartType.LuV);
-    public static final BlockEntry<CapacityComponentBlock> CAPACITYCOMPONENT_ZPM = createCapacityComponentBlock(CapacityComponentBlockPartType.ZPM);
-    public static final BlockEntry<CapacityComponentBlock> CAPACITYCOMPONENT_UV = createCapacityComponentBlock(CapacityComponentBlockPartType.UV);
-    public static final BlockEntry<CapacityComponentBlock> CAPACITYCOMPONENT_UHV = createCapacityComponentBlock(CapacityComponentBlockPartType.UHV);
-    public static final BlockEntry<CapacityComponentBlock> CAPACITYCOMPONENT_UEV = createCapacityComponentBlock(CapacityComponentBlockPartType.UEV);
-    public static final BlockEntry<CapacityComponentBlock> CAPACITYCOMPONENT_UIV = createCapacityComponentBlock(CapacityComponentBlockPartType.UIV);
-    public static final BlockEntry<CapacityComponentBlock> CAPACITYCOMPONENT_UXV = createCapacityComponentBlock(CapacityComponentBlockPartType.UXV);
-    public static final BlockEntry<CapacityComponentBlock> CAPACITYCOMPONENT_OPV = createCapacityComponentBlock(CapacityComponentBlockPartType.OpV);
-    public static final BlockEntry<CapacityComponentBlock> CAPACITYCOMPONENT_MAX = createCapacityComponentBlock(CapacityComponentBlockPartType.MAX);
+    public static final BlockEntry<WECCBlock> CAPACITYCOMPONENT_EMPTY_TIER = createWECCBlock(WECCBlockPartType.EMPTY_TIER);
+    public static final BlockEntry<WECCBlock> CAPACITYCOMPONENT_LV = createWECCBlock(WECCBlockPartType.LV);
+    public static final BlockEntry<WECCBlock> CAPACITYCOMPONENT_MV = createWECCBlock(WECCBlockPartType.MV);
+    public static final BlockEntry<WECCBlock> CAPACITYCOMPONENT_HV = createWECCBlock(WECCBlockPartType.HV);
+    public static final BlockEntry<WECCBlock> CAPACITYCOMPONENT_EV = createWECCBlock(WECCBlockPartType.EV);
+    public static final BlockEntry<WECCBlock> CAPACITYCOMPONENT_IV = createWECCBlock(WECCBlockPartType.IV);
+    public static final BlockEntry<WECCBlock> CAPACITYCOMPONENT_LUV = createWECCBlock(WECCBlockPartType.LuV);
+    public static final BlockEntry<WECCBlock> CAPACITYCOMPONENT_ZPM = createWECCBlock(WECCBlockPartType.ZPM);
+    public static final BlockEntry<WECCBlock> CAPACITYCOMPONENT_UV = createWECCBlock(WECCBlockPartType.UV);
+    public static final BlockEntry<WECCBlock> CAPACITYCOMPONENT_UHV = createWECCBlock(WECCBlockPartType.UHV);
+    public static final BlockEntry<WECCBlock> CAPACITYCOMPONENT_UEV = createWECCBlock(WECCBlockPartType.UEV);
+    public static final BlockEntry<WECCBlock> CAPACITYCOMPONENT_UIV = createWECCBlock(WECCBlockPartType.UIV);
+    public static final BlockEntry<WECCBlock> CAPACITYCOMPONENT_UXV = createWECCBlock(WECCBlockPartType.UXV);
+    public static final BlockEntry<WECCBlock> CAPACITYCOMPONENT_OPV = createWECCBlock(WECCBlockPartType.OpV);
+    public static final BlockEntry<WECCBlock> CAPACITYCOMPONENT_MAX = createWECCBlock(WECCBlockPartType.MAX);
 
-    private static BlockEntry<CapacityComponentBlock> createCapacityComponentBlock(ICapacityComponentData CapacityComponentData) {
-        var CapacityComponentBlock = GTMM
-                .block("%s_capacity_component".formatted(CapacityComponentData.getCapacityComponentName()),
-                        p -> new CapacityComponentBlock(p, CapacityComponentData))
-                .lang("%s Wireless Energy Capacity Component".formatted(CapacityComponentData.getTier() == -1 ? "Empty tier" : GTValues.VNF[CapacityComponentData.getTier()]))
+    private static BlockEntry<WECCBlock> createWECCBlock(ICCData WECCData) {
+        var WECCBlock = GTMM
+                .block("%s_capacity_component".formatted(WECCData.getCCName()),
+                        p -> new WECCBlock(p, WECCData))
+                .lang("%s Wireless Energy Capacity Component".formatted(WECCData.getTier() == -1 ? "Empty tier" : GTValues.VNF[WECCData.getTier()]))
                 .initialProperties(() -> Blocks.IRON_BLOCK)
                 .properties(p -> p.isValidSpawn((state, level, pos, entityType) -> false))
-                .blockstate(GTMMModels.createCapacityComponentBlockModel(CapacityComponentData))
+                .blockstate(GTMMModels.createWECCBlockModel(WECCData))
                 .tag(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WRENCH)
                 .item(BlockItem::new)
                 .build()
                 .register();
-        GTMMAPI.WECC.put(CapacityComponentData, CapacityComponentBlock);
-        return CapacityComponentBlock;
+        GTMMAPI.WECC.put(WECCData, WECCBlock);
+        return WECCBlock;
     }
 
-    public static void init() {
-        BlockMap.init();
-        int j = 0;
-        for (int i = 3; i <= 13; i++) {
-            BlockMap.rotMap.put(j, GTMachines.ROTOR_HOLDER[i]);
-            j++;
-        }
-    }
+    public static void init() {}
 }

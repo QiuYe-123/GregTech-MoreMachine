@@ -11,31 +11,40 @@ import com.gregtechceu.gtceu.api.machine.SimpleTieredMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.world.item.ItemStack;
 
-import org.jetbrains.annotations.NotNull;
+import lombok.Setter;
 
 import java.util.Collections;
 import java.util.List;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public class ProgrammableCircuitHandler extends NotifiableItemStackHandler {
 
-    public ProgrammableCircuitHandler(Object machine) {
-        super((MetaMachine) machine, 1, IO.IN, IO.IN, size -> new ItemStackHandler(size, machine));
+    public ProgrammableCircuitHandler() {
+        super(1, IO.IN, IO.IN, ItemStackHandler::new);
     }
 
     @Override
-    @NotNull
+    public void setMachine(MetaMachine machine) {
+        super.setMachine(machine);
+        ((ItemStackHandler) this.storage).setMachine(this.getMachine());
+    }
+
+    @Override
     public List<Object> getContents() {
-        return Collections.singletonList(storage.getStackInSlot(0));
+        return Collections.singletonList(this.storage.getStackInSlot(0));
     }
 
     @Override
     public double getTotalContentAmount() {
-        return storage.getStackInSlot(0).getCount();
+        return this.storage.getStackInSlot(0).getCount();
     }
 
-    @NotNull
     @Override
     public ItemStack getStackInSlot(int slot) {
         return ItemStack.EMPTY;
@@ -43,11 +52,11 @@ public class ProgrammableCircuitHandler extends NotifiableItemStackHandler {
 
     private static class ItemStackHandler extends CustomItemStackHandler {
 
-        private final Object machine;
+        @Setter
+        private MetaMachine machine;
 
-        private ItemStackHandler(int size, Object machine) {
+        private ItemStackHandler(int size) {
             super(size);
-            this.machine = machine;
         }
 
         @Override
@@ -55,12 +64,11 @@ public class ProgrammableCircuitHandler extends NotifiableItemStackHandler {
             return 1;
         }
 
-        @NotNull
         @Override
-        public ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
+        public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
             if (stack.is(GTMMAEItems.VIRTUAL_ITEM_PROVIDER.get())) {
                 boolean allow = true;
-                if (machine instanceof SimpleTieredMachine tieredMachine) {
+                if (this.machine instanceof SimpleTieredMachine tieredMachine) {
                     allow = false;
                     for (CoverBehavior cover : tieredMachine.getCoverContainer().getCovers()) {
                         if (cover instanceof ProgrammableCover) {
@@ -77,7 +85,6 @@ public class ProgrammableCircuitHandler extends NotifiableItemStackHandler {
             return stack;
         }
 
-        @NotNull
         @Override
         public ItemStack extractItem(int slot, int amount, boolean simulate) {
             return simulate ? super.extractItem(slot, amount, true) : ItemStack.EMPTY;

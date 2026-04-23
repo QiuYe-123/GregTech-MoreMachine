@@ -4,12 +4,13 @@ import cn.qiuye.gtmoremachine.api.machine.trait.InaccessibleInfiniteHandler;
 import cn.qiuye.gtmoremachine.api.machine.trait.InaccessibleInfiniteTank;
 
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
-import com.gregtechceu.gtceu.api.machine.feature.IInteractedMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
-import com.gregtechceu.gtceu.common.machine.multiblock.part.DualHatchPartMachine;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
+import com.gregtechceu.gtceu.common.machine.multiblock.part.ItemBusPartMachine;
 import com.gregtechceu.gtceu.integration.ae2.gui.widget.list.AEListGridWidget;
 import com.gregtechceu.gtceu.integration.ae2.machine.feature.IGridConnectedMachine;
 import com.gregtechceu.gtceu.integration.ae2.machine.trait.GridNodeHolder;
@@ -18,9 +19,6 @@ import com.gregtechceu.gtceu.integration.ae2.utils.KeyStorage;
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import com.lowdragmc.lowdraglib.utils.Position;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -33,7 +31,6 @@ import appeng.api.networking.security.IActionSource;
 import appeng.api.stacks.AEKey;
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
 import lombok.Getter;
-import lombok.Setter;
 
 import java.util.EnumSet;
 
@@ -41,37 +38,34 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class MEOutputPartMachine extends DualHatchPartMachine implements IInteractedMachine, IGridConnectedMachine {
+public class MEOutputPartMachine extends ItemBusPartMachine implements IGridConnectedMachine {
 
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(MEOutputPartMachine.class, DualHatchPartMachine.MANAGED_FIELD_HOLDER);
-
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
-    }
-
-    @DescSynced
+    @SyncToClient
     @Getter
-    @Setter
     protected boolean isOnline;
-    @Persisted
+    @SaveField
     protected final GridNodeHolder nodeHolder;
     protected final IActionSource actionSource;
     @Getter
     protected Object2LongOpenHashMap<AEKey> returnBuffer = new Object2LongOpenHashMap<>();
-    @Persisted
+    @SaveField
     private KeyStorage internalBuffer;
-    @Persisted
+    @SaveField
     private KeyStorage internalTankBuffer;
+    @SaveField
+    public final NotifiableFluidTank fluidtank;
 
-    public MEOutputPartMachine(IMachineBlockEntity holder) {
+    public MEOutputPartMachine(BlockEntityCreationInfo holder) {
         super(holder, GTValues.LuV, IO.OUT);
-        this.nodeHolder = createNodeHolder();
+        this.fluidtank = this.attachTrait(createTank());
+        this.nodeHolder = this.attachTrait(new GridNodeHolder(this));
         this.actionSource = IActionSource.ofMachine(nodeHolder.getMainNode()::getNode);
     }
 
-    protected GridNodeHolder createNodeHolder() {
-        return new GridNodeHolder(this);
+    @Override
+    public void setOnline(boolean online) {
+        isOnline = online;
+        syncDataHolder.markClientSyncFieldDirty("isOnline");
     }
 
     @Override
@@ -100,15 +94,14 @@ public class MEOutputPartMachine extends DualHatchPartMachine implements IIntera
     /////////////////////////////////
 
     @Override
-    protected NotifiableItemStackHandler createInventory(Object... args) {
+    protected NotifiableItemStackHandler createInventory() {
         this.internalBuffer = new KeyStorage();
-        return new InaccessibleInfiniteHandler(this, internalBuffer);
+        return new InaccessibleInfiniteHandler(internalBuffer);
     }
 
-    @Override
-    protected NotifiableFluidTank createTank(int initialCapacity, int slots, Object... args) {
+    protected NotifiableFluidTank createTank() {
         this.internalTankBuffer = new KeyStorage();
-        return new InaccessibleInfiniteTank(this, internalTankBuffer);
+        return new InaccessibleInfiniteTank(internalTankBuffer);
     }
 
     @Override
@@ -118,7 +111,7 @@ public class MEOutputPartMachine extends DualHatchPartMachine implements IIntera
     }
 
     @Override
-    public void onMachineRemoved() {
+    public void onMachineDestroyed() {
         var grid = getMainNode().getGrid();
         if (grid != null) {
             if (!internalBuffer.isEmpty()) {

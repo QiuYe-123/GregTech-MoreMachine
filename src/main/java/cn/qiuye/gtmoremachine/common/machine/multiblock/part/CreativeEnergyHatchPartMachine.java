@@ -1,17 +1,17 @@
 package cn.qiuye.gtmoremachine.common.machine.multiblock.part;
 
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
-import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IDataInfoProvider;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredIOPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableEnergyContainer;
 import com.gregtechceu.gtceu.api.pattern.MultiblockWorldSavedData;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.ingredient.EnergyStack;
-import com.gregtechceu.gtceu.common.item.PortableScannerBehavior;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
+import com.gregtechceu.gtceu.common.item.behavior.PortableScannerBehavior;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import com.lowdragmc.lowdraglib.gui.editor.ColorPattern;
@@ -23,8 +23,6 @@ import com.lowdragmc.lowdraglib.gui.widget.ButtonWidget;
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.SelectorWidget;
 import com.lowdragmc.lowdraglib.gui.widget.TextFieldWidget;
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
@@ -35,6 +33,7 @@ import net.minecraft.world.entity.player.Player;
 
 import lombok.Getter;
 import org.apache.commons.lang3.ArrayUtils;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -47,80 +46,62 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 public class CreativeEnergyHatchPartMachine extends TieredIOPartMachine implements IDataInfoProvider {
 
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(CreativeEnergyHatchPartMachine.class, TieredIOPartMachine.MANAGED_FIELD_HOLDER);
-
-    @Persisted
+    @SaveField
     public final NotifiableEnergyContainer energyContainer;
-    @Persisted
+    @SaveField
     private long maxEnergy;
-    @Persisted
-    private long voltage = 0;
-    @Persisted
+    @SaveField
+    private long voltage;
+    @SaveField
     @Getter
     private int amps = 1;
-    @Persisted
+    @SaveField
     private int setTier = GTValues.VNF.length - 1;
 
-    public CreativeEnergyHatchPartMachine(IMachineBlockEntity holder) {
+    public CreativeEnergyHatchPartMachine(BlockEntityCreationInfo holder) {
         super(holder, GTValues.MAX, IO.IN);
-        this.energyContainer = createEnergyContainer();
+        this.voltage = GTValues.VEX[setTier];
+        this.maxEnergy = this.voltage * this.amps;
+        this.energyContainer = new InfinityEnergyContainer(this.maxEnergy, this.voltage, this.amps, 0L, 0L);
     }
 
     //////////////////////////////////////
     // ***** Initialization ******//
     //////////////////////////////////////
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
-    }
-
-    protected NotifiableEnergyContainer createEnergyContainer() {
-        NotifiableEnergyContainer container;
-        this.voltage = GTValues.VEX[setTier];
-        this.maxEnergy = this.voltage * this.amps;
-        container = new InfinityEnergyContainer(this, this.maxEnergy, this.voltage, this.amps, 0L, 0L);
-        return container;
-    }
-
-    @Override
-    public void loadCustomPersistedData(CompoundTag tag) {
-        super.loadCustomPersistedData(tag);
-        updateEnergyContainer();
-    }
 
     @Override
     public ModularUI createUI(Player entityPlayer) {
         return new ModularUI(176, 136, this, entityPlayer)
                 .background(GuiTextures.BACKGROUND)
                 .widget(new LabelWidget(7, 32, "gtceu.creative.energy.voltage"))
-                .widget(new TextFieldWidget(9, 47, 152, 16, () -> String.valueOf(voltage),
+                .widget(new TextFieldWidget(9, 47, 152, 16, () -> String.valueOf(this.voltage),
                         value -> {
                             setVoltage(Long.parseLong(value));
-                            setTier = GTUtil.getTierByVoltage(this.voltage);
+                            this.setTier = GTUtil.getTierByVoltage(this.voltage);
                         }).setNumbersOnly(8L, Long.MAX_VALUE))
                 .widget(new LabelWidget(7, 74, "gtceu.creative.energy.amperage"))
                 .widget(new ButtonWidget(7, 87, 20, 20,
                         new GuiTextureGroup(ResourceBorderTexture.BUTTON_COMMON, new TextTexture("-")),
-                        cd -> setAmps(--amps == -1 ? 0 : amps)))
-                .widget(new TextFieldWidget(31, 89, 114, 16, () -> String.valueOf(amps),
+                        cd -> setAmps(--this.amps == -1 ? 0 : this.amps)))
+                .widget(new TextFieldWidget(31, 89, 114, 16, () -> String.valueOf(this.amps),
                         value -> setAmps(Integer.parseInt(value))).setNumbersOnly(1, 67108864))
                 .widget(new ButtonWidget(149, 87, 20, 20,
                         new GuiTextureGroup(ResourceBorderTexture.BUTTON_COMMON, new TextTexture("+")),
                         cd -> {
-                            if (amps < Integer.MAX_VALUE) {
-                                setAmps(++amps);
+                            if (this.amps < Integer.MAX_VALUE) {
+                                setAmps(++this.amps);
                             }
                         }))
 
                 .widget(new SelectorWidget(7, 7, 50, 20, Arrays.stream(GTValues.VNF).toList(), -1)
                         .setOnChanged(tier -> {
-                            setTier = ArrayUtils.indexOf(GTValues.VNF, tier);
-                            setVoltage(GTValues.VEX[setTier]);
+                            this.setTier = ArrayUtils.indexOf(GTValues.VNF, tier);
+                            setVoltage(GTValues.VEX[this.setTier]);
                         })
-                        .setSupplier(() -> GTValues.VNF[setTier])
+                        .setSupplier(() -> GTValues.VNF[this.setTier])
                         .setButtonBackground(ResourceBorderTexture.BUTTON_COMMON)
                         .setBackground(ColorPattern.BLACK.rectTexture())
-                        .setValue(GTValues.VNF[setTier]));
+                        .setValue(GTValues.VNF[this.setTier]));
     }
 
     private void setVoltage(long voltage) {
@@ -166,6 +147,12 @@ public class CreativeEnergyHatchPartMachine extends TieredIOPartMachine implemen
     //////////////////////////////////////
 
     @Override
+    public void load(CompoundTag tag) {
+        super.load(tag);
+        this.updateEnergyContainer();
+    }
+
+    @Override
     public int tintColor(int index) {
         if (index == 2) {
             return GTValues.VC[getTier()];
@@ -184,12 +171,12 @@ public class CreativeEnergyHatchPartMachine extends TieredIOPartMachine implemen
 
     private static class InfinityEnergyContainer extends NotifiableEnergyContainer {
 
-        public InfinityEnergyContainer(MetaMachine machine, long maxCapacity, long maxInputVoltage, long maxInputAmperage, long maxOutputVoltage, long maxOutputAmperage) {
-            super(machine, maxCapacity, maxInputVoltage, maxInputAmperage, maxOutputVoltage, maxOutputAmperage);
+        public InfinityEnergyContainer(long maxCapacity, long maxInputVoltage, long maxInputAmperage, long maxOutputVoltage, long maxOutputAmperage) {
+            super(maxCapacity, maxInputVoltage, maxInputAmperage, maxOutputVoltage, maxOutputAmperage);
         }
 
         @Override
-        public List<EnergyStack> handleRecipeInner(IO io, GTRecipe recipe, List<EnergyStack> left, boolean simulate) {
+        public @Nullable List<EnergyStack> handleRecipeInner(IO io, GTRecipe recipe, List<EnergyStack> left, boolean simulate) {
             return super.handleRecipeInner(io, recipe, left, true);
         }
 

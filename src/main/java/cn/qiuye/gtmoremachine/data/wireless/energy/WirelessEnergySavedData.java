@@ -37,7 +37,7 @@ public class WirelessEnergySavedData extends SavedData {
         ListTag allEnergy = tag.getList("allEnergy", Tag.TAG_COMPOUND);
         for (int i = 0; i < allEnergy.size(); i++) {
             WirelessEnergyContainer container = readTag(allEnergy.getCompound(i));
-            containerMap.put(container.getUuid(), container);
+            containerMap.put(container.getUUID(), container);
         }
     }
 
@@ -59,10 +59,10 @@ public class WirelessEnergySavedData extends SavedData {
         String ra = engTag.getString("rate");
         String ca = engTag.getString("capacity");
         String pd = engTag.getString("passiveDrain");
-        BigInteger energy = new BigInteger(en.isEmpty() ? "0" : en, 16);
-        BigInteger rate = new BigInteger(ra.isEmpty() ? "0" : ra, 16);
-        BigInteger capacity = new BigInteger(ca.isEmpty() ? "0" : ca, 16);
-        BigInteger passiveDrain = new BigInteger(pd.isEmpty() ? "0" : pd, 16);
+        BigInteger energy = en.isEmpty() ? BigInteger.ZERO : new BigInteger(en, 16);
+        BigInteger rate = ra.isEmpty() ? BigInteger.ZERO : new BigInteger(ra, 16);
+        BigInteger capacity = ca.isEmpty() ? BigInteger.ZERO : new BigInteger(ca, 16);
+        BigInteger passiveDrain = pd.isEmpty() ? BigInteger.ZERO : new BigInteger(pd, 16);
         GlobalPos bindPos = readGlobalPos(engTag.getString("dimension"), engTag.getLong("pos"));
         return new WirelessEnergyContainer(uuid, energy, rate, capacity, passiveDrain, bindPos);
     }
@@ -90,7 +90,7 @@ public class WirelessEnergySavedData extends SavedData {
             engTag.putString("dimension", bindPos.dimension().location().toString());
             engTag.putLong("pos", bindPos.pos().asLong());
         }
-        if (!engTag.isEmpty()) engTag.putUUID("uuid", container.getUuid());
+        if (!engTag.isEmpty()) engTag.putUUID("uuid", container.getUUID());
         return engTag;
     }
 

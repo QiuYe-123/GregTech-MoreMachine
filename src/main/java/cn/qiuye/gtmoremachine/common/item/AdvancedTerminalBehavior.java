@@ -7,12 +7,13 @@ import cn.qiuye.gtmoremachine.api.gui.widget.TerminalInputWidget;
 import cn.qiuye.gtmoremachine.api.pattern.AdvancedBlockNoAEPattern;
 import cn.qiuye.gtmoremachine.api.pattern.AdvancedBlockPattern;
 import cn.qiuye.gtmoremachine.api.pattern.Hatch;
+import cn.qiuye.gtmoremachine.common.block.BlockMap;
 
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.item.component.IItemUIFactory;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
+import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
 
 import com.lowdragmc.lowdraglib.gui.editor.ColorPattern;
@@ -23,6 +24,7 @@ import com.lowdragmc.lowdraglib.gui.texture.TextTexture;
 import com.lowdragmc.lowdraglib.gui.widget.*;
 import com.lowdragmc.lowdraglib.utils.BlockInfo;
 
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -31,6 +33,7 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import lombok.Getter;
@@ -38,7 +41,7 @@ import lombok.Setter;
 
 import java.util.*;
 
-import static cn.qiuye.gtmoremachine.common.block.BlockMap.*;
+import static cn.qiuye.gtmoremachine.common.block.BlockMap.MAP;
 import static net.minecraft.network.chat.Component.translatable;
 
 @Getter
@@ -54,7 +57,7 @@ public class AdvancedTerminalBehavior implements IItemUIFactory {
             var blockPos = context.getClickedPos();
             var metaMachine = MetaMachine.getMachine(level, blockPos);
             if (context.getPlayer() != null && !level.isClientSide() &&
-                    metaMachine instanceof IMultiController controller) {
+                    metaMachine instanceof MultiblockControllerMachine controller) {
                 var autoBuildSetting = getAutoBuildSetting(context.getPlayer().getMainHandItem());
 
                 if (GTmm.Mods.isAE2Loaded()) {
@@ -91,7 +94,7 @@ public class AdvancedTerminalBehavior implements IItemUIFactory {
             autoBuildSetting.setUseDemolish(tag.getBoolean("IsUseDemolish"));
             String block = tag.getString("blocks");
             if (!block.isEmpty()) {
-                autoBuildSetting.tierBlock = tierBlockMap.get(block).get();
+                autoBuildSetting.tierBlock = MAP.get(block);
                 autoBuildSetting.blocks = new ObjectOpenHashSet<>(autoBuildSetting.tierBlock);
             }
         }
@@ -159,9 +162,9 @@ public class AdvancedTerminalBehavior implements IItemUIFactory {
                 tag.putString("blocks", s);
                 tag.putInt("Tier", i);
                 handItem.setTag(tag);
-                blockLabel.setComponent(Component.literal(" (").append(translatable(s))
+                blockLabel.setComponent(Component.literal(" (").append(translatable(BlockMap.namePrefix + "." + s))
                         .append(Component.literal(" : "))
-                        .append(tierBlockMap.get(s).get()[i].getName())
+                        .append(MAP.get(s)[i].getName())
                         .append(Component.literal(")")));
             }
         });
@@ -179,13 +182,35 @@ public class AdvancedTerminalBehavior implements IItemUIFactory {
             var block = tag.getString("blocks");
             if (!block.isEmpty()) {
                 int tier = tag.getInt("Tier");
-                return Component.literal("(").append(translatable(block))
+                return Component.literal("(").append(translatable(BlockMap.namePrefix + "." + block))
                         .append(Component.literal(" : "))
-                        .append(tierBlockMap.get(block).get()[tier].getName())
+                        .append(MAP.get(block)[tier].getName())
                         .append(Component.literal(")"));
             }
         }
         return Component.literal("");
+    }
+
+    private void setBlockMap(Object2IntOpenHashMap<String> map, ItemStack itemStack) {
+        CompoundTag compound = new CompoundTag();
+        for (var entry : map.object2IntEntrySet()) {
+            compound.putInt(entry.getKey(), entry.getIntValue());
+        }
+        var tag = itemStack.getOrCreateTag();
+        tag.put("blockmap", compound);
+        itemStack.setTag(tag);
+    }
+
+    private Object2IntOpenHashMap<String> getBlockMap(ItemStack itemStack) {
+        Object2IntOpenHashMap<String> map = new Object2IntOpenHashMap<>();
+        var tag = itemStack.getOrCreateTag();
+        if (!tag.isEmpty() && tag.contains("blockmap")) {
+            var blockTag = tag.getCompound("blockmap");
+            for (String key : blockTag.getAllKeys()) {
+                map.put(key, blockTag.getInt(key));
+            }
+        }
+        return map;
     }
 
     private int getRepeatCount(ItemStack itemStack) {
@@ -282,12 +307,15 @@ public class AdvancedTerminalBehavior implements IItemUIFactory {
     @Getter
     public static class AutoBuildSetting {
 
+        Object2IntOpenHashMap<String> tierBlocks;
+
         Block[] tierBlock;
         Set<Block> blocks = Collections.emptySet();
         private int Tier, repeatCount;
         private boolean noHatchMode, replaceMode, isUseAE, isUseMirror, isUseDemolish;
 
         public AutoBuildSetting() {
+            this.tierBlocks = new Object2IntOpenHashMap<>();
             this.Tier = 0;
             this.repeatCount = 0;
             this.noHatchMode = true;

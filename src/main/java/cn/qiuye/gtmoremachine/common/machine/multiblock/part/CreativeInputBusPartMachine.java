@@ -3,20 +3,20 @@ package cn.qiuye.gtmoremachine.common.machine.multiblock.part;
 import cn.qiuye.gtmoremachine.api.misc.UnlimitedItemStackTransfer;
 
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.blockentity.IPaintable;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.fancy.ConfiguratorPanel;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
-import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.fancyconfigurator.CircuitFancyConfigurator;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IDistinctPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredIOPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
-import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
+import com.gregtechceu.gtceu.common.item.behavior.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.integration.ae2.gui.widget.slot.AEConfigSlotWidget;
 
 import com.lowdragmc.lowdraglib.gui.util.DrawerHelper;
@@ -25,8 +25,6 @@ import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.misc.ItemStackTransfer;
 import com.lowdragmc.lowdraglib.syncdata.ISubscription;
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import com.lowdragmc.lowdraglib.utils.Position;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -51,53 +49,37 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 public class CreativeInputBusPartMachine extends TieredIOPartMachine implements IDistinctPart, IPaintable {
 
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(CreativeInputBusPartMachine.class,
-            TieredIOPartMachine.MANAGED_FIELD_HOLDER);
-
     private final int ITEM_SIZE = 5;
 
     @Getter
-    @Persisted
+    @SaveField
     private final NotifiableItemStackHandler inventory;
     @Nullable
     protected TickableSubscription autoIOSubs;
     @Nullable
     protected ISubscription inventorySubs;
     @Getter
-    @Persisted
+    @SaveField
     protected final NotifiableItemStackHandler circuitInventory;
-    @Persisted
+    @SaveField
     private ItemStackTransfer creativeStorage;
     protected ArrayList<Item> lstItem;
 
-    public CreativeInputBusPartMachine(IMachineBlockEntity holder, Function<Integer, ItemStackTransfer> transferFactory) {
+    public CreativeInputBusPartMachine(BlockEntityCreationInfo holder, Function<Integer, ItemStackTransfer> transferFactory) {
         super(holder, GTValues.MAX, IO.IN);
-        this.inventory = createInventory();
-        this.circuitInventory = createCircuitItemHandler();
+        this.inventory = this.attachTrait(new InfinityItemStackHandler(getInventorySize(), io, io, UnlimitedItemStackTransfer::new));
+        this.circuitInventory = this.attachTrait(new NotifiableItemStackHandler(1, IO.IN, IO.NONE)
+                .setFilter(IntCircuitBehaviour::isIntegratedCircuit));
         this.creativeStorage = transferFactory.apply(this.getInventorySize());
         this.lstItem = new ArrayList<>();
     }
 
-    public CreativeInputBusPartMachine(IMachineBlockEntity holder) {
+    public CreativeInputBusPartMachine(BlockEntityCreationInfo holder) {
         this(holder, ItemStackTransfer::new);
-    }
-
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
     }
 
     protected int getInventorySize() {
         return ITEM_SIZE * ITEM_SIZE;
-    }
-
-    protected NotifiableItemStackHandler createInventory() {
-        return new InfinityItemStackHandler(this, getInventorySize(), io, io, UnlimitedItemStackTransfer::new);
-    }
-
-    protected NotifiableItemStackHandler createCircuitItemHandler() {
-        return new NotifiableItemStackHandler(this, 1, IO.IN, IO.NONE)
-                .setFilter(IntCircuitBehaviour::isIntegratedCircuit);
     }
 
     @Override
@@ -282,7 +264,7 @@ public class CreativeInputBusPartMachine extends TieredIOPartMachine implements 
                             }
                         }
                                 .setClearSlotOnRightClick(false)
-                                .setChangeListener(this::markDirty));
+                                .setChangeListener(this::markAsDirty));
             }
         }
 
@@ -294,12 +276,12 @@ public class CreativeInputBusPartMachine extends TieredIOPartMachine implements 
 
     private static class InfinityItemStackHandler extends NotifiableItemStackHandler {
 
-        public InfinityItemStackHandler(MetaMachine machine, int slots, IO handlerIO, IO capabilityIO, IntFunction<CustomItemStackHandler> storageFactory) {
-            super(machine, slots, handlerIO, capabilityIO, storageFactory);
+        public InfinityItemStackHandler(int slots, IO handlerIO, IO capabilityIO, IntFunction<CustomItemStackHandler> storageFactory) {
+            super(slots, handlerIO, capabilityIO, storageFactory);
         }
 
         @Override
-        public List<Ingredient> handleRecipeInner(IO io, GTRecipe recipe, List<Ingredient> left, boolean simulate) {
+        public @Nullable List<Ingredient> handleRecipeInner(IO io, GTRecipe recipe, List<Ingredient> left, boolean simulate) {
             return super.handleRecipeInner(io, recipe, left, true);
         }
     }

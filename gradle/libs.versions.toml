@@ -3,13 +3,11 @@ minecraft = "1.20.1"
 forge = "47.4.3"
 minecraftForge = "1.20.1-47.4.3"
 parchment = "2023.09.03" # https://parchmentmc.org/docs/getting-started
-shadow = "9.3.0"
-spotless = "8.1.0"
-modDevGradle = "2.0.118"
-lombok = "9.1.0"
-kotlin-jvm = "2.1.21"
-kotlin-plugin = "2.1.21"
-jetbrains-annotations = "26.0.1"
+shadow = "9.4.0"
+spotless = "8.4.0"
+modDevGradle = "2.0.141"
+lombok = "9.2.0"
+jetbrains-annotations = "26.1.0"
 renderNurse = "0.0.12"
 mixin = "0.8.7"
 
@@ -25,5 +23,3 @@ modDevGradle            = { id = "net.neoforged.moddev.legacyforge", version.ref
 shadow                  = { id = "com.gradleup.shadow", version.ref = "shadow" }
 spotless                = { id = "com.diffplug.spotless", version.ref = "spotless" }
 lombok                  = { id = "io.freefair.lombok", version.ref = "lombok" }
-kotlin-jvm              = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin-jvm" }
-kotlin-plugin           = { id = "org.jetbrains.kotlin.plugin.allopen", version.ref = "kotlin-plugin" }

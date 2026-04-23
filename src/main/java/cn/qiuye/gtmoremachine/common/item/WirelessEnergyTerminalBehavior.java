@@ -5,12 +5,12 @@ import cn.qiuye.gtmoremachine.api.gui.monitor.*;
 import cn.qiuye.gtmoremachine.api.gui.widget.AlignComponentPanelWidget;
 import cn.qiuye.gtmoremachine.api.gui.widget.AlignLabelWidget;
 import cn.qiuye.gtmoremachine.api.item.ModularHUD;
-import cn.qiuye.gtmoremachine.api.machine.IWirelessEnergyContainerHolder;
-import cn.qiuye.gtmoremachine.api.misc.wireless.energy.IWirelessMonitor;
+import cn.qiuye.gtmoremachine.api.machine.trait.feature.IWirelessEnergyContainerHolder;
 import cn.qiuye.gtmoremachine.api.misc.wireless.energy.WirelessEnergyContainer;
+import cn.qiuye.gtmoremachine.api.misc.wireless.energy.feature.IWirelessMonitor;
 import cn.qiuye.gtmoremachine.utils.FormattingUtil;
 import cn.qiuye.gtmoremachine.utils.NumberUtils;
-import cn.qiuye.gtmoremachine.utils.TagUtils;
+import cn.qiuye.gtmoremachine.utils.nbt.TagUtils;
 
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.item.component.IItemHUDProvider;
@@ -136,7 +136,7 @@ public class WirelessEnergyTerminalBehavior implements IItemUIFactory, IItemHUDP
     @Override
     public ModularUI createUI(HeldItemUIFactory.HeldItemHolder holder, Player entityPlayer) {
         final var handItem = entityPlayer.getMainHandItem();
-        if (TagUtils.hasTagKey("UUID", handItem)) {
+        if (!TagUtils.hasTagKey("UUID", handItem)) {
             TagUtils.setUUID(entityPlayer.getUUID(), handItem);
         }
         return new ModularUI(DISPLAY_TEXT_WIDTH + 8 + 8, 117 + 8 + 8 + 8 + 17, holder, entityPlayer).widget(createWidget(handItem, holder.getHeld().getDescriptionId(), new WirelessMonitor(entityPlayer.getUUID(), entityPlayer.level())));
@@ -204,9 +204,9 @@ public class WirelessEnergyTerminalBehavior implements IItemUIFactory, IItemHUDP
             this.uuid = uuid;
             var container = getWirelessEnergyContainer();
             if (container != null) {
-                all = container.getAllEnergyStat().getAvg();
-                in = container.getInEnergyStat().getAvg();
-                out = container.getOutEnergyStat().getAvg();
+                all = container.getEnergyStat().getAvg(Status.All);
+                in = container.getEnergyStat().getAvg(Status.In);
+                out = container.getEnergyStat().getAvg(Status.Out);
                 storage = container.getStorage();
             }
         }

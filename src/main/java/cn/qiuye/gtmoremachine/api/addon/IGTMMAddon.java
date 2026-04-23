@@ -2,7 +2,7 @@ package cn.qiuye.gtmoremachine.api.addon;
 
 import java.math.BigInteger;
 
-import static cn.qiuye.gtmoremachine.utils.BigIntegerUtils.big_integer_max_kong;
+import static cn.qiuye.gtmoremachine.utils.BigNumberUtils.big_integer_max_kong;
 
 @SuppressWarnings("unused")
 public interface IGTMMAddon {

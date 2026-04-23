@@ -1,7 +1,6 @@
 package cn.qiuye.gtmoremachine.api.machine.trait;
 
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredient;
@@ -12,7 +11,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 
 import appeng.api.stacks.AEItemKey;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
 import java.util.List;
@@ -21,8 +19,8 @@ public class InaccessibleInfiniteHandler extends NotifiableItemStackHandler {
 
     private final ItemStackHandlerDelegate delegate;
 
-    public InaccessibleInfiniteHandler(MetaMachine holder, KeyStorage internalBuffer) {
-        super(holder, 1, IO.OUT, IO.NONE, i -> new ItemStackHandlerDelegate(internalBuffer));
+    public InaccessibleInfiniteHandler(KeyStorage internalBuffer) {
+        super(1, IO.OUT, IO.NONE, i -> new ItemStackHandlerDelegate(internalBuffer));
         internalBuffer.setOnContentsChanged(this::onContentsChanged);
         delegate = ((ItemStackHandlerDelegate) storage);
     }
@@ -68,7 +66,7 @@ public class InaccessibleInfiniteHandler extends NotifiableItemStackHandler {
     }
 
     @Override
-    public @NotNull List<Object> getContents() {
+    public List<Object> getContents() {
         return Collections.emptyList();
     }
 
@@ -109,15 +107,15 @@ public class InaccessibleInfiniteHandler extends NotifiableItemStackHandler {
         }
 
         @Override
-        public @NotNull ItemStack getStackInSlot(int slot) {
+        public ItemStack getStackInSlot(int slot) {
             return ItemStack.EMPTY;
         }
 
         @Override
-        public void setStackInSlot(int slot, @NotNull ItemStack stack) {}
+        public void setStackInSlot(int slot, ItemStack stack) {}
 
         @Override
-        public @NotNull ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
+        public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
             var key = AEItemKey.of(stack);
             int count = stack.getCount();
             long oldValue = internalBuffer.storage.getOrDefault(key, 0);
@@ -132,7 +130,7 @@ public class InaccessibleInfiniteHandler extends NotifiableItemStackHandler {
     }
 
     @Override
-    public @NotNull ItemStack extractItem(int slot, int amount, boolean simulate) {
+    public ItemStack extractItem(int slot, int amount, boolean simulate) {
         return ItemStack.EMPTY;
     }
 }
