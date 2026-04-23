@@ -19,7 +19,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.BlockHitResult;
@@ -121,14 +120,6 @@ public class WirelessEnergyInterface extends TieredIOPartMachine implements IWir
             return true;
         }
         return false;
-    }
-
-    @Override
-    public void onMachinePlaced(@Nullable LivingEntity player, ItemStack stack) {
-        if (player != null) {
-            setOwnerUUID(player.getUUID());
-            updateEnergySubscription();
-        }
     }
 
     @Override
