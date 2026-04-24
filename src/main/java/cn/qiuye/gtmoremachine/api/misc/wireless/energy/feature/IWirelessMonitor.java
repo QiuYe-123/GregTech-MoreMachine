@@ -36,7 +36,7 @@ public interface IWirelessMonitor extends IWirelessEnergyContainerHolder {
         if (container == null) return List.of();
         BigInteger energyTotal = container.getStorage();
         textListCache.add(Component.translatable("gtmoremachine.machine.wireless_monitor.tooltip.0",
-                TeamUtils.getName(getLevel(), getUUID())).withStyle(ChatFormatting.AQUA));
+                TeamUtils.getName(getMonitorLevel(), getUUID())).withStyle(ChatFormatting.AQUA));
         textListCache.add(FormattingUtil.formatWithConstantWidth("gtmoremachine.machine.wireless_energy_monitor.tooltip.1",
                 Component.literal(NumberUtils.formatBigIntegerNumberOrSic(energyTotal, format)).withStyle(ChatFormatting.GOLD),
                 Component.literal(NumberUtils.formatBigDecimalNumberOrSic(FormattingUtil.voltageAmperage(new BigDecimal(energyTotal)), format)),
@@ -141,7 +141,7 @@ public interface IWirelessMonitor extends IWirelessEnergyContainerHolder {
         return textListCache;
     }
 
-    Level getLevel();
+    Level getMonitorLevel();
 
     private static Component getTimeToFillDrainText(BigInteger timeToFillSeconds) {
         if (timeToFillSeconds.compareTo(BigNumberUtils.big_integer_max_kong) > 0) {

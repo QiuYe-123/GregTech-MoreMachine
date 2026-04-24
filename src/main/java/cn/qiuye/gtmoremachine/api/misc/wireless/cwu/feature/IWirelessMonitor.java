@@ -30,7 +30,7 @@ public interface IWirelessMonitor extends IWirelessCWUContainerHolder {
         if (container == null) return List.of();
         BigInteger CWUToTal = container.getStorage();
         textListCache.add(Component.translatable("gtmoremachine.machine.wireless_monitor.tooltip.0",
-                TeamUtils.getName(getLevel(), getUUID())).withStyle(ChatFormatting.AQUA));
+                TeamUtils.getName(getMonitorLevel(), getUUID())).withStyle(ChatFormatting.AQUA));
         textListCache.add(FormattingUtil.formatWithConstantWidth("gtmoremachine.machine.wireless_cwu_monitor.tooltip.1",
                 Component.literal(NumberUtils.formatBigIntegerNumberOrSic(CWUToTal, format)).withStyle(ChatFormatting.GOLD)));
 
@@ -79,7 +79,7 @@ public interface IWirelessMonitor extends IWirelessCWUContainerHolder {
         return textListCache;
     }
 
-    Level getLevel();
+    Level getMonitorLevel();
 
     private static Component getStatisticsText(Statistics statistics) {
         return switch (statistics) {
