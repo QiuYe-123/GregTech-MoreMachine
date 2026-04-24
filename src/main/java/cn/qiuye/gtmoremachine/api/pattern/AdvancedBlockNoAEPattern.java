@@ -10,8 +10,6 @@ import com.gregtechceu.gtceu.api.pattern.TraceabilityPredicate;
 import com.gregtechceu.gtceu.api.pattern.predicates.SimplePredicate;
 import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
 
-import com.lowdragmc.lowdraglib.utils.BlockInfo;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -44,8 +42,8 @@ import org.jetbrains.annotations.Nullable;
 import oshi.util.tuples.Triplet;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.BiPredicate;
 import java.util.function.Consumer;
@@ -57,35 +55,8 @@ public class AdvancedBlockNoAEPattern extends BlockPattern {
             Direction.DOWN };
     static Direction[] FACINGS_H = { Direction.SOUTH, Direction.NORTH, Direction.WEST, Direction.EAST };
 
-    public final int[][] aisleRepetitions;
-    public final RelativeDirection[] structureDir;
-    protected final TraceabilityPredicate[][][] blockMatches; // [z][y][x]
-    protected final int fingerLength; // z size
-    protected final int thumbLength; // y size
-    protected final int palmLength; // x size
-    protected final int[] centerOffset; // x, y, z, minZ, maxZ
-
     public AdvancedBlockNoAEPattern(TraceabilityPredicate[][][] predicatesIn, RelativeDirection[] structureDir, int[][] aisleRepetitions, int[] centerOffset) {
         super(predicatesIn, structureDir, aisleRepetitions, centerOffset);
-        this.blockMatches = predicatesIn;
-        this.fingerLength = predicatesIn.length;
-        this.structureDir = structureDir;
-        this.aisleRepetitions = aisleRepetitions;
-
-        if (this.fingerLength > 0) {
-            this.thumbLength = predicatesIn[0].length;
-
-            if (this.thumbLength > 0) {
-                this.palmLength = predicatesIn[0][0].length;
-            } else {
-                this.palmLength = 0;
-            }
-        } else {
-            this.thumbLength = 0;
-            this.palmLength = 0;
-        }
-
-        this.centerOffset = centerOffset;
     }
 
     public static AdvancedBlockNoAEPattern getAdvancedBlockPattern(BlockPattern blockPattern) {
@@ -95,20 +66,12 @@ public class AdvancedBlockNoAEPattern extends BlockPattern {
             Field blockMatchesField = clazz.getDeclaredField("blockMatches");
             blockMatchesField.setAccessible(true);
             TraceabilityPredicate[][][] blockMatches = (TraceabilityPredicate[][][]) blockMatchesField.get(blockPattern);
-            // structureDir
-            Field structureDirField = clazz.getDeclaredField("structureDir");
-            structureDirField.setAccessible(true);
-            RelativeDirection[] structureDir = (RelativeDirection[]) structureDirField.get(blockPattern);
-            // aisleRepetitions
-            Field aisleRepetitionsField = clazz.getDeclaredField("aisleRepetitions");
-            aisleRepetitionsField.setAccessible(true);
-            int[][] aisleRepetitions = (int[][]) aisleRepetitionsField.get(blockPattern);
             // centerOffset
             Field centerOffsetField = clazz.getDeclaredField("centerOffset");
             centerOffsetField.setAccessible(true);
             int[] centerOffset = (int[]) centerOffsetField.get(blockPattern);
 
-            return new AdvancedBlockNoAEPattern(blockMatches, structureDir, aisleRepetitions, centerOffset);
+            return new AdvancedBlockNoAEPattern(blockMatches, blockPattern.structureDir, blockPattern.aisleRepetitions, centerOffset);
         } catch (Exception ignored) {}
         return null;
     }
@@ -116,23 +79,22 @@ public class AdvancedBlockNoAEPattern extends BlockPattern {
     public void autoBuild(Player player, MultiblockState worldState,
                           AdvancedTerminalBehavior.AutoBuildSetting autoBuildSetting) {
         Level world = player.level();
-        if (autoBuildSetting.isUseDemolish()) {
+        if (autoBuildSetting.isDemolitionMode()) {
             autoDemolish(player, worldState, autoBuildSetting);
             return;
         }
         int minZ = -centerOffset[4];
-        clearWorldState(worldState);
+        worldState.clean();
         MultiblockControllerMachine controller = worldState.getController();
         BlockPos centerPos = controller.self().getBlockPos();
         Direction facing = controller.self().getFrontFacing();
         Direction upwardsFacing = controller.self().getUpwardsFacing();
-        boolean isUseMirror = autoBuildSetting.isUseMirror();
+        boolean isUseMirror = autoBuildSetting.isFlipMode();
 
-        Object2IntOpenHashMap<SimplePredicate> cacheGlobal = new Object2IntOpenHashMap<>(worldState.getGlobalCount());
-        Object2IntOpenHashMap<SimplePredicate> cacheLayer = new Object2IntOpenHashMap<>(worldState.getLayerCount());
-        Object2ObjectOpenHashMap<BlockPos, Object> blocks = new Object2ObjectOpenHashMap<>();
+        Object2IntOpenHashMap<SimplePredicate> cacheGlobal = worldState.getGlobalCount();
+        Object2IntOpenHashMap<SimplePredicate> cacheLayer = worldState.getLayerCount();
+        Object2ObjectOpenHashMap<BlockPos, MetaMachine> blocks = new Object2ObjectOpenHashMap<>();
         ObjectOpenHashSet<BlockPos> placeBlockPos = new ObjectOpenHashSet<>();
-        blocks.put(centerPos, controller);
         if (controller.isFormed() && autoBuildSetting.isReplaceMode()) controller.onStructureInvalid();
 
         int[] repeat = new int[this.fingerLength];
@@ -144,150 +106,172 @@ public class AdvancedBlockNoAEPattern extends BlockPattern {
             } else repeat[h] = minH;
         }
 
-        for (int c = 0, z = minZ++, r; c < this.fingerLength; c++) {
-            for (r = 0; r < repeat[c]; r++) {
+        int aisleIndex = 0;
+        for (int currentZ = minZ; aisleIndex < this.fingerLength; aisleIndex++) {
+            for (int actualRepeats = 0; actualRepeats < repeat[aisleIndex]; actualRepeats++) {
                 cacheLayer.clear();
-                for (int b = 0, y = -centerOffset[1]; b < this.thumbLength; b++, y++) {
-                    for (int a = 0, x = -centerOffset[0]; a < this.palmLength; a++, x++) {
-                        TraceabilityPredicate predicate = this.blockMatches[c][b][a];
-                        if (predicate.isAny()) continue;
-                        BlockPos pos = setActualRelativeOffset(x, y, z, facing, upwardsFacing, isUseMirror)
-                                .offset(centerPos.getX(), centerPos.getY(), centerPos.getZ());
-                        updateWorldState(worldState, pos, predicate);
-                        ItemStack itemStack = null;
-                        if (!world.isEmptyBlock(pos)) {
-                            Block block = world.getBlockState(pos).getBlock();
-                            if (autoBuildSetting.getBlocks().contains(block) && autoBuildSetting.isReplaceMode()) {
-                                itemStack = block.asItem().getDefaultInstance();
-                            } else {
-                                blocks.put(pos, world.getBlockState(pos));
-                                for (SimplePredicate limit : predicate.limited) limit.testLimited(worldState);
-                                continue;
-                            }
-                        }
+                int yIndex = 0;
+                for (int y = -this.centerOffset[1]; yIndex < this.thumbLength; y++) {
+                    int xIndex = 0;
+                    for (int x = -this.centerOffset[0]; xIndex < this.palmLength; x++) {
+                        TraceabilityPredicate[][] slice = this.blockMatches[aisleIndex];
+                        if (slice != null) {
+                            TraceabilityPredicate[] row = slice[yIndex];
+                            if (row != null) {
+                                TraceabilityPredicate predicate = row[xIndex];
+                                label_check_predicate:
+                                if (predicate != null && !predicate.isAir()) {
+                                    BlockPos worldPos = this.setActualRelativeOffset(x, y, currentZ, facing, upwardsFacing, isUseMirror)
+                                            .offset(centerPos.getX(), centerPos.getY(), centerPos.getZ());
+                                    worldState.update(worldPos, predicate);
+                                    Item originalItem = null;
+                                    BlockState currentState = world.getBlockState(worldPos);
+                                    Block currentBlock = currentState.getBlock();
 
-                        boolean find = false;
-                        BlockInfo[] infos = new BlockInfo[0];
-                        for (var limit : predicate.limited) {
-                            if (limit.minLayerCount > 0 && autoBuildSetting.isPlaceHatch(limit.candidates.get())) {
-                                int curr = cacheLayer.getInt(limit);
-                                if (curr < limit.minLayerCount &&
-                                        (limit.maxLayerCount == -1 || curr < limit.maxLayerCount)) {
-                                    cacheLayer.addTo(limit, 1);
-                                } else continue;
-                            } else continue;
-                            infos = limit.candidates == null ? null : limit.candidates.get();
-                            find = true;
-                            break;
-                        }
-                        if (!find) {
-                            for (var limit : predicate.limited) {
-                                if (limit.minCount > 0 && autoBuildSetting.isPlaceHatch(limit.candidates.get())) {
-                                    int curr = cacheGlobal.getInt(limit);
-                                    if (curr < limit.minCount && (limit.maxCount == -1 || curr < limit.maxCount)) {
-                                        cacheGlobal.addTo(limit, 1);
-                                    } else continue;
-                                } else continue;
-                                infos = limit.candidates == null ? null : limit.candidates.get();
-                                find = true;
-                                break;
-                            }
-                        }
-                        if (!find) { // no limited
-                            for (SimplePredicate limit : predicate.limited) {
-                                if (!autoBuildSetting.isPlaceHatch(limit.candidates.get())) continue;
-                                if (limit.maxLayerCount != -1 &&
-                                        cacheLayer.getOrDefault(limit, Integer.MAX_VALUE) == limit.maxLayerCount) {
-                                    continue;
+                                    if (currentBlock != Blocks.AIR) {
+                                        if (!autoBuildSetting.isReplaceMode() || !autoBuildSetting.getBlocks().contains(currentBlock)) {
+                                            placeBlockPos.add(worldPos);
+                                            for (var sp : predicate.limited) {
+                                                sp.testLimited(worldState);
+                                            }
+                                            break label_check_predicate;
+                                        }
+                                        originalItem = currentBlock.asItem();
+                                    }
+
+                                    boolean foundCandidate = false;
+                                    Block[] candidatesToPlace = new Block[0];
+
+                                    for (var sp : predicate.limited) {
+                                        Block[] candidates = sp.candidates == null ? null : Arrays.stream(sp.candidates.get())
+                                                .map(info -> info.getBlockState().getBlock())
+                                                .toArray(Block[]::new);
+                                        Block[] placeableCandidates = autoBuildSetting.getPlaceableCandidates(candidates, predicate.isSingle());
+                                        if (placeableCandidates.length > 0 && sp.minLayerCount > 0) {
+                                            int currentLayerCount = cacheLayer.getInt(sp);
+                                            if (currentLayerCount < sp.minLayerCount &&
+                                                    (sp.maxLayerCount == -1 || currentLayerCount < sp.maxLayerCount)) {
+                                                cacheLayer.addTo(sp, 1);
+                                                candidatesToPlace = placeableCandidates;
+                                                foundCandidate = true;
+                                                break;
+                                            }
+                                        }
+                                    }
+                                    if (!foundCandidate) {
+                                        for (var sp : predicate.limited) {
+                                            Block[] candidates = sp.candidates == null ? null : Arrays.stream(sp.candidates.get())
+                                                    .map(info -> info.getBlockState().getBlock())
+                                                    .toArray(Block[]::new);
+                                            Block[] placeableCandidates = autoBuildSetting.getPlaceableCandidates(candidates, predicate.isSingle());
+                                            if (placeableCandidates.length > 0 && sp.minCount > 0) {
+                                                int currentCount = cacheGlobal.getInt(sp);
+                                                if (currentCount < sp.minCount &&
+                                                        (sp.maxCount == -1 || currentCount < sp.maxCount)) {
+                                                    cacheGlobal.addTo(sp, 1);
+                                                    candidatesToPlace = placeableCandidates;
+                                                    foundCandidate = true;
+                                                    break;
+                                                }
+                                            }
+                                        }
+                                    }
+                                    if (!foundCandidate) {
+                                        for (var sp : predicate.limited) {
+                                            Block[] candidates = sp.candidates == null ? null : Arrays.stream(sp.candidates.get())
+                                                    .map(info -> info.getBlockState().getBlock())
+                                                    .toArray(Block[]::new);
+                                            Block[] placeableCandidates = autoBuildSetting.getPlaceableCandidates(candidates, predicate.isSingle());
+                                            if (placeableCandidates.length > 0 &&
+                                                    (sp.maxLayerCount == -1 || cacheLayer.getOrDefault(sp, Integer.MAX_VALUE) != sp.maxLayerCount) &&
+                                                    (sp.maxCount == -1 || cacheGlobal.getOrDefault(sp, Integer.MAX_VALUE) > sp.maxCount)) {
+                                                cacheLayer.addTo(sp, 1);
+                                                cacheGlobal.addTo(sp, 1);
+                                                candidatesToPlace = ArrayUtils.addAll(candidatesToPlace, placeableCandidates);
+                                            }
+                                        }
+
+                                        for (var sp : predicate.common) {
+                                            Block[] candidates = sp.candidates == null ? null : Arrays.stream(sp.candidates.get())
+                                                    .map(info -> info.getBlockState().getBlock())
+                                                    .toArray(Block[]::new);
+                                            Block[] placeableCandidates = autoBuildSetting.getPlaceableCandidates(candidates, predicate.isSingle());
+                                            if (placeableCandidates.length > 0) {
+                                                candidatesToPlace = ArrayUtils.addAll(candidatesToPlace, placeableCandidates);
+                                            }
+                                        }
+                                    }
+
+                                    List<Block> blocksToPlace = autoBuildSetting.apply(candidatesToPlace);
+                                    if (blocksToPlace.isEmpty()) {
+                                        break label_check_predicate;
+                                    }
+
+                                    if (!autoBuildSetting.isReplaceMode() || originalItem == null ||
+                                            !blocksToPlace.get(0).asItem().equals(originalItem)) {
+                                        List<ItemStack> itemCandidates = blocksToPlace.stream()
+                                                .map(ItemStack::new)
+                                                .toList();
+
+                                        Triplet<ItemStack, IItemHandler, Integer> matchedItem = foundItem(player, itemCandidates,
+                                                item -> item instanceof BlockItem);
+                                        ItemStack stackToPlace = matchedItem.getA();
+                                        IItemHandler sourceHandler = matchedItem.getB();
+                                        int sourceSlot = matchedItem.getC();
+
+                                        if (stackToPlace != null) {
+                                            boolean isCreative = player.isCreative();
+                                            if (isCreative || (sourceHandler != null &&
+                                                    !sourceHandler.extractItem(sourceSlot, 1, true).isEmpty())) {
+                                                BlockState oldState = world.getBlockState(worldPos);
+                                                boolean isReplacing = autoBuildSetting.isReplaceMode() && originalItem != null;
+                                                if (isReplacing) {
+                                                    world.setBlock(worldPos, Blocks.AIR.defaultBlockState(), 2);
+                                                }
+                                                BlockItem blockItem = (BlockItem) stackToPlace.getItem();
+                                                BlockPlaceContext context = new BlockPlaceContext(
+                                                        world, player, InteractionHand.MAIN_HAND, stackToPlace,
+                                                        BlockHitResult.miss(player.getEyePosition(0), Direction.UP, worldPos));
+                                                InteractionResult result = blockItem.place(context);
+                                                if (result.consumesAction()) {
+                                                    if (!isCreative) {
+                                                        ItemStack extracted = sourceHandler.extractItem(sourceSlot, 1, false);
+                                                        if (extracted.isEmpty()) {
+                                                            world.setBlock(worldPos, isReplacing ? oldState : Blocks.AIR.defaultBlockState(), 3);
+                                                            continue;
+                                                        }
+                                                    }
+                                                    if (isReplacing) {
+                                                        ItemStack originalStack = new ItemStack(originalItem, 1);
+                                                        if (!player.addItem(originalStack)) {
+                                                            player.drop(originalStack, false);
+                                                        }
+                                                    }
+                                                    if (world.getBlockEntity(worldPos) instanceof MetaMachine metaMachine) {
+                                                        blocks.put(worldPos, metaMachine);
+                                                    }
+                                                    placeBlockPos.add(worldPos);
+                                                } else if (isReplacing) {
+                                                    world.setBlock(worldPos, oldState, 3);
+                                                }
+                                            }
+                                        }
+                                    }
                                 }
-                                if (limit.maxCount != -1 &&
-                                        cacheGlobal.getOrDefault(limit, Integer.MAX_VALUE) == limit.maxCount) {
-                                    continue;
-                                }
-                                cacheLayer.addTo(limit, 1);
-                                cacheGlobal.addTo(limit, 1);
-                                infos = ArrayUtils.addAll(infos, limit.candidates == null ? null : limit.candidates.get());
-                            }
-                            for (SimplePredicate common : predicate.common) {
-                                if (common.candidates != null && predicate.common.size() > 1 && !autoBuildSetting.isPlaceHatch(common.candidates.get())) {
-                                    continue;
-                                }
-                                infos = ArrayUtils.addAll(infos, common.candidates == null ? null : common.candidates.get());
                             }
                         }
-
-                        List<ItemStack> candidates = autoBuildSetting.apply(infos);
-
-                        if (autoBuildSetting.isReplaceMode() && itemStack != null &&
-                                ItemStack.isSameItem(candidates.get(0), itemStack))
-                            continue;
-
-                        // check inventory
-                        Triplet<ItemStack, IItemHandler, Integer> result = foundItem(player, candidates, item -> item instanceof BlockItem);
-                        ItemStack found = result.getA();
-                        IItemHandler handler = result.getB();
-                        int foundSlot = result.getC();
-
-                        if (found == null) continue;
-
-                        // check can get old coilBlock
-                        IItemHandler holderHandler = null;
-                        int holderSlot = -1;
-                        if (autoBuildSetting.isReplaceMode() && itemStack != null) {
-                            Pair<IItemHandler, Integer> holderResult = foundHolderSlot(player, itemStack);
-                            holderHandler = holderResult.getFirst();
-                            holderSlot = holderResult.getSecond();
-
-                            if (holderHandler != null && holderSlot < 0) {
-                                continue;
-                            }
-                        }
-
-                        if (autoBuildSetting.isReplaceMode() && itemStack != null) {
-                            world.removeBlock(pos, true);
-                            if (holderHandler != null) holderHandler.insertItem(holderSlot, itemStack, false);
-                        }
-
-                        BlockItem itemBlock = (BlockItem) found.getItem();
-                        BlockPlaceContext context = new BlockPlaceContext(world, player, InteractionHand.MAIN_HAND,
-                                found, BlockHitResult.miss(player.getEyePosition(0), Direction.UP, pos));
-                        InteractionResult interactionResult = itemBlock.place(context);
-                        if (interactionResult != InteractionResult.FAIL) {
-                            placeBlockPos.add(pos);
-                            if (handler != null) handler.extractItem(foundSlot, 1, false);
-                        }
-                        if (world.getBlockEntity(pos) instanceof MetaMachine metaMachine) {
-                            blocks.put(pos, metaMachine);
-                        } else blocks.put(pos, world.getBlockState(pos));
+                        xIndex++;
                     }
+                    yIndex++;
                 }
-                z++;
+                currentZ++;
             }
         }
-        Direction frontFacing = controller.self().getFrontFacing();
-        blocks.object2ObjectEntrySet().fastForEach((entry -> {
-            // adjust facing
-            var pos = entry.getKey();
-            var block = entry.getValue();
-            if (!(block instanceof MultiblockControllerMachine)) {
-                if (block instanceof BlockState && placeBlockPos.contains(pos)) {
-                    resetFacing(pos, (BlockState) block, frontFacing, (p, f) -> {
-                        Object object = blocks.get(p.relative(f));
-                        return object == null ||
-                                (object instanceof BlockState && ((BlockState) object).getBlock() == Blocks.AIR);
-                    }, state -> world.setBlock(pos, state, 3));
-                } else if (block instanceof MetaMachine machine) {
-                    resetFacing(pos, machine.getBlockState(), frontFacing, (p, f) -> {
-                        Object object = blocks.get(p.relative(f));
-                        if (object == null || (object instanceof BlockState blockState && blockState.isAir())) {
-                            return machine.isFacingValid(f);
-                        }
-                        return false;
-                    }, state -> world.setBlock(pos, state, 3));
-                }
-            }
-        }));
-        controller.checkPattern();
+
+        Direction controllerFacing = controller.self().getFrontFacing();
+        blocks.forEach((pos, machine) -> resetFacing(pos, machine.getBlockState(), controllerFacing,
+                (p, dir) -> !placeBlockPos.contains(p.relative(dir)) && machine.isFacingValid(dir),
+                newState -> world.setBlock(pos, newState, 18)));
     }
 
     /**
@@ -309,7 +293,7 @@ public class AdvancedBlockNoAEPattern extends BlockPattern {
         BlockPos centerPos = controller.self().getBlockPos();
         Direction facing = controller.self().getFrontFacing();
         Direction upwardsFacing = controller.self().getUpwardsFacing();
-        boolean isUseMirror = autoBuildSetting.isUseMirror();
+        boolean isFlipped = autoBuildSetting.isFlipMode();
 
         // 使用与构建逻辑相同的重复次数计算方式
         int[] repeat = new int[this.fingerLength];
@@ -331,7 +315,7 @@ public class AdvancedBlockNoAEPattern extends BlockPattern {
                         TraceabilityPredicate predicate = this.blockMatches[c][b][a];
                         if (predicate.isAny()) continue;
 
-                        BlockPos pos = setActualRelativeOffset(x, y, z, facing, upwardsFacing, isUseMirror)
+                        BlockPos pos = setActualRelativeOffset(x, y, z, facing, upwardsFacing, isFlipped)
                                 .offset(centerPos.getX(), centerPos.getY(), centerPos.getZ());
                         if (pos.equals(centerPos)) {
                             continue;
@@ -352,7 +336,6 @@ public class AdvancedBlockNoAEPattern extends BlockPattern {
         if (!collectedItems.isEmpty() && !player.isCreative()) {
             giveItemsToPlayer(player, collectedItems);
         }
-        controller.checkPattern();
     }
 
     /**
@@ -416,24 +399,6 @@ public class AdvancedBlockNoAEPattern extends BlockPattern {
         }
 
         return new Pair<>(handler, foundSlot);
-    }
-
-    private void clearWorldState(MultiblockState worldState) {
-        try {
-            Class<?> clazz = Class.forName("com.gregtechceu.gtceu.api.pattern.MultiblockState");
-            Method method = clazz.getDeclaredMethod("clean");
-            method.setAccessible(true);
-            method.invoke(worldState);
-        } catch (Exception ignored) {}
-    }
-
-    private void updateWorldState(MultiblockState worldState, BlockPos posIn, TraceabilityPredicate predicate) {
-        try {
-            Class<?> clazz = Class.forName("com.gregtechceu.gtceu.api.pattern.MultiblockState");
-            Method method = clazz.getDeclaredMethod("update", BlockPos.class, TraceabilityPredicate.class);
-            method.setAccessible(true);
-            method.invoke(worldState, posIn, predicate);
-        } catch (Exception ignored) {}
     }
 
     private BlockPos setActualRelativeOffset(int x, int y, int z, Direction facing, Direction upwardsFacing,

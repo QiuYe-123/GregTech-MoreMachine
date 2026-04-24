@@ -1,22 +1,24 @@
 package cn.qiuye.gtmoremachine.api.pattern
 
-import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine
-import com.gregtechceu.gtceu.api.registry.GTRegistries
+import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility
 
-import net.minecraft.core.BlockPos
 import net.minecraft.world.level.block.Block
 
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet
 
+import java.lang.reflect.Modifier
+
 object Hatch {
 
 	@JvmStatic
-	val BlockSet: Set<Block> = ObjectOpenHashSet<Block>().apply {
-		GTRegistries.MACHINES.forEach { d ->
-			val block = d.block
-			val machine = d.blockEntityType.create(BlockPos.ZERO, block.defaultBlockState())
-			if (machine is MultiblockPartMachine) {
-				add(block)
+	val BlockSet: ObjectOpenHashSet<Block> by lazy {
+		ObjectOpenHashSet<Block>().apply {
+			for (field in PartAbility::class.java.declaredFields) {
+				if (!Modifier.isStatic(field.modifiers) || field.type != PartAbility::class.java) {
+					continue
+				}
+				val ability = field.get(null) as? PartAbility ?: continue
+				addAll(ability.allBlocks)
 			}
 		}
 	}
