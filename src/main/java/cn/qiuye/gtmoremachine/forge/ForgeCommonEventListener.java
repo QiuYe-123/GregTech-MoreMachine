@@ -32,7 +32,7 @@ public class ForgeCommonEventListener {
                         BigInteger rate;
                         MetaMachine machine;
                         GlobalPos pos = container.getBindPos();
-                        var level = event.getServer().getLevel(pos.dimension());
+                        ServerLevel level = pos != null ? event.getServer().getLevel(pos.dimension()) : null;
                         machine = level != null ? MetaMachine.getMachine(level, pos.pos()) : null;
                         rate = WirelessEnergyBindingToolBehavior.Companion.getRate(machine);
                         if (machine != null) {
