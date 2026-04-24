@@ -23,6 +23,7 @@ import com.lowdragmc.lowdraglib.gui.factory.HeldItemUIFactory;
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.gui.widget.*;
 
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionResult;
@@ -208,10 +209,6 @@ public class AdvancedTerminalBehavior implements IItemUIFactory {
             this.demolitionMode = false;
         }
 
-        public List<Block> apply(Block[] blocks) {
-            return apply(blocks, false);
-        }
-
         public List<Block> apply(Block[] blocks, boolean allowHatches) {
             Block[] filteredBlocks = getPlaceableCandidates(blocks, allowHatches);
             if (filteredBlocks.length == 0) {
@@ -240,14 +237,6 @@ public class AdvancedTerminalBehavior implements IItemUIFactory {
             return candidates;
         }
 
-        public boolean isPlaceHatch(Block[] blocks) {
-            return isPlaceHatch(blocks, false);
-        }
-
-        public boolean isPlaceHatch(Block[] blocks, boolean allowHatches) {
-            return getPlaceableCandidates(blocks, allowHatches).length > 0;
-        }
-
         public Block[] getPlaceableCandidates(Block[] blocks, boolean allowHatches) {
             if (blocks == null || blocks.length == 0) {
                 return new Block[0];
@@ -267,7 +256,22 @@ public class AdvancedTerminalBehavior implements IItemUIFactory {
         }
 
         private boolean isHatch(Block block) {
-            return block instanceof MetaMachineBlock machineBlock && Hatch.getBlockSet().contains(machineBlock);
+            if (!(block instanceof MetaMachineBlock machineBlock)) {
+                return false;
+            }
+            if (Hatch.getBlockSet().contains(machineBlock)) {
+                return true;
+            }
+
+            String category = BlockMap.getCategory(block);
+            if (category != null && (category.contains("hatch") || category.contains("bus") || category.contains("holder"))) {
+                return true;
+            }
+
+            var blockId = BuiltInRegistries.BLOCK.getKey(block);
+
+	        String path = blockId.getPath();
+            return path.contains("hatch") || path.contains("bus") || path.contains("holder");
         }
     }
 }
