@@ -23,8 +23,8 @@ import com.lowdragmc.lowdraglib.gui.factory.HeldItemUIFactory;
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.gui.widget.*;
 
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -270,7 +270,7 @@ public class AdvancedTerminalBehavior implements IItemUIFactory {
 
             var blockId = BuiltInRegistries.BLOCK.getKey(block);
 
-	        String path = blockId.getPath();
+            String path = blockId.getPath();
             return path.contains("hatch") || path.contains("bus") || path.contains("holder");
         }
     }
