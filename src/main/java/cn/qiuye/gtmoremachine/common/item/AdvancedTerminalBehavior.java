@@ -24,7 +24,6 @@ import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.gui.widget.*;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -209,13 +208,12 @@ public class AdvancedTerminalBehavior implements IItemUIFactory {
             this.demolitionMode = false;
         }
 
-        public List<Block> apply(Block[] blocks, boolean allowHatches) {
-            Block[] filteredBlocks = getPlaceableCandidates(blocks, allowHatches);
-            if (filteredBlocks.length == 0) {
+        public List<Block> apply(Block[] blocks) {
+            if (blocks == null || blocks.length == 0) {
                 return Collections.emptyList();
             }
-            if (this.tierBlocks != null && filteredBlocks.length > 1) {
-                for (Block block : filteredBlocks) {
+            if (this.tierBlocks != null && blocks.length > 1) {
+                for (Block block : blocks) {
                     String category = BlockMap.getCategory(block);
                     int tier = this.tierBlocks.getInt(category);
                     if (tier > 0 && this.blocks.contains(block)) {
@@ -229,7 +227,7 @@ public class AdvancedTerminalBehavior implements IItemUIFactory {
             }
             // 未命中等级匹配逻辑，过滤空气方块并返回
             List<Block> candidates = new ObjectArrayList<>();
-            for (Block block : filteredBlocks) {
+            for (Block block : blocks) {
                 if (block != Blocks.AIR) {
                     candidates.add(block);
                 }
@@ -256,22 +254,7 @@ public class AdvancedTerminalBehavior implements IItemUIFactory {
         }
 
         private boolean isHatch(Block block) {
-            if (!(block instanceof MetaMachineBlock machineBlock)) {
-                return false;
-            }
-            if (Hatch.getBlockSet().contains(machineBlock)) {
-                return true;
-            }
-
-            String category = BlockMap.getCategory(block);
-            if (category != null && (category.contains("hatch") || category.contains("bus") || category.contains("holder"))) {
-                return true;
-            }
-
-            var blockId = BuiltInRegistries.BLOCK.getKey(block);
-
-            String path = blockId.getPath();
-            return path.contains("hatch") || path.contains("bus") || path.contains("holder");
+            return block instanceof MetaMachineBlock machineBlock && Hatch.getBlockSet().contains(machineBlock);
         }
     }
 }

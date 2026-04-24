@@ -259,7 +259,7 @@ public class AdvancedBlockPattern extends BlockPattern {
                                             }
                                         }
                                     }
-                                    List<Block> stacks = autoBuildSetting.apply(candidatesToPlace, predicate.isSingle());
+                                    List<Block> stacks = autoBuildSetting.apply(candidatesToPlace);
                                     List<AEKey> aeKeys = stacks.stream()
                                             .map(block -> {
                                                 if (block instanceof LiquidBlock liquid) {

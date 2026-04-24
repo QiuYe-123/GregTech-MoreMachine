@@ -202,7 +202,7 @@ public class AdvancedBlockNoAEPattern extends BlockPattern {
                                         }
                                     }
 
-                                    List<Block> blocksToPlace = autoBuildSetting.apply(candidatesToPlace, predicate.isSingle());
+                                    List<Block> blocksToPlace = autoBuildSetting.apply(candidatesToPlace);
                                     if (blocksToPlace.isEmpty()) {
                                         break label_check_predicate;
                                     }
