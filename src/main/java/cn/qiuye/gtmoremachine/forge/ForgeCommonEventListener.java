@@ -30,15 +30,15 @@ public class ForgeCommonEventListener {
                 for (WirelessEnergyContainer container : WirelessEnergySavedData.INSTANCE.containerMap.values()) {
                     if (refreshBinding) {
                         BigInteger rate;
+                        MetaMachine machine;
                         GlobalPos pos = container.getBindPos();
-                        if (pos != null) {
-                            MetaMachine machine = MetaMachine.getMachine(event.getServer().getLevel(pos.dimension()), pos.pos());
-                            if (machine != null) {
-                                rate = WirelessEnergyBindingToolBehavior.Companion.getRate(machine);
-                                container.setDimensional(14, rate.compareTo(BigInteger.ZERO) > 0, machine);
-                                container.setRate(rate);
-                            }
+                        var level = event.getServer().getLevel(pos.dimension());
+                        machine = level != null ? MetaMachine.getMachine(level, pos.pos()) : null;
+                        rate = WirelessEnergyBindingToolBehavior.Companion.getRate(machine);
+                        if (machine != null) {
+                            container.setDimensional(14, rate.compareTo(BigInteger.ZERO) > 0, machine);
                         }
+                        container.setRate(rate);
                     }
                     container.PassiveDrainEnergy();
 
