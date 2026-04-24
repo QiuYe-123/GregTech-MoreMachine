@@ -2,6 +2,7 @@ package cn.qiuye.gtmoremachine.api.pattern;
 
 import cn.qiuye.gtmoremachine.common.item.AdvancedTerminalBehavior;
 
+import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.pattern.BlockPattern;
 import com.gregtechceu.gtceu.api.pattern.MultiblockState;
@@ -12,14 +13,20 @@ import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.Property;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.IItemHandler;
@@ -36,6 +43,7 @@ import oshi.util.tuples.Triplet;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.BiPredicate;
 import java.util.function.Consumer;
@@ -85,9 +93,8 @@ public class AdvancedBlockNoAEPattern extends BlockPattern {
 
         Object2IntOpenHashMap<SimplePredicate> cacheGlobal = worldState.getGlobalCount();
         Object2IntOpenHashMap<SimplePredicate> cacheLayer = worldState.getLayerCount();
-        Object2ObjectOpenHashMap<BlockPos, Object> blocks = new Object2ObjectOpenHashMap<>();
+        Object2ObjectOpenHashMap<BlockPos, MetaMachine> blocks = new Object2ObjectOpenHashMap<>();
         ObjectOpenHashSet<BlockPos> placeBlockPos = new ObjectOpenHashSet<>();
-        blocks.put(centerPos, controller);
         if (controller.isFormed() && autoBuildSetting.isReplaceMode()) controller.onStructureInvalid();
 
         int[] repeat = new int[this.fingerLength];
@@ -98,6 +105,173 @@ public class AdvancedBlockNoAEPattern extends BlockPattern {
                 repeat[h] = Math.max(minH, Math.min(maxH, autoBuildSetting.getRepeatCount()));
             } else repeat[h] = minH;
         }
+
+        int aisleIndex = 0;
+        for (int currentZ = minZ; aisleIndex < this.fingerLength; aisleIndex++) {
+            for (int actualRepeats = 0; actualRepeats < repeat[aisleIndex]; actualRepeats++) {
+                cacheLayer.clear();
+                int yIndex = 0;
+                for (int y = -this.centerOffset[1]; yIndex < this.thumbLength; y++) {
+                    int xIndex = 0;
+                    for (int x = -this.centerOffset[0]; xIndex < this.palmLength; x++) {
+                        TraceabilityPredicate[][] slice = this.blockMatches[aisleIndex];
+                        if (slice != null) {
+                            TraceabilityPredicate[] row = slice[yIndex];
+                            if (row != null) {
+                                TraceabilityPredicate predicate = row[xIndex];
+                                label_check_predicate:
+                                if (predicate != null && !predicate.isAir()) {
+                                    BlockPos worldPos = this.setActualRelativeOffset(x, y, currentZ, facing, upwardsFacing, isUseMirror)
+                                            .offset(centerPos.getX(), centerPos.getY(), centerPos.getZ());
+                                    worldState.update(worldPos, predicate);
+                                    Item originalItem = null;
+                                    BlockState currentState = world.getBlockState(worldPos);
+                                    Block currentBlock = currentState.getBlock();
+
+                                    if (currentBlock != Blocks.AIR) {
+                                        if (!autoBuildSetting.isReplaceMode() || !autoBuildSetting.getBlocks().contains(currentBlock)) {
+                                            placeBlockPos.add(worldPos);
+                                            for (var sp : predicate.limited) {
+                                                sp.testLimited(worldState);
+                                            }
+                                            break label_check_predicate;
+                                        }
+                                        originalItem = currentBlock.asItem();
+                                    }
+
+                                    boolean foundCandidate = false;
+                                    Block[] candidatesToPlace = new Block[0];
+
+                                    for (var sp : predicate.limited) {
+                                        Block[] candidates = sp.candidates == null ? null : Arrays.stream(sp.candidates.get())
+                                                .map(info -> info.getBlockState().getBlock())
+                                                .toArray(Block[]::new);
+                                        Block[] placeableCandidates = autoBuildSetting.getPlaceableCandidates(candidates, predicate.isSingle());
+                                        if (placeableCandidates.length > 0 && sp.minLayerCount > 0) {
+                                            int currentLayerCount = cacheLayer.getInt(sp);
+                                            if (currentLayerCount < sp.minLayerCount &&
+                                                    (sp.maxLayerCount == -1 || currentLayerCount < sp.maxLayerCount)) {
+                                                cacheLayer.addTo(sp, 1);
+                                                candidatesToPlace = placeableCandidates;
+                                                foundCandidate = true;
+                                                break;
+                                            }
+                                        }
+                                    }
+                                    if (!foundCandidate) {
+                                        for (var sp : predicate.limited) {
+                                            Block[] candidates = sp.candidates == null ? null : Arrays.stream(sp.candidates.get())
+                                                    .map(info -> info.getBlockState().getBlock())
+                                                    .toArray(Block[]::new);
+                                            Block[] placeableCandidates = autoBuildSetting.getPlaceableCandidates(candidates, predicate.isSingle());
+                                            if (placeableCandidates.length > 0 && sp.minCount > 0) {
+                                                int currentCount = cacheGlobal.getInt(sp);
+                                                if (currentCount < sp.minCount &&
+                                                        (sp.maxCount == -1 || currentCount < sp.maxCount)) {
+                                                    cacheGlobal.addTo(sp, 1);
+                                                    candidatesToPlace = placeableCandidates;
+                                                    foundCandidate = true;
+                                                    break;
+                                                }
+                                            }
+                                        }
+                                    }
+                                    if (!foundCandidate) {
+                                        for (var sp : predicate.limited) {
+                                            Block[] candidates = sp.candidates == null ? null : Arrays.stream(sp.candidates.get())
+                                                    .map(info -> info.getBlockState().getBlock())
+                                                    .toArray(Block[]::new);
+                                            Block[] placeableCandidates = autoBuildSetting.getPlaceableCandidates(candidates, predicate.isSingle());
+                                            if (placeableCandidates.length > 0 &&
+                                                    (sp.maxLayerCount == -1 || cacheLayer.getOrDefault(sp, Integer.MAX_VALUE) != sp.maxLayerCount) &&
+                                                    (sp.maxCount == -1 || cacheGlobal.getOrDefault(sp, Integer.MAX_VALUE) > sp.maxCount)) {
+                                                cacheLayer.addTo(sp, 1);
+                                                cacheGlobal.addTo(sp, 1);
+                                                candidatesToPlace = ArrayUtils.addAll(candidatesToPlace, placeableCandidates);
+                                            }
+                                        }
+
+                                        for (var sp : predicate.common) {
+                                            Block[] candidates = sp.candidates == null ? null : Arrays.stream(sp.candidates.get())
+                                                    .map(info -> info.getBlockState().getBlock())
+                                                    .toArray(Block[]::new);
+                                            Block[] placeableCandidates = autoBuildSetting.getPlaceableCandidates(candidates, predicate.isSingle());
+                                            if (placeableCandidates.length > 0) {
+                                                candidatesToPlace = ArrayUtils.addAll(candidatesToPlace, placeableCandidates);
+                                            }
+                                        }
+                                    }
+
+                                    List<Block> blocksToPlace = autoBuildSetting.apply(candidatesToPlace, predicate.isSingle());
+                                    if (blocksToPlace.isEmpty()) {
+                                        break label_check_predicate;
+                                    }
+
+                                    if (!autoBuildSetting.isReplaceMode() || originalItem == null ||
+                                            !blocksToPlace.get(0).asItem().equals(originalItem)) {
+                                        List<ItemStack> itemCandidates = blocksToPlace.stream()
+                                                .map(ItemStack::new)
+                                                .toList();
+
+                                        Triplet<ItemStack, IItemHandler, Integer> matchedItem = foundItem(player, itemCandidates,
+                                                item -> item instanceof BlockItem);
+                                        ItemStack stackToPlace = matchedItem.getA();
+                                        IItemHandler sourceHandler = matchedItem.getB();
+                                        int sourceSlot = matchedItem.getC();
+
+                                        if (stackToPlace != null) {
+                                            boolean isCreative = player.isCreative();
+                                            if (isCreative || (sourceHandler != null &&
+                                                    !sourceHandler.extractItem(sourceSlot, 1, true).isEmpty())) {
+                                                BlockState oldState = world.getBlockState(worldPos);
+                                                boolean isReplacing = autoBuildSetting.isReplaceMode() && originalItem != null;
+                                                if (isReplacing) {
+                                                    world.setBlock(worldPos, Blocks.AIR.defaultBlockState(), 2);
+                                                }
+                                                BlockItem blockItem = (BlockItem) stackToPlace.getItem();
+                                                BlockPlaceContext context = new BlockPlaceContext(
+                                                        world, player, InteractionHand.MAIN_HAND, stackToPlace,
+                                                        BlockHitResult.miss(player.getEyePosition(0), Direction.UP, worldPos));
+                                                InteractionResult result = blockItem.place(context);
+                                                if (result.consumesAction()) {
+                                                    if (!isCreative) {
+                                                        ItemStack extracted = sourceHandler.extractItem(sourceSlot, 1, false);
+                                                        if (extracted.isEmpty()) {
+                                                            world.setBlock(worldPos, isReplacing ? oldState : Blocks.AIR.defaultBlockState(), 3);
+                                                            continue;
+                                                        }
+                                                    }
+                                                    if (isReplacing) {
+                                                        ItemStack originalStack = new ItemStack(originalItem, 1);
+                                                        if (!player.addItem(originalStack)) {
+                                                            player.drop(originalStack, false);
+                                                        }
+                                                    }
+                                                    if (world.getBlockEntity(worldPos) instanceof MetaMachine metaMachine) {
+                                                        blocks.put(worldPos, metaMachine);
+                                                    }
+                                                    placeBlockPos.add(worldPos);
+                                                } else if (isReplacing) {
+                                                    world.setBlock(worldPos, oldState, 3);
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        xIndex++;
+                    }
+                    yIndex++;
+                }
+                currentZ++;
+            }
+        }
+
+        Direction controllerFacing = controller.self().getFrontFacing();
+        blocks.forEach((pos, machine) -> resetFacing(pos, machine.getBlockState(), controllerFacing,
+                (p, dir) -> !placeBlockPos.contains(p.relative(dir)) && machine.isFacingValid(dir),
+                newState -> world.setBlock(pos, newState, 18)));
     }
 
     /**

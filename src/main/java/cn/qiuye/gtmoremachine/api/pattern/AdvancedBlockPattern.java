@@ -198,9 +198,8 @@ public class AdvancedBlockPattern extends BlockPattern {
                                             continue;
                                         }
 
-                                        if (!autoBuildSetting.isReplaceMode() || autoBuildSetting.getBlocks().contains(currentBlock)) {
+                                        if (!autoBuildSetting.isReplaceMode() || !autoBuildSetting.getBlocks().contains(currentBlock)) {
                                             posset.add(posLong);
-
                                             for (var sp : predicate.limited) {
                                                 sp.testLimited(worldState);
                                             }
@@ -215,11 +214,12 @@ public class AdvancedBlockPattern extends BlockPattern {
 
                                     for (var sp : predicate.limited) {
                                         Block[] candidates = sp.candidates == null ? null : Arrays.stream(sp.candidates.get()).map(i -> i.getBlockState().getBlock()).toArray(Block[]::new);
-                                        if (candidates != null && sp.minLayerCount > 0 && (predicate.isSingle() || autoBuildSetting.isPlaceHatch(candidates))) {
+                                        Block[] placeableCandidates = autoBuildSetting.getPlaceableCandidates(candidates, predicate.isSingle());
+                                        if (placeableCandidates.length > 0 && sp.minLayerCount > 0) {
                                             int currentLayerCount = cacheLayer.getInt(sp);
                                             if (currentLayerCount < sp.minLayerCount && (sp.maxLayerCount == -1 || currentLayerCount < sp.maxLayerCount)) {
                                                 cacheLayer.addTo(sp, 1);
-                                                candidatesToPlace = candidates;
+                                                candidatesToPlace = placeableCandidates;
                                                 foundCandidate = true;
                                                 break;
                                             }
@@ -228,11 +228,12 @@ public class AdvancedBlockPattern extends BlockPattern {
                                     if (!foundCandidate) {
                                         for (var sp : predicate.limited) {
                                             Block[] candidates = sp.candidates == null ? null : Arrays.stream(sp.candidates.get()).map(i -> i.getBlockState().getBlock()).toArray(Block[]::new);
-                                            if (candidates != null && sp.minCount > 0 && (predicate.isSingle() || autoBuildSetting.isPlaceHatch(candidates))) {
+                                            Block[] placeableCandidates = autoBuildSetting.getPlaceableCandidates(candidates, predicate.isSingle());
+                                            if (placeableCandidates.length > 0 && sp.minCount > 0) {
                                                 int currentLayerCount = cacheGlobal.getInt(sp);
                                                 if (currentLayerCount < sp.minCount && (sp.maxCount == -1 || currentLayerCount < sp.maxCount)) {
                                                     cacheGlobal.addTo(sp, 1);
-                                                    candidatesToPlace = candidates;
+                                                    candidatesToPlace = placeableCandidates;
                                                     foundCandidate = true;
                                                     break;
                                                 }
@@ -242,21 +243,23 @@ public class AdvancedBlockPattern extends BlockPattern {
                                     if (!foundCandidate) {
                                         for (var sp : predicate.limited) {
                                             Block[] candidates = sp.candidates == null ? null : Arrays.stream(sp.candidates.get()).map(i -> i.getBlockState().getBlock()).toArray(Block[]::new);
-                                            if (candidates != null && (predicate.isSingle() || autoBuildSetting.isPlaceHatch(candidates)) && (sp.maxLayerCount == -1 || cacheLayer.getOrDefault(sp, Integer.MAX_VALUE) != sp.maxLayerCount) && (sp.maxCount == -1 || cacheGlobal.getOrDefault(sp, Integer.MAX_VALUE) > sp.maxCount)) {
+                                            Block[] placeableCandidates = autoBuildSetting.getPlaceableCandidates(candidates, predicate.isSingle());
+                                            if (placeableCandidates.length > 0 && (sp.maxLayerCount == -1 || cacheLayer.getOrDefault(sp, Integer.MAX_VALUE) != sp.maxLayerCount) && (sp.maxCount == -1 || cacheGlobal.getOrDefault(sp, Integer.MAX_VALUE) > sp.maxCount)) {
                                                 cacheLayer.addTo(sp, 1);
                                                 cacheGlobal.addTo(sp, 1);
-                                                candidatesToPlace = ArrayUtils.addAll(candidatesToPlace, candidates);
+                                                candidatesToPlace = ArrayUtils.addAll(candidatesToPlace, placeableCandidates);
                                             }
                                         }
 
                                         for (var sp : predicate.common) {
                                             Block[] candidates = sp.candidates == null ? null : Arrays.stream(sp.candidates.get()).map(i -> i.getBlockState().getBlock()).toArray(Block[]::new);
-                                            if (candidates != null && (predicate.isSingle() || autoBuildSetting.isPlaceHatch(candidates))) {
-                                                candidatesToPlace = ArrayUtils.addAll(candidatesToPlace, candidates);
+                                            Block[] placeableCandidates = autoBuildSetting.getPlaceableCandidates(candidates, predicate.isSingle());
+                                            if (placeableCandidates.length > 0) {
+                                                candidatesToPlace = ArrayUtils.addAll(candidatesToPlace, placeableCandidates);
                                             }
                                         }
                                     }
-                                    List<Block> stacks = autoBuildSetting.apply(candidatesToPlace);
+                                    List<Block> stacks = autoBuildSetting.apply(candidatesToPlace, predicate.isSingle());
                                     List<AEKey> aeKeys = stacks.stream()
                                             .map(block -> {
                                                 if (block instanceof LiquidBlock liquid) {

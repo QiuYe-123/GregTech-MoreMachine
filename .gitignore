@@ -14,6 +14,7 @@ libs/
 .project
 .idea/
 .kotlin/
+.eclipse/
 classes/
 .metadata
 .vscode

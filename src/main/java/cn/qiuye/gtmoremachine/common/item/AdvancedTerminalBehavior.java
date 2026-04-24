@@ -209,11 +209,16 @@ public class AdvancedTerminalBehavior implements IItemUIFactory {
         }
 
         public List<Block> apply(Block[] blocks) {
-            if (blocks == null || blocks.length == 0) {
+            return apply(blocks, false);
+        }
+
+        public List<Block> apply(Block[] blocks, boolean allowHatches) {
+            Block[] filteredBlocks = getPlaceableCandidates(blocks, allowHatches);
+            if (filteredBlocks.length == 0) {
                 return Collections.emptyList();
             }
-            if (this.tierBlocks != null && blocks.length > 1) {
-                for (Block block : blocks) {
+            if (this.tierBlocks != null && filteredBlocks.length > 1) {
+                for (Block block : filteredBlocks) {
                     String category = BlockMap.getCategory(block);
                     int tier = this.tierBlocks.getInt(category);
                     if (tier > 0 && this.blocks.contains(block)) {
@@ -227,7 +232,7 @@ public class AdvancedTerminalBehavior implements IItemUIFactory {
             }
             // 未命中等级匹配逻辑，过滤空气方块并返回
             List<Block> candidates = new ObjectArrayList<>();
-            for (Block block : blocks) {
+            for (Block block : filteredBlocks) {
                 if (block != Blocks.AIR) {
                     candidates.add(block);
                 }
@@ -236,11 +241,33 @@ public class AdvancedTerminalBehavior implements IItemUIFactory {
         }
 
         public boolean isPlaceHatch(Block[] blocks) {
-            if (this.noHatchMode && blocks != null) {
-                return !(blocks[0] instanceof MetaMachineBlock machineBlock) ||
-                        Hatch.getBlockSet().contains(machineBlock);
+            return isPlaceHatch(blocks, false);
+        }
+
+        public boolean isPlaceHatch(Block[] blocks, boolean allowHatches) {
+            return getPlaceableCandidates(blocks, allowHatches).length > 0;
+        }
+
+        public Block[] getPlaceableCandidates(Block[] blocks, boolean allowHatches) {
+            if (blocks == null || blocks.length == 0) {
+                return new Block[0];
             }
-            return true;
+
+            List<Block> candidates = new ObjectArrayList<>(blocks.length);
+            for (Block block : blocks) {
+                if (block == null) {
+                    continue;
+                }
+                if (!allowHatches && this.noHatchMode && isHatch(block)) {
+                    continue;
+                }
+                candidates.add(block);
+            }
+            return candidates.toArray(Block[]::new);
+        }
+
+        private boolean isHatch(Block block) {
+            return block instanceof MetaMachineBlock machineBlock && Hatch.getBlockSet().contains(machineBlock);
         }
     }
 }
