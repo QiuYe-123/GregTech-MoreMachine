@@ -50,7 +50,6 @@ object LangHandler {
 		MachineLang.init()
 		BlockLang.init()
 		ItemLang.init()
-		AdvancedTerminalLang.init()
 		HUDLang.init()
 		ErrorLang.init()
 		KeybindingLang.init()

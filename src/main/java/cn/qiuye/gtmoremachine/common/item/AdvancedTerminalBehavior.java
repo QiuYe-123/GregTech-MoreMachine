@@ -2,6 +2,8 @@ package cn.qiuye.gtmoremachine.common.item;
 
 import cn.qiuye.gtmoremachine.GTmm;
 import cn.qiuye.gtmoremachine.api.GTMMValues;
+import cn.qiuye.gtmoremachine.api.annotation.GTMMDataGeneratorScanned;
+import cn.qiuye.gtmoremachine.api.annotation.language.GTMMRegisterLanguage;
 import cn.qiuye.gtmoremachine.api.gui.widget.ExtendLabelWidget;
 import cn.qiuye.gtmoremachine.api.gui.widget.PatternWidgetGroup;
 import cn.qiuye.gtmoremachine.api.gui.widget.TerminalInputWidget;
@@ -45,6 +47,7 @@ import java.util.function.BooleanSupplier;
 
 import static cn.qiuye.gtmoremachine.common.block.BlockMap.MAP;
 
+@GTMMDataGeneratorScanned
 public class AdvancedTerminalBehavior implements IItemUIFactory {
 
     private static final String repeatCount = "repeatCount";
@@ -53,6 +56,33 @@ public class AdvancedTerminalBehavior implements IItemUIFactory {
     private static final String UseAEMode = "isUseAEMode";
     private static final String FlipMode = "isFlipMode";
     private static final String NoHatch = "isNoHatchMode";
+
+    @GTMMRegisterLanguage(cn = "高级终端设置", en = "§bAdvanced Terminal")
+    private static final String TITLE = "item.gtmoremachine.advanced_terminal.setting.title";
+    @GTMMRegisterLanguage(cn = "重复结构次数", en = "Number of repetitions of the structure")
+    private static final String S1 = "item.gtmoremachine.advanced_terminal.setting.1";
+    @GTMMRegisterLanguage(cn = "用于设置可重复结构(蒸馏塔、装配线等)的重复部分放置次数", en = "Used to set the number of repetitions for the placement of repeating parts in structures like distillation towers, assembly lines, etc.")
+    private static final String S1T = "item.gtmoremachine.advanced_terminal.setting.1.tooltip";
+    @GTMMRegisterLanguage(cn = "无仓室模式", en = "No Hatch mode")
+    private static final String S2 = "item.gtmoremachine.advanced_terminal.setting.2";
+    @GTMMRegisterLanguage(cn = "是否启用无仓室模式(暗:不启用,亮:启用)\n启用无仓室模式后不会在非唯一时放置各种仓室。", en = "Whether to enable the no-Hatch mode (Dark: not enabled, Bright: enabled)\nAfter enabling the no-Hatch mode, various Hatches will not be placed when they are not unique.")
+    private static final String S2T = "item.gtmoremachine.advanced_terminal.setting.2.tooltip";
+    @GTMMRegisterLanguage(cn = "替换模式", en = "Replace mode")
+    private static final String S3 = "item.gtmoremachine.advanced_terminal.setting.3";
+    @GTMMRegisterLanguage(cn = "是否启用等级方块替换模式(OFF:不启用,ON:启用)\n启用等级方块替换模式会将所有线圈替换为等级方块中指定的等级。", en = "Whether to enable the Tier Block replace mode (OFF: not enabled, ON: enabled)\nAfter enabling the Tier Block replace mode, all coils will be replaced by the Tier Block specified in the Tier Block setting.")
+    private static final String S3T = "item.gtmoremachine.advanced_terminal.setting.3.tooltip";
+    @GTMMRegisterLanguage(cn = "使用AE物品", en = "Use AE Items")
+    private static final String S4 = "item.gtmoremachine.advanced_terminal.setting.4";
+    @GTMMRegisterLanguage(cn = "是否使用AE物品(OFF:不使用,ON:使用)\n使用AE物品开启后，会通过背包中的AE终端连接到相应的AE网络并使用其中的物品来进行建造。", en = "Whether to use AE items (OFF: not use, ON: use)\nAfter enabling 'Use AE Items', it will connect to the corresponding AE network via the AE Terminal in the inventory and use the items from it for construction.")
+    private static final String S4T = "item.gtmoremachine.advanced_terminal.setting.4.tooltip";
+    @GTMMRegisterLanguage(cn = "镜像搭建", en = "Mirror Building")
+    private static final String S5 = "item.gtmoremachine.advanced_terminal.setting.5";
+    @GTMMRegisterLanguage(cn = "是否启用镜像搭建(OFF:不启用,ON:启用)\n启用镜像搭建后，会将所有结构的镜像进行搭建。", en = "Whether to enable Mirror Building (OFF: not enabled, ON: enabled)\nAfter enabling Mirror Building, it will build the mirror image of all structures.")
+    private static final String S5T = "item.gtmoremachine.advanced_terminal.setting.5.tooltip";
+    @GTMMRegisterLanguage(cn = "拆除模式", en = "Dismantle mode")
+    private static final String S6 = "item.gtmoremachine.advanced_terminal.setting.6";
+    @GTMMRegisterLanguage(cn = "是否启用拆除模式(OFF:不启用,ON:启用)\n启用拆除模式后，会将设定好重复结构次数的部分结构进行拆除。\n警告:会将结构内的所有方块拆除。", en = "Whether to enable Dismantle mode (OFF: not enabled, ON: enabled)\nAfter enabling Dismantle mode, it will dismantle the structural parts for which the number of repetitions has been set.\nWarning: All blocks within the structure will be dismantled.")
+    private static final String S6T = "item.gtmoremachine.advanced_terminal.setting.6.tooltip";
 
     public AdvancedTerminalBehavior() {}
 
@@ -123,27 +153,27 @@ public class AdvancedTerminalBehavior implements IItemUIFactory {
                 .setBackground(GuiTextures.DISPLAY)
                 .setYScrollBarWidth(2)
                 .setYBarStyle(null, ColorPattern.T_WHITE.rectTexture().setRadius(1))
-                .addWidget(new ExtendLabelWidget(65, 8, Component.translatable("item.gtmoremachine.advanced_terminal.setting.title")))
+                .addWidget(new ExtendLabelWidget(65, 8, Component.translatable(TITLE)))
                 .addWidget(new PatternWidgetGroup(96, 4, 76, 12, b -> group.setSelfPositionX(b ? -70 : 0), handItem))
-                .addWidget(new ExtendLabelWidget(4, 5 + 16 * rowIndex, Component.translatable("item.gtmoremachine.advanced_terminal.setting.2"))
-                        .setHoverTooltips(Component.translatable("item.gtmoremachine.advanced_terminal.setting.2.tooltip")))
+                .addWidget(new ExtendLabelWidget(4, 5 + 16 * rowIndex, Component.translatable(S1))
+                        .setHoverTooltips(Component.translatable(S1T)))
                 .addWidget(new TerminalInputWidget(140, 5 + 16 * rowIndex++, 25, 16,
                         () -> getIntTag(handItem, repeatCount), (v) -> setIntTag(handItem, repeatCount, v))
                         .setMin(0).setMax(1000))
-                .addWidget(new ExtendLabelWidget(4, 5 + 16 * rowIndex, Component.translatable("item.gtmoremachine.advanced_terminal.setting.3"))
-                        .setHoverTooltips(Component.translatable("item.gtmoremachine.advanced_terminal.setting.3.tooltip")))
+                .addWidget(new ExtendLabelWidget(4, 5 + 16 * rowIndex, Component.translatable(S2))
+                        .setHoverTooltips(Component.translatable(S2T)))
                 .addWidget(Button(140, 5 + 16 * rowIndex++, () -> getBooleanTag(handItem, NoHatch, true), v -> setBooleanTag(handItem, NoHatch, v)))
-                .addWidget(new ExtendLabelWidget(4, 5 + 16 * rowIndex, Component.translatable("item.gtmoremachine.advanced_terminal.setting.4"))
-                        .setHoverTooltips(Component.translatable("item.gtmoremachine.advanced_terminal.setting.4.tooltip")))
+                .addWidget(new ExtendLabelWidget(4, 5 + 16 * rowIndex, Component.translatable(S3))
+                        .setHoverTooltips(Component.translatable(S3T)))
                 .addWidget(Button(140, 5 + 16 * rowIndex++, () -> getBooleanTag(handItem, ReplaceMode), v -> setBooleanTag(handItem, ReplaceMode, v)))
-                .addWidget(new ExtendLabelWidget(4, 5 + 16 * rowIndex, Component.translatable("item.gtmoremachine.advanced_terminal.setting.5"))
-                        .setHoverTooltips(Component.translatable("item.gtmoremachine.advanced_terminal.setting.5.tooltip")))
+                .addWidget(new ExtendLabelWidget(4, 5 + 16 * rowIndex, Component.translatable(S4))
+                        .setHoverTooltips(Component.translatable(S4T)))
                 .addWidget(Button(140, 5 + 16 * rowIndex++, () -> getBooleanTag(handItem, UseAEMode), (v) -> setBooleanTag(handItem, UseAEMode, v)))
-                .addWidget(new LabelWidget(4, 5 + 16 * rowIndex, "item.gtmoremachine.advanced_terminal.setting.6")
-                        .setHoverTooltips(Component.translatable("item.gtmoremachine.advanced_terminal.setting.6.tooltip")))
+                .addWidget(new LabelWidget(4, 5 + 16 * rowIndex, Component.translatable(S5))
+                        .setHoverTooltips(Component.translatable(S5T)))
                 .addWidget(Button(140, 5 + 16 * rowIndex++, () -> getBooleanTag(handItem, FlipMode), (v) -> setBooleanTag(handItem, FlipMode, v)))
-                .addWidget(new LabelWidget(4, 5 + 16 * rowIndex, "item.gtmoremachine.advanced_terminal.setting.7")
-                        .setHoverTooltips(Component.translatable("item.gtmoremachine.advanced_terminal.setting.7.tooltip")))
+                .addWidget(new LabelWidget(4, 5 + 16 * rowIndex, Component.translatable(S6))
+                        .setHoverTooltips(Component.translatable(S6T)))
                 .addWidget(Button(140, 5 + 16 * rowIndex++, () -> getBooleanTag(handItem, DemolitionMode), (v) -> setBooleanTag(handItem, DemolitionMode, v))));
         group.setBackground(GuiTextures.BACKGROUND_INVERSE);
         return group;
