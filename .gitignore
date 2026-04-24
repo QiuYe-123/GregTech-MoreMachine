@@ -14,9 +14,11 @@ libs/
 .project
 .idea/
 .kotlin/
+.eclipse
 classes/
 .metadata
 .vscode
+.codex
 .settings
 *.launch
 .architectury-transformer/debug.log
@@ -24,4 +26,3 @@ src/generated/resources/.cache/
 
 *.patch
 *.DS_Store
-

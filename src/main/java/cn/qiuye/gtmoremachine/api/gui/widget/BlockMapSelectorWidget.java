@@ -53,7 +53,7 @@ public class BlockMapSelectorWidget extends WidgetGroup {
             int y = 0;
             for (var key : BlockMap.MAP.keySet()) {
                 blockType.addWidget((new WidgetGroup(2, 2 + y, 66, 15))
-                        .addWidget(new ExtendLabelWidget(0, 0, translatable(BlockMap.namePrefix + "." + key)))
+                        .addWidget(new ExtendLabelWidget(0, 0, translatable(BlockMap.blockmap_valuePrefix + "." + key)))
                         .addWidget(new ButtonWidget(0, 0, 64, 15, (cd) -> {
                             showTier(Arrays.stream(BlockMap.MAP.get(key)).toList());
                             currentType = key;
