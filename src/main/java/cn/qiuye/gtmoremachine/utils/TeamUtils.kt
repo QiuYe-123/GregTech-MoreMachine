@@ -14,7 +14,7 @@ import java.util.function.Function
 
 object TeamUtils {
 	@JvmStatic
-	fun getTeamUUID(playerUUID: UUID): UUID? {
+	fun getTeamUUID(playerUUID: UUID?): UUID? {
 		if (GTmm.Mods.isFTBTeamsLoaded() && FTBTeamsAPI.api().isManagerLoaded) {
 			val team = FTBTeamsAPI.api().manager.getTeamForPlayerID(playerUUID)
 			return team.map(Function { obj: Team? -> obj!!.teamId }).orElse(playerUUID)
