@@ -29,7 +29,7 @@ public final class PatternMatchUtils {
      * Demolition matching is intentionally independent from tier block selection and hatch placement filters.
      *
      * @param currentBlock 当前世界中实际存在的方块 the block currently found in the world
-     * @param predicate 当前结构位置对应的谓词 the structure predicate for the current position
+     * @param predicate    当前结构位置对应的谓词 the structure predicate for the current position
      * @return 当前方块是否属于该位置任一允许候选集合 whether the block belongs to any allowed candidate set for this position
      */
     public static boolean matchesDemolitionPredicate(Block currentBlock, TraceabilityPredicate predicate) {
@@ -56,7 +56,7 @@ public final class PatternMatchUtils {
      * {@link BlockMap} category such as a tiered hatch or coil family.
      *
      * @param currentBlock 当前世界中实际存在的方块 the block currently found in the world
-     * @param candidates 从某一个谓词分支收集到的候选方块 the candidate blocks collected from one predicate branch
+     * @param candidates   从某一个谓词分支收集到的候选方块 the candidate blocks collected from one predicate branch
      * @return 当前方块是否命中该候选集合 whether the block matches the candidate set
      */
     public static boolean matchesDemolitionCandidates(Block currentBlock, @Nullable Block[] candidates) {
@@ -80,7 +80,7 @@ public final class PatternMatchUtils {
      * This is used by demolition mode for blocks like liquids that cannot be handled through normal placement logic.
      *
      * @param level 包含目标方块的世界 the level containing the block
-     * @param pos 需要清除的方块坐标 the block position to clear
+     * @param pos   需要清除的方块坐标 the block position to clear
      */
     public static void forceRemoveBlock(Level level, BlockPos pos) {
         if (level.isOutsideBuildHeight(pos)) return;
