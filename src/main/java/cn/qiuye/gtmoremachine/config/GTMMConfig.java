@@ -18,7 +18,7 @@ public class GTMMConfig {
     private static final String SCREEN = "config.screen.gtmoremachine";
     public static GTMMConfig INSTANCE = Configuration.registerConfig(GTMMConfig.class, ConfigFormats.YAML).getConfigInstance();
 
-	private static final String CFGPreFix = "config.gtmoremachine.option";
+    private static final String CFGPreFix = "config.gtmoremachine.option";
 
     @Configurable
     @Configurable.Comment({
