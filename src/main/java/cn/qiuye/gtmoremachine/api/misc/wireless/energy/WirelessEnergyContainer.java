@@ -114,8 +114,9 @@ public class WirelessEnergyContainer {
     }
 
     public long removeEnergy(long energy, MetaMachine machine) {
-        long change = Math.min(BigNumberUtils.getLongValue(this.storage), energy);
-        if (GTMMConfig.INSTANCE.isWirelessRateEnable) change = Math.min(BigNumberUtils.getLongValue(this.storage), Math.min(BigNumberUtils.getLongValue(this.rate), energy));
+        long storageLong = BigNumberUtils.getLongValue(this.storage);
+        long change = Math.min(storageLong, energy);
+        if (GTMMConfig.INSTANCE.isWirelessRateEnable) change = Math.min(storageLong, Math.min(BigNumberUtils.getLongValue(this.rate), energy));
         LossEnergy loss = remainingEnergy(change, machine);
         if (loss.getCabinEnergy() <= 0) return 0;
         change = loss.getWirelessEnergy();
@@ -241,7 +242,10 @@ public class WirelessEnergyContainer {
         long loss = lossMachine.LossNumber();
         long afterLoss = switch (lossMachine.LossType()) {
             case Fixed -> Math.max(energy - loss, 0);
-            case Percentage -> Math.max(Math.round(energy * (1 - loss / 100.0)), 0);
+            case Percentage -> {
+                long numerator = energy * (100 - loss);
+                yield Math.max((numerator >= 0 ? numerator + 50 : numerator - 50) / 100, 0);
+            }
             case None -> energy;
         };
         return new LossEnergy(afterLoss, energy);

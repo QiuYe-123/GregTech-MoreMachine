@@ -400,7 +400,7 @@ public class WirelessEnergyTerminalBehavior implements IItemUIFactory, IItemHUDP
          * @return 世界
          */
         @Override
-        public Level getLevel() {
+        public Level getMonitorLevel() {
             return level;
         }
     }

@@ -25,21 +25,22 @@ public class ForgeCommonEventListener {
     @SubscribeEvent
     public static void onServerTickEvent(TickEvent.ServerTickEvent event) {
         if (event.phase == TickEvent.Phase.END) {
-            if (event.getServer().getTickCount() % 20 == 0) {
-                boolean refreshBinding = event.getServer().getTickCount() % 200 == 0;
+            var server = event.getServer();
+            var tickCount = server.getTickCount();
+            if (tickCount % 20 == 0) {
+                boolean refreshBinding = tickCount % 200 == 0;
                 for (WirelessEnergyContainer container : WirelessEnergySavedData.INSTANCE.containerMap.values()) {
                     if (refreshBinding) {
-                        BigInteger rate;
                         GlobalPos pos = container.getBindPos();
-                        MetaMachine machine = MetaMachine.getMachine(event.getServer().getLevel(pos.dimension()), pos.pos());
+                        ServerLevel level = pos != null ? server.getLevel(pos.dimension()) : null;
+                        var machine = level != null ? MetaMachine.getMachine(level, pos.pos()) : null;
+                        var rate = WirelessEnergyBindingToolBehavior.Companion.getRate(machine);
                         if (machine != null) {
-                            rate = WirelessEnergyBindingToolBehavior.Companion.getRate(machine);
                             container.setDimensional(14, rate.compareTo(BigInteger.ZERO) > 0, machine);
-                            container.setRate(rate);
                         }
+                        container.setRate(rate);
                     }
                     container.PassiveDrainEnergy();
-
                     container.getEnergyStat().tick();
                 }
                 for (WirelessCWUContainer container : WirelessCWUSavedData.INSTANCE.containerMap.values()) {

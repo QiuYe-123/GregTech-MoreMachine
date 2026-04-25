@@ -13,8 +13,9 @@ import org.objectweb.asm.Type;
 
 import java.lang.reflect.Field;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
-import java.util.Objects;
+import java.util.Set;
 
 public class ScanningClass {
 
@@ -26,18 +27,21 @@ public class ScanningClass {
         long time = System.currentTimeMillis();
         Type scannedclass = Type.getType(GTMMScanned.class);
         Type datageneratorscanned = LANG == null ? null : Type.getType(GTMMDataGeneratorScanned.class);
+        Set<String> loadedClasses = new HashSet<>();
 
         for (ModFileScanData scanData : ModList.get().getAllScanData()) {
             for (ModFileScanData.AnnotationData annotationData : scanData.getAnnotations()) {
                 Type type = annotationData.annotationType();
-                if (Objects.equals(type, scannedclass) || datageneratorscanned != null && Objects.equals(type, datageneratorscanned)) {
+                if (scannedclass.equals(type) || datageneratorscanned != null && datageneratorscanned.equals(type)) {
                     try {
-                        Class<?> data = Class.forName(annotationData.memberName());
+                        String className = annotationData.memberName();
+                        if (!loadedClasses.add(className)) continue;
+                        Class<?> data = Class.forName(className);
+                        if (LANG == null) continue;
                         for (Field field : data.getDeclaredFields()) {
-                            if (LANG != null && field.isAnnotationPresent(GTMMRegisterLanguage.class)) {
+                            if (field.isAnnotationPresent(GTMMRegisterLanguage.class)) {
                                 GTMMRegisterLanguage registerLanguage = field.getAnnotation(GTMMRegisterLanguage.class);
                                 try {
-                                    assert registerLanguage != null;
                                     String key = registerLanguage.key();
                                     if (key.isEmpty()) {
                                         String namePrefix = registerLanguage.namePrefix();

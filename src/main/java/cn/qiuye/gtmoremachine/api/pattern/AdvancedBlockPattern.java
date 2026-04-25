@@ -27,8 +27,6 @@ import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.Property;
-import net.minecraft.world.level.chunk.LevelChunk;
-import net.minecraft.world.level.chunk.LevelChunkSection;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
@@ -141,48 +139,22 @@ public class AdvancedBlockPattern extends BlockPattern {
 
                                     if (currentBlock != Blocks.AIR) {
                                         if (autoBuildSetting.isDemolitionMode()) {
+                                            if (predicate.isAny()) {
+                                                break label_check_predicate;
+                                            }
                                             if (currentBlock instanceof LiquidBlock) {
-                                                forceRemoveBlock(worldlevel, worldPos);
-                                                continue;
+                                                PatternMatchUtils.forceRemoveBlock(worldlevel, worldPos);
+                                                break label_check_predicate;
                                             }
 
                                             if (worldPos.equals(centerPos)) {
                                                 posset.add(posLong);
-                                                continue;
+                                                break label_check_predicate;
                                             }
 
-                                            boolean blockMatchesPredicate = false;
-                                            label_check_common:
-                                            for (var sp : predicate.common) {
-                                                Block[] candidates = sp.candidates == null ? null : Arrays.stream(sp.candidates.get()).map(i -> i.getBlockState().getBlock()).toArray(Block[]::new);
-
-                                                if (candidates != null) {
-                                                    for (Block candidate : candidates) {
-                                                        if (candidate == currentBlock) {
-                                                            blockMatchesPredicate = true;
-                                                            break label_check_common;
-                                                        }
-                                                    }
-                                                }
+                                            if (!PatternMatchUtils.matchesDemolitionPredicate(currentBlock, predicate)) {
+                                                break label_check_predicate;
                                             }
-
-                                            if (!blockMatchesPredicate) {
-                                                label_check_limited:
-                                                for (var sp : predicate.limited) {
-                                                    Block[] candidates = sp.candidates == null ? null : Arrays.stream(sp.candidates.get()).map(i -> i.getBlockState().getBlock()).toArray(Block[]::new);
-
-                                                    if (candidates != null) {
-                                                        for (Block candidate : candidates) {
-                                                            if (candidate == currentBlock) {
-                                                                blockMatchesPredicate = true;
-                                                                break label_check_limited;
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                            }
-
-                                            if (!blockMatchesPredicate) continue;
                                             ItemStack dropStack = new ItemStack(currentBlock);
                                             if (currentState.hasBlockEntity() && worldlevel.getBlockEntity(worldPos) instanceof MetaMachine metaMachine) {
                                                 metaMachine.modifyDrops(Collections.singletonList(dropStack));
@@ -191,11 +163,12 @@ public class AdvancedBlockPattern extends BlockPattern {
                                                 }
                                             }
 
-                                            if ((meStorage == null || meStorage.insert(AEItemKey.of(dropStack), 1L, Actionable.MODULATE, IActionSource.ofPlayer(player)) == 0L) && !player.addItem(dropStack)) {
+                                            long inserted = meStorage == null ? 0L : meStorage.insert(AEItemKey.of(dropStack), 1L, Actionable.MODULATE, IActionSource.ofPlayer(player));
+                                            if (!player.isCreative() && inserted == 0L && !player.addItem(dropStack)) {
                                                 itemStacks.add(player.drop(dropStack, false));
                                             }
                                             worldlevel.setBlockAndUpdate(worldPos, Blocks.AIR.defaultBlockState());
-                                            continue;
+                                            break label_check_predicate;
                                         }
 
                                         if (!autoBuildSetting.isReplaceMode() || !autoBuildSetting.getBlocks().contains(currentBlock)) {
@@ -300,7 +273,7 @@ public class AdvancedBlockPattern extends BlockPattern {
                                                         if (extracted.isEmpty()) {
                                                             // 提取失败，恢复原状态
                                                             worldlevel.setBlock(worldPos, isReplacing ? oldState : Blocks.AIR.defaultBlockState(), 3);
-                                                            continue;
+                                                            break label_check_predicate;
                                                         }
                                                     }
                                                     // 替换模式：回收原物品
@@ -550,36 +523,5 @@ public class AdvancedBlockPattern extends BlockPattern {
             }
         }
         return null;
-    }
-
-    private static void forceRemoveBlock(Level level, BlockPos pos) {
-        if (level.isOutsideBuildHeight(pos)) return;
-
-        LevelChunk chunk = level.getChunkAt(pos);
-        int y = pos.getY();
-        int sectionIndex = chunk.getSectionIndex(y);
-        LevelChunkSection section = chunk.getSections()[sectionIndex];
-        if (section.hasOnlyAir()) return;
-
-        int localX = pos.getX() & 15;
-        int localY = y & 15;
-        int localZ = pos.getZ() & 15;
-
-        BlockState oldState = section.getBlockState(localX, localY, localZ);
-        if (oldState.isAir()) return;
-
-        // 直接设为空气
-        section.setBlockState(localX, localY, localZ, Blocks.AIR.defaultBlockState());
-
-        // 触发方块移除逻辑（如掉落物品、机器卸载等）
-        oldState.onRemove(level, pos, Blocks.AIR.defaultBlockState(), false);
-
-        // 移除方块实体
-        if (oldState.hasBlockEntity()) {
-            level.removeBlockEntity(pos);
-        }
-
-        // 标记区块为未保存（确保更改持久化）
-        chunk.setUnsaved(true);
     }
 }
