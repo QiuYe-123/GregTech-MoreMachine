@@ -35,38 +35,24 @@ public class ForgeClientEventHandler {
         if (stage == RenderLevelStageEvent.Stage.AFTER_TRIPWIRE_BLOCKS) {
             ClientLevel level = Minecraft.getInstance().level;
             if (level == null) return;
+            PoseStack poseStack = event.getPoseStack();
+            Camera camera = event.getCamera();
+            long tick = GTValues.CLIENT_TIME;
 
             if (WirelessEnergyMonitor.p > 0) {
-                if (GTValues.CLIENT_TIME % 20 == 0) {
-                    WirelessEnergyMonitor.p--;
-                }
-                PoseStack poseStack = event.getPoseStack();
-                Camera camera = event.getCamera();
+                if (tick % 20 == 0) WirelessEnergyMonitor.p--;
                 BlockPos pose = WirelessEnergyMonitor.pPos;
-                if (pose == null) return;
-                highlightBlock(RGBAColor.RED, camera, poseStack, pose, pose);
+                if (pose != null) highlightBlock(RGBAColor.RED, camera, poseStack, pose, pose);
             }
-
             if (WirelessEnergyTerminalBehavior.p > 0) {
-                if (GTValues.CLIENT_TIME % 20 == 0) {
-                    WirelessEnergyTerminalBehavior.p--;
-                }
-                PoseStack poseStack = event.getPoseStack();
-                Camera camera = event.getCamera();
+                if (tick % 20 == 0) WirelessEnergyTerminalBehavior.p--;
                 BlockPos pose = WirelessEnergyTerminalBehavior.pPos;
-                if (pose == null) return;
-                highlightBlock(RGBAColor.RED, camera, poseStack, pose, pose);
+                if (pose != null) highlightBlock(RGBAColor.RED, camera, poseStack, pose, pose);
             }
-
             if (WirelessCWUMonitor.p > 0) {
-                if (GTValues.CLIENT_TIME % 20 == 0) {
-                    WirelessCWUMonitor.p--;
-                }
-                PoseStack poseStack = event.getPoseStack();
-                Camera camera = event.getCamera();
+                if (tick % 20 == 0) WirelessCWUMonitor.p--;
                 BlockPos pose = WirelessCWUMonitor.pPos;
-                if (pose == null) return;
-                highlightBlock(RGBAColor.ORANGE, camera, poseStack, pose, pose);
+                if (pose != null) highlightBlock(RGBAColor.ORANGE, camera, poseStack, pose, pose);
             }
         }
     }
