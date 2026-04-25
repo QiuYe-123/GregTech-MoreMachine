@@ -9,11 +9,11 @@ object ChineseConverter {
 
 	@JvmStatic
 	fun convert(cn: String): String {
-		val cntw = StringBuilder()
+		val cntw = StringBuilder(cn.length)
 
-		for (cnstr in cn.toCharArray()) {
-			if (mappingTable.containsKey(cnstr)) {
-				val cntwstr = mappingTable[cnstr]
+		for (cnstr in cn) {
+			val cntwstr = mappingTable[cnstr]
+			if (cntwstr != '\u0000') {
 				cntw.append(cntwstr)
 			} else {
 				cntw.append(cnstr)
