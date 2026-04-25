@@ -14,7 +14,7 @@ import java.util.function.Function
 
 object TeamUtils {
 	@JvmStatic
-	fun getTeamUUID(playerUUID: UUID): UUID {
+	fun getTeamUUID(playerUUID: UUID): UUID? {
 		if (GTmm.Mods.isFTBTeamsLoaded() && FTBTeamsAPI.api().isManagerLoaded) {
 			val team = FTBTeamsAPI.api().manager.getTeamForPlayerID(playerUUID)
 			return team.map(Function { obj: Team? -> obj!!.teamId }).orElse(playerUUID)
@@ -33,14 +33,14 @@ object TeamUtils {
 	}
 
 	@JvmStatic
-	fun getName(level: Level, playerUUID: UUID): Component {
+	fun getName(level: Level?, playerUUID: UUID?): Component {
 		if (GTmm.Mods.isFTBTeamsLoaded() && FTBTeamsAPI.api().isManagerLoaded) {
 			val team = FTBTeamsAPI.api().manager.getTeamForPlayerID(playerUUID)
 			if (team.isPresent) {
 				return team.get().name
 			}
 		}
-		val player = level.getPlayerByUUID(playerUUID)
+		val player = level?.getPlayerByUUID(playerUUID)
 		if (player != null) return player.name
 		return Component.literal(playerUUID.toString())
 	}

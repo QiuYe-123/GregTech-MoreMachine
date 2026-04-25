@@ -103,13 +103,21 @@ public class AdvancedTerminalBehavior implements IItemUIFactory {
         var pattern = mcahine.getPattern();
         if (player.isShiftKeyDown()) {
             if (!level.isClientSide) {
-                mcahine.checkPatternWithTryLock();
+                if (autoBuildSetting.isDemolitionMode()) {
+                    mcahine.onStructureInvalid();
+                    mcahine.onPartUnload();
+                } else {
+                    mcahine.checkPatternWithTryLock();
+                }
                 if (GTmm.Mods.isAE2Loaded()) {
                     AdvancedBlockPattern.getAdvancedBlockPattern(pattern).autoBuild(player, mcahine.getMultiblockState(), autoBuildSetting);
                 } else {
                     AdvancedBlockNoAEPattern.getAdvancedBlockPattern(pattern).autoBuild(player, mcahine.getMultiblockState(), autoBuildSetting);
                 }
-                mcahine.onPartUnload();
+                if (!autoBuildSetting.isDemolitionMode()) {
+                    mcahine.checkPatternWithTryLock();
+                    mcahine.onPartUnload();
+                }
             }
         } else if (level.isClientSide) {
             MultiblockInWorldPreviewRenderer.showPreview(pos, mcahine, ConfigHolder.INSTANCE.client.inWorldPreviewDuration * 20);

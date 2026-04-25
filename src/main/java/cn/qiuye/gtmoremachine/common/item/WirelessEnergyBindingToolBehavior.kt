@@ -44,7 +44,7 @@ class WirelessEnergyBindingToolBehavior : IInteractionItem {
 	}
 
 	companion object {
-		fun getRate(machine: MetaMachine): BigInteger = when (machine) {
+		fun getRate(machine: MetaMachine?): BigInteger = when (machine) {
 			is BatteryBufferMachine -> calculateBatteryRate(machine)
 
 			is PowerSubstationMachine -> if (machine.isFormed) {

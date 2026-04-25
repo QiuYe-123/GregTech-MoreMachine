@@ -22,6 +22,7 @@ import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.level.Level;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -119,5 +120,10 @@ public class WirelessCWUMonitor extends MetaMachine implements IFancyUIMachine, 
     @Override
     public boolean display() {
         return false;
+    }
+
+    @Override
+    public Level getMonitorLevel() {
+        return getLevel();
     }
 }
