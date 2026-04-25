@@ -26,34 +26,31 @@ class TimeStat(windowStart: Int = 0) {
 			}
 		}
 		val divisor = this.minute.slotResolution.toLong()
+		val divisorBD = BigDecimal.valueOf(divisor)
 		this.avgChanged =
-			if (this.lastChangedCache.compareTo(BigInteger.ZERO) ==
-				0
-			) {
+			if (this.lastChangedCache == BigInteger.ZERO) {
 				BigDecimal.ZERO
 			} else {
 				BigDecimal(this.lastChangedCache).divide(
-					BigDecimal.valueOf(divisor),
+					divisorBD,
 					RoundingMode.HALF_UP,
 				)
 			}
 		this.avgInput =
-			if (this.lastInputCache.compareTo(BigInteger.ZERO) == 0) {
+			if (this.lastInputCache == BigInteger.ZERO) {
 				BigDecimal.ZERO
 			} else {
 				BigDecimal(this.lastInputCache).divide(
-					BigDecimal.valueOf(divisor),
+					divisorBD,
 					RoundingMode.HALF_UP,
 				)
 			}
 		this.avgOutput =
-			if (this.lastOutputCache.compareTo(BigInteger.ZERO) ==
-				0
-			) {
+			if (this.lastOutputCache == BigInteger.ZERO) {
 				BigDecimal.ZERO
 			} else {
 				BigDecimal(this.lastOutputCache).divide(
-					BigDecimal.valueOf(divisor),
+					divisorBD,
 					RoundingMode.HALF_UP,
 				)
 			}

@@ -57,7 +57,9 @@ public interface IWirelessMonitor extends IWirelessCWUContainerHolder {
                 ComponentPanelWidget.withButton(getFormatText(format), "format", getFormatclolor(format)),
                 ComponentPanelWidget.withButton(getCWUStatusText(CWUStatus), "CWUStatus", getCWUStatusclolor(CWUStatus))));
 
-        List<Map.Entry<MetaMachine, ITransferData>> entryList = new ArrayList<>(WirelessCWUContainer.TRANSFER_DATA.entrySet().stream().sorted(Comparator.comparingInt(entry -> entry.getValue().Throughput())).toList());
+        List<Map.Entry<MetaMachine, ITransferData>> entryList = WirelessCWUContainer.TRANSFER_DATA.entrySet().stream()
+                .sorted(Comparator.comparingInt(entry -> entry.getValue().Throughput()))
+                .toList();
 
         for (Map.Entry<MetaMachine, ITransferData> m : entryList) {
             UUID uuid = m.getValue().UUID();

@@ -58,14 +58,13 @@ public class WirelessCWUProvider extends CapabilityBlockProvider<IWirelessCWUCon
         } else {
             BigInteger cwu = BigNumberUtils.getBigIntegerValue(capData.getString("cwu"));
             UUID uuid = capData.getUUID("UUID");
+            var formattedCwu = Component.literal(NumberUtils.formatBigIntegerNumberOrSic(cwu)).withStyle(ChatFormatting.GOLD);
             if (TeamUtils.hasOwner(block.getLevel(), uuid)) {
                 tooltip.add(Component.translatable("gtmoremachine.machine.wireless_energy_hatch.tooltip.2", TeamUtils.getName(block.getLevel(), uuid)));
-                tooltip.add(Component.translatable("gtmoremachine.machine.wireless_cwu_monitor.tooltip.1",
-                        Component.literal(NumberUtils.formatBigIntegerNumberOrSic(cwu)).withStyle(ChatFormatting.GOLD)));
+                tooltip.add(Component.translatable("gtmoremachine.machine.wireless_cwu_monitor.tooltip.1", formattedCwu));
             } else {
                 tooltip.add(Component.translatable("gtmoremachine.machine.wireless_energy_hatch.tooltip.3", uuid));
-                tooltip.add(Component.translatable("gtmoremachine.machine.wireless_cwu_monitor.tooltip.1",
-                        Component.literal(NumberUtils.formatBigIntegerNumberOrSic(cwu)).withStyle(ChatFormatting.GOLD)));
+                tooltip.add(Component.translatable("gtmoremachine.machine.wireless_cwu_monitor.tooltip.1", formattedCwu));
             }
         }
     }

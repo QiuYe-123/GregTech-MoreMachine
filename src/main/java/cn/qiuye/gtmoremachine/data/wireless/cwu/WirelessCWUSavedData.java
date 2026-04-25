@@ -13,7 +13,6 @@ import org.jetbrains.annotations.NotNull;
 import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.UUID;
 
 public class WirelessCWUSavedData extends SavedData {
@@ -51,14 +50,14 @@ public class WirelessCWUSavedData extends SavedData {
     protected WirelessCWUContainer readTag(CompoundTag engTag) {
         UUID uuid = engTag.getUUID("uuid");
         String en = engTag.getString("cwu");
-        BigInteger cwu = new BigInteger(en.isEmpty() ? "0" : en);
+        BigInteger cwu = en.isEmpty() ? BigInteger.ZERO : new BigInteger(en);
         return new WirelessCWUContainer(uuid, cwu);
     }
 
     protected CompoundTag toTag(WirelessCWUContainer container) {
         CompoundTag engTag = new CompoundTag();
         BigInteger storage = container.getStorage();
-        if (!Objects.equals(storage, BigInteger.ZERO)) {
+        if (storage.compareTo(BigInteger.ZERO) > 0) {
             engTag.putString("cwu", storage.toString());
         }
         if (!engTag.isEmpty()) engTag.putUUID("uuid", container.getUUID());

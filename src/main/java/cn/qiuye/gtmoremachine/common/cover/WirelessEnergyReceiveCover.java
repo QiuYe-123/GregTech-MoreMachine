@@ -127,7 +127,6 @@ public class WirelessEnergyReceiveCover extends CoverBehavior implements IWirele
                 if (changeenergy > 0) energyContainer.addEnergy(changeenergy);
             }
         }
-        updateCoverSub();
     }
 
     @Override

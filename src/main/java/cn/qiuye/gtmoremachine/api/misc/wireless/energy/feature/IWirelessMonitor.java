@@ -76,7 +76,7 @@ public interface IWirelessMonitor extends IWirelessEnergyContainerHolder {
                 FormattingUtil.voltageName(avgEnergy)));
 
         BigDecimal allAvgEnergy = stat.getAvg(Status.All);
-        int compare = allAvgEnergy.compareTo(BigDecimal.valueOf(0));
+        int compare = allAvgEnergy.compareTo(BigDecimal.ZERO);
         BigInteger multiply = allAvgEnergy.abs().toBigInteger().multiply(BigInteger.valueOf(20));
         if (compare > 0) {
             textListCache.add(Component.translatable("gtceu.multiblock.power_substation.time_to_fill",

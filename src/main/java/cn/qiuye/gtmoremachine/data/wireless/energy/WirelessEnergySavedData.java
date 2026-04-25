@@ -18,7 +18,6 @@ import org.jetbrains.annotations.NotNull;
 import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.UUID;
 
 public class WirelessEnergySavedData extends SavedData {
@@ -70,19 +69,19 @@ public class WirelessEnergySavedData extends SavedData {
     protected CompoundTag toTag(WirelessEnergyContainer container) {
         CompoundTag engTag = new CompoundTag();
         BigInteger storage = container.getStorage();
-        if (!Objects.equals(storage, BigInteger.ZERO)) {
+        if (storage.compareTo(BigInteger.ZERO) > 0) {
             engTag.putString("energy", storage.toString(16));
         }
         BigInteger rate = container.getRate();
-        if (!Objects.equals(rate, BigInteger.ZERO)) {
+        if (rate.compareTo(BigInteger.ZERO) > 0) {
             engTag.putString("rate", rate.toString(16));
         }
         BigInteger capacity = container.getCapacity();
-        if (!Objects.equals(capacity, BigInteger.ZERO)) {
+        if (capacity.compareTo(BigInteger.ZERO) > 0) {
             engTag.putString("capacity", capacity.toString(16));
         }
         BigInteger passiveDrain = container.getPassiveDrain();
-        if (!Objects.equals(passiveDrain, BigInteger.ZERO)) {
+        if (passiveDrain.compareTo(BigInteger.ZERO) > 0) {
             engTag.putString("passiveDrain", passiveDrain.toString(16));
         }
         GlobalPos bindPos = container.getBindPos();

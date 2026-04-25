@@ -16,16 +16,7 @@ public class GTMMConfig {
 
     @GTMMRegisterLanguage(en = "GTMM Config", cn = "GTMM 配置")
     private static final String SCREEN = "config.screen.gtmoremachine";
-    public static GTMMConfig INSTANCE;
-    private static final Object LOCK = new Object();
-
-    public static void init() {
-        synchronized (LOCK) {
-            if (INSTANCE == null) {
-                INSTANCE = Configuration.registerConfig(GTMMConfig.class, ConfigFormats.YAML).getConfigInstance();
-            }
-        }
-    }
+    public static GTMMConfig INSTANCE = Configuration.registerConfig(GTMMConfig.class, ConfigFormats.YAML).getConfigInstance();
 
     private static final String CFGPreFix = "config.gtmoremachine.option";
 

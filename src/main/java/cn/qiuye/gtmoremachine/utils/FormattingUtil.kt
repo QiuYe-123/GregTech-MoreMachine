@@ -32,6 +32,7 @@ object FormattingUtil {
 	val DECIMAL_FORMAT_2F = DecimalFormat("#,##0.##")
 	val DECIMAL_FORMAT_SIC = DecimalFormat("0E0")
 	val DECIMAL_FORMAT_SIC_2F = DecimalFormat("0.00E00")
+	private val DF_FORMAT_NUMBER = DecimalFormat("#.##")
 
 	/**
 	 * Check if `string` has any uppercase characters.
@@ -92,10 +93,13 @@ object FormattingUtil {
 		return Component.translatable(labelKey, *a)
 	}
 
+	/** 预计算 BigDecimal.valueOf(Long.MAX_VALUE)，避免 voltageName/voltageAmperage 中重复分配 */
+	private val LONG_MAX_BD = BigDecimal.valueOf(Long.MAX_VALUE)
+
 	@JvmStatic
 	fun voltageName(avgEnergy: BigDecimal): Component {
 		val floorTier = GTUtil.getFloorTierByVoltage(
-			avgEnergy.min(BigDecimal.valueOf(Long.MAX_VALUE)).abs().toLong(),
+			avgEnergy.min(LONG_MAX_BD).abs().toLong(),
 		).toInt()
 		return Component.literal(GTValues.VNF[floorTier])
 	}
@@ -111,7 +115,7 @@ object FormattingUtil {
 	@JvmStatic
 	fun voltageAmperage(avgEnergy: BigDecimal): BigDecimal {
 		val floorTier = GTUtil.getFloorTierByVoltage(
-			avgEnergy.min(BigDecimal.valueOf(Long.MAX_VALUE)).abs().toLong(),
+			avgEnergy.min(LONG_MAX_BD).abs().toLong(),
 		).toInt()
 		return avgEnergy.abs().divide(
 			BigDecimal.valueOf(GTValues.VEX[floorTier]),
@@ -206,6 +210,11 @@ object FormattingUtil {
 
 	private val ONE_THOUSAND = BigDecimal(1000)
 
+	/** 预计算 1000^0 ~ 1000^(UNITS.size-1)，由 lazy 延迟初始化，供 formatNumberReadable 和 calculateExponent 复用 */
+	private val POWERS by lazy {
+		Array(UNITS.size) { ONE_THOUSAND.pow(it) }
+	}
+
 	fun formatNumberReadable(number: BigDecimal): String = formatNumberReadable(number, false)
 
 	fun formatNumberReadable(number: BigDecimal, milli: Boolean): String = formatNumberReadable(number, milli, DECIMAL_FORMAT_1F, null)
@@ -235,7 +244,7 @@ object FormattingUtil {
 
 			// 使用BigDecimal进行幂运算
 			if (exp > 0) {
-				val divisor = power(exp)
+				val divisor = POWERS[exp]
 				number1 = numberVar.divide(divisor, MathContext.DECIMAL128)
 			}
 		}
@@ -256,7 +265,6 @@ object FormattingUtil {
 		var exponent = 0
 		var temp = number
 
-		// 循环除以1000，直到数值小于1000
 		while (temp >= ONE_THOUSAND) {
 			temp = temp.divide(ONE_THOUSAND, MathContext.DECIMAL128)
 			exponent++
@@ -264,29 +272,14 @@ object FormattingUtil {
 		return exponent
 	}
 
-	/**
-	 * 使用BigDecimal计算幂运算
-	 */
-	private fun power(exponent: Int): BigDecimal {
-		if (exponent == 0) return BigDecimal.ONE
-		var result = BigDecimal.ONE
-		var i = 0
-		while (i < exponent) {
-			result = result.multiply(ONE_THOUSAND)
-			i++
-		}
-		return result
-	}
-
 	fun formatNumber(number: Double): String {
 		val units = arrayOf("", "K", "M", "G", "T", "P", "E", "Z", "Y", "B", "N", "D")
-		val df = DecimalFormat("#.##")
 		var temp = number
 		var unitIndex = 0
 		while (temp >= 100 && unitIndex < units.size - 1) {
 			temp /= 100
 			unitIndex++
 		}
-		return df.format(temp) + units[unitIndex]
+		return DF_FORMAT_NUMBER.format(temp) + units[unitIndex]
 	}
 }

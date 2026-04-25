@@ -11,6 +11,7 @@ import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
@@ -24,6 +25,8 @@ import org.joml.Matrix4f;
 public final class VirtualItemProviderRenderer implements IRenderer {
 
     public static final VirtualItemProviderRenderer INSTANCE = new VirtualItemProviderRenderer();
+
+    private static final ResourceLocation VIRTUAL_ITEM_PROVIDER_SPRITE = GTmm.id("item/virtual_item_provider");
 
     @Override
     @OnlyIn(Dist.CLIENT)
@@ -41,7 +44,7 @@ public final class VirtualItemProviderRenderer implements IRenderer {
             BufferBuilder builder = tess.getBuilder();
             builder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
             RenderSystem.setShader(GameRenderer::getPositionTexShader);
-            TextureAtlasSprite sprite = ModelFactory.getBlockSprite(GTmm.id("item/virtual_item_provider"));
+            TextureAtlasSprite sprite = ModelFactory.getBlockSprite(VIRTUAL_ITEM_PROVIDER_SPRITE);
             RenderSystem.setShaderTexture(0, InventoryMenu.BLOCK_ATLAS);
             float minU = sprite.getU0();
             float maxU = sprite.getU1();
