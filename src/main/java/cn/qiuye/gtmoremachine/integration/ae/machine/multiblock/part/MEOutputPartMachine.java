@@ -1,5 +1,7 @@
 package cn.qiuye.gtmoremachine.integration.ae.machine.multiblock.part;
 
+import cn.qiuye.gtmoremachine.api.annotation.GTMMDataGeneratorScanned;
+import cn.qiuye.gtmoremachine.api.annotation.language.GTMMRegisterLanguage;
 import cn.qiuye.gtmoremachine.api.machine.trait.InaccessibleInfiniteHandler;
 import cn.qiuye.gtmoremachine.api.machine.trait.InaccessibleInfiniteTank;
 
@@ -38,7 +40,14 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
+@GTMMDataGeneratorScanned
 public class MEOutputPartMachine extends ItemBusPartMachine implements IGridConnectedMachine {
+
+    private static final String ME_EXPORT_BUFFER_PREFIX = "gui.gtmoremachine.me_export_buffer";
+    @GTMMRegisterLanguage(en = "Item storage space is full.", cn = "物品存储空间已满")
+    public static final String ME_EXPORT_BUFFER_ITEM_STATUS_FULL = ME_EXPORT_BUFFER_PREFIX + ".item_status.full";
+    @GTMMRegisterLanguage(en = "Fluid storage space is full.", cn = "流体存储空间已满")
+    public static final String ME_EXPORT_BUFFER_FLUID_STATUS_FULL = ME_EXPORT_BUFFER_PREFIX + ".fluid_status.full";
 
     @SyncToClient
     @Getter

@@ -4,6 +4,9 @@ import cn.qiuye.gtmoremachine.api.gui.monitor.*;
 import cn.qiuye.gtmoremachine.api.machine.trait.feature.IWirelessEnergyContainerHolder;
 import cn.qiuye.gtmoremachine.api.misc.time.TimeStat;
 import cn.qiuye.gtmoremachine.api.misc.wireless.energy.WirelessEnergyContainer;
+import cn.qiuye.gtmoremachine.common.item.WirelessEnergyTerminalBehavior;
+import cn.qiuye.gtmoremachine.common.machine.electric.WirelessEnergyMonitor;
+import cn.qiuye.gtmoremachine.common.machine.multiblock.part.WirelessEnergyHatchPartMachine;
 import cn.qiuye.gtmoremachine.config.GTMMConfig;
 import cn.qiuye.gtmoremachine.utils.BigNumberUtils;
 import cn.qiuye.gtmoremachine.utils.FormattingUtil;
@@ -37,40 +40,40 @@ public interface IWirelessMonitor extends IWirelessEnergyContainerHolder {
         BigInteger energyTotal = container.getStorage();
         textListCache.add(Component.translatable("gtmoremachine.machine.wireless_monitor.tooltip.0",
                 TeamUtils.getName(getMonitorLevel(), getUUID())).withStyle(ChatFormatting.AQUA));
-        textListCache.add(FormattingUtil.formatWithConstantWidth("gtmoremachine.machine.wireless_energy_monitor.tooltip.1",
+        textListCache.add(FormattingUtil.formatWithConstantWidth(WirelessEnergyMonitor.WIRELESS_ENERGY_MONITOR_TOOLTIP_1,
                 Component.literal(NumberUtils.formatBigIntegerNumberOrSic(energyTotal, format)).withStyle(ChatFormatting.GOLD),
                 Component.literal(NumberUtils.formatBigDecimalNumberOrSic(FormattingUtil.voltageAmperage(new BigDecimal(energyTotal)), format)),
                 FormattingUtil.voltageName(new BigDecimal(energyTotal))));
         if (GTMMConfig.INSTANCE.isWirelessRateEnable) {
             BigInteger rate = container.getRate();
-            textListCache.add(FormattingUtil.formatWithConstantWidth("gtmoremachine.machine.wireless_energy_monitor.tooltip.2",
+            textListCache.add(FormattingUtil.formatWithConstantWidth(WirelessEnergyMonitor.WIRELESS_ENERGY_MONITOR_TOOLTIP_2,
                     Component.literal(NumberUtils.formatBigIntegerNumberOrSic(rate, format)).withStyle(ChatFormatting.GRAY),
                     Component.literal(NumberUtils.formatBigDecimalNumberOrSic(FormattingUtil.voltageAmperage(new BigDecimal(rate)), format)),
                     FormattingUtil.voltageName(new BigDecimal(rate))));
         }
 
         TimeStat stat = container.getEnergyStat();
-        textListCache.add(Component.translatable("gtmoremachine.machine.wireless_monitor.tooltip.net_power",
+        textListCache.add(Component.translatable(WirelessEnergyMonitor.WIRELESS_MONITOR_TOOLTIP_NET_POWER,
                 getPowerStatusText(powerStatus)));
 
         BigDecimal avgMinute = stat.getMinuteAvg(powerStatus);
-        textListCache.add(FormattingUtil.formatWithConstantWidth("gtmoremachine.machine.wireless_energy_monitor.tooltip.last_minute",
+        textListCache.add(FormattingUtil.formatWithConstantWidth(WirelessEnergyMonitor.WIRELESS_ENERGY_MONITOR_TOOLTIP_LAST_MINUTE,
                 Component.literal(NumberUtils.formatBigDecimalNumberOrSic(avgMinute, format)).withStyle(ChatFormatting.DARK_AQUA),
                 Component.literal(NumberUtils.formatBigDecimalNumberOrSic(FormattingUtil.voltageAmperage(avgMinute), format)),
                 FormattingUtil.voltageName(avgMinute)));
         BigDecimal avgHour = stat.getHourAvg(powerStatus);
-        textListCache.add(FormattingUtil.formatWithConstantWidth("gtmoremachine.machine.wireless_energy_monitor.tooltip.last_hour",
+        textListCache.add(FormattingUtil.formatWithConstantWidth(WirelessEnergyMonitor.WIRELESS_ENERGY_MONITOR_TOOLTIP_LAST_HOUR,
                 Component.literal(NumberUtils.formatBigDecimalNumberOrSic(avgHour, format)).withStyle(ChatFormatting.YELLOW),
                 Component.literal(NumberUtils.formatBigDecimalNumberOrSic(FormattingUtil.voltageAmperage(avgHour), format)),
                 FormattingUtil.voltageName(avgHour)));
         BigDecimal avgDay = stat.getDayAvg(powerStatus);
-        textListCache.add(FormattingUtil.formatWithConstantWidth("gtmoremachine.machine.wireless_energy_monitor.tooltip.last_day",
+        textListCache.add(FormattingUtil.formatWithConstantWidth(WirelessEnergyMonitor.WIRELESS_ENERGY_MONITOR_TOOLTIP_LAST_DAY,
                 Component.literal(NumberUtils.formatBigDecimalNumberOrSic(avgDay, format)).withStyle(ChatFormatting.DARK_GREEN),
                 Component.literal(NumberUtils.formatBigDecimalNumberOrSic(FormattingUtil.voltageAmperage(avgDay), format)),
                 FormattingUtil.voltageName(avgDay)));
         // average useage
         BigDecimal avgEnergy = stat.getAvg(powerStatus);
-        textListCache.add(FormattingUtil.formatWithConstantWidth("gtmoremachine.machine.wireless_energy_monitor.tooltip.now",
+        textListCache.add(FormattingUtil.formatWithConstantWidth(WirelessEnergyMonitor.WIRELESS_ENERGY_MONITOR_TOOLTIP_NOW,
                 Component.literal(NumberUtils.formatBigDecimalNumberOrSic(avgEnergy, format)).withStyle(ChatFormatting.DARK_PURPLE),
                 Component.literal(NumberUtils.formatBigDecimalNumberOrSic(FormattingUtil.voltageAmperage(avgEnergy), format)),
                 FormattingUtil.voltageName(avgEnergy)));
@@ -82,7 +85,7 @@ public interface IWirelessMonitor extends IWirelessEnergyContainerHolder {
             textListCache.add(Component.translatable("gtceu.multiblock.power_substation.time_to_fill",
                     GTMMConfig.INSTANCE.isWirelessCapacitylimitEnable ?
                             getTimeToFillDrainText((container.getCapacity().subtract(energyTotal)).divide(multiply)) :
-                            Component.translatable("gtmoremachine.machine.wireless_energy_monitor.tooltip.time_to_fill"))
+                            Component.translatable(WirelessEnergyMonitor.WIRELESS_ENERGY_MONITOR_TOOLTIP_TIME_TO_FILL))
                     .withStyle(ChatFormatting.GRAY));
         } else if (compare < 0) {
             textListCache.add(Component.translatable("gtceu.multiblock.power_substation.time_to_drain",
@@ -95,10 +98,10 @@ public interface IWirelessMonitor extends IWirelessEnergyContainerHolder {
 
         if (GTMMConfig.INSTANCE.isWirelessRateEnable && container.getBindPos() != null) {
             String pos = container.getBindPos().pos().toShortString();
-            textListCache.add(Component.translatable("gtmoremachine.machine.wireless_energy_hatch.tooltip.2",
+            textListCache.add(Component.translatable(WirelessEnergyHatchPartMachine.WIRELESS_ENERGY_HATCH_TOOLTIP_2,
                     Component.translatable("recipe.condition.dimension.tooltip", container.getBindPos().dimension().location().toString()).append(" [").append(pos).append("] ")).withStyle(ChatFormatting.GRAY));
         }
-        textListCache.add(Component.translatable("gtmoremachine.machine.wireless_monitor.tooltip.statistics.energy",
+        textListCache.add(Component.translatable(WirelessEnergyTerminalBehavior.WIRELESS_MONITOR_TOOLTIP_STATISTICS_ENERGY,
                 ComponentPanelWidget.withButton(getStatisticsText(statistics), "statistics", getStaticscolor(statistics)),
                 ComponentPanelWidget.withButton(getFormatText(format), "format", getFormatcolor(format)),
                 ComponentPanelWidget.withButton(getPowerStatusText(powerStatus), "powerStatus", getPowerStatuscolor(powerStatus)),

@@ -58,8 +58,8 @@ public class WirelessMachines {
             .machine("wireless_computation_transmitter_hatch", (holder) -> new WirelessCWUHatchMachine(holder, true))
             .langValue("Wireless Computation Data Reception Hatch")
             .overlayTieredHullModel("computation_data_hatch")
-            .tooltips(Component.translatable("gtmoremachine.machine.wireless_computation_transmitter_hatch.tooltip.1"),
-                    Component.translatable("gtmoremachine.machine.wireless_computation_transmitter_hatch.tooltip.2"))
+            .tooltips(Component.translatable(WirelessCWUHatchMachine.WIRELESS_COMPUTATION_TRANSMITTER_HATCH_TOOLTIP_1),
+                    Component.translatable(WirelessCWUHatchMachine.WIRELESS_COMPUTATION_TRANSMITTER_HATCH_TOOLTIP_2))
             .rotationState(RotationState.ALL)
             .abilities(PartAbility.COMPUTATION_DATA_TRANSMISSION)
             .tier(GTValues.UV)
@@ -69,8 +69,8 @@ public class WirelessMachines {
             .machine("wireless_computation_receiver_hatch", (holder) -> new WirelessCWUHatchMachine(holder, false))
             .langValue("Wireless Computation Data Transmission Hatch")
             .overlayTieredHullModel("computation_data_hatch")
-            .tooltips(Component.translatable("gtmoremachine.machine.wireless_computation_transmitter_hatch.tooltip.1"),
-                    Component.translatable("gtmoremachine.machine.wireless_computation_transmitter_hatch.tooltip.2"))
+            .tooltips(Component.translatable(WirelessCWUHatchMachine.WIRELESS_COMPUTATION_RECEIVER_HATCH_TOOLTIP_1),
+                    Component.translatable(WirelessCWUHatchMachine.WIRELESS_COMPUTATION_RECEIVER_HATCH_TOOLTIP_2))
             .rotationState(RotationState.ALL)
             .abilities(PartAbility.COMPUTATION_DATA_RECEPTION)
             .tier(GTValues.UV)

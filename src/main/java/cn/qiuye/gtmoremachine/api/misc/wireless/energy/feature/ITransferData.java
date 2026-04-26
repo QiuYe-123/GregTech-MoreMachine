@@ -25,7 +25,6 @@ public interface ITransferData {
 
     @GTMMRegisterLanguage(en = "Owner: %s", cn = "所有者：%s")
     String ownertooltip = "gtmoremachine.machine.wireless_monitor.tooltip.0";
-
     @GTMMRegisterLanguage(en = "Transmission loss", cn = "传输损耗")
     String passive = "gtmoremachine.machine.wireless_monitor.tooltip.1";
 

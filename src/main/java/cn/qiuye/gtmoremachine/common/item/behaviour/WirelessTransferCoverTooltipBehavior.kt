@@ -22,7 +22,7 @@ class WirelessTransferCoverTooltipBehavior(private val tooltips: Consumer<Mutabl
 				val lst: MutableList<Component> = ArrayList()
 				lst.add(
 					Component.translatable(
-						"item.gtmoremachine.wireless_transfer.tooltip.1",
+						WirelessTransferCoverPlaceBehavior.WIRELESS_TRANSFER_TOOLTIP_1,
 						Component.translatable(itemId),
 						pos,
 					),

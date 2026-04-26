@@ -27,6 +27,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Supplier;
 
 @GTMMScanned
@@ -52,7 +53,6 @@ public class BlockMap {
     public static final Reference2ObjectOpenHashMap<Block, String> BLOCK_CATEGORY_MAP = new Reference2ObjectOpenHashMap<>(1024);
 
     public static final String BLOCKMAP_VALUE_PREFIX = GTMMValues.ADVTER_VALUE_PREFIX + "blockmap";
-
     @GTMMRegisterLanguage(valuePrefix = BLOCKMAP_VALUE_PREFIX, cn = "线圈", en = "Heating Coils")
     private static final String HEATING_COILS = "heating_coils";
     @GTMMRegisterLanguage(valuePrefix = BLOCKMAP_VALUE_PREFIX, cn = "过滤方块", en = "Cleanroom Filters")
@@ -126,7 +126,7 @@ public class BlockMap {
     }
 
     /**
-     * 对已有的 {@link MachineDefinition} 数组按其 Tier 排序并转为 {@code Block[]}。
+     * 对已有的 {@link MachineDefinition} 数组滤除空元素、按其 Tier 排序并转为 {@code Block[]}。
      *
      * <p>
      * 适用于 {@link com.gregtechceu.gtceu.common.data.GTMachines GTMachines} 中声明的
@@ -134,12 +134,17 @@ public class BlockMap {
      * 由于这些数组本身已在编译期保证元素唯一，故省略 {@code distinct()} 调用。
      * </p>
      *
-     * @param definitions 机器定义数组，不可为 {@code null}
-     * @return 按 {@code getTier()} 升序排列的 {@code Block} 数组
+     * <p>
+     * 会过滤掉数组中的 {@code null} 元素，以确保排序安全。
+     * </p>
+     *
+     * @param definitions 机器定义数组，不可为 {@code null}。数组中允许含 {@code null} 元素
+     * @return 过滤空值并按 {@code getTier()} 升序排列的 {@code Block} 数组
      * @throws NullPointerException 如果 {@code definitions} 为 {@code null}
      */
-    public static @NotNull Block[] filterSort(@NotNull MachineDefinition[] definitions) {
+    public static @NotNull Block[] filterSort(MachineDefinition[] definitions) {
         return Arrays.stream(definitions)
+                .filter(Objects::nonNull)
                 .sorted(Comparator.comparingInt(MachineDefinition::getTier))
                 .map(MachineDefinition::get)
                 .toArray(Block[]::new);

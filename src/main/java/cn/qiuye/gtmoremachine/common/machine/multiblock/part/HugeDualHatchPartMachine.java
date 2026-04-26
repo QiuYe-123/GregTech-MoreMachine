@@ -1,5 +1,7 @@
 package cn.qiuye.gtmoremachine.common.machine.multiblock.part;
 
+import cn.qiuye.gtmoremachine.api.annotation.GTMMDataGeneratorScanned;
+import cn.qiuye.gtmoremachine.api.annotation.language.GTMMRegisterLanguage;
 import cn.qiuye.gtmoremachine.api.machine.trait.CatalystFluidStackHandler;
 import cn.qiuye.gtmoremachine.utils.NumberUtils;
 
@@ -35,9 +37,14 @@ import java.util.List;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
+@GTMMDataGeneratorScanned
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class HugeDualHatchPartMachine extends HugeBusPartMachine {
+
+    private static final String HUGE_DUAL_HATCH_PREFIX = "gtmoremachine.machine.huge_dual_hatch";
+    @GTMMRegisterLanguage(en = "Fluid slots: %s/%s", cn = "流体槽位: %s/%s")
+    public static final String HUGE_DUAL_HATCH_TOOLTIP_2 = HUGE_DUAL_HATCH_PREFIX + ".tooltip.2";
 
     @SaveField
     protected final NotifiableFluidTank tank;
@@ -186,12 +193,12 @@ public class HugeDualHatchPartMachine extends HugeBusPartMachine {
         }
 
         if (textList.isEmpty()) {
-            textList.add(Component.translatable("gtmoremachine.machine.huge_item_bus.tooltip.3"));
+            textList.add(Component.translatable(HUGE_ITEM_BUS_TOOLTIP_3));
         }
 
-        textList.add(0, Component.translatable("gtmoremachine.machine.huge_item_bus.tooltip.2", itemCount, super.getInventorySize())
+        textList.add(0, Component.translatable(HUGE_ITEM_BUS_TOOLTIP_2, itemCount, super.getInventorySize())
                 .setStyle(Style.EMPTY.withColor(ChatFormatting.GREEN)));
-        textList.add(1, Component.translatable("gtmoremachine.machine.huge_dual_hatch.tooltip.2", tankCount, this.getTankInventorySize())
+        textList.add(1, Component.translatable(HUGE_DUAL_HATCH_TOOLTIP_2, tankCount, this.getTankInventorySize())
                 .setStyle(Style.EMPTY.withColor(ChatFormatting.GREEN)));
     }
 }

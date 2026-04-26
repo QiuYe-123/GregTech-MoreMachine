@@ -3,6 +3,7 @@ package cn.qiuye.gtmoremachine.common.machine.multiblock.electric;
 import cn.qiuye.gtmoremachine.api.machine.multiblock.feature.ICCData;
 import cn.qiuye.gtmoremachine.api.machine.trait.feature.IWirelessEnergyContainerHolder;
 import cn.qiuye.gtmoremachine.api.misc.wireless.energy.WirelessEnergyContainer;
+import cn.qiuye.gtmoremachine.common.machine.multiblock.part.WirelessEnergyHatchPartMachine;
 import cn.qiuye.gtmoremachine.utils.TeamUtils;
 
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
@@ -88,7 +89,7 @@ public class DimensionalRelayNodeMachine extends WorkableMultiblockMachine
             }
 
             context.getPlayer().sendSystemMessage(Component.translatable(
-                    "gtmoremachine.machine.wireless_energy_hatch.tooltip.bind",
+                    WirelessEnergyHatchPartMachine.WIRELESS_ENERGY_HATCH_TOOLTIP_BIND,
                     TeamUtils.getName(context.getPlayer())));
             return InteractionResult.SUCCESS;
         }
@@ -111,7 +112,7 @@ public class DimensionalRelayNodeMachine extends WorkableMultiblockMachine
             }
 
             player.sendSystemMessage(Component.translatable(
-                    "gtmoremachine.machine.wireless_energy_hatch.tooltip.unbind"));
+                    WirelessEnergyHatchPartMachine.WIRELESS_ENERGY_HATCH_TOOLTIP_UNBIND));
             return true;
         }
         return false;

@@ -42,7 +42,7 @@ public class CreativeMachines {
             .langValue("Creative Input Hatch")
             .rotationState(RotationState.ALL)
             .colorOverlayTieredHullModel("overlay_pipe_in_emissive", "overlay_pipe_9x", GTMachineModels.OVERLAY_FLUID_HATCH_INPUT)
-            .tooltips(Component.translatable("gtmoremachine.creative_tooltip"))
+            .tooltips(Component.translatable(CreativeFluidStats.CREATIVE_TOOLTIP))
             .abilities(PartAbility.IMPORT_FLUIDS, PartAbility.IMPORT_FLUIDS_9X)
             .tier(GTValues.MAX)
             .register();
@@ -52,7 +52,7 @@ public class CreativeMachines {
             .langValue("Creative Input Bus")
             .rotationState(RotationState.ALL)
             .colorOverlayTieredHullModel("overlay_pipe_in_emissive", "overlay_pipe", GTMachineModels.OVERLAY_ITEM_HATCH_INPUT)
-            .tooltips(Component.translatable("gtmoremachine.creative_tooltip"))
+            .tooltips(Component.translatable(CreativeFluidStats.CREATIVE_TOOLTIP))
             .abilities(PartAbility.IMPORT_ITEMS)
             .tier(GTValues.MAX)
             .register();
@@ -62,7 +62,7 @@ public class CreativeMachines {
             .machine("creative_energy_hatch", CreativeEnergyHatchPartMachine::new)
             .langValue("§rCreative Energy Hatch")
             .rotationState(RotationState.ALL)
-            .tooltips(Component.translatable("gtmoremachine.creative_tooltip"))
+            .tooltips(Component.translatable(CreativeFluidStats.CREATIVE_TOOLTIP))
             .overlayTieredHullModel("energy_input_hatch")
             .abilities(PartAbility.INPUT_ENERGY)
             .tier(GTValues.MAX)
@@ -73,7 +73,7 @@ public class CreativeMachines {
             .machine("creative_laser_hatch", CreativeLaserHatchPartMachine::new)
             .langValue("§rCreative Laser Target Hatch")
             .rotationState(RotationState.ALL)
-            .tooltips(Component.translatable("gtmoremachine.creative_tooltip"))
+            .tooltips(Component.translatable(CreativeFluidStats.CREATIVE_TOOLTIP))
             .overlayTieredHullModel("laser_target_hatch")
             .abilities(PartAbility.INPUT_LASER)
             .tier(GTValues.MAX)
@@ -83,7 +83,7 @@ public class CreativeMachines {
             .item("creative_energy_cover", ComponentItem::create)
             .lang("Creative Energy Cover")
             .onRegister(GTItems.attach(new CoverPlaceBehavior(GTMMCovers.CREATIVE_ENERGY),
-                    new TooltipBehavior(lines -> lines.add(Component.translatable("gtmoremachine.creative_tooltip")))))
+                    new TooltipBehavior(lines -> lines.add(Component.translatable(CreativeFluidStats.CREATIVE_TOOLTIP)))))
             .register();
 
     public final static ItemEntry<ComponentItem> CREATIVE_FLUID_CELL = GTMM
