@@ -1,5 +1,7 @@
 package cn.qiuye.gtmoremachine.common.machine.multiblock.part;
 
+import cn.qiuye.gtmoremachine.api.annotation.GTMMDataGeneratorScanned;
+import cn.qiuye.gtmoremachine.api.annotation.language.GTMMRegisterLanguage;
 import cn.qiuye.gtmoremachine.api.capability.IGTMMJadeIF;
 import cn.qiuye.gtmoremachine.api.machine.trait.WirelessNotifiableComputationContainer;
 
@@ -25,10 +27,30 @@ import lombok.Getter;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
+@GTMMDataGeneratorScanned
 @Getter
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
 public class WirelessCWUHatchMachine extends MultiblockPartMachine implements IDataStickInteractable, IGTMMJadeIF {
+
+    private static final String WIRELESS_COMPUTATION_TRANSMITTER_PREFIX = "gtmoremachine.machine.wireless_computation_transmitter_hatch";
+    private static final String WIRELESS_COMPUTATION_RECEIVER_PREFIX = "gtmoremachine.machine.wireless_computation_receiver_hatch";
+    @GTMMRegisterLanguage(en = "Output computational power data from the multiblock structure.", cn = "从多方块结构输出算力数据")
+    public static final String WIRELESS_COMPUTATION_TRANSMITTER_HATCH_TOOLTIP_1 = WIRELESS_COMPUTATION_TRANSMITTER_PREFIX + ".tooltip.1";
+    @GTMMRegisterLanguage(en = "Need to bind the wireless computational power target Hatch and the wireless computational power source Hatch by right-clicking with a flash memory.", cn = "需要使用闪存右键无线算力靶仓和无线算力源仓进行绑定。")
+    public static final String WIRELESS_COMPUTATION_TRANSMITTER_HATCH_TOOLTIP_2 = WIRELESS_COMPUTATION_TRANSMITTER_PREFIX + ".tooltip.2";
+    @GTMMRegisterLanguage(en = "Input computational power data for the multiblock structure", cn = "为多方块结构输入算力数据")
+    public static final String WIRELESS_COMPUTATION_RECEIVER_HATCH_TOOLTIP_1 = WIRELESS_COMPUTATION_RECEIVER_PREFIX + ".tooltip.1";
+    @GTMMRegisterLanguage(en = "Need to bind the wireless computational power target Hatch and the wireless computational power source Hatch by right-clicking with a flash memory.", cn = "需要使用闪存右键无线算力靶仓和无线算力源仓进行绑定。")
+    public static final String WIRELESS_COMPUTATION_RECEIVER_HATCH_TOOLTIP_2 = WIRELESS_COMPUTATION_RECEIVER_PREFIX + ".tooltip.2";
+
+    private static final String WIRELESS_COMPUTATION_HATCH_PREFIX = "gtmoremachine.machine.wireless_computation";
+    @GTMMRegisterLanguage(en = "Source Hatch data reading completed, please right-click the target Hatch to bind.", cn = "源仓数据读取完成，请右键靶仓进行绑定。")
+    public static final String WIRELESS_COMPUTATION_TRANSMITTER_HATCH_TOBIND = WIRELESS_COMPUTATION_HATCH_PREFIX + "_transmitter_hatch.tobind";
+    @GTMMRegisterLanguage(en = "Target Hatch data reading completed, please right-click the source Hatch to bind.", cn = "靶仓数据读取完成，请右键源仓进行绑定。")
+    public static final String WIRELESS_COMPUTATION_RECEIVER_HATCH_TOBIND = WIRELESS_COMPUTATION_HATCH_PREFIX + "_receiver_hatch.tobind";
+    @GTMMRegisterLanguage(en = "Wireless computational power data Hatch binding completed.", cn = "无线算力数据仓绑定完成。")
+    public static final String WIRELESS_COMPUTATION_HATCH_BINDED = WIRELESS_COMPUTATION_HATCH_PREFIX + "_hatch.binded";
 
     @Getter
     private final boolean transmitter;
@@ -118,10 +140,10 @@ public class WirelessCWUHatchMachine extends MultiblockPartMachine implements ID
         BlockPos currentPos = getBlockPos();
         if (isTransmitter()) {
             tag.put(KEY_TRANSMITTER, createPos(currentPos));
-            player.sendSystemMessage(Component.translatable("gtmoremachine.machine.wireless_computation_transmitter_hatch.tobind"));
+            player.sendSystemMessage(Component.translatable(WIRELESS_COMPUTATION_TRANSMITTER_HATCH_TOBIND));
         } else {
             tag.put(KEY_RECEIVER, createPos(currentPos));
-            player.sendSystemMessage(Component.translatable("gtmoremachine.machine.wireless_computation_receiver_hatch.tobind"));
+            player.sendSystemMessage(Component.translatable(WIRELESS_COMPUTATION_RECEIVER_HATCH_TOBIND));
         }
         return InteractionResult.SUCCESS;
     }
@@ -165,7 +187,7 @@ public class WirelessCWUHatchMachine extends MultiblockPartMachine implements ID
                 otherWoch.setReceiverPos(this.getBlockPos());
             }
 
-            player.sendSystemMessage(Component.translatable("gtmoremachine.machine.wireless_computation_hatch.binded"));
+            player.sendSystemMessage(Component.translatable(WIRELESS_COMPUTATION_HATCH_BINDED));
             return true;
         }
         return false;

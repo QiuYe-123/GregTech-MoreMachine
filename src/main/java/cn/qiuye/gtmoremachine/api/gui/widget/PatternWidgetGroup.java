@@ -42,7 +42,6 @@ import java.util.function.BooleanSupplier;
 public class PatternWidgetGroup extends WidgetGroup {
 
     private static final String valuePrefix = GTMMValues.ADVTER_VALUE_PREFIX + "block";
-
     @GTMMRegisterLanguage(en = "Cancel", cn = "取消")
     private static final String cancel = valuePrefix + ".cancel";
     @GTMMRegisterLanguage(en = "Confirm", cn = "确认")
@@ -218,7 +217,7 @@ public class PatternWidgetGroup extends WidgetGroup {
                     this.rightPanel.setVisible(false);
                 }
             };
-            toggle.setOnPressCallback((btn, pressed) -> onToggle.accept(pressed));
+            toggle.setOnPressCallback((btn, pressed) -> onToggle.accept(pressed.booleanValue()));
             row.addWidget(toggle);
             this.categoryListPanel.addWidget(row);
         }

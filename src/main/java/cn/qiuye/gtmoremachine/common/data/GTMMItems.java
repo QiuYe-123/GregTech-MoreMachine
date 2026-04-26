@@ -1,6 +1,7 @@
 package cn.qiuye.gtmoremachine.common.data;
 
 import cn.qiuye.gtmoremachine.GTmm;
+import cn.qiuye.gtmoremachine.common.cover.WirelessEnergyReceiveCover;
 import cn.qiuye.gtmoremachine.common.item.AdvancedTerminalBehavior;
 import cn.qiuye.gtmoremachine.common.item.WirelessEnergyBindingToolBehavior;
 import cn.qiuye.gtmoremachine.common.item.WirelessEnergyTerminalBehavior;
@@ -42,8 +43,8 @@ public class GTMMItems {
             .onRegister(attach(new WirelessTransferCoverPlaceBehavior(GTMMCovers.WIRELESS_ITEM_TRANSFER),
                     new CoverPlaceBehavior(GTMMCovers.WIRELESS_ITEM_TRANSFER),
                     new WirelessTransferCoverTooltipBehavior(lines -> {
-                        lines.add(Component.translatable("item.gtmoremachine.wireless_transfer.item.tooltip.1"));
-                        lines.add(Component.translatable("item.gtmoremachine.wireless_transfer.tooltip.2"));
+                        lines.add(Component.translatable(WirelessTransferCoverPlaceBehavior.WIRELESS_TRANSFER_ITEM_TOOLTIP_1));
+                        lines.add(Component.translatable(WirelessTransferCoverPlaceBehavior.WIRELESS_TRANSFER_TOOLTIP_2));
                     })))
             .register();
 
@@ -53,8 +54,8 @@ public class GTMMItems {
             .onRegister(attach(new WirelessTransferCoverPlaceBehavior(GTMMCovers.WIRELESS_FLUID_TRANSFER),
                     new CoverPlaceBehavior(GTMMCovers.WIRELESS_FLUID_TRANSFER),
                     new WirelessTransferCoverTooltipBehavior(lines -> {
-                        lines.add(Component.translatable("item.gtmoremachine.wireless_transfer.fluid.tooltip.1"));
-                        lines.add(Component.translatable("item.gtmoremachine.wireless_transfer.tooltip.2"));
+                        lines.add(Component.translatable(WirelessTransferCoverPlaceBehavior.WIRELESS_TRANSFER_FLUID_TOOLTIP_1));
+                        lines.add(Component.translatable(WirelessTransferCoverPlaceBehavior.WIRELESS_TRANSFER_TOOLTIP_2));
                     })))
             .register();
 
@@ -64,9 +65,9 @@ public class GTMMItems {
             .onRegister(attach(new WirelessTransferCoverPlaceBehavior(GTMMCovers.ADVANCED_WIRELESS_ITEM_TRANSFER),
                     new CoverPlaceBehavior(GTMMCovers.ADVANCED_WIRELESS_ITEM_TRANSFER),
                     new WirelessTransferCoverTooltipBehavior(lines -> {
-                        lines.add(Component.translatable("item.gtmoremachine.wireless_transfer.item.tooltip.1"));
-                        lines.add(Component.translatable("item.gtmoremachine.advanced_wireless_transfer.tooltip.1"));
-                        lines.add(Component.translatable("item.gtmoremachine.wireless_transfer.tooltip.2"));
+                        lines.add(Component.translatable(WirelessTransferCoverPlaceBehavior.WIRELESS_TRANSFER_ITEM_TOOLTIP_1));
+                        lines.add(Component.translatable(WirelessTransferCoverPlaceBehavior.ADVANCED_WIRELESS_TRANSFER_TOOLTIP_1));
+                        lines.add(Component.translatable(WirelessTransferCoverPlaceBehavior.WIRELESS_TRANSFER_TOOLTIP_2));
                     })))
             .register();
 
@@ -76,9 +77,9 @@ public class GTMMItems {
             .onRegister(attach(new WirelessTransferCoverPlaceBehavior(GTMMCovers.ADVANCED_WIRELESS_FLUID_TRANSFER),
                     new CoverPlaceBehavior(GTMMCovers.ADVANCED_WIRELESS_FLUID_TRANSFER),
                     new WirelessTransferCoverTooltipBehavior(lines -> {
-                        lines.add(Component.translatable("item.gtmoremachine.wireless_transfer.fluid.tooltip.1"));
-                        lines.add(Component.translatable("item.gtmoremachine.advanced_wireless_transfer.tooltip.1"));
-                        lines.add(Component.translatable("item.gtmoremachine.wireless_transfer.tooltip.2"));
+                        lines.add(Component.translatable(WirelessTransferCoverPlaceBehavior.WIRELESS_TRANSFER_FLUID_TOOLTIP_1));
+                        lines.add(Component.translatable(WirelessTransferCoverPlaceBehavior.ADVANCED_WIRELESS_TRANSFER_TOOLTIP_1));
+                        lines.add(Component.translatable(WirelessTransferCoverPlaceBehavior.WIRELESS_TRANSFER_TOOLTIP_2));
                     })))
             .register();
 
@@ -147,9 +148,9 @@ public class GTMMItems {
                 .item(GTValues.VN[tier].toLowerCase(Locale.ROOT) + "_" + (amperage == 1 ? "" : amperage + "a_") + "wireless_energy_receive_cover", ComponentItem::create)
                 .lang(GTValues.VNF[tier] + " " + "Wireless Energy Receive Cover")
                 .onRegister(attach(new TooltipBehavior(lines -> {
-                    lines.add(Component.translatable("item.gtmoremachine.wireless_energy_receive_cover.tooltip.1"));
-                    lines.add(Component.translatable("item.gtmoremachine.wireless_energy_receive_cover.tooltip.2"));
-                    lines.add(Component.translatable("item.gtmoremachine.wireless_energy_receive_cover.tooltip.3", GTValues.VEX[tier] * amperage));
+                    lines.add(Component.translatable(WirelessEnergyReceiveCover.WIRELESS_ENERGY_RECEIVE_COVER_TOOLTIP_1));
+                    lines.add(Component.translatable(WirelessEnergyReceiveCover.WIRELESS_ENERGY_RECEIVE_COVER_TOOLTIP_2));
+                    lines.add(Component.translatable(WirelessEnergyReceiveCover.WIRELESS_ENERGY_RECEIVE_COVER_TOOLTIP_3, GTValues.VEX[tier] * amperage));
                 }), new CoverPlaceBehavior(amperage == 1 ? WIRELESS_ENERGY_RECEIVE[tier - 1] : WIRELESS_ENERGY_RECEIVE_4A[tier - 1]))).register();
     }
 

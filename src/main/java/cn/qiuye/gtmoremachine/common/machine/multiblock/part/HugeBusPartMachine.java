@@ -1,5 +1,7 @@
 package cn.qiuye.gtmoremachine.common.machine.multiblock.part;
 
+import cn.qiuye.gtmoremachine.api.annotation.GTMMDataGeneratorScanned;
+import cn.qiuye.gtmoremachine.api.annotation.language.GTMMRegisterLanguage;
 import cn.qiuye.gtmoremachine.api.machine.fancyconfigurator.ButtonConfigurator;
 import cn.qiuye.gtmoremachine.api.machine.fancyconfigurator.InventoryFancyConfigurator;
 import cn.qiuye.gtmoremachine.api.machine.trait.CatalystItemStackHandler;
@@ -52,7 +54,29 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
+@GTMMDataGeneratorScanned
 public class HugeBusPartMachine extends TieredIOPartMachine implements IDistinctPart, IPaintable {
+
+    private static final String HUGE_ITEM_BUS_PREFIX = "gtmoremachine.machine.huge_item_bus";
+    private static final String SHARE_INVENTORY_PREFIX = "gui.gtmoremachine.share_inventory";
+    @GTMMRegisterLanguage(en = "Inputs items for multiblock structures, with each slot able to store up to 2^31-1 items.", cn = "为多方块结构输入物品，每个槽位最多可存储2^31-1个物品。")
+    public static final String HUGE_ITEM_BUS_IMPORT_TOOLTIP = HUGE_ITEM_BUS_PREFIX + ".import.tooltip";
+    @GTMMRegisterLanguage(en = "Outputs items for multiblock structures, with each slot able to store up to 2^31-1 items.", cn = "为多方块结构输出物品，每个槽位最多可存储2^31-1个物品。")
+    public static final String HUGE_ITEM_BUS_EXPORT_TOOLTIP = HUGE_ITEM_BUS_PREFIX + ".export.tooltip";
+    @GTMMRegisterLanguage(en = "Returns all items to the container in front.", cn = "退回所有物品到面前的容器中。")
+    public static final String HUGE_ITEM_BUS_TOOLTIP_1 = HUGE_ITEM_BUS_PREFIX + ".tooltip.1";
+    @GTMMRegisterLanguage(en = "Item slots: %s/%s", cn = "物品槽位: %s/%s")
+    public static final String HUGE_ITEM_BUS_TOOLTIP_2 = HUGE_ITEM_BUS_PREFIX + ".tooltip.2";
+    @GTMMRegisterLanguage(en = "Empty", cn = "空")
+    public static final String HUGE_ITEM_BUS_TOOLTIP_3 = HUGE_ITEM_BUS_PREFIX + ".tooltip.3";
+    @GTMMRegisterLanguage(en = "Catalyst", cn = "催化剂")
+    public static final String SHARE_INVENTORY_TITLE = SHARE_INVENTORY_PREFIX + ".title";
+    @GTMMRegisterLanguage(en = "Open Catalyst Slot", cn = "打开催化剂槽")
+    public static final String SHARE_INVENTORY_DESC_0 = SHARE_INVENTORY_PREFIX + ".desc.0";
+    @GTMMRegisterLanguage(en = "In the catalyst slot, only non-consumable items can participate in the synthesis.", cn = "在催化剂槽中只有不消耗的物品才能参与合成。")
+    public static final String SHARE_INVENTORY_DESC_1 = SHARE_INVENTORY_PREFIX + ".desc.1";
+    @GTMMRegisterLanguage(en = "Common items can be automatically input by placing a container in front of the input bus.", cn = "普通物品请通过在输入总线面前放置容器以自动输入。")
+    public static final String SHARE_INVENTORY_DESC_2 = SHARE_INVENTORY_PREFIX + ".desc.2";
 
     public static final int INV_MULTIPLE = 2;
     @Getter
@@ -236,13 +260,13 @@ public class HugeBusPartMachine extends TieredIOPartMachine implements IDistinct
         if (this.io == IO.IN) {
             configuratorPanel.attachConfigurators(new CircuitFancyConfigurator(circuitInventory.storage));
             configuratorPanel.attachConfigurators(new ButtonConfigurator(new GuiTextureGroup(GuiTextures.BUTTON, new TextTexture("🔙")), this::refundAll)
-                    .setTooltips(List.of(Component.translatable("gtmoremachine.machine.huge_item_bus.tooltip.1"))));
+                    .setTooltips(List.of(Component.translatable(HUGE_ITEM_BUS_TOOLTIP_1))));
             configuratorPanel.attachConfigurators(new InventoryFancyConfigurator(
-                    shareInventory.storage, Component.translatable("gui.gtmoremachine.share_inventory.title"))
+                    shareInventory.storage, Component.translatable(SHARE_INVENTORY_TITLE))
                     .setTooltips(List.of(
-                            Component.translatable("gui.gtmoremachine.share_inventory.desc.0"),
-                            Component.translatable("gui.gtmoremachine.share_inventory.desc.1"),
-                            Component.translatable("gui.gtmoremachine.share_inventory.desc.2"))));
+                            Component.translatable(SHARE_INVENTORY_DESC_0),
+                            Component.translatable(SHARE_INVENTORY_DESC_1),
+                            Component.translatable(SHARE_INVENTORY_DESC_2))));
         }
     }
 
@@ -274,9 +298,9 @@ public class HugeBusPartMachine extends TieredIOPartMachine implements IDistinct
             }
         }
         if (textList.isEmpty()) {
-            textList.add(Component.translatable("gtmoremachine.machine.huge_item_bus.tooltip.3"));
+            textList.add(Component.translatable(HUGE_ITEM_BUS_TOOLTIP_3));
         }
-        textList.add(0, Component.translatable("gtmoremachine.machine.huge_item_bus.tooltip.2", itemCount, getInventorySize())
+        textList.add(0, Component.translatable(HUGE_ITEM_BUS_TOOLTIP_2, itemCount, getInventorySize())
                 .setStyle(Style.EMPTY.withColor(ChatFormatting.GREEN)));
     }
 }

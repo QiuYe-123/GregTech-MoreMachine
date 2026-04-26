@@ -1,6 +1,8 @@
 package cn.qiuye.gtmoremachine.api.pattern;
 
 import cn.qiuye.gtmoremachine.api.GTMMAPI;
+import cn.qiuye.gtmoremachine.api.annotation.GTMMDataGeneratorScanned;
+import cn.qiuye.gtmoremachine.api.annotation.language.GTMMRegisterLanguage;
 import cn.qiuye.gtmoremachine.api.machine.multiblock.feature.ICCData;
 import cn.qiuye.gtmoremachine.common.block.WECCBlock;
 import cn.qiuye.gtmoremachine.common.machine.multiblock.electric.DemodulationHubMachine;
@@ -18,7 +20,14 @@ import java.util.Comparator;
 import java.util.Map;
 import java.util.function.Supplier;
 
+@GTMMDataGeneratorScanned
 public class GTMMPredicates {
+
+    private static final String PATTERN_ERROR_PREFIX = "gtmoremachine.multiblock.pattern.error";
+    @GTMMRegisterLanguage(en = "§cAll heating Energy Communication Unit must be the same", cn = "§c必须使用同种能源通讯单元")
+    private static final String ERROR_ECUTYPES = PATTERN_ERROR_PREFIX + ".ecutypes";
+    @GTMMRegisterLanguage(en = "§cAll heating Wireless Energy Capacity Component must be the same", cn = "§c必须使用相同的电网容量组件")
+    private static final String ERROR_WECC = PATTERN_ERROR_PREFIX + ".wecc";
 
     public static TraceabilityPredicate EnergyCommunicationUnit() {
         return new TraceabilityPredicate(blockWorldState -> {
@@ -28,7 +37,7 @@ public class GTMMPredicates {
                     var ecu = entry.getKey();
                     Object currentCoil = blockWorldState.getMatchContext().getOrPut("ECUType", ecu);
                     if (!currentCoil.equals(ecu)) {
-                        blockWorldState.setError(new PatternStringError("gtmoremachine.multiblock.pattern.error.ecutypes"));
+                        blockWorldState.setError(new PatternStringError(ERROR_ECUTYPES));
                         return false;
                     }
                     return true;
@@ -38,7 +47,7 @@ public class GTMMPredicates {
         }, () -> GTMMAPI.ECU.entrySet().stream()
                 .sorted(Comparator.comparingInt(entry -> entry.getKey().getTier()))
                 .map(entry -> new BlockInfo(entry.getValue().get().defaultBlockState(), null))
-                .toArray(BlockInfo[]::new)).addTooltips(Component.translatable("gtmoremachine.multiblock.pattern.error.ecutypes"));
+                .toArray(BlockInfo[]::new)).addTooltips(Component.translatable(ERROR_ECUTYPES));
     }
 
     public static TraceabilityPredicate WirelessEnergyCapacityComponent() {
@@ -61,6 +70,6 @@ public class GTMMPredicates {
                 .sorted(Comparator.comparingInt(entry -> entry.getKey().getTier()))
                 .map(entry -> new BlockInfo(entry.getValue().get().defaultBlockState(), null))
                 .toArray(BlockInfo[]::new))
-                .addTooltips(Component.translatable("gtmoremachine.multiblock.pattern.error.wecc"));
+                .addTooltips(Component.translatable(ERROR_WECC));
     }
 }

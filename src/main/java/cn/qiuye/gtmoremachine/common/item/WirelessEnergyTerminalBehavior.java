@@ -1,6 +1,8 @@
 package cn.qiuye.gtmoremachine.common.item;
 
 import cn.qiuye.gtmoremachine.GTmm;
+import cn.qiuye.gtmoremachine.api.annotation.GTMMDataGeneratorScanned;
+import cn.qiuye.gtmoremachine.api.annotation.language.GTMMRegisterLanguage;
 import cn.qiuye.gtmoremachine.api.gui.monitor.*;
 import cn.qiuye.gtmoremachine.api.gui.widget.AlignComponentPanelWidget;
 import cn.qiuye.gtmoremachine.api.gui.widget.AlignLabelWidget;
@@ -49,9 +51,26 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import static cn.qiuye.gtmoremachine.api.gui.widget.AlignLabelWidget.ALIGN_CENTER;
 import static cn.qiuye.gtmoremachine.common.machine.electric.WirelessEnergyMonitor.DISPLAY_TEXT_WIDTH;
 
+@GTMMDataGeneratorScanned
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class WirelessEnergyTerminalBehavior implements IItemUIFactory, IItemHUDProvider, IWirelessEnergyContainerHolder {
+
+    private static final String WIRELESS_MONITOR_PREFIX = "gtmoremachine.machine.wireless_monitor";
+    @GTMMRegisterLanguage(en = "Electricity Statistics：%s     Display Format：%s    Power status：%s\nSorting rules：%s        Type：%s", cn = "用电统计：%s     显示格式：%s    功率状态：%s\n排序规则：%s        类别: %s")
+    public static final String WIRELESS_MONITOR_TOOLTIP_STATISTICS_ENERGY = WIRELESS_MONITOR_PREFIX + ".tooltip.statistics.energy";
+    @GTMMRegisterLanguage(en = "CWU Statistics：%s     Display Format：%s    CWU status：%s", cn = "算力统计：%s     显示格式：%s    算力状态：%s")
+    public static final String WIRELESS_MONITOR_TOOLTIP_STATISTICS_CWU = WIRELESS_MONITOR_PREFIX + ".tooltip.statistics.cwu";
+
+    private static final String HUD_PREFIX = "item.gtmoremachine.wireless_energy_terminal";
+    @GTMMRegisterLanguage(en = "Average Net ALL：%s EU (%s A %s§r)", cn = "全局平均：%s EU (%s A %s§r)")
+    public static final String HUD_1 = HUD_PREFIX + ".hud.1";
+    @GTMMRegisterLanguage(en = "Average Net IN：%s EU (%s A %s§r)", cn = "输入平均：%s EU (%s A %s§r)")
+    public static final String HUD_2 = HUD_PREFIX + ".hud.2";
+    @GTMMRegisterLanguage(en = "Average Net OUT：%s EU (%s A %s§r)", cn = "输出平均：%s EU (%s A %s§r)")
+    public static final String HUD_3 = HUD_PREFIX + ".hud.3";
+    @GTMMRegisterLanguage(en = "Total Energy：%s EU (%s A %s§r)", cn = "能源总量：%s EU (%s A %s§r)")
+    public static final String HUD_4 = HUD_PREFIX + ".hud.4";
 
     @OnlyIn(Dist.CLIENT)
     private ModularHUD hud;
@@ -210,19 +229,19 @@ public class WirelessEnergyTerminalBehavior implements IItemUIFactory, IItemHUDP
                 storage = container.getStorage();
             }
         }
-        this.hud.newString(Component.translatable("item.gtmoremachine.wireless_energy_terminal.hud.1",
+        this.hud.newString(Component.translatable(HUD_1,
                 Component.literal(NumberUtils.formatBigDecimalNumberOrSic(all)).withStyle(ChatFormatting.DARK_PURPLE),
                 Component.literal(NumberUtils.formatBigDecimalNumberOrSic(FormattingUtil.voltageAmperage(all))),
                 FormattingUtil.voltageName(all)));
-        this.hud.newString(Component.translatable("item.gtmoremachine.wireless_energy_terminal.hud.2",
+        this.hud.newString(Component.translatable(HUD_2,
                 Component.literal(NumberUtils.formatBigDecimalNumberOrSic(in)).withStyle(ChatFormatting.DARK_BLUE),
                 Component.literal(NumberUtils.formatBigDecimalNumberOrSic(FormattingUtil.voltageAmperage(in))),
                 FormattingUtil.voltageName(in)));
-        this.hud.newString(Component.translatable("item.gtmoremachine.wireless_energy_terminal.hud.3",
+        this.hud.newString(Component.translatable(HUD_3,
                 Component.literal(NumberUtils.formatBigDecimalNumberOrSic(out)).withStyle(ChatFormatting.DARK_RED),
                 Component.literal(NumberUtils.formatBigDecimalNumberOrSic(FormattingUtil.voltageAmperage(out))),
                 FormattingUtil.voltageName(out)));
-        this.hud.newString(Component.translatable("item.gtmoremachine.wireless_energy_terminal.hud.4",
+        this.hud.newString(Component.translatable(HUD_4,
                 Component.literal(NumberUtils.formatBigIntegerNumberOrSic(storage)).withStyle(ChatFormatting.DARK_AQUA),
                 Component.literal(NumberUtils.formatBigDecimalNumberOrSic(FormattingUtil.voltageAmperage(new BigDecimal(storage)))),
                 FormattingUtil.voltageName(new BigDecimal(storage))));
