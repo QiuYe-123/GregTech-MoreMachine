@@ -1,9 +1,10 @@
 package cn.qiuye.gtmoremachine.common.machine.multiblock.part;
 
 import cn.qiuye.gtmoremachine.GTmm;
+import cn.qiuye.gtmoremachine.api.annotation.GTMMDataGeneratorScanned;
+import cn.qiuye.gtmoremachine.api.annotation.language.GTMMRegisterLanguage;
 import cn.qiuye.gtmoremachine.api.machine.trait.feature.IWirelessEnergyContainerHolder;
 import cn.qiuye.gtmoremachine.api.misc.wireless.energy.WirelessEnergyContainer;
-import cn.qiuye.gtmoremachine.common.data.machines.WirelessMachines;
 import cn.qiuye.gtmoremachine.utils.TeamUtils;
 
 import com.gregtechceu.gtceu.api.GTValues;
@@ -36,7 +37,40 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
+@GTMMDataGeneratorScanned
 public class WirelessEnergyHatchPartMachine extends TieredIOPartMachine implements IWirelessEnergyContainerHolder {
+
+    private static final String WIRELESS_ENERGY_HATCH_PREFIX = "gtmoremachine.machine.wireless_energy_hatch";
+    @GTMMRegisterLanguage(en = "Bind to: %s", cn = "成功绑定至：%s")
+    public static final String WIRELESS_ENERGY_HATCH_TOOLTIP_BIND = WIRELESS_ENERGY_HATCH_PREFIX + ".tooltip.bind";
+    @GTMMRegisterLanguage(en = "Unbind!", cn = "解除绑定成功")
+    public static final String WIRELESS_ENERGY_HATCH_TOOLTIP_UNBIND = WIRELESS_ENERGY_HATCH_PREFIX + ".tooltip.unbind";
+    @GTMMRegisterLanguage(en = "No owner.", cn = "未绑定所有者")
+    public static final String WIRELESS_ENERGY_HATCH_TOOLTIP_1 = WIRELESS_ENERGY_HATCH_PREFIX + ".tooltip.1";
+    @GTMMRegisterLanguage(en = "Bind to: %s", cn = "已绑定至：%s")
+    public static final String WIRELESS_ENERGY_HATCH_TOOLTIP_2 = WIRELESS_ENERGY_HATCH_PREFIX + ".tooltip.2";
+    @GTMMRegisterLanguage(en = "Bind to unknow user: %s", cn = "已绑定至未知用户：%s")
+    public static final String WIRELESS_ENERGY_HATCH_TOOLTIP_3 = WIRELESS_ENERGY_HATCH_PREFIX + ".tooltip.3";
+    @GTMMRegisterLanguage(en = "Multiblock Sharing §4Disabled", cn = "多方块结构共享：§4禁止")
+    public static final String UNIVERSAL_DISABLED = "gtmoremachine.universal.disabled";
+
+    private static final String ENERGY_HATCH_PREFIX = "gtmoremachine.machine.energy_hatch";
+    @GTMMRegisterLanguage(en = "Energy Input for Multiblocks", cn = "为多方块结构输入能量")
+    public static final String ENERGY_HATCH_INPUT_TOOLTIP = ENERGY_HATCH_PREFIX + ".input.tooltip";
+    @GTMMRegisterLanguage(en = "Energy Output for Multiblocks", cn = "为多方块结构输出能量")
+    public static final String ENERGY_HATCH_OUTPUT_TOOLTIP = ENERGY_HATCH_PREFIX + ".output.tooltip";
+    @GTMMRegisterLanguage(en = "Large Amount Of Energy Input for Multiblocks", cn = "为多方块结构输入大量能量")
+    public static final String ENERGY_HATCH_TARGET_TOOLTIP = ENERGY_HATCH_PREFIX + ".target.tooltip";
+    @GTMMRegisterLanguage(en = "Large Amount Of Energy Output for Multiblocks", cn = "为多方块结构输出大量能量")
+    public static final String ENERGY_HATCH_SOURCE_TOOLTIP = ENERGY_HATCH_PREFIX + ".source.tooltip";
+    @GTMMRegisterLanguage(en = "You can bind or change the owner by left-click the Energy Hatch with Data Stick,or right-click to unbind.", cn = "手持闪存右键点击能源仓可绑定·变更所有者，左键点击可解除绑定。")
+    public static final String WIRELESS_ENERGY_HATCH_INPUT_TOOLTIP = WIRELESS_ENERGY_HATCH_PREFIX + ".input.tooltip";
+    @GTMMRegisterLanguage(en = "You can bind or change the owner by left-click the Dynoma Hatch with Data Stick,or right-click to unbind.", cn = "手持闪存右键点击动力仓可绑定·变更所有者，左键点击可解除绑定。")
+    public static final String WIRELESS_ENERGY_HATCH_OUTPUT_TOOLTIP = WIRELESS_ENERGY_HATCH_PREFIX + ".output.tooltip";
+    @GTMMRegisterLanguage(en = "You can bind or change the owner by left-click the Laser Target Hatch with Data Stick,or right-click to unbind.", cn = "手持闪存右键点击激光靶仓可绑定·变更所有者，左键点击可解除绑定。")
+    public static final String WIRELESS_ENERGY_HATCH_TARGET_TOOLTIP = WIRELESS_ENERGY_HATCH_PREFIX + ".target.tooltip";
+    @GTMMRegisterLanguage(en = "You can bind or change the owner by left-click the Laser Source Hatch with Data Stick,or right-click to unbind.", cn = "手持闪存右键点击激光源仓可绑定·变更所有者，左键点击可解除绑定。")
+    public static final String WIRELESS_ENERGY_HATCH_SOURCE_TOOLTIP = WIRELESS_ENERGY_HATCH_PREFIX + ".source.tooltip";
 
     @Nullable
     @Getter
@@ -132,7 +166,7 @@ public class WirelessEnergyHatchPartMachine extends TieredIOPartMachine implemen
         if (item.is(GTItems.TOOL_DATA_STICK.asItem())) {
             setOwnerUUID(context.getPlayer().getUUID());
             setWirelessEnergyContainerCache(null);
-            context.getPlayer().sendSystemMessage(Component.translatable(WirelessMachines.WIRELESS_ENERGY_HATCH_TOOLTIP_BIND, TeamUtils.getName(context.getPlayer())));
+            context.getPlayer().sendSystemMessage(Component.translatable(WIRELESS_ENERGY_HATCH_TOOLTIP_BIND, TeamUtils.getName(context.getPlayer())));
             updateEnergySubscription();
             return InteractionResult.SUCCESS;
         } else if (GTmm.isDev() && item.is(Items.STICK)) {
@@ -154,7 +188,7 @@ public class WirelessEnergyHatchPartMachine extends TieredIOPartMachine implemen
         if (item.is(GTItems.TOOL_DATA_STICK.asItem())) {
             setOwnerUUID(null);
             setWirelessEnergyContainerCache(null);
-            player.sendSystemMessage(Component.translatable(WirelessMachines.WIRELESS_ENERGY_HATCH_TOOLTIP_UNBIND));
+            player.sendSystemMessage(Component.translatable(WIRELESS_ENERGY_HATCH_TOOLTIP_UNBIND));
             updateEnergySubscription();
             return true;
         }

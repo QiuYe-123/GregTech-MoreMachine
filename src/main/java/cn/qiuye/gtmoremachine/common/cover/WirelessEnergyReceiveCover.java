@@ -1,5 +1,7 @@
 package cn.qiuye.gtmoremachine.common.cover;
 
+import cn.qiuye.gtmoremachine.api.annotation.GTMMDataGeneratorScanned;
+import cn.qiuye.gtmoremachine.api.annotation.language.GTMMRegisterLanguage;
 import cn.qiuye.gtmoremachine.api.machine.trait.feature.IWirelessEnergyContainerHolder;
 import cn.qiuye.gtmoremachine.api.machine.trait.feature.WirelessEnergyReceiveCoverHolder;
 import cn.qiuye.gtmoremachine.api.misc.wireless.energy.WirelessEnergyContainer;
@@ -32,7 +34,24 @@ import static com.gregtechceu.gtceu.api.capability.GTCapabilityHelper.getEnergyC
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
+@GTMMDataGeneratorScanned
 public class WirelessEnergyReceiveCover extends CoverBehavior implements IWirelessEnergyContainerHolder {
+
+    private static final String WIRELESS_COVER_PREFIX = "item.gtmoremachine.wireless_energy_receive_cover";
+    @GTMMRegisterLanguage(en = "§bPull Energy§7 from EU network to the machine as §fCover§7.", cn = "§7作§f覆盖板§7时从电网§b拉取能量§7传输到机器。")
+    public static final String WIRELESS_ENERGY_RECEIVE_COVER_TOOLTIP_1 = WIRELESS_COVER_PREFIX + ".tooltip.1";
+    @GTMMRegisterLanguage(en = "§7Can only used for §esingle block machine§7.Can't put on the machine blow the cover's voltage", cn = "§7只可用于§e单方块机器§7。无法将超过机器电压等级的覆盖板安装到机器上。")
+    public static final String WIRELESS_ENERGY_RECEIVE_COVER_TOOLTIP_2 = WIRELESS_COVER_PREFIX + ".tooltip.2";
+    @GTMMRegisterLanguage(en = "§bEnergy transfer speed: §f%s §7EU/t", cn = "§b能量传输效率：§f%s §7EU/t")
+    public static final String WIRELESS_ENERGY_RECEIVE_COVER_TOOLTIP_3 = WIRELESS_COVER_PREFIX + ".tooltip.3";
+
+    private static final String WIRELESS_ENERGY_COVER_PREFIX = "gtmoremachine.machine.wireless_energy_cover";
+    @GTMMRegisterLanguage(en = "The Wireless Energy Reciver unbind!", cn = "无线能源接收器未绑定所有者")
+    public static final String WIRELESS_ENERGY_COVER_TOOLTIP_1 = WIRELESS_ENERGY_COVER_PREFIX + ".tooltip.1";
+    @GTMMRegisterLanguage(en = "The Wireless Energy Reciver bind to: %s", cn = "无线能源接收器已绑定至：%s")
+    public static final String WIRELESS_ENERGY_COVER_TOOLTIP_2 = WIRELESS_ENERGY_COVER_PREFIX + ".tooltip.2";
+    @GTMMRegisterLanguage(en = "The Wireless Energy Reciver bind to unknow user: %s", cn = "无线能源接收器已绑定至未知用户：%s")
+    public static final String WIRELESS_ENERGY_COVER_TOOLTIP_3 = WIRELESS_ENERGY_COVER_PREFIX + ".tooltip.3";
 
     private TickableSubscription subscription;
 

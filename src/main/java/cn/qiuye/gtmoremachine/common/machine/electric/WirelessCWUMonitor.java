@@ -1,5 +1,7 @@
 package cn.qiuye.gtmoremachine.common.machine.electric;
 
+import cn.qiuye.gtmoremachine.api.annotation.GTMMDataGeneratorScanned;
+import cn.qiuye.gtmoremachine.api.annotation.language.GTMMRegisterLanguage;
 import cn.qiuye.gtmoremachine.api.gui.monitor.Format;
 import cn.qiuye.gtmoremachine.api.gui.monitor.Statistics;
 import cn.qiuye.gtmoremachine.api.gui.monitor.Status;
@@ -35,7 +37,20 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
+@GTMMDataGeneratorScanned
 public class WirelessCWUMonitor extends MetaMachine implements IFancyUIMachine, IWirelessMonitor {
+
+    private static final String WIRELESS_CWU_MONITOR_PREFIX = "gtmoremachine.machine.wireless_cwu_monitor";
+    @GTMMRegisterLanguage(en = "Total CWU: %s CWU", cn = "CWU总量：%s CWU")
+    public static final String WIRELESS_CWU_MONITOR_TOOLTIP_1 = WIRELESS_CWU_MONITOR_PREFIX + ".tooltip.1";
+    @GTMMRegisterLanguage(en = "Last minute: %s CWU", cn = "近一分钟：§a%s CWU/t")
+    public static final String WIRELESS_CWU_MONITOR_TOOLTIP_LAST_MINUTE = WIRELESS_CWU_MONITOR_PREFIX + ".tooltip.last_minute";
+    @GTMMRegisterLanguage(en = "Last hour: %s CWU", cn = "近一小时：§a%s CWU/t")
+    public static final String WIRELESS_CWU_MONITOR_TOOLTIP_LAST_HOUR = WIRELESS_CWU_MONITOR_PREFIX + ".tooltip.last_hour";
+    @GTMMRegisterLanguage(en = "Last day: %s CWU", cn = "近一天：§a%s CWU/t")
+    public static final String WIRELESS_CWU_MONITOR_TOOLTIP_LAST_DAY = WIRELESS_CWU_MONITOR_PREFIX + ".tooltip.last_day";
+    @GTMMRegisterLanguage(en = "Now: %s CWU", cn = "当前：§a%s CWU/t")
+    public static final String WIRELESS_CWU_MONITOR_TOOLTIP_NOW = WIRELESS_CWU_MONITOR_PREFIX + ".tooltip.now";
 
     public static int p;
     public static BlockPos pPos;

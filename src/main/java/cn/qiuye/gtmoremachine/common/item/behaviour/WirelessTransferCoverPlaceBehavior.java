@@ -1,5 +1,7 @@
 package cn.qiuye.gtmoremachine.common.item.behaviour;
 
+import cn.qiuye.gtmoremachine.api.annotation.GTMMDataGeneratorScanned;
+import cn.qiuye.gtmoremachine.api.annotation.language.GTMMRegisterLanguage;
 import cn.qiuye.gtmoremachine.common.data.GTMMItems;
 
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
@@ -20,7 +22,25 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 
+@GTMMDataGeneratorScanned
 public record WirelessTransferCoverPlaceBehavior(CoverDefinition coverDefinition) implements IInteractionItem {
+
+    private static final String WIRELESS_TRANSFER_PREFIX = "item.gtmoremachine.wireless_transfer";
+    private static final String ADVANCED_WIRELESS_TRANSFER_PREFIX = "item.gtmoremachine.advanced_wireless_transfer";
+    @GTMMRegisterLanguage(en = "§7Bind to: §f%s (%s)", cn = "§7已绑定容器：§f%s (%s)")
+    public static final String WIRELESS_TRANSFER_TOOLTIP_1 = WIRELESS_TRANSFER_PREFIX + ".tooltip.1";
+    @GTMMRegisterLanguage(en = "§7Right click the container with shift to bind container.Right click the air with shift to unbind.", cn = "§7潜行右键需要绑定的容器来进行绑定。潜行右键空气取消绑定。")
+    public static final String WIRELESS_TRANSFER_TOOLTIP_2 = WIRELESS_TRANSFER_PREFIX + ".tooltip.2";
+    @GTMMRegisterLanguage(en = "Success bind to: %s (%s)", cn = "绑定容器成功：%s (%s)")
+    public static final String WIRELESS_TRANSFER_TOOLTIP_BIND_1 = WIRELESS_TRANSFER_PREFIX + ".tooltip.bind.1";
+    @GTMMRegisterLanguage(en = "Success unbind.", cn = "解除绑定成功")
+    public static final String WIRELESS_TRANSFER_TOOLTIP_BIND_2 = WIRELESS_TRANSFER_PREFIX + ".tooltip.bind.2";
+    @GTMMRegisterLanguage(en = "§bTransfer Item§7 to §ebinded container§7 from the machine as §fCover§7.", cn = "§7作§f覆盖板§7时从机器中§b提取物品§7到§e绑定的容器§7中。")
+    public static final String WIRELESS_TRANSFER_ITEM_TOOLTIP_1 = WIRELESS_TRANSFER_PREFIX + ".item.tooltip.1";
+    @GTMMRegisterLanguage(en = "§bTransfer Fluid§7 to §ebinded container§7 from the machine as §fCover§7.", cn = "§7作§f覆盖板§7时从机器中§b提取流体§7到§e绑定的容器§7中。")
+    public static final String WIRELESS_TRANSFER_FLUID_TOOLTIP_1 = WIRELESS_TRANSFER_PREFIX + ".fluid.tooltip.1";
+    @GTMMRegisterLanguage(en = "§7Can use §f filter card", cn = "§7可使用§f过滤卡")
+    public static final String ADVANCED_WIRELESS_TRANSFER_TOOLTIP_1 = ADVANCED_WIRELESS_TRANSFER_PREFIX + ".tooltip.1";
 
     @Override
     public InteractionResult onItemUseFirst(ItemStack itemStack, UseOnContext context) {
@@ -40,7 +60,7 @@ public record WirelessTransferCoverPlaceBehavior(CoverDefinition coverDefinition
                 tag.putInt("y", blockPos.getY());
                 tag.putInt("z", blockPos.getZ());
                 itemStack.setTag(tag);
-                if (level.isClientSide()) player.sendSystemMessage(Component.translatable("item.gtmoremachine.wireless_transfer.tooltip.bind.1", Component.translatable(level.getBlockState(blockPos).getBlock().getDescriptionId()), blockPos.toShortString()));
+                if (level.isClientSide()) player.sendSystemMessage(Component.translatable(WIRELESS_TRANSFER_TOOLTIP_BIND_1, Component.translatable(level.getBlockState(blockPos).getBlock().getDescriptionId()), blockPos.toShortString()));
             }
             return InteractionResult.SUCCESS;
         }
@@ -58,7 +78,7 @@ public record WirelessTransferCoverPlaceBehavior(CoverDefinition coverDefinition
             is.removeTagKey("x");
             is.removeTagKey("y");
             is.removeTagKey("z");
-            if (level.isClientSide()) player.sendSystemMessage(Component.translatable("item.gtmoremachine.wireless_transfer.tooltip.bind.2"));
+            if (level.isClientSide()) player.sendSystemMessage(Component.translatable(WIRELESS_TRANSFER_TOOLTIP_BIND_2));
         }
         return IInteractionItem.super.use(item, level, player, usedHand);
     }

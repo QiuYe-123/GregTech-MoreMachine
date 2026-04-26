@@ -1,8 +1,10 @@
 package cn.qiuye.gtmoremachine.common.machine.electric;
 
+import cn.qiuye.gtmoremachine.api.annotation.GTMMDataGeneratorScanned;
+import cn.qiuye.gtmoremachine.api.annotation.language.GTMMRegisterLanguage;
 import cn.qiuye.gtmoremachine.api.machine.trait.feature.IWirelessEnergyContainerHolder;
 import cn.qiuye.gtmoremachine.api.misc.wireless.energy.WirelessEnergyContainer;
-import cn.qiuye.gtmoremachine.common.data.machines.WirelessMachines;
+import cn.qiuye.gtmoremachine.common.machine.multiblock.part.WirelessEnergyHatchPartMachine;
 import cn.qiuye.gtmoremachine.utils.TeamUtils;
 
 import com.gregtechceu.gtceu.api.GTValues;
@@ -34,7 +36,12 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
+@GTMMDataGeneratorScanned
 public class WirelessEnergyInterface extends TieredIOPartMachine implements IWirelessEnergyContainerHolder {
+
+    private static final String WIRELESS_ENERGY_INTERFACE_PREFIX = "gtmoremachine.machine.wireless_energy_interface";
+    @GTMMRegisterLanguage(en = "Receives energy and sends it to the power network", cn = "接收能量并发送至电网")
+    public static final String WIRELESS_ENERGY_INTERFACE_TOOLTIP = WIRELESS_ENERGY_INTERFACE_PREFIX + ".tooltip";
 
     private TickableSubscription updEnergySubs;
 
@@ -101,7 +108,7 @@ public class WirelessEnergyInterface extends TieredIOPartMachine implements IWir
             setOwnerUUID(context.getPlayer().getUUID());
             setWirelessEnergyContainerCache(null);
             if (isRemote()) {
-                context.getPlayer().sendSystemMessage(Component.translatable(WirelessMachines.WIRELESS_ENERGY_HATCH_TOOLTIP_BIND, TeamUtils.getName(context.getPlayer())));
+                context.getPlayer().sendSystemMessage(Component.translatable(WirelessEnergyHatchPartMachine.WIRELESS_ENERGY_HATCH_TOOLTIP_BIND, TeamUtils.getName(context.getPlayer())));
             }
             updateEnergySubscription();
             return InteractionResult.SUCCESS;
@@ -115,7 +122,7 @@ public class WirelessEnergyInterface extends TieredIOPartMachine implements IWir
             setOwnerUUID(null);
             setWirelessEnergyContainerCache(null);
             if (isRemote()) {
-                player.sendSystemMessage(Component.translatable(WirelessMachines.WIRELESS_ENERGY_HATCH_TOOLTIP_UNBIND));
+                player.sendSystemMessage(Component.translatable(WirelessEnergyHatchPartMachine.WIRELESS_ENERGY_HATCH_TOOLTIP_UNBIND));
             }
             updateEnergySubscription();
             return true;

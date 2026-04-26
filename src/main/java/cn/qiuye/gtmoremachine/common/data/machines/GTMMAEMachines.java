@@ -1,8 +1,6 @@
 package cn.qiuye.gtmoremachine.common.data.machines;
 
 import cn.qiuye.gtmoremachine.GTmm;
-import cn.qiuye.gtmoremachine.api.annotation.GTMMDataGeneratorScanned;
-import cn.qiuye.gtmoremachine.api.annotation.language.GTMMRegisterLanguage;
 import cn.qiuye.gtmoremachine.integration.ae.machine.ProgrammableDualHatchPartMachine;
 import cn.qiuye.gtmoremachine.integration.ae.machine.ProgrammableHatchPartMachine;
 import cn.qiuye.gtmoremachine.integration.ae.machine.multiblock.part.MEOutputPartMachine;
@@ -23,14 +21,7 @@ import static cn.qiuye.gtmoremachine.common.machine.multiblock.part.HugeBusPartM
 import static cn.qiuye.gtmoremachine.common.registry.GTMMRegistration.GTMM;
 import static com.gregtechceu.gtceu.common.data.machines.GTMachineUtils.DUAL_HATCH_TIERS;
 
-@GTMMDataGeneratorScanned
 public class GTMMAEMachines {
-
-    private static final String ME_EXPORT_BUFFER_PREFIX = "gui.gtmoremachine.me_export_buffer";
-    @GTMMRegisterLanguage(en = "Item storage space is full.", cn = "物品存储空间已满")
-    public static final String ME_EXPORT_BUFFER_ITEM_STATUS_FULL = ME_EXPORT_BUFFER_PREFIX + ".item_status.full";
-    @GTMMRegisterLanguage(en = "Fluid storage space is full.", cn = "流体存储空间已满")
-    public static final String ME_EXPORT_BUFFER_FLUID_STATUS_FULL = ME_EXPORT_BUFFER_PREFIX + ".fluid_status.full";
 
     public static final MachineDefinition ME_EXPORT_BUFFER = GTMM
             .machine("me_export_buffer", MEOutputPartMachine::new)

@@ -5,7 +5,7 @@ import cn.qiuye.gtmoremachine.api.machine.multiblock.feature.IDimensionalBank;
 import cn.qiuye.gtmoremachine.api.machine.multiblock.record.DimensionalBank;
 import cn.qiuye.gtmoremachine.api.machine.trait.feature.IWirelessEnergyContainerHolder;
 import cn.qiuye.gtmoremachine.api.misc.wireless.energy.WirelessEnergyContainer;
-import cn.qiuye.gtmoremachine.common.data.machines.WirelessMachines;
+import cn.qiuye.gtmoremachine.common.machine.multiblock.part.WirelessEnergyHatchPartMachine;
 import cn.qiuye.gtmoremachine.utils.NumberUtils;
 import cn.qiuye.gtmoremachine.utils.TeamUtils;
 
@@ -107,7 +107,7 @@ public class DemodulationHubMachine extends WorkableMultiblockMachine
             setWirelessEnergyContainerCache(null);
 
             context.getPlayer().sendSystemMessage(Component.translatable(
-                    WirelessMachines.WIRELESS_ENERGY_HATCH_TOOLTIP_BIND,
+                    WirelessEnergyHatchPartMachine.WIRELESS_ENERGY_HATCH_TOOLTIP_BIND,
                     TeamUtils.getName(context.getPlayer())));
             return InteractionResult.SUCCESS;
         }
@@ -129,7 +129,7 @@ public class DemodulationHubMachine extends WorkableMultiblockMachine
             setWirelessEnergyContainerCache(null);
 
             player.sendSystemMessage(Component.translatable(
-                    WirelessMachines.WIRELESS_ENERGY_HATCH_TOOLTIP_UNBIND));
+                    WirelessEnergyHatchPartMachine.WIRELESS_ENERGY_HATCH_TOOLTIP_UNBIND));
             return true;
         }
         return false;

@@ -4,7 +4,8 @@ import cn.qiuye.gtmoremachine.GTmm;
 import cn.qiuye.gtmoremachine.api.annotation.GTMMDataGeneratorScanned;
 import cn.qiuye.gtmoremachine.api.annotation.language.GTMMRegisterLanguage;
 import cn.qiuye.gtmoremachine.api.machine.trait.feature.IWirelessCWUContainerHolder;
-import cn.qiuye.gtmoremachine.common.data.machines.WirelessMachines;
+import cn.qiuye.gtmoremachine.common.machine.electric.WirelessCWUMonitor;
+import cn.qiuye.gtmoremachine.common.machine.multiblock.part.WirelessEnergyHatchPartMachine;
 import cn.qiuye.gtmoremachine.utils.BigNumberUtils;
 import cn.qiuye.gtmoremachine.utils.NumberUtils;
 import cn.qiuye.gtmoremachine.utils.TeamUtils;
@@ -64,17 +65,17 @@ public class WirelessCWUProvider extends CapabilityBlockProvider<IWirelessCWUCon
     protected void addTooltip(CompoundTag capData, ITooltip tooltip, Player player, BlockAccessor block, BlockEntity blockEntity, IPluginConfig config) {
         if (!capData.getBoolean("isCWUBindable")) return;
         if (!capData.hasUUID("UUID")) {
-            tooltip.add(Component.translatable(WirelessMachines.WIRELESS_ENERGY_HATCH_TOOLTIP_1));
+            tooltip.add(Component.translatable(WirelessEnergyHatchPartMachine.WIRELESS_ENERGY_HATCH_TOOLTIP_1));
         } else {
             BigInteger cwu = BigNumberUtils.getBigIntegerValue(capData.getString("cwu"));
             UUID uuid = capData.getUUID("UUID");
             var formattedCwu = Component.literal(NumberUtils.formatBigIntegerNumberOrSic(cwu)).withStyle(ChatFormatting.GOLD);
             if (TeamUtils.hasOwner(block.getLevel(), uuid)) {
-                tooltip.add(Component.translatable(WirelessMachines.WIRELESS_ENERGY_HATCH_TOOLTIP_2, TeamUtils.getName(block.getLevel(), uuid)));
-                tooltip.add(Component.translatable(WirelessMachines.WIRELESS_CWU_MONITOR_TOOLTIP_1, formattedCwu));
+                tooltip.add(Component.translatable(WirelessEnergyHatchPartMachine.WIRELESS_ENERGY_HATCH_TOOLTIP_2, TeamUtils.getName(block.getLevel(), uuid)));
+                tooltip.add(Component.translatable(WirelessCWUMonitor.WIRELESS_CWU_MONITOR_TOOLTIP_1, formattedCwu));
             } else {
-                tooltip.add(Component.translatable(WirelessMachines.WIRELESS_ENERGY_HATCH_TOOLTIP_3, uuid));
-                tooltip.add(Component.translatable(WirelessMachines.WIRELESS_CWU_MONITOR_TOOLTIP_1, formattedCwu));
+                tooltip.add(Component.translatable(WirelessEnergyHatchPartMachine.WIRELESS_ENERGY_HATCH_TOOLTIP_3, uuid));
+                tooltip.add(Component.translatable(WirelessCWUMonitor.WIRELESS_CWU_MONITOR_TOOLTIP_1, formattedCwu));
             }
         }
     }

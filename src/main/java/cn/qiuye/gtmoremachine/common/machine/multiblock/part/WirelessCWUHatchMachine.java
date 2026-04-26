@@ -33,6 +33,17 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 public class WirelessCWUHatchMachine extends MultiblockPartMachine implements IDataStickInteractable, IGTMMJadeIF {
 
+    private static final String WIRELESS_COMPUTATION_TRANSMITTER_PREFIX = "gtmoremachine.machine.wireless_computation_transmitter_hatch";
+    private static final String WIRELESS_COMPUTATION_RECEIVER_PREFIX = "gtmoremachine.machine.wireless_computation_receiver_hatch";
+    @GTMMRegisterLanguage(en = "Output computational power data from the multiblock structure.", cn = "从多方块结构输出算力数据")
+    public static final String WIRELESS_COMPUTATION_TRANSMITTER_HATCH_TOOLTIP_1 = WIRELESS_COMPUTATION_TRANSMITTER_PREFIX + ".tooltip.1";
+    @GTMMRegisterLanguage(en = "Need to bind the wireless computational power target Hatch and the wireless computational power source Hatch by right-clicking with a flash memory.", cn = "需要使用闪存右键无线算力靶仓和无线算力源仓进行绑定。")
+    public static final String WIRELESS_COMPUTATION_TRANSMITTER_HATCH_TOOLTIP_2 = WIRELESS_COMPUTATION_TRANSMITTER_PREFIX + ".tooltip.2";
+    @GTMMRegisterLanguage(en = "Input computational power data for the multiblock structure", cn = "为多方块结构输入算力数据")
+    public static final String WIRELESS_COMPUTATION_RECEIVER_HATCH_TOOLTIP_1 = WIRELESS_COMPUTATION_RECEIVER_PREFIX + ".tooltip.1";
+    @GTMMRegisterLanguage(en = "Need to bind the wireless computational power target Hatch and the wireless computational power source Hatch by right-clicking with a flash memory.", cn = "需要使用闪存右键无线算力靶仓和无线算力源仓进行绑定。")
+    public static final String WIRELESS_COMPUTATION_RECEIVER_HATCH_TOOLTIP_2 = WIRELESS_COMPUTATION_RECEIVER_PREFIX + ".tooltip.2";
+
     private static final String WIRELESS_COMPUTATION_HATCH_PREFIX = "gtmoremachine.machine.wireless_computation";
     @GTMMRegisterLanguage(en = "Source Hatch data reading completed, please right-click the target Hatch to bind.", cn = "源仓数据读取完成，请右键靶仓进行绑定。")
     public static final String WIRELESS_COMPUTATION_TRANSMITTER_HATCH_TOBIND = WIRELESS_COMPUTATION_HATCH_PREFIX + "_transmitter_hatch.tobind";

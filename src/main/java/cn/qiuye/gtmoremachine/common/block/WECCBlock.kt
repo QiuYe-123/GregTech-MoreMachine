@@ -21,12 +21,12 @@ import lombok.Getter
 import java.math.BigInteger
 import javax.annotation.ParametersAreNonnullByDefault
 
+@GTMMDataGeneratorScanned
 @ParametersAreNonnullByDefault
 class WECCBlock(properties: Properties, @field:Getter val data: ICCData) : Block(properties) {
 
-	@GTMMDataGeneratorScanned
 	companion object {
-		const val CAPACITY_COMPONENT_PREFIX: String = "block.gtmoremachine.capacity_component"
+		private const val CAPACITY_COMPONENT_PREFIX: String = "block.gtmoremachine.capacity_component"
 
 		@GTMMRegisterLanguage(
 			en = "§7For filling structural gaps in the Wireless Energy Storage Module",
@@ -41,8 +41,7 @@ class WECCBlock(properties: Properties, @field:Getter val data: ICCData) : Block
 			en = "§cCapacity component passive energy consumption: §f%d EU",
 			cn = "§c容量组件被动耗能：§f%d EU",
 		)
-		const val CAPACITY_COMPONENT_TOOLTIP_PASSIVE_DRAIN: String =
-			"$CAPACITY_COMPONENT_PREFIX.tooltip_passive_drain"
+		const val CAPACITY_COMPONENT_TOOLTIP_PASSIVE_DRAIN: String = "$CAPACITY_COMPONENT_PREFIX.tooltip_passive_drain"
 	}
 	override fun appendHoverText(stack: ItemStack, level: BlockGetter?, tooltip: MutableList<Component>, flag: TooltipFlag) {
 		super.appendHoverText(stack, level, tooltip, flag)

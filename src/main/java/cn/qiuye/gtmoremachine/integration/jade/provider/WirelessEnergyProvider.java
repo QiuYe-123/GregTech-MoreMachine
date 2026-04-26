@@ -4,7 +4,8 @@ import cn.qiuye.gtmoremachine.GTmm;
 import cn.qiuye.gtmoremachine.api.annotation.GTMMDataGeneratorScanned;
 import cn.qiuye.gtmoremachine.api.annotation.language.GTMMRegisterLanguage;
 import cn.qiuye.gtmoremachine.api.machine.trait.feature.IWirelessEnergyContainerHolder;
-import cn.qiuye.gtmoremachine.common.data.machines.WirelessMachines;
+import cn.qiuye.gtmoremachine.common.cover.WirelessEnergyReceiveCover;
+import cn.qiuye.gtmoremachine.common.machine.multiblock.part.WirelessEnergyHatchPartMachine;
 import cn.qiuye.gtmoremachine.utils.BigNumberUtils;
 import cn.qiuye.gtmoremachine.utils.FormattingUtil;
 import cn.qiuye.gtmoremachine.utils.NumberUtils;
@@ -77,9 +78,9 @@ public class WirelessEnergyProvider extends CapabilityBlockProvider<IWirelessEne
         boolean cover = capData.getBoolean("cover");
         if (!capData.hasUUID("uuid")) {
             if (cover) {
-                tooltip.add(Component.translatable(WirelessMachines.WIRELESS_ENERGY_COVER_TOOLTIP_1));
+                tooltip.add(Component.translatable(WirelessEnergyReceiveCover.WIRELESS_ENERGY_COVER_TOOLTIP_1));
             } else {
-                tooltip.add(Component.translatable(WirelessMachines.WIRELESS_ENERGY_HATCH_TOOLTIP_1));
+                tooltip.add(Component.translatable(WirelessEnergyHatchPartMachine.WIRELESS_ENERGY_HATCH_TOOLTIP_1));
             }
         } else {
             BigDecimal energy = BigNumberUtils.getBigDecimalValue(capData.getString("energy"));
@@ -91,16 +92,16 @@ public class WirelessEnergyProvider extends CapabilityBlockProvider<IWirelessEne
                     FormattingUtil.voltageName(energy));
             if (TeamUtils.hasOwner(block.getLevel(), uuid)) {
                 if (cover) {
-                    tooltip.add(Component.translatable(WirelessMachines.WIRELESS_ENERGY_COVER_TOOLTIP_2, TeamUtils.getName(block.getLevel(), uuid)));
+                    tooltip.add(Component.translatable(WirelessEnergyReceiveCover.WIRELESS_ENERGY_COVER_TOOLTIP_2, TeamUtils.getName(block.getLevel(), uuid)));
                 } else {
-                    tooltip.add(Component.translatable(WirelessMachines.WIRELESS_ENERGY_HATCH_TOOLTIP_2, TeamUtils.getName(block.getLevel(), uuid)));
+                    tooltip.add(Component.translatable(WirelessEnergyHatchPartMachine.WIRELESS_ENERGY_HATCH_TOOLTIP_2, TeamUtils.getName(block.getLevel(), uuid)));
                 }
                 tooltip.add(energyBody);
             } else {
                 if (cover) {
-                    tooltip.add(Component.translatable(WirelessMachines.WIRELESS_ENERGY_COVER_TOOLTIP_3, uuid));
+                    tooltip.add(Component.translatable(WirelessEnergyReceiveCover.WIRELESS_ENERGY_COVER_TOOLTIP_3, uuid));
                 } else {
-                    tooltip.add(Component.translatable(WirelessMachines.WIRELESS_ENERGY_HATCH_TOOLTIP_3, uuid));
+                    tooltip.add(Component.translatable(WirelessEnergyHatchPartMachine.WIRELESS_ENERGY_HATCH_TOOLTIP_3, uuid));
                 }
                 tooltip.add(energyBody);
             }

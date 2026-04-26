@@ -56,6 +56,12 @@ import static cn.qiuye.gtmoremachine.common.machine.electric.WirelessEnergyMonit
 @MethodsReturnNonnullByDefault
 public class WirelessEnergyTerminalBehavior implements IItemUIFactory, IItemHUDProvider, IWirelessEnergyContainerHolder {
 
+    private static final String WIRELESS_MONITOR_PREFIX = "gtmoremachine.machine.wireless_monitor";
+    @GTMMRegisterLanguage(en = "Electricity Statistics：%s     Display Format：%s    Power status：%s\nSorting rules：%s        Type：%s", cn = "用电统计：%s     显示格式：%s    功率状态：%s\n排序规则：%s        类别: %s")
+    public static final String WIRELESS_MONITOR_TOOLTIP_STATISTICS_ENERGY = WIRELESS_MONITOR_PREFIX + ".tooltip.statistics.energy";
+    @GTMMRegisterLanguage(en = "CWU Statistics：%s     Display Format：%s    CWU status：%s", cn = "算力统计：%s     显示格式：%s    算力状态：%s")
+    public static final String WIRELESS_MONITOR_TOOLTIP_STATISTICS_CWU = WIRELESS_MONITOR_PREFIX + ".tooltip.statistics.cwu";
+
     private static final String HUD_PREFIX = "item.gtmoremachine.wireless_energy_terminal";
     @GTMMRegisterLanguage(en = "Average Net ALL：%s EU (%s A %s§r)", cn = "全局平均：%s EU (%s A %s§r)")
     public static final String HUD_1 = HUD_PREFIX + ".hud.1";
