@@ -217,7 +217,7 @@ public class PatternWidgetGroup extends WidgetGroup {
                     this.rightPanel.setVisible(false);
                 }
             };
-            toggle.setOnPressCallback((btn, pressed) -> onToggle.accept(pressed));
+            toggle.setOnPressCallback((btn, pressed) -> onToggle.accept(pressed.booleanValue()));
             row.addWidget(toggle);
             this.categoryListPanel.addWidget(row);
         }
