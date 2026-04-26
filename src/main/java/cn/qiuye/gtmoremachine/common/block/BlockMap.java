@@ -53,7 +53,6 @@ public class BlockMap {
     public static final Reference2ObjectOpenHashMap<Block, String> BLOCK_CATEGORY_MAP = new Reference2ObjectOpenHashMap<>(1024);
 
     public static final String BLOCKMAP_VALUE_PREFIX = GTMMValues.ADVTER_VALUE_PREFIX + "blockmap";
-
     @GTMMRegisterLanguage(valuePrefix = BLOCKMAP_VALUE_PREFIX, cn = "线圈", en = "Heating Coils")
     private static final String HEATING_COILS = "heating_coils";
     @GTMMRegisterLanguage(valuePrefix = BLOCKMAP_VALUE_PREFIX, cn = "过滤方块", en = "Cleanroom Filters")

@@ -1,7 +1,10 @@
 package cn.qiuye.gtmoremachine.integration.jade.provider;
 
 import cn.qiuye.gtmoremachine.GTmm;
+import cn.qiuye.gtmoremachine.api.annotation.GTMMDataGeneratorScanned;
+import cn.qiuye.gtmoremachine.api.annotation.language.GTMMRegisterLanguage;
 import cn.qiuye.gtmoremachine.api.machine.trait.feature.IWirelessEnergyContainerHolder;
+import cn.qiuye.gtmoremachine.common.data.machines.WirelessMachines;
 import cn.qiuye.gtmoremachine.utils.BigNumberUtils;
 import cn.qiuye.gtmoremachine.utils.FormattingUtil;
 import cn.qiuye.gtmoremachine.utils.NumberUtils;
@@ -27,7 +30,14 @@ import snownee.jade.api.config.IPluginConfig;
 import java.math.BigDecimal;
 import java.util.UUID;
 
+@GTMMDataGeneratorScanned
 public class WirelessEnergyProvider extends CapabilityBlockProvider<IWirelessEnergyContainerHolder> {
+
+    private static final String JADE_PREFIX = "config.jade.plugin_gtmoremachine";
+    @GTMMRegisterLanguage(en = "[GTMoreMachine] Wireless Energy Monitor", cn = "[GTMoreMachine] 无线能源监视器")
+    public static final String WIRELESS_ENERGY_PROVIDER = JADE_PREFIX + ".wireless_energy_provider";
+    @GTMMRegisterLanguage(en = "Total Energy: %s EU (%s A %s§r)", cn = "能源总量: %s EU (%s A %s§r)")
+    public static final String WIRELESS_ENERGY_HATCH_PROVIDER_TOOLTIP_1 = JADE_PREFIX + ".wireless_energy_hatch_provider.tooltip.1";
 
     public WirelessEnergyProvider() {
         super(GTmm.id("wireless_energy_provider"));
@@ -67,30 +77,30 @@ public class WirelessEnergyProvider extends CapabilityBlockProvider<IWirelessEne
         boolean cover = capData.getBoolean("cover");
         if (!capData.hasUUID("uuid")) {
             if (cover) {
-                tooltip.add(Component.translatable("gtmoremachine.machine.wireless_energy_cover.tooltip.1"));
+                tooltip.add(Component.translatable(WirelessMachines.WIRELESS_ENERGY_COVER_TOOLTIP_1));
             } else {
-                tooltip.add(Component.translatable("gtmoremachine.machine.wireless_energy_hatch.tooltip.1"));
+                tooltip.add(Component.translatable(WirelessMachines.WIRELESS_ENERGY_HATCH_TOOLTIP_1));
             }
         } else {
             BigDecimal energy = BigNumberUtils.getBigDecimalValue(capData.getString("energy"));
             UUID uuid = capData.getUUID("uuid");
             var formattedEnergy = Component.literal(NumberUtils.formatBigDecimalNumberOrSic(energy)).withStyle(ChatFormatting.GOLD);
-            var energyBody = Component.translatable("config.jade.plugin_gtmoremachine.wireless_energy_hatch_provider.tooltip.1",
+            var energyBody = Component.translatable(WIRELESS_ENERGY_HATCH_PROVIDER_TOOLTIP_1,
                     formattedEnergy,
                     Component.literal(NumberUtils.formatBigDecimalNumberOrSic(FormattingUtil.voltageAmperage(energy))),
                     FormattingUtil.voltageName(energy));
             if (TeamUtils.hasOwner(block.getLevel(), uuid)) {
                 if (cover) {
-                    tooltip.add(Component.translatable("gtmoremachine.machine.wireless_energy_cover.tooltip.2", TeamUtils.getName(block.getLevel(), uuid)));
+                    tooltip.add(Component.translatable(WirelessMachines.WIRELESS_ENERGY_COVER_TOOLTIP_2, TeamUtils.getName(block.getLevel(), uuid)));
                 } else {
-                    tooltip.add(Component.translatable("gtmoremachine.machine.wireless_energy_hatch.tooltip.2", TeamUtils.getName(block.getLevel(), uuid)));
+                    tooltip.add(Component.translatable(WirelessMachines.WIRELESS_ENERGY_HATCH_TOOLTIP_2, TeamUtils.getName(block.getLevel(), uuid)));
                 }
                 tooltip.add(energyBody);
             } else {
                 if (cover) {
-                    tooltip.add(Component.translatable("gtmoremachine.machine.wireless_energy_cover.tooltip.3", uuid));
+                    tooltip.add(Component.translatable(WirelessMachines.WIRELESS_ENERGY_COVER_TOOLTIP_3, uuid));
                 } else {
-                    tooltip.add(Component.translatable("gtmoremachine.machine.wireless_energy_hatch.tooltip.3", uuid));
+                    tooltip.add(Component.translatable(WirelessMachines.WIRELESS_ENERGY_HATCH_TOOLTIP_3, uuid));
                 }
                 tooltip.add(energyBody);
             }

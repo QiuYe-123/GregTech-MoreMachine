@@ -1,6 +1,8 @@
 package cn.qiuye.gtmoremachine.common.block
 
 import cn.qiuye.gtmoremachine.api.GTMMAPI
+import cn.qiuye.gtmoremachine.api.annotation.GTMMDataGeneratorScanned
+import cn.qiuye.gtmoremachine.api.annotation.language.GTMMRegisterLanguage
 import cn.qiuye.gtmoremachine.api.machine.multiblock.feature.ICCData
 
 import com.gregtechceu.gtceu.api.GTValues
@@ -21,13 +23,34 @@ import javax.annotation.ParametersAreNonnullByDefault
 
 @ParametersAreNonnullByDefault
 class WECCBlock(properties: Properties, @field:Getter val data: ICCData) : Block(properties) {
+
+	@GTMMDataGeneratorScanned
+	companion object {
+		const val CAPACITY_COMPONENT_PREFIX: String = "block.gtmoremachine.capacity_component"
+
+		@GTMMRegisterLanguage(
+			en = "§7For filling structural gaps in the Wireless Energy Storage Module",
+			cn = "§7用于填补无线电网解调枢纽的结构空隙",
+		)
+		const val CAPACITY_COMPONENT_TOOLTIP_EMPTY: String = "$CAPACITY_COMPONENT_PREFIX.tooltip_empty"
+
+		@GTMMRegisterLanguage(en = "§cCapacity component capacity: §f%d EU", cn = "§c容量组件容量：§f%d EU")
+		const val CAPACITY_COMPONENT_TOOLTIP_FILLED: String = "$CAPACITY_COMPONENT_PREFIX.tooltip_filled"
+
+		@GTMMRegisterLanguage(
+			en = "§cCapacity component passive energy consumption: §f%d EU",
+			cn = "§c容量组件被动耗能：§f%d EU",
+		)
+		const val CAPACITY_COMPONENT_TOOLTIP_PASSIVE_DRAIN: String =
+			"$CAPACITY_COMPONENT_PREFIX.tooltip_passive_drain"
+	}
 	override fun appendHoverText(stack: ItemStack, level: BlockGetter?, tooltip: MutableList<Component>, flag: TooltipFlag) {
 		super.appendHoverText(stack, level, tooltip, flag)
 		if (this.data.getTier() == -1) {
-			tooltip.add(Component.translatable("block.gtmoremachine.capacity_component.tooltip_empty"))
+			tooltip.add(Component.translatable(CAPACITY_COMPONENT_TOOLTIP_EMPTY))
 		} else {
-			tooltip.add(Component.translatable("block.gtmoremachine.capacity_component.tooltip_filled", FormattingUtil.formatNumbers(this.data.getCapacity())))
-			tooltip.add(Component.translatable("block.gtmoremachine.capacity_component.tooltip_passive_drain", FormattingUtil.formatNumbers(this.data.getLossEnergy())))
+			tooltip.add(Component.translatable(CAPACITY_COMPONENT_TOOLTIP_FILLED, FormattingUtil.formatNumbers(this.data.getCapacity())))
+			tooltip.add(Component.translatable(CAPACITY_COMPONENT_TOOLTIP_PASSIVE_DRAIN, FormattingUtil.formatNumbers(this.data.getLossEnergy())))
 		}
 	}
 

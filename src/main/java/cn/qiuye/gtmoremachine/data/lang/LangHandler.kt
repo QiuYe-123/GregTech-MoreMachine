@@ -50,9 +50,5 @@ object LangHandler {
 		MachineLang.init()
 		BlockLang.init()
 		ItemLang.init()
-		HUDLang.init()
-		ErrorLang.init()
-		KeybindingLang.init()
-		JadeLang.init()
 	}
 }

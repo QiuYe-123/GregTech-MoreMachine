@@ -3,6 +3,7 @@ package cn.qiuye.gtmoremachine.common.machine.multiblock.part;
 import cn.qiuye.gtmoremachine.GTmm;
 import cn.qiuye.gtmoremachine.api.machine.trait.feature.IWirelessEnergyContainerHolder;
 import cn.qiuye.gtmoremachine.api.misc.wireless.energy.WirelessEnergyContainer;
+import cn.qiuye.gtmoremachine.common.data.machines.WirelessMachines;
 import cn.qiuye.gtmoremachine.utils.TeamUtils;
 
 import com.gregtechceu.gtceu.api.GTValues;
@@ -131,7 +132,7 @@ public class WirelessEnergyHatchPartMachine extends TieredIOPartMachine implemen
         if (item.is(GTItems.TOOL_DATA_STICK.asItem())) {
             setOwnerUUID(context.getPlayer().getUUID());
             setWirelessEnergyContainerCache(null);
-            context.getPlayer().sendSystemMessage(Component.translatable("gtmoremachine.machine.wireless_energy_hatch.tooltip.bind", TeamUtils.getName(context.getPlayer())));
+            context.getPlayer().sendSystemMessage(Component.translatable(WirelessMachines.WIRELESS_ENERGY_HATCH_TOOLTIP_BIND, TeamUtils.getName(context.getPlayer())));
             updateEnergySubscription();
             return InteractionResult.SUCCESS;
         } else if (GTmm.isDev() && item.is(Items.STICK)) {
@@ -153,7 +154,7 @@ public class WirelessEnergyHatchPartMachine extends TieredIOPartMachine implemen
         if (item.is(GTItems.TOOL_DATA_STICK.asItem())) {
             setOwnerUUID(null);
             setWirelessEnergyContainerCache(null);
-            player.sendSystemMessage(Component.translatable("gtmoremachine.machine.wireless_energy_hatch.tooltip.unbind"));
+            player.sendSystemMessage(Component.translatable(WirelessMachines.WIRELESS_ENERGY_HATCH_TOOLTIP_UNBIND));
             updateEnergySubscription();
             return true;
         }

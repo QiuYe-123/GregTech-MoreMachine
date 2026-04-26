@@ -1,6 +1,7 @@
 package cn.qiuye.gtmoremachine.common.machine.multiblock.part;
 
 import cn.qiuye.gtmoremachine.api.machine.trait.CatalystFluidStackHandler;
+import cn.qiuye.gtmoremachine.common.data.machines.CustomMachines;
 import cn.qiuye.gtmoremachine.utils.NumberUtils;
 
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
@@ -186,12 +187,12 @@ public class HugeDualHatchPartMachine extends HugeBusPartMachine {
         }
 
         if (textList.isEmpty()) {
-            textList.add(Component.translatable("gtmoremachine.machine.huge_item_bus.tooltip.3"));
+            textList.add(Component.translatable(CustomMachines.HUGE_ITEM_BUS_TOOLTIP_3));
         }
 
-        textList.add(0, Component.translatable("gtmoremachine.machine.huge_item_bus.tooltip.2", itemCount, super.getInventorySize())
+        textList.add(0, Component.translatable(CustomMachines.HUGE_ITEM_BUS_TOOLTIP_2, itemCount, super.getInventorySize())
                 .setStyle(Style.EMPTY.withColor(ChatFormatting.GREEN)));
-        textList.add(1, Component.translatable("gtmoremachine.machine.huge_dual_hatch.tooltip.2", tankCount, this.getTankInventorySize())
+        textList.add(1, Component.translatable(CustomMachines.HUGE_DUAL_HATCH_TOOLTIP_2, tankCount, this.getTankInventorySize())
                 .setStyle(Style.EMPTY.withColor(ChatFormatting.GREEN)));
     }
 }

@@ -1,5 +1,7 @@
 package cn.qiuye.gtmoremachine.common.data.machines;
 
+import cn.qiuye.gtmoremachine.api.annotation.GTMMDataGeneratorScanned;
+import cn.qiuye.gtmoremachine.api.annotation.language.GTMMRegisterLanguage;
 import cn.qiuye.gtmoremachine.common.data.GTMMCovers;
 import cn.qiuye.gtmoremachine.common.data.GTMMCreativeModeTabs;
 import cn.qiuye.gtmoremachine.common.item.CreativeFluidStats;
@@ -31,7 +33,22 @@ import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
 
 import static cn.qiuye.gtmoremachine.common.registry.GTMMRegistration.GTMM;
 
+@GTMMDataGeneratorScanned
 public class CreativeMachines {
+
+    private static final String CREATIVE_FLUID_CELL_PREFIX = "item.gtmoremachine.creative_fluid_cell";
+    @GTMMRegisterLanguage(en = "§2Fluid Stored: §f%s", cn = "§2内部流体：§f%1\\$s")
+    public static final String CREATIVE_FLUID_CELL_TOOLTIP_1 = CREATIVE_FLUID_CELL_PREFIX + ".tooltip.1";
+    @GTMMRegisterLanguage(en = "Right click to open GUI to set fluid.", cn = "右键打开设置窗口来指定流体。")
+    public static final String CREATIVE_FLUID_CELL_TOOLTIP_2 = CREATIVE_FLUID_CELL_PREFIX + ".tooltip.2";
+    @GTMMRegisterLanguage(en = "Enabled Accurate output(%1\\$d mB)", cn = "已启用精确输出(%1\\$d mB)")
+    public static final String CREATIVE_FLUID_CELL_TOOLTIP_3 = CREATIVE_FLUID_CELL_PREFIX + ".tooltip.3";
+    @GTMMRegisterLanguage(en = "Enable Accurate output", cn = "启用精确输出")
+    public static final String CREATIVE_FLUID_CELL_GUI_BUTTON_1 = CREATIVE_FLUID_CELL_PREFIX + ".gui.button.1";
+    @GTMMRegisterLanguage(en = "Disable Accurate output", cn = "禁用精确输出")
+    public static final String CREATIVE_FLUID_CELL_GUI_BUTTON_2 = CREATIVE_FLUID_CELL_PREFIX + ".gui.button.2";
+    @GTMMRegisterLanguage(en = "§7You just need Creative Mode§7 to use this", cn = "§7你需要§b创造模式§7来使用它")
+    public static final String CREATIVE_TOOLTIP = "gtmoremachine.creative_tooltip";
 
     static {
         GTMM.creativeModeTab(() -> GTMMCreativeModeTabs.CREATIVE_TAB);
@@ -42,7 +59,7 @@ public class CreativeMachines {
             .langValue("Creative Input Hatch")
             .rotationState(RotationState.ALL)
             .colorOverlayTieredHullModel("overlay_pipe_in_emissive", "overlay_pipe_9x", GTMachineModels.OVERLAY_FLUID_HATCH_INPUT)
-            .tooltips(Component.translatable("gtmoremachine.creative_tooltip"))
+            .tooltips(Component.translatable(CREATIVE_TOOLTIP))
             .abilities(PartAbility.IMPORT_FLUIDS, PartAbility.IMPORT_FLUIDS_9X)
             .tier(GTValues.MAX)
             .register();
@@ -52,7 +69,7 @@ public class CreativeMachines {
             .langValue("Creative Input Bus")
             .rotationState(RotationState.ALL)
             .colorOverlayTieredHullModel("overlay_pipe_in_emissive", "overlay_pipe", GTMachineModels.OVERLAY_ITEM_HATCH_INPUT)
-            .tooltips(Component.translatable("gtmoremachine.creative_tooltip"))
+            .tooltips(Component.translatable(CREATIVE_TOOLTIP))
             .abilities(PartAbility.IMPORT_ITEMS)
             .tier(GTValues.MAX)
             .register();
@@ -62,7 +79,7 @@ public class CreativeMachines {
             .machine("creative_energy_hatch", CreativeEnergyHatchPartMachine::new)
             .langValue("§rCreative Energy Hatch")
             .rotationState(RotationState.ALL)
-            .tooltips(Component.translatable("gtmoremachine.creative_tooltip"))
+            .tooltips(Component.translatable(CREATIVE_TOOLTIP))
             .overlayTieredHullModel("energy_input_hatch")
             .abilities(PartAbility.INPUT_ENERGY)
             .tier(GTValues.MAX)
@@ -73,7 +90,7 @@ public class CreativeMachines {
             .machine("creative_laser_hatch", CreativeLaserHatchPartMachine::new)
             .langValue("§rCreative Laser Target Hatch")
             .rotationState(RotationState.ALL)
-            .tooltips(Component.translatable("gtmoremachine.creative_tooltip"))
+            .tooltips(Component.translatable(CREATIVE_TOOLTIP))
             .overlayTieredHullModel("laser_target_hatch")
             .abilities(PartAbility.INPUT_LASER)
             .tier(GTValues.MAX)
@@ -83,7 +100,7 @@ public class CreativeMachines {
             .item("creative_energy_cover", ComponentItem::create)
             .lang("Creative Energy Cover")
             .onRegister(GTItems.attach(new CoverPlaceBehavior(GTMMCovers.CREATIVE_ENERGY),
-                    new TooltipBehavior(lines -> lines.add(Component.translatable("gtmoremachine.creative_tooltip")))))
+                    new TooltipBehavior(lines -> lines.add(Component.translatable(CREATIVE_TOOLTIP)))))
             .register();
 
     public final static ItemEntry<ComponentItem> CREATIVE_FLUID_CELL = GTMM

@@ -2,6 +2,7 @@ package cn.qiuye.gtmoremachine.common.item;
 
 import cn.qiuye.gtmoremachine.api.gui.widget.TerminalInputWidget;
 import cn.qiuye.gtmoremachine.api.misc.CreativeFluidHandlerItemStack;
+import cn.qiuye.gtmoremachine.common.data.machines.CreativeMachines;
 
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.UITemplate;
@@ -54,16 +55,16 @@ public class CreativeFluidStats implements IItemComponent, IComponentCapability,
 
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
-        tooltipComponents.add(Component.translatable("gtmoremachine.creative_tooltip"));
+        tooltipComponents.add(Component.translatable(CreativeMachines.CREATIVE_TOOLTIP));
         if (stack.hasTag() && stack.getTag().contains("Fluid")) {
             FluidUtil.getFluidContained(stack).ifPresent(tank -> tooltipComponents
-                    .add(Component.translatable("item.gtmoremachine.creative_fluid_cell.tooltip.1", tank.getDisplayName())));
+                    .add(Component.translatable(CreativeMachines.CREATIVE_FLUID_CELL_TOOLTIP_1, tank.getDisplayName())));
             if (getAccurate(stack)) {
                 tooltipComponents
-                        .add(Component.translatable("item.gtmoremachine.creative_fluid_cell.tooltip.3", getCapacity(stack)));
+                        .add(Component.translatable(CreativeMachines.CREATIVE_FLUID_CELL_TOOLTIP_3, getCapacity(stack)));
             }
         } else {
-            tooltipComponents.add(Component.translatable("item.gtmoremachine.creative_fluid_cell.tooltip.2"));
+            tooltipComponents.add(Component.translatable(CreativeMachines.CREATIVE_FLUID_CELL_TOOLTIP_2));
         }
     }
 

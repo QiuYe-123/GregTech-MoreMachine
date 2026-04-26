@@ -5,6 +5,7 @@ import cn.qiuye.gtmoremachine.api.machine.fancyconfigurator.InventoryFancyConfig
 import cn.qiuye.gtmoremachine.api.machine.trait.CatalystItemStackHandler;
 import cn.qiuye.gtmoremachine.api.misc.UnlimitedItemStackTransfer;
 import cn.qiuye.gtmoremachine.api.transfer.UnlimitItemTransferHelper;
+import cn.qiuye.gtmoremachine.common.data.machines.CustomMachines;
 import cn.qiuye.gtmoremachine.utils.NumberUtils;
 
 import com.gregtechceu.gtceu.api.GTValues;
@@ -236,13 +237,13 @@ public class HugeBusPartMachine extends TieredIOPartMachine implements IDistinct
         if (this.io == IO.IN) {
             configuratorPanel.attachConfigurators(new CircuitFancyConfigurator(circuitInventory.storage));
             configuratorPanel.attachConfigurators(new ButtonConfigurator(new GuiTextureGroup(GuiTextures.BUTTON, new TextTexture("🔙")), this::refundAll)
-                    .setTooltips(List.of(Component.translatable("gtmoremachine.machine.huge_item_bus.tooltip.1"))));
+                    .setTooltips(List.of(Component.translatable(CustomMachines.HUGE_ITEM_BUS_TOOLTIP_1))));
             configuratorPanel.attachConfigurators(new InventoryFancyConfigurator(
-                    shareInventory.storage, Component.translatable("gui.gtmoremachine.share_inventory.title"))
+                    shareInventory.storage, Component.translatable(CustomMachines.SHARE_INVENTORY_TITLE))
                     .setTooltips(List.of(
-                            Component.translatable("gui.gtmoremachine.share_inventory.desc.0"),
-                            Component.translatable("gui.gtmoremachine.share_inventory.desc.1"),
-                            Component.translatable("gui.gtmoremachine.share_inventory.desc.2"))));
+                            Component.translatable(CustomMachines.SHARE_INVENTORY_DESC_0),
+                            Component.translatable(CustomMachines.SHARE_INVENTORY_DESC_1),
+                            Component.translatable(CustomMachines.SHARE_INVENTORY_DESC_2))));
         }
     }
 
@@ -274,9 +275,9 @@ public class HugeBusPartMachine extends TieredIOPartMachine implements IDistinct
             }
         }
         if (textList.isEmpty()) {
-            textList.add(Component.translatable("gtmoremachine.machine.huge_item_bus.tooltip.3"));
+            textList.add(Component.translatable(CustomMachines.HUGE_ITEM_BUS_TOOLTIP_3));
         }
-        textList.add(0, Component.translatable("gtmoremachine.machine.huge_item_bus.tooltip.2", itemCount, getInventorySize())
+        textList.add(0, Component.translatable(CustomMachines.HUGE_ITEM_BUS_TOOLTIP_2, itemCount, getInventorySize())
                 .setStyle(Style.EMPTY.withColor(ChatFormatting.GREEN)));
     }
 }

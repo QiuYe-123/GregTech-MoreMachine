@@ -1,6 +1,8 @@
 package cn.qiuye.gtmoremachine.common.data;
 
 import cn.qiuye.gtmoremachine.GTmm;
+import cn.qiuye.gtmoremachine.api.annotation.GTMMDataGeneratorScanned;
+import cn.qiuye.gtmoremachine.api.annotation.language.GTMMRegisterLanguage;
 import cn.qiuye.gtmoremachine.common.item.AdvancedTerminalBehavior;
 import cn.qiuye.gtmoremachine.common.item.WirelessEnergyBindingToolBehavior;
 import cn.qiuye.gtmoremachine.common.item.WirelessEnergyTerminalBehavior;
@@ -26,7 +28,32 @@ import static cn.qiuye.gtmoremachine.common.data.GTMMCovers.*;
 import static cn.qiuye.gtmoremachine.common.registry.GTMMRegistration.GTMM;
 import static com.gregtechceu.gtceu.common.data.GTItems.attach;
 
+@GTMMDataGeneratorScanned
 public class GTMMItems {
+
+    private static final String WIRELESS_COVER_PREFIX = "item.gtmoremachine.wireless_energy_receive_cover";
+    private static final String WIRELESS_TRANSFER_PREFIX = "item.gtmoremachine.wireless_transfer";
+    private static final String ADVANCED_WIRELESS_TRANSFER_PREFIX = "item.gtmoremachine.advanced_wireless_transfer";
+    @GTMMRegisterLanguage(en = "§bPull Energy§7 from EU network to the machine as §fCover§7.", cn = "§7作§f覆盖板§7时从电网§b拉取能量§7传输到机器。")
+    public static final String WIRELESS_ENERGY_RECEIVE_COVER_TOOLTIP_1 = WIRELESS_COVER_PREFIX + ".tooltip.1";
+    @GTMMRegisterLanguage(en = "§7Can only used for §esingle block machine§7.Can't put on the machine blow the cover's voltage", cn = "§7只可用于§e单方块机器§7。无法将超过机器电压等级的覆盖板安装到机器上。")
+    public static final String WIRELESS_ENERGY_RECEIVE_COVER_TOOLTIP_2 = WIRELESS_COVER_PREFIX + ".tooltip.2";
+    @GTMMRegisterLanguage(en = "§bEnergy transfer speed: §f%s §7EU/t", cn = "§b能量传输效率：§f%s §7EU/t")
+    public static final String WIRELESS_ENERGY_RECEIVE_COVER_TOOLTIP_3 = WIRELESS_COVER_PREFIX + ".tooltip.3";
+    @GTMMRegisterLanguage(en = "§7Bind to: §f%s (%s)", cn = "§7已绑定容器：§f%s (%s)")
+    public static final String WIRELESS_TRANSFER_TOOLTIP_1 = WIRELESS_TRANSFER_PREFIX + ".tooltip.1";
+    @GTMMRegisterLanguage(en = "§7Right click the container with shift to bind container.Right click the air with shift to unbind.", cn = "§7潜行右键需要绑定的容器来进行绑定。潜行右键空气取消绑定。")
+    public static final String WIRELESS_TRANSFER_TOOLTIP_2 = WIRELESS_TRANSFER_PREFIX + ".tooltip.2";
+    @GTMMRegisterLanguage(en = "Success bind to: %s (%s)", cn = "绑定容器成功：%s (%s)")
+    public static final String WIRELESS_TRANSFER_TOOLTIP_BIND_1 = WIRELESS_TRANSFER_PREFIX + ".tooltip.bind.1";
+    @GTMMRegisterLanguage(en = "Success unbind.", cn = "解除绑定成功")
+    public static final String WIRELESS_TRANSFER_TOOLTIP_BIND_2 = WIRELESS_TRANSFER_PREFIX + ".tooltip.bind.2";
+    @GTMMRegisterLanguage(en = "§bTransfer Item§7 to §ebinded container§7 from the machine as §fCover§7.", cn = "§7作§f覆盖板§7时从机器中§b提取物品§7到§e绑定的容器§7中。")
+    public static final String WIRELESS_TRANSFER_ITEM_TOOLTIP_1 = WIRELESS_TRANSFER_PREFIX + ".item.tooltip.1";
+    @GTMMRegisterLanguage(en = "§bTransfer Fluid§7 to §ebinded container§7 from the machine as §fCover§7.", cn = "§7作§f覆盖板§7时从机器中§b提取流体§7到§e绑定的容器§7中。")
+    public static final String WIRELESS_TRANSFER_FLUID_TOOLTIP_1 = WIRELESS_TRANSFER_PREFIX + ".fluid.tooltip.1";
+    @GTMMRegisterLanguage(en = "§7Can use §f filter card", cn = "§7可使用§f过滤卡")
+    public static final String ADVANCED_WIRELESS_TRANSFER_TOOLTIP_1 = ADVANCED_WIRELESS_TRANSFER_PREFIX + ".tooltip.1";
 
     static {
         GTMM.creativeModeTab(() -> GTMMCreativeModeTabs.WIRELESS_TAB);
@@ -42,8 +69,8 @@ public class GTMMItems {
             .onRegister(attach(new WirelessTransferCoverPlaceBehavior(GTMMCovers.WIRELESS_ITEM_TRANSFER),
                     new CoverPlaceBehavior(GTMMCovers.WIRELESS_ITEM_TRANSFER),
                     new WirelessTransferCoverTooltipBehavior(lines -> {
-                        lines.add(Component.translatable("item.gtmoremachine.wireless_transfer.item.tooltip.1"));
-                        lines.add(Component.translatable("item.gtmoremachine.wireless_transfer.tooltip.2"));
+                        lines.add(Component.translatable(WIRELESS_TRANSFER_ITEM_TOOLTIP_1));
+                        lines.add(Component.translatable(WIRELESS_TRANSFER_TOOLTIP_2));
                     })))
             .register();
 
@@ -53,8 +80,8 @@ public class GTMMItems {
             .onRegister(attach(new WirelessTransferCoverPlaceBehavior(GTMMCovers.WIRELESS_FLUID_TRANSFER),
                     new CoverPlaceBehavior(GTMMCovers.WIRELESS_FLUID_TRANSFER),
                     new WirelessTransferCoverTooltipBehavior(lines -> {
-                        lines.add(Component.translatable("item.gtmoremachine.wireless_transfer.fluid.tooltip.1"));
-                        lines.add(Component.translatable("item.gtmoremachine.wireless_transfer.tooltip.2"));
+                        lines.add(Component.translatable(WIRELESS_TRANSFER_FLUID_TOOLTIP_1));
+                        lines.add(Component.translatable(WIRELESS_TRANSFER_TOOLTIP_2));
                     })))
             .register();
 
@@ -64,9 +91,9 @@ public class GTMMItems {
             .onRegister(attach(new WirelessTransferCoverPlaceBehavior(GTMMCovers.ADVANCED_WIRELESS_ITEM_TRANSFER),
                     new CoverPlaceBehavior(GTMMCovers.ADVANCED_WIRELESS_ITEM_TRANSFER),
                     new WirelessTransferCoverTooltipBehavior(lines -> {
-                        lines.add(Component.translatable("item.gtmoremachine.wireless_transfer.item.tooltip.1"));
-                        lines.add(Component.translatable("item.gtmoremachine.advanced_wireless_transfer.tooltip.1"));
-                        lines.add(Component.translatable("item.gtmoremachine.wireless_transfer.tooltip.2"));
+                        lines.add(Component.translatable(WIRELESS_TRANSFER_ITEM_TOOLTIP_1));
+                        lines.add(Component.translatable(ADVANCED_WIRELESS_TRANSFER_TOOLTIP_1));
+                        lines.add(Component.translatable(WIRELESS_TRANSFER_TOOLTIP_2));
                     })))
             .register();
 
@@ -76,9 +103,9 @@ public class GTMMItems {
             .onRegister(attach(new WirelessTransferCoverPlaceBehavior(GTMMCovers.ADVANCED_WIRELESS_FLUID_TRANSFER),
                     new CoverPlaceBehavior(GTMMCovers.ADVANCED_WIRELESS_FLUID_TRANSFER),
                     new WirelessTransferCoverTooltipBehavior(lines -> {
-                        lines.add(Component.translatable("item.gtmoremachine.wireless_transfer.fluid.tooltip.1"));
-                        lines.add(Component.translatable("item.gtmoremachine.advanced_wireless_transfer.tooltip.1"));
-                        lines.add(Component.translatable("item.gtmoremachine.wireless_transfer.tooltip.2"));
+                        lines.add(Component.translatable(WIRELESS_TRANSFER_FLUID_TOOLTIP_1));
+                        lines.add(Component.translatable(ADVANCED_WIRELESS_TRANSFER_TOOLTIP_1));
+                        lines.add(Component.translatable(WIRELESS_TRANSFER_TOOLTIP_2));
                     })))
             .register();
 
@@ -147,9 +174,9 @@ public class GTMMItems {
                 .item(GTValues.VN[tier].toLowerCase(Locale.ROOT) + "_" + (amperage == 1 ? "" : amperage + "a_") + "wireless_energy_receive_cover", ComponentItem::create)
                 .lang(GTValues.VNF[tier] + " " + "Wireless Energy Receive Cover")
                 .onRegister(attach(new TooltipBehavior(lines -> {
-                    lines.add(Component.translatable("item.gtmoremachine.wireless_energy_receive_cover.tooltip.1"));
-                    lines.add(Component.translatable("item.gtmoremachine.wireless_energy_receive_cover.tooltip.2"));
-                    lines.add(Component.translatable("item.gtmoremachine.wireless_energy_receive_cover.tooltip.3", GTValues.VEX[tier] * amperage));
+                    lines.add(Component.translatable(WIRELESS_ENERGY_RECEIVE_COVER_TOOLTIP_1));
+                    lines.add(Component.translatable(WIRELESS_ENERGY_RECEIVE_COVER_TOOLTIP_2));
+                    lines.add(Component.translatable(WIRELESS_ENERGY_RECEIVE_COVER_TOOLTIP_3, GTValues.VEX[tier] * amperage));
                 }), new CoverPlaceBehavior(amperage == 1 ? WIRELESS_ENERGY_RECEIVE[tier - 1] : WIRELESS_ENERGY_RECEIVE_4A[tier - 1]))).register();
     }
 

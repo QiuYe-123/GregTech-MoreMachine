@@ -2,6 +2,7 @@ package cn.qiuye.gtmoremachine.common.machine.electric;
 
 import cn.qiuye.gtmoremachine.api.machine.trait.feature.IWirelessEnergyContainerHolder;
 import cn.qiuye.gtmoremachine.api.misc.wireless.energy.WirelessEnergyContainer;
+import cn.qiuye.gtmoremachine.common.data.machines.WirelessMachines;
 import cn.qiuye.gtmoremachine.utils.TeamUtils;
 
 import com.gregtechceu.gtceu.api.GTValues;
@@ -100,7 +101,7 @@ public class WirelessEnergyInterface extends TieredIOPartMachine implements IWir
             setOwnerUUID(context.getPlayer().getUUID());
             setWirelessEnergyContainerCache(null);
             if (isRemote()) {
-                context.getPlayer().sendSystemMessage(Component.translatable("gtmoremachine.machine.wireless_energy_hatch.tooltip.bind", TeamUtils.getName(context.getPlayer())));
+                context.getPlayer().sendSystemMessage(Component.translatable(WirelessMachines.WIRELESS_ENERGY_HATCH_TOOLTIP_BIND, TeamUtils.getName(context.getPlayer())));
             }
             updateEnergySubscription();
             return InteractionResult.SUCCESS;
@@ -114,7 +115,7 @@ public class WirelessEnergyInterface extends TieredIOPartMachine implements IWir
             setOwnerUUID(null);
             setWirelessEnergyContainerCache(null);
             if (isRemote()) {
-                player.sendSystemMessage(Component.translatable("gtmoremachine.machine.wireless_energy_hatch.tooltip.unbind"));
+                player.sendSystemMessage(Component.translatable(WirelessMachines.WIRELESS_ENERGY_HATCH_TOOLTIP_UNBIND));
             }
             updateEnergySubscription();
             return true;

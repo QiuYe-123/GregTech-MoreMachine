@@ -3,6 +3,7 @@ package cn.qiuye.gtmoremachine.common.machine.multiblock.part;
 import cn.qiuye.gtmoremachine.api.machine.trait.WirelessNotifiableCWUContainer;
 import cn.qiuye.gtmoremachine.api.machine.trait.feature.IWirelessCWUContainerHolder;
 import cn.qiuye.gtmoremachine.api.misc.wireless.cwu.WirelessCWUContainer;
+import cn.qiuye.gtmoremachine.common.data.machines.WirelessMachines;
 import cn.qiuye.gtmoremachine.utils.TeamUtils;
 
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
@@ -62,7 +63,7 @@ public class WirelessCWUHatchPartMachine extends MultiblockPartMachine implement
             setWirelessCWUContainerCache(null);
             this.computationContainer.setWirelessCWUContainerCache(getWirelessCWUContainer());
             if (isRemote()) {
-                context.getPlayer().sendSystemMessage(Component.translatable("gtmoremachine.machine.wireless_energy_hatch.tooltip.bind", TeamUtils.getName(context.getPlayer())));
+                context.getPlayer().sendSystemMessage(Component.translatable(WirelessMachines.WIRELESS_ENERGY_HATCH_TOOLTIP_BIND, TeamUtils.getName(context.getPlayer())));
             }
             return InteractionResult.SUCCESS;
         }
@@ -76,7 +77,7 @@ public class WirelessCWUHatchPartMachine extends MultiblockPartMachine implement
             setWirelessCWUContainerCache(null);
             this.computationContainer.setWirelessCWUContainerCache(getWirelessCWUContainer());
             if (isRemote()) {
-                player.sendSystemMessage(Component.translatable("gtmoremachine.machine.wireless_energy_hatch.tooltip.unbind"));
+                player.sendSystemMessage(Component.translatable(WirelessMachines.WIRELESS_ENERGY_HATCH_TOOLTIP_UNBIND));
             }
             return true;
         }
