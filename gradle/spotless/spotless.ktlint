@@ -5,6 +5,7 @@ max_line_length = 200
 
 ij_kotlin_imports_layout = cn.qiuye.**,|,com.gregtechceu.**,|,com.lowdragmc.**,|,net.**,|,*,|,java.**,javax.**,kotlin.**,|,^
 ij_kotlin_packages_to_use_import_on_demand = java.util.*,cn.qiuye.**
+ktlint_standard_no-unused-imports = enabled
 ktlint_standard_class-naming = disabled
 ktlint_standard_function-naming = disabled
 ktlint_standard_no-wildcard-imports = disabled

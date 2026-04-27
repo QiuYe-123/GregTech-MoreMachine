@@ -46,7 +46,7 @@ object TeamUtils {
 				}
 			}
 		}
-		val player = level?.getPlayerByUUID(playerUUID)
+		val player = if (playerUUID != null) level?.getPlayerByUUID(playerUUID) else null
 		if (player != null) return player.name
 		return Component.literal(playerUUID.toString())
 	}
