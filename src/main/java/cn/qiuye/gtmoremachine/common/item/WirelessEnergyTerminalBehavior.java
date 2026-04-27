@@ -31,6 +31,7 @@ import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -158,7 +159,7 @@ public class WirelessEnergyTerminalBehavior implements IItemUIFactory, IItemHUDP
         if (!TagUtils.hasTagKey("UUID", handItem)) {
             TagUtils.setUUID(entityPlayer.getUUID(), handItem);
         }
-        return new ModularUI(DISPLAY_TEXT_WIDTH + 8 + 8, 117 + 8 + 8 + 8 + 17, holder, entityPlayer).widget(createWidget(handItem, holder.getHeld().getDescriptionId(), new WirelessMonitor(entityPlayer.getUUID(), entityPlayer.level())));
+        return new ModularUI(DISPLAY_TEXT_WIDTH + 8 + 8, 117 + 8 + 8 + 8 + 17, holder, entityPlayer).widget(createWidget(handItem, holder.getHeld().getDescriptionId(), new WirelessMonitor(entityPlayer.getUUID(), (ServerLevel) entityPlayer.level())));
     }
 
     /**
@@ -370,7 +371,7 @@ public class WirelessEnergyTerminalBehavior implements IItemUIFactory, IItemHUDP
      */
     private static class WirelessMonitor implements IWirelessMonitor {
 
-        private WirelessMonitor(UUID uuid, Level level) {
+        private WirelessMonitor(UUID uuid, ServerLevel level) {
             this.uuid = uuid;
             this.level = level;
         }
@@ -385,7 +386,7 @@ public class WirelessEnergyTerminalBehavior implements IItemUIFactory, IItemHUDP
         }
 
         private final UUID uuid;
-        private final Level level;
+        private final ServerLevel level;
 
         private List<Component> displayTextCache;
 

@@ -59,8 +59,8 @@ public class AlignLabelWidget extends Widget implements IConfigurableWidget {
     public AlignLabelWidget(int xPosition, int yPosition, Component component) {
         super(new Position(xPosition, yPosition), new Size(10, 10));
         this.lastTextValue = "";
-        this.setDropShadow(true);
-        this.setTextColor(-1);
+        this.dropShadow = true;
+        this.color = -1;
         this.setComponent(component);
         this.textAlign = ALIGN_LEFT;
     }
@@ -68,8 +68,8 @@ public class AlignLabelWidget extends Widget implements IConfigurableWidget {
     public AlignLabelWidget(int xPosition, int yPosition, Supplier<String> text) {
         super(new Position(xPosition, yPosition), new Size(10, 10));
         this.lastTextValue = "";
-        this.setDropShadow(true);
-        this.setTextColor(-1);
+        this.dropShadow = true;
+        this.color = -1;
         this.setTextProvider(text);
         this.textAlign = ALIGN_LEFT;
     }
@@ -123,7 +123,10 @@ public class AlignLabelWidget extends Widget implements IConfigurableWidget {
     }
 
     public void setColor(int color) {
-        this.setTextColor(color);
+        this.color = color;
+        if (this.component != null) {
+            this.component = this.component.copy().withStyle(this.component.getStyle().withColor(color));
+        }
     }
 
     public void writeInitialData(FriendlyByteBuf buffer) {

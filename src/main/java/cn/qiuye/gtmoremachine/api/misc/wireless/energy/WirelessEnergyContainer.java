@@ -186,6 +186,9 @@ public class WirelessEnergyContainer {
     public StoragePercentageData getStoragePercentage() {
         var storage = new BigDecimal(this.storage);
         var capacity = new BigDecimal(this.capacity);
+        if (capacity.compareTo(BigDecimal.ZERO) <= 0) {
+            return new StoragePercentageData(BigDecimal.ZERO, this.storage, this.capacity);
+        }
         return new StoragePercentageData(storage.divide(capacity, MathContext.DECIMAL32).multiply(BigDecimal.valueOf(100)), this.storage, this.capacity);
     }
 
