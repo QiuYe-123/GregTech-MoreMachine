@@ -37,7 +37,7 @@ jobs:
         id: gametest
         continue-on-error: true
         run: ./gradlew runGameTestServer
-      - name: Update “Tests Passed” / “Tests Failed” labels
+      - name: Update test result labels
         if: steps.filter.outputs.code == 'true' && github.event.pull_request.head.repo.full_name == github.repository
         uses: actions/github-script@v7
         with:
