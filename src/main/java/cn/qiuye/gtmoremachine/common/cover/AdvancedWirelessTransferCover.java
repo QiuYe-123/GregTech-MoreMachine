@@ -257,8 +257,8 @@ public class AdvancedWirelessTransferCover extends CoverBehavior implements IUIC
 
     public Widget createItemUIWidget() {
         final var group = new WidgetGroup(0, 0, 176, 107);
-        var titleLabel = new LabelWidget(10, 5, Component.translatable("item.gtmthings.advanced_wireless_item_transfer_cover"));
-        titleLabel.setText(Component.translatable("item.gtmthings.advanced_wireless_item_transfer_cover").getString());
+        var titleLabel = new LabelWidget(10, 5, Component.translatable("item.gtmoremachine.advanced_wireless_item_transfer_cover"));
+        titleLabel.setText(Component.translatable("item.gtmoremachine.advanced_wireless_item_transfer_cover").getString());
         group.addWidget(titleLabel);
         group.addWidget(filterHandlerItem.createFilterSlotUI(10, 20));
         group.addWidget(filterHandlerItem.createFilterConfigUI(10, 42, 156, 60));
@@ -268,8 +268,8 @@ public class AdvancedWirelessTransferCover extends CoverBehavior implements IUIC
 
     public Widget createFluidUIWidget() {
         final var group = new WidgetGroup(0, 0, 176, 107);
-        var titleLabel = new LabelWidget(10, 5, Component.translatable("item.gtmthings.advanced_wireless_fluid_transfer_cover"));
-        titleLabel.setText(Component.translatable("item.gtmthings.advanced_wireless_fluid_transfer_cover").getString());
+        var titleLabel = new LabelWidget(10, 5, Component.translatable("item.gtmoremachine.advanced_wireless_fluid_transfer_cover"));
+        titleLabel.setText(Component.translatable("item.gtmoremachine.advanced_wireless_fluid_transfer_cover").getString());
         group.addWidget(titleLabel);
         group.addWidget(filterHandlerFluid.createFilterSlotUI(10, 20));
         group.addWidget(filterHandlerFluid.createFilterConfigUI(10, 42, 156, 60));

@@ -19,10 +19,10 @@ class TimeStat(windowStart: Int = 0) {
 	private var avgInput: BigDecimal = BigDecimal.ZERO
 	private var avgOutput: BigDecimal = BigDecimal.ZERO
 
-	fun tick() {
-		if (this.minute.tock()) {
-			if (this.hour.tock()) {
-				this.day.tock()
+	fun tick(currentTick: Int) {
+		if (this.minute.tock(currentTick)) {
+			if (this.hour.tock(currentTick)) {
+				this.day.tock(currentTick)
 			}
 		}
 		val divisor = this.minute.slotResolution.toLong()
