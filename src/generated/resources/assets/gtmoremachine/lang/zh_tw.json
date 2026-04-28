@@ -547,7 +547,7 @@
   "gtmoremachine.machine.wireless_monitor.tooltip.net_cwu": "平均淨CWU：%s",
   "gtmoremachine.machine.wireless_monitor.tooltip.net_power": "平均淨功率：%s",
   "gtmoremachine.machine.wireless_monitor.tooltip.statistics.cwu": "算力統計：%s     顯示格式：%s    算力狀態：%s",
-    "gtmoremachine.machine.wireless_monitor.tooltip.statistics.energy": "用電統計：%s     顯示格式：%s    功率狀態：%s    排序規則：%s        類別: %s",
+  "gtmoremachine.machine.wireless_monitor.tooltip.statistics.energy": "用電統計：%s     顯示格式：%s    功率狀態：%s\n排序規則：%s        類別: %s",
   "gtmoremachine.multiblock.pattern.error.ecutypes": "§c必鬚使用同種能源通訊單元",
   "gtmoremachine.multiblock.pattern.error.wecc": "§c必鬚使用相同的電網容量組件",
   "gtmoremachine.universal.disabled": "多方塊結構共享：§4禁止",
