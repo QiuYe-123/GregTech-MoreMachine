@@ -19,7 +19,6 @@ import com.lowdragmc.lowdraglib.gui.texture.ItemStackTexture;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
@@ -39,16 +38,12 @@ public final class VirtualItemProviderBehavior implements IAddInformation, IItem
     public static final VirtualItemProviderBehavior INSTANCE = new VirtualItemProviderBehavior();
 
     private static ItemStack setVirtualItem(ItemStack stack, ItemStack virtualItem) {
-        setVirtualItemProviderData(stack, getVirtualItemProviderData(stack).withVirtualItem(virtualItem));
+        setVirtualItemProviderData(stack, getVirtualItemProviderData(stack).withVirtualItem(virtualItem).withMarked(false));
         return stack;
     }
 
     public static ItemStack getVirtualItem(ItemStack item) {
-        var component = item.get(GTMMDataComponents.VIRTUAL_ITEM_PROVIDER.get());
-        if (component != null && !component.virtualItem().isEmpty()) {
-            return component.virtualItem().copy();
-        }
-        return ItemStack.EMPTY;
+        return getVirtualItemProviderData(item).virtualItem().copy();
     }
 
     public static boolean hasVirtualItem(ItemStack item) {
@@ -56,8 +51,7 @@ public final class VirtualItemProviderBehavior implements IAddInformation, IItem
     }
 
     public static boolean isMarked(ItemStack item) {
-        var component = item.get(GTMMDataComponents.VIRTUAL_ITEM_PROVIDER.get());
-        return component != null && component.marked();
+        return getVirtualItemProviderData(item).marked();
     }
 
     private Player player;
@@ -150,11 +144,11 @@ public final class VirtualItemProviderBehavior implements IAddInformation, IItem
         }
     }
 
-    private static VirtualItemProviderData getVirtualItemProviderData(ItemStack stack) {
+    public static VirtualItemProviderData getVirtualItemProviderData(ItemStack stack) {
         return stack.getOrDefault(GTMMDataComponents.VIRTUAL_ITEM_PROVIDER.get(), VirtualItemProviderData.DEFAULT);
     }
 
-    static void setVirtualItemProviderData(ItemStack stack, VirtualItemProviderData data) {
+    public static void setVirtualItemProviderData(ItemStack stack, VirtualItemProviderData data) {
         stack.set(GTMMDataComponents.VIRTUAL_ITEM_PROVIDER.get(), data);
     }
 }

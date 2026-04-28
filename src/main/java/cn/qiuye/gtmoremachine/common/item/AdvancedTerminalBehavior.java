@@ -28,10 +28,13 @@ import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.gui.widget.*;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -206,11 +209,34 @@ public class AdvancedTerminalBehavior implements IItemUIFactory {
     }
 
     private static AdvancedTerminalData getTerminalData(ItemStack stack) {
-        return stack.getOrDefault(GTMMDataComponents.ADVANCED_TERMINAL.get(), AdvancedTerminalData.DEFAULT);
+        var component = stack.get(GTMMDataComponents.ADVANCED_TERMINAL.get());
+        if (component != null) {
+            return component;
+        }
+
+        CompoundTag legacyTag = getLegacyTag(stack);
+        Map<String, Integer> tierBlocks = new HashMap<>();
+        CompoundTag blocks = legacyTag.getCompound("blocks");
+        for (String key : blocks.getAllKeys()) {
+            tierBlocks.put(key, blocks.getInt(key));
+        }
+        return new AdvancedTerminalData(
+                legacyTag.getInt(repeatCount),
+                legacyTag.getBoolean(ReplaceMode),
+                legacyTag.getBoolean(DemolitionMode),
+                legacyTag.getBoolean(UseAEMode),
+                legacyTag.getBoolean(FlipMode),
+                !legacyTag.contains(NoHatch) || legacyTag.getBoolean(NoHatch),
+                tierBlocks);
     }
 
     private static void setTerminalData(ItemStack stack, AdvancedTerminalData data) {
         stack.set(GTMMDataComponents.ADVANCED_TERMINAL.get(), data);
+    }
+
+    private static CompoundTag getLegacyTag(ItemStack stack) {
+        CustomData customData = stack.get(DataComponents.CUSTOM_DATA);
+        return customData == null ? new CompoundTag() : customData.copyTag();
     }
 
     private void setRepeatCount(ItemStack itemStack, int value) {

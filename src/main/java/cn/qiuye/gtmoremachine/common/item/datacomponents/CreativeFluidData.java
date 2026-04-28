@@ -13,11 +13,9 @@ public record CreativeFluidData(boolean accurate, int capacity) {
 
     public static final Codec<CreativeFluidData> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.BOOL.optionalFieldOf("accurate", DEFAULT.accurate).forGetter(CreativeFluidData::accurate),
-            Codec.INT.optionalFieldOf("capacity", DEFAULT.capacity).forGetter(CreativeFluidData::capacity)
-    ).apply(instance, CreativeFluidData::new));
+            Codec.INT.optionalFieldOf("capacity", DEFAULT.capacity).forGetter(CreativeFluidData::capacity)).apply(instance, CreativeFluidData::new));
 
-    public static final StreamCodec<RegistryFriendlyByteBuf, CreativeFluidData> STREAM_CODEC =
-            ByteBufCodecs.fromCodecWithRegistriesTrusted(CODEC);
+    public static final StreamCodec<RegistryFriendlyByteBuf, CreativeFluidData> STREAM_CODEC = ByteBufCodecs.fromCodecWithRegistriesTrusted(CODEC);
 
     public CreativeFluidData withAccurate(boolean accurate) {
         return new CreativeFluidData(accurate, capacity);

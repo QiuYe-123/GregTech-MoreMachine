@@ -11,13 +11,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 public record AdvancedTerminalData(
-        int repeatCount,
-        boolean replaceMode,
-        boolean demolitionMode,
-        boolean useAEMode,
-        boolean flipMode,
-        boolean noHatchMode,
-        Map<String, Integer> tierBlocks) {
+                                   int repeatCount,
+                                   boolean replaceMode,
+                                   boolean demolitionMode,
+                                   boolean useAEMode,
+                                   boolean flipMode,
+                                   boolean noHatchMode,
+                                   Map<String, Integer> tierBlocks) {
 
     public static final AdvancedTerminalData DEFAULT = new AdvancedTerminalData(0, false, false, false, false, true, Map.of());
 
@@ -28,11 +28,9 @@ public record AdvancedTerminalData(
             Codec.BOOL.optionalFieldOf("use_ae_mode", DEFAULT.useAEMode).forGetter(AdvancedTerminalData::useAEMode),
             Codec.BOOL.optionalFieldOf("flip_mode", DEFAULT.flipMode).forGetter(AdvancedTerminalData::flipMode),
             Codec.BOOL.optionalFieldOf("no_hatch_mode", DEFAULT.noHatchMode).forGetter(AdvancedTerminalData::noHatchMode),
-            Codec.unboundedMap(Codec.STRING, Codec.INT).optionalFieldOf("tier_blocks", DEFAULT.tierBlocks).forGetter(AdvancedTerminalData::tierBlocks)
-    ).apply(instance, AdvancedTerminalData::new));
+            Codec.unboundedMap(Codec.STRING, Codec.INT).optionalFieldOf("tier_blocks", DEFAULT.tierBlocks).forGetter(AdvancedTerminalData::tierBlocks)).apply(instance, AdvancedTerminalData::new));
 
-    public static final StreamCodec<RegistryFriendlyByteBuf, AdvancedTerminalData> STREAM_CODEC =
-            ByteBufCodecs.fromCodecWithRegistriesTrusted(CODEC);
+    public static final StreamCodec<RegistryFriendlyByteBuf, AdvancedTerminalData> STREAM_CODEC = ByteBufCodecs.fromCodecWithRegistriesTrusted(CODEC);
 
     public AdvancedTerminalData {
         tierBlocks = Map.copyOf(tierBlocks);

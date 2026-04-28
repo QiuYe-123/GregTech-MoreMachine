@@ -5,8 +5,6 @@ import cn.qiuye.gtmoremachine.common.item.VirtualItemProviderBehavior;
 import cn.qiuye.gtmoremachine.common.item.datacomponents.VirtualItemProviderData;
 import cn.qiuye.gtmoremachine.integration.ae.item.GTMMAEItems;
 
-import com.gregtechceu.gtceu.api.registry.GTRegistries;
-
 import net.minecraft.world.item.ItemStack;
 
 import appeng.api.stacks.AEItemKey;
@@ -15,6 +13,9 @@ import appeng.api.stacks.GenericStack;
 import appeng.items.storage.CreativeCellItem;
 import appeng.util.ConfigInventory;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public final class VirtualItemProviderCellItem extends CreativeCellItem {
 
@@ -40,17 +41,33 @@ public final class VirtualItemProviderCellItem extends CreativeCellItem {
         }
 
         void load() {
-            var data = stack.get(GTMMDataComponents.VIRTUAL_ITEM_PROVIDER.get());
-            if (data != null && !data.configInventory().isEmpty()) {
-                inv.readFromChildTag(data.configInventory(), "list", GTRegistries.builtinRegistry());
+            var data = VirtualItemProviderBehavior.getVirtualItemProviderData(stack);
+            var configuredStacks = data.configInventory();
+            int slotCount = Math.min(inv.size(), configuredStacks.size());
+            for (int slot = 0; slot < slotCount; slot++) {
+                ItemStack configuredStack = configuredStacks.get(slot);
+                if (configuredStack.isEmpty()) {
+                    continue;
+                }
+                AEItemKey itemKey = AEItemKey.of(configuredStack);
+                if (itemKey != null) {
+                    inv.setStack(slot, new GenericStack(itemKey, 0L));
+                }
             }
         }
 
         void save() {
-            var data = stack.getOrDefault(GTMMDataComponents.VIRTUAL_ITEM_PROVIDER.get(), VirtualItemProviderData.DEFAULT);
-            var config = new net.minecraft.nbt.CompoundTag();
-            inv.writeToChildTag(config, "list", GTRegistries.builtinRegistry());
-            VirtualItemProviderBehavior.setVirtualItemProviderData(stack, data.withConfigInventory(config));
+            var data = VirtualItemProviderBehavior.getVirtualItemProviderData(stack);
+            List<ItemStack> configuredStacks = new ArrayList<>(inv.size());
+            for (int slot = 0; slot < inv.size(); slot++) {
+                GenericStack genericStack = inv.getStack(slot);
+                if (genericStack != null && genericStack.what() instanceof AEItemKey itemKey) {
+                    configuredStacks.add(itemKey.toStack());
+                } else {
+                    configuredStacks.add(ItemStack.EMPTY);
+                }
+            }
+            VirtualItemProviderBehavior.setVirtualItemProviderData(stack, data.withConfigInventory(configuredStacks));
         }
     }
 

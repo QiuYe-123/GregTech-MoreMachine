@@ -1,6 +1,7 @@
 package cn.qiuye.gtmoremachine.common.cover;
 
-import cn.qiuye.gtmoremachine.utils.nbt.ItemStackNbtUtils;
+import cn.qiuye.gtmoremachine.common.data.GTMMDataComponents;
+import cn.qiuye.gtmoremachine.common.item.datacomponents.WirelessTransferCoverData;
 
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
@@ -26,7 +27,6 @@ import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
@@ -114,14 +114,11 @@ public class WirelessTransferCover extends CoverBehavior {
 
     @Override
     public void onAttached(ItemStack itemStack, ServerPlayer player) {
-        CompoundTag tag = ItemStackNbtUtils.getTag(itemStack);
-        if (!tag.isEmpty()) {
-            this.dimensionId = tag.getString("dimensionid");
-            var intX = tag.getInt("x");
-            var intY = tag.getInt("y");
-            var intZ = tag.getInt("z");
-            this.targetPos = new BlockPos(intX, intY, intZ);
-            this.facing = Direction.byName(tag.getString("facing"));
+        WirelessTransferCoverData data = itemStack.getOrDefault(GTMMDataComponents.WIRELESS_TRANSFER_COVER.get(), WirelessTransferCoverData.EMPTY);
+        if (data.isBound()) {
+            this.dimensionId = data.dimensionId();
+            this.targetPos = data.blockPos();
+            this.facing = Direction.byName(data.facing());
             GetLevel();
         }
         var targetMachine = MetaMachine.getMachine(coverHolder.getLevel(), coverHolder.getBlockPos());

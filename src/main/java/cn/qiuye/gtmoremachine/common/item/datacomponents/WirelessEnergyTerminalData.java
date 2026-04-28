@@ -15,11 +15,11 @@ import com.mojang.serialization.DataResult;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 public record WirelessEnergyTerminalData(
-        Statistics statistics,
-        Format format,
-        Status powerStatus,
-        Sorting sortingRules,
-        Type type) {
+                                         Statistics statistics,
+                                         Format format,
+                                         Status powerStatus,
+                                         Sorting sortingRules,
+                                         Type type) {
 
     public static final WirelessEnergyTerminalData DEFAULT = new WirelessEnergyTerminalData(
             Statistics.Companion.getDefaultValue(),
@@ -33,11 +33,9 @@ public record WirelessEnergyTerminalData(
             enumCodec(Format.class).optionalFieldOf("format", DEFAULT.format).forGetter(WirelessEnergyTerminalData::format),
             enumCodec(Status.class).optionalFieldOf("power_status", DEFAULT.powerStatus).forGetter(WirelessEnergyTerminalData::powerStatus),
             enumCodec(Sorting.class).optionalFieldOf("sorting_rules", DEFAULT.sortingRules).forGetter(WirelessEnergyTerminalData::sortingRules),
-            enumCodec(Type.class).optionalFieldOf("type", DEFAULT.type).forGetter(WirelessEnergyTerminalData::type)
-    ).apply(instance, WirelessEnergyTerminalData::new));
+            enumCodec(Type.class).optionalFieldOf("type", DEFAULT.type).forGetter(WirelessEnergyTerminalData::type)).apply(instance, WirelessEnergyTerminalData::new));
 
-    public static final StreamCodec<RegistryFriendlyByteBuf, WirelessEnergyTerminalData> STREAM_CODEC =
-            ByteBufCodecs.fromCodecWithRegistriesTrusted(CODEC);
+    public static final StreamCodec<RegistryFriendlyByteBuf, WirelessEnergyTerminalData> STREAM_CODEC = ByteBufCodecs.fromCodecWithRegistriesTrusted(CODEC);
 
     public WirelessEnergyTerminalData withStatistics(Statistics statistics) {
         return new WirelessEnergyTerminalData(statistics, format, powerStatus, sortingRules, type);
