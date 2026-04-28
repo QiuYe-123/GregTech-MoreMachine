@@ -2,20 +2,21 @@ package cn.qiuye.gtmoremachine;
 
 import cn.qiuye.gtmoremachine.api.GTMMAPI;
 import cn.qiuye.gtmoremachine.api.GTMMValues;
-import cn.qiuye.gtmoremachine.client.ClientProxy;
 import cn.qiuye.gtmoremachine.common.CommonProxy;
 import cn.qiuye.gtmoremachine.utils.FormattingUtil;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
-import net.minecraftforge.fml.DistExecutor;
-import net.minecraftforge.fml.ModList;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.loading.FMLEnvironment;
-import net.minecraftforge.fml.loading.FMLLoader;
-import net.minecraftforge.fml.loading.FMLPaths;
-import net.minecraftforge.server.ServerLifecycleHooks;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.ModList;
+import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.javafmlmod.FMLModContainer;
+import net.neoforged.fml.loading.FMLEnvironment;
+import net.neoforged.fml.loading.FMLLoader;
+import net.neoforged.fml.loading.FMLPaths;
+import net.neoforged.neoforge.data.loading.DatagenModLoader;
+import net.neoforged.neoforge.server.ServerLifecycleHooks;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -31,10 +32,10 @@ public class GTmm {
 
     private static final ResourceLocation TEMPLATE_LOCATION = ResourceLocation.fromNamespaceAndPath(MOD_ID, "");
 
-    public GTmm() {
+    public GTmm(IEventBus modBus, FMLModContainer container) {
         init();
         GTMMAPI.instance = this;
-        DistExecutor.unsafeRunForDist(() -> ClientProxy::new, () -> CommonProxy::new);
+        CommonProxy.init(modBus);
     }
 
     private static void init() {
@@ -83,7 +84,7 @@ public class GTmm {
      * @return if we're running data generation
      */
     public static boolean isDataGen() {
-        return FMLLoader.getLaunchHandler().isData();
+        return DatagenModLoader.isRunningDataGen();
     }
 
     /**
@@ -113,7 +114,7 @@ public class GTmm {
      * @return 当前线程是否为客户端线程 if the current thread is the client thread
      */
     public static boolean isClientThread() {
-        return isClientSide() && Minecraft.getInstance().isSameThread();
+        return isClientSide() && Minecraft.getInstance() != null && Minecraft.getInstance().isSameThread();
     }
 
     /**

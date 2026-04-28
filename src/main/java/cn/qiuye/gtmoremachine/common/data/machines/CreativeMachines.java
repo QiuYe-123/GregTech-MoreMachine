@@ -14,21 +14,24 @@ import com.gregtechceu.gtceu.api.item.ComponentItem;
 import com.gregtechceu.gtceu.api.item.component.ICustomDescriptionId;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
-import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.models.GTMachineModels;
 import com.gregtechceu.gtceu.common.item.behavior.CoverPlaceBehavior;
 import com.gregtechceu.gtceu.common.item.behavior.ItemFluidContainer;
 import com.gregtechceu.gtceu.common.item.behavior.TooltipBehavior;
+import com.gregtechceu.gtceu.utils.GTUtil;
 
+import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidUtil;
+import net.minecraft.world.level.material.Fluids;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidUtil;
 
 import com.tterrag.registrate.providers.ProviderType;
 import com.tterrag.registrate.util.entry.ItemEntry;
 import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
 
+import static cn.qiuye.gtmoremachine.common.data.GTMMItems.attach;
 import static cn.qiuye.gtmoremachine.common.registry.GTMMRegistration.GTMM;
 
 public class CreativeMachines {
@@ -80,28 +83,39 @@ public class CreativeMachines {
             .register();
 
     public final static ItemEntry<ComponentItem> CREATIVE_ENERGY_COVER = GTMM
-            .item("creative_energy_cover", ComponentItem::create)
+            .item("creative_energy_cover", ComponentItem::new)
             .lang("Creative Energy Cover")
-            .onRegister(GTItems.attach(new CoverPlaceBehavior(GTMMCovers.CREATIVE_ENERGY),
+            .onRegister(attach(new CoverPlaceBehavior(GTMMCovers.CREATIVE_ENERGY),
                     new TooltipBehavior(lines -> lines.add(Component.translatable(CreativeFluidStats.CREATIVE_TOOLTIP)))))
             .register();
 
     public final static ItemEntry<ComponentItem> CREATIVE_FLUID_CELL = GTMM
-            .item("creative_fluid_cell", ComponentItem::create)
+            .item("creative_fluid_cell", ComponentItem::new)
             .lang("Creative Fluid Cell")
-            .color(() -> GTItems::cellColor)
+            .color(() -> CreativeMachines::cellColor)
             .setData(ProviderType.ITEM_MODEL, NonNullBiConsumer.noop())
-            .onRegister(GTItems.attach(cellName(),
+            .onRegister(attach(cellName(),
                     new CreativeFluidStats(),
                     new ItemFluidContainer()))
             .register();
+
+    public static ItemColor cellColor() {
+        return (itemStack, index) -> {
+            if (index == 1) {
+                return FluidUtil.getFluidContained(itemStack)
+                        .map(fluid -> fluid.getFluid() == Fluids.LAVA ? 0xFFFF7000 : GTUtil.getFluidColor(fluid))
+                        .orElse(-1);
+            }
+            return -1;
+        };
+    }
 
     public static ICustomDescriptionId cellName() {
         return new ICustomDescriptionId() {
 
             @Override
             public Component getItemName(ItemStack stack) {
-                Component prefix = FluidUtil.getFluidContained(stack).map(FluidStack::getDisplayName)
+                Component prefix = FluidUtil.getFluidContained(stack).map(FluidStack::getHoverName)
                         .orElse(Component.translatable("gtceu.fluid.empty"));
                 return Component.translatable(stack.getDescriptionId(), prefix);
             }

@@ -38,9 +38,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.UUID;
 
-import javax.annotation.ParametersAreNonnullByDefault;
-
-@ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class DimensionalRelayNodeMachine extends WorkableMultiblockMachine
                                          implements IFancyUIMachine, IDisplayUIMachine, IWirelessEnergyContainerHolder {

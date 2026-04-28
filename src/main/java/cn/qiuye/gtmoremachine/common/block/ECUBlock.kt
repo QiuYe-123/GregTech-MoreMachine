@@ -4,14 +4,13 @@ import cn.qiuye.gtmoremachine.api.machine.multiblock.feature.IECUBlock
 
 import com.gregtechceu.gtceu.api.GTValues
 
+import net.minecraft.MethodsReturnNonnullByDefault
 import net.minecraft.util.StringRepresentable
 import net.minecraft.world.level.block.Block
 
 import lombok.Getter
 
-import javax.annotation.ParametersAreNonnullByDefault
-
-@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 class ECUBlock(properties: Properties, @field:Getter val data: IECUBlock) : Block(properties) {
 	enum class ECUPartType :
 		StringRepresentable,

@@ -1,8 +1,8 @@
 package cn.qiuye.gtmoremachine.api.capability.wireless;
 
-import java.util.UUID;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nullable;
+import java.util.UUID;
 
 public interface IBindable {
 

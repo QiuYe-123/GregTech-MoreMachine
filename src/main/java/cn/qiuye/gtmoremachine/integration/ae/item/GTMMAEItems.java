@@ -10,9 +10,9 @@ import com.gregtechceu.gtceu.common.item.behavior.CoverPlaceBehavior;
 
 import com.tterrag.registrate.util.entry.ItemEntry;
 
+import static cn.qiuye.gtmoremachine.common.data.GTMMItems.attach;
 import static cn.qiuye.gtmoremachine.common.data.GTMMItems.attachRenderer;
 import static cn.qiuye.gtmoremachine.common.registry.GTMMRegistration.GTMM;
-import static com.gregtechceu.gtceu.common.data.GTItems.attach;
 
 public class GTMMAEItems {
 
@@ -22,13 +22,13 @@ public class GTMMAEItems {
 
     public static final ItemEntry<VirtualItemProviderCellItem> VIRTUAL_ITEM_PROVIDER_CELL = GTMM.item("virtual_item_provider_cell", VirtualItemProviderCellItem::new).register();
 
-    public static final ItemEntry<ComponentItem> VIRTUAL_ITEM_PROVIDER = GTMM.item("virtual_item_provider", ComponentItem::create)
+    public static final ItemEntry<ComponentItem> VIRTUAL_ITEM_PROVIDER = GTMM.item("virtual_item_provider", ComponentItem::new)
             .properties(p -> p.stacksTo(1))
             .onRegister(attach(VirtualItemProviderBehavior.INSTANCE))
             .onRegister(attachRenderer(() -> VirtualItemProviderRenderer.INSTANCE))
             .register();
 
-    public static final ItemEntry<ComponentItem> PROGRAMMABLE_COVER = GTMM.item("programmable_cover", ComponentItem::create)
+    public static final ItemEntry<ComponentItem> PROGRAMMABLE_COVER = GTMM.item("programmable_cover", ComponentItem::new)
             .onRegister(attach(new CoverPlaceBehavior(GTMMAECovers.PROGRAMMABLE_COVER)))
             .register();
 

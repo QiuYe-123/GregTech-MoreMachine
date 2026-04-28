@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
+import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IDataInfoProvider;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredIOPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableEnergyContainer;
@@ -26,6 +27,7 @@ import com.lowdragmc.lowdraglib.gui.widget.TextFieldWidget;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
@@ -40,9 +42,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import javax.annotation.ParametersAreNonnullByDefault;
-
-@ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class CreativeEnergyHatchPartMachine extends TieredIOPartMachine implements IDataInfoProvider {
 
@@ -62,7 +61,7 @@ public class CreativeEnergyHatchPartMachine extends TieredIOPartMachine implemen
         super(holder, GTValues.MAX, IO.IN);
         this.voltage = GTValues.VEX[setTier];
         this.maxEnergy = this.voltage * this.amps;
-        this.energyContainer = new InfinityEnergyContainer(this.maxEnergy, this.voltage, this.amps, 0L, 0L);
+        this.energyContainer = new InfinityEnergyContainer(this, this.maxEnergy, this.voltage, this.amps, 0L, 0L);
     }
 
     //////////////////////////////////////
@@ -147,8 +146,8 @@ public class CreativeEnergyHatchPartMachine extends TieredIOPartMachine implemen
     //////////////////////////////////////
 
     @Override
-    public void load(CompoundTag tag) {
-        super.load(tag);
+    public void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+        super.loadAdditional(tag, registries);
         this.updateEnergyContainer();
     }
 
@@ -171,8 +170,8 @@ public class CreativeEnergyHatchPartMachine extends TieredIOPartMachine implemen
 
     private static class InfinityEnergyContainer extends NotifiableEnergyContainer {
 
-        public InfinityEnergyContainer(long maxCapacity, long maxInputVoltage, long maxInputAmperage, long maxOutputVoltage, long maxOutputAmperage) {
-            super(maxCapacity, maxInputVoltage, maxInputAmperage, maxOutputVoltage, maxOutputAmperage);
+        public InfinityEnergyContainer(MetaMachine machine, long maxCapacity, long maxInputVoltage, long maxInputAmperage, long maxOutputVoltage, long maxOutputAmperage) {
+            super(machine, maxCapacity, maxInputVoltage, maxInputAmperage, maxOutputVoltage, maxOutputAmperage);
         }
 
         @Override

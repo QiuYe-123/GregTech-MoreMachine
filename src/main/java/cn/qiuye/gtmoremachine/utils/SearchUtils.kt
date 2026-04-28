@@ -15,15 +15,9 @@ object SearchUtils {
 		}
 
 		return CuriosApi.getCuriosInventory(player)
-			.takeIf { it.isPresent }
-			?.resolve()
-			?.takeIf { it.isPresent }
-			?.get()
-			?.findFirstCurio(item)
-			?.takeIf { it.isPresent }
-			?.get()
-			?.stack
-			?: ItemStack.EMPTY
+			.flatMap { it.findFirstCurio(item) }
+			.map { it.stack }
+			.orElse(ItemStack.EMPTY)
 	}
 
 	fun getItemInventoryEquipped(player: Player, item: Item): ItemStack = player.inventory.items.find { itemStack -> itemStack.item == item } ?: ItemStack.EMPTY

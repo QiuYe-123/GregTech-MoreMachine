@@ -8,16 +8,14 @@ import com.gregtechceu.gtceu.api.data.tag.TagPrefix
 import com.gregtechceu.gtceu.common.data.GTMaterials
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper
 
-import net.minecraft.data.recipes.FinishedRecipe
+import net.minecraft.data.recipes.RecipeOutput
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
-import net.minecraftforge.common.Tags
-
-import java.util.function.Consumer
+import net.neoforged.neoforge.common.Tags
 
 object VanillaRecipe {
 
-	fun init(provider: Consumer<FinishedRecipe>) {
+	fun init(provider: RecipeOutput) {
 		VanillaRecipeHelper.addShapedRecipe(
 			provider, true, GTmm.id("advanced_terminal"), GTMMItems.ADVANCED_TERMINAL.asStack(),
 			"SGS", "PBP", "PWP",

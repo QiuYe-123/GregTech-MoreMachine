@@ -4,6 +4,7 @@ import cn.qiuye.gtmoremachine.api.annotation.GTMMDataGeneratorScanned;
 import cn.qiuye.gtmoremachine.api.annotation.language.GTMMRegisterLanguage;
 import cn.qiuye.gtmoremachine.api.capability.IGTMMJadeIF;
 import cn.qiuye.gtmoremachine.api.machine.trait.WirelessNotifiableComputationContainer;
+import cn.qiuye.gtmoremachine.utils.nbt.ItemStackNbtUtils;
 
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
@@ -25,12 +26,9 @@ import net.minecraft.world.phys.BlockHitResult;
 
 import lombok.Getter;
 
-import javax.annotation.ParametersAreNonnullByDefault;
-
 @GTMMDataGeneratorScanned
 @Getter
 @MethodsReturnNonnullByDefault
-@ParametersAreNonnullByDefault
 public class WirelessCWUHatchMachine extends MultiblockPartMachine implements IDataStickInteractable, IGTMMJadeIF {
 
     private static final String WIRELESS_COMPUTATION_TRANSMITTER_PREFIX = "gtmoremachine.machine.wireless_computation_transmitter_hatch";
@@ -65,7 +63,7 @@ public class WirelessCWUHatchMachine extends MultiblockPartMachine implements ID
     public WirelessCWUHatchMachine(BlockEntityCreationInfo holder, boolean transmitter) {
         super(holder);
         this.transmitter = transmitter;
-        this.computationContainer = this.attachTrait(new WirelessNotifiableComputationContainer(IO.IN, transmitter));
+        this.computationContainer = new WirelessNotifiableComputationContainer(this, IO.IN, transmitter);
     }
 
     @Override
@@ -136,7 +134,7 @@ public class WirelessCWUHatchMachine extends MultiblockPartMachine implements ID
     public InteractionResult onDataStickShiftUse(Player player, ItemStack dataStick) {
         if (isRemote()) return InteractionResult.SUCCESS;
 
-        CompoundTag tag = dataStick.getOrCreateTag();
+        CompoundTag tag = ItemStackNbtUtils.getTag(dataStick);
         BlockPos currentPos = getBlockPos();
         if (isTransmitter()) {
             tag.put(KEY_TRANSMITTER, createPos(currentPos));
@@ -145,15 +143,16 @@ public class WirelessCWUHatchMachine extends MultiblockPartMachine implements ID
             tag.put(KEY_RECEIVER, createPos(currentPos));
             player.sendSystemMessage(Component.translatable(WIRELESS_COMPUTATION_RECEIVER_HATCH_TOBIND));
         }
+        ItemStackNbtUtils.setTag(dataStick, tag);
         return InteractionResult.SUCCESS;
     }
 
     @Override
     public InteractionResult onDataStickUse(Player player, ItemStack dataStick) {
-        if (isRemote()) return InteractionResult.sidedSuccess(true);
+        if (isRemote()) return InteractionResult.SUCCESS;
 
-        CompoundTag tag = dataStick.getTag();
-        if (tag == null) return InteractionResult.PASS;
+        CompoundTag tag = ItemStackNbtUtils.getTag(dataStick);
+        if (tag.isEmpty()) return InteractionResult.PASS;
 
         if (isTransmitter() && tag.contains(KEY_RECEIVER, 10)) {
             BlockPos otherPos = getPos(tag.getCompound(KEY_RECEIVER));

@@ -3,6 +3,7 @@ package cn.qiuye.gtmoremachine.mixin.gtm.api.machine;
 import cn.qiuye.gtmoremachine.GTmm;
 import cn.qiuye.gtmoremachine.api.machine.trait.ProgrammableCircuitHandler;
 import cn.qiuye.gtmoremachine.integration.ae.item.GTMMAEItems;
+import cn.qiuye.gtmoremachine.utils.nbt.ItemStackNbtUtils;
 
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.machine.SimpleTieredMachine;
@@ -36,8 +37,8 @@ public abstract class SimpleTieredMachineMixin extends WorkableTieredMachine {
             remap = false)
     private void replacecircuitInventory(BlockEntityCreationInfo info, int tier, Int2IntFunction tankScalingFunction, CallbackInfo ci) {
         if (GTmm.Mods.isAE2Loaded()) {
-            this.circuitInventory = this.attachTrait(new ProgrammableCircuitHandler());
-            this.importItems.setFilter(i -> !i.is(GTMMAEItems.VIRTUAL_ITEM_PROVIDER.get()) || !i.hasTag());
+            this.circuitInventory = new ProgrammableCircuitHandler(this);
+            this.importItems.setFilter(i -> !i.is(GTMMAEItems.VIRTUAL_ITEM_PROVIDER.get()) || !ItemStackNbtUtils.hasTag(i));
         }
     }
 }

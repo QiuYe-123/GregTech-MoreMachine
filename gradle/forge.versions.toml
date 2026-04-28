@@ -1,75 +1,56 @@
 [versions]
-ldlib = "1.0.47"
-registrate = "MC1.20-1.3.11"
-configuration = "3.1.0-forge"
-kotlinforforge = "4.11.0"
+ldlib = "1.0.35.a"
+registrate = "MC1.21-1.3.0+67"
+configuration = "3.1.1-neoforge"
+kotlinforforge = "5.7.0"
 gtm = "8.0.0-SNAPSHOT"
-mixinExtras = "0.5.0-rc.3"
 
-jei = "15.20.0.121"
-emi = "1.1.22+1.20.1"
-ae2 = "15.4.10"
-guideme = "20.1.11"
-architectury = "9.2.14"
-curios = "5.9.1+1.20.1"
-shimmer = "1.20.1-0.2.4"
+jei = "19.25.1.328"
+emi = "1.1.22+1.21.1"
+ae2 = "19.2.8"
+kubejs = "2101.7.2-build.336"
+rhino = "2101.2.7-build.81"
+architectury = "13.0.8"
+curios = "9.4.2+1.21.1"
 
 ## ftb mod ##
-ftblibrary = "2001.2.10"
-ftbteams = "2001.3.1"
-
-## sophisticated ##
-sophisticated-core = "1.20.1-1.2.80.1073"
-sophisticated-backpacks = "1.20.1-3.23.23.1289"
-sophisticated-storage = "1.20.1-1.3.58.1217"
+ftblibrary = "2101.1.30"
+ftbteams = "2101.1.9"
 
 ## modrinth maven ##
-jade = "11.13.2+forge"
-embeddium = "0.3.31+mc1.20.1"
-oculus = "1.20.1-1.8.0"
-ferritecore = "6.0.1"
-modernui = "6ksT8CWg" #3.12.0.1
-modernfix = "5.24.4+mc1.20.1"
-
-## curseforge maven ##
-jech = "7411324"
+jade = "15.10.0+neoforge"
+sodium = "mc1.21.1-0.6.13-neoforge"
+iris = "1.8.8+1.21.1-neoforge"
+modernfix = "4SPHwiDB" # 5.24.3+mc1.21.1
 
 ## libs ##
 
 
 [libraries]
-ldlib               = { module = "com.lowdragmc.ldlib:ldlib-forge-1.20.1", version.ref = "ldlib" }
+ldlib               = { module = "com.lowdragmc.ldlib:ldlib-neoforge-1.21.1", version.ref = "ldlib" }
 registrate          = { module = "com.tterrag.registrate:Registrate", version.ref = "registrate" }
-configuration       = { module = "dev.toma.configuration:configuration-1.20.1", version.ref = "configuration" }
-kotlinforforge      = { module = "thedarkcolour:kotlinforforge", version.ref = "kotlinforforge" }
-gtm                 = { module = "com.gregtechceu.gtceu:gtceu-1.20.1", version.ref = "gtm"}
-mixinExtras-common  = { module = "io.github.llamalad7:mixinextras-common", version.ref = "mixinExtras" }
+configuration       = { module = "dev.toma.configuration:configuration-1.21.1", version.ref = "configuration" }
+kotlinforforge      = { module = "thedarkcolour:kotlinforforge-neoforge", version.ref = "kotlinforforge" }
+gtm                 = { module = "com.gregtechceu.gtceu:gtceu-1.21.1", version.ref = "gtm" }
 
-jei-common-api      = { module = "mezz.jei:jei-1.20.1-common-api", version.ref = "jei" }
-jei-forge-api       = { module = "mezz.jei:jei-1.20.1-forge-api", version.ref = "jei" }
-jei-forge-impl      = { module = "mezz.jei:jei-1.20.1-forge", version.ref = "jei" }
-emi                 = { module = "dev.emi:emi-forge", version.ref = "emi" }
+jei-common-api      = { module = "mezz.jei:jei-1.21.1-common-api", version.ref = "jei" }
+jei-neoforge-api    = { module = "mezz.jei:jei-1.21.1-neoforge-api", version.ref = "jei" }
+jei-neoforge-impl   = { module = "mezz.jei:jei-1.21.1-neoforge", version.ref = "jei" }
+emi                 = { module = "dev.emi:emi-neoforge", version.ref = "emi" }
 
-ftblibrary          = { module = "dev.ftb.mods:ftb-library-forge", version.ref = "ftblibrary" }
-ftbteams            = { module = "dev.ftb.mods:ftb-teams-forge", version.ref = "ftbteams" }
+ftblibrary          = { module = "dev.ftb.mods:ftb-library-neoforge", version.ref = "ftblibrary" }
+ftbteams            = { module = "dev.ftb.mods:ftb-teams-neoforge", version.ref = "ftbteams" }
 
-ae2                 = { module = "appeng:appliedenergistics2-forge", version.ref = "ae2" }
-guideme             = { module = "org.appliedenergistics:guideme", version.ref = "guideme" }
-architectury        = { module = "dev.architectury:architectury-forge", version.ref = "architectury" }
-curios              = { module = "top.theillusivec4.curios:curios-forge", version.ref = "curios" }
-shimmer             = { module = "com.lowdragmc.shimmer:Shimmer-forge", version.ref = "shimmer" }
+ae2                 = { module = "org.appliedenergistics:appliedenergistics2", version.ref = "ae2" }
+kubejs              = { module = "dev.latvian.mods:kubejs-neoforge", version.ref = "kubejs" }
+rhino               = { module = "dev.latvian.mods:rhino", version.ref = "rhino" }
+architectury        = { module = "dev.architectury:architectury-neoforge", version.ref = "architectury" }
+curios              = { module = "top.theillusivec4.curios:curios-neoforge", version.ref = "curios" }
 jade                = { module = "maven.modrinth:jade", version.ref = "jade" }
-embeddium           = { module = "maven.modrinth:embeddium", version.ref = "embeddium" }
-oculus              = { module = "maven.modrinth:oculus", version.ref = "oculus" }
-ferritecore         = { module = "maven.modrinth:uXXizFIs", version.ref = "ferritecore" }
+sodium              = { module = "maven.modrinth:sodium", version.ref = "sodium" }
+iris                = { module = "maven.modrinth:iris", version.ref = "iris" }
 modernfix           = { module = "maven.modrinth:modernfix", version.ref = "modernfix" }
-modernui            = { module = "maven.modrinth:modern-ui", version.ref = "modernui" }
 
-sophisticatedcore  = { module = "maven.modrinth:nmoqTijg", version.ref = "sophisticated-core" }
-sophisticatedbackpacks = { module = "maven.modrinth:TyCTlI4b", version.ref = "sophisticated-backpacks" }
-sophisticatedstorage = { module = "maven.modrinth:hMlaZH8f", version.ref = "sophisticated-storage" }
-
-
-jecharacters        = { module = "curse.maven:just-enough-characters-250702", version.ref = "jech" }
 [bundles]
-jei = ["jei-common-api", "jei-forge-api", "jei-forge-impl"]
+jei = ["jei-common-api", "jei-neoforge-api", "jei-neoforge-impl"]
+kjs = ["kubejs", "rhino"]

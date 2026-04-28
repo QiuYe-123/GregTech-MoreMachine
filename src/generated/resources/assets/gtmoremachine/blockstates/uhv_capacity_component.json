@@ -1,7 +1,7 @@
 {
-  "variants": {
-    "": {
-      "model": "gtmoremachine:block/uhv_capacity_component"
+    "variants": {
+        "": {
+            "model": "gtmoremachine:block/uhv_capacity_component"
+        }
     }
-  }
 }

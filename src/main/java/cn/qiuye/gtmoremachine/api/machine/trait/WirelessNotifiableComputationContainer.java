@@ -21,16 +21,13 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import javax.annotation.ParametersAreNonnullByDefault;
-
-@ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class WirelessNotifiableComputationContainer extends NotifiableComputationContainer {
 
     private int currentOutputCwu = 0, lastOutputCwu = 0;
 
-    public WirelessNotifiableComputationContainer(IO handlerIO, boolean transmitter) {
-        super(handlerIO, transmitter);
+    public WirelessNotifiableComputationContainer(MetaMachine machine, IO handlerIO, boolean transmitter) {
+        super(machine, handlerIO, transmitter);
     }
 
     @Override

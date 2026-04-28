@@ -23,13 +23,24 @@ repositories {
         name = "ModMaven"
         url = "https://modmaven.dev"
     }
-    maven { // LDLib, Shimmer
+    maven { // LDLib
         name = "FirstDarkDev Maven"
-        url = "https://maven.firstdarkdev.xyz/snapshots"
+        url = "https://maven.firstdark.dev/snapshots"
     }
     maven { // Configuration
         name = 'Configuration'
         url = 'https://repo.repsy.io/mvn/toma/public/'
+    }
+    exclusiveContent { // KubeJS and Rhino
+        forRepository { maven { url = "https://maven.latvian.dev/releases" } }
+        filter {
+            includeGroup("dev.latvian.mods")
+            includeGroup("dev.latvian.apps")
+        }
+    }
+    exclusiveContent { // KubeJS transitive dependency: animated-gif-lib-for-java
+        forRepository { maven { url = "https://jitpack.io" } }
+        filter { includeGroup("com.github.rtyley") }
     }
     maven {
         name = 'GTCEu Maven'
@@ -64,7 +75,7 @@ repositories {
         filter { includeGroup("dev.ftb.mods") }
     }
     exclusiveContent { // tterrag - registrate
-        forRepository { maven { url = "https://maven.tterrag.com/" } }
+        forRepository { maven { url = "https://mvn.devos.one/snapshots/" } }
         filter { includeGroup("com.tterrag.registrate") }
     }
     exclusiveContent { // terraformers - EMI
@@ -74,6 +85,10 @@ repositories {
     exclusiveContent { // KotlinForForge
         forRepository { maven { url = "https://thedarkcolour.github.io/KotlinForForge/" } }
         filter { includeGroup("thedarkcolour") }
+    }
+    exclusiveContent { // Curios
+        forRepository { maven { url = "https://maven.theillusivec4.top/" } }
+        filter { includeGroup('top.theillusivec4.curios') }
     }
     exclusiveContent { // Modrinth Maven
         forRepository { maven { url = "https://api.modrinth.com/maven" } }

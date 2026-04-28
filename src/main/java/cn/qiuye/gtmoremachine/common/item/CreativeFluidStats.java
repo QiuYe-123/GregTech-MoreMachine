@@ -4,15 +4,18 @@ import cn.qiuye.gtmoremachine.api.annotation.GTMMDataGeneratorScanned;
 import cn.qiuye.gtmoremachine.api.annotation.language.GTMMRegisterLanguage;
 import cn.qiuye.gtmoremachine.api.gui.widget.TerminalInputWidget;
 import cn.qiuye.gtmoremachine.api.misc.CreativeFluidHandlerItemStack;
+import cn.qiuye.gtmoremachine.utils.nbt.ItemStackNbtUtils;
 
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.UITemplate;
 import com.gregtechceu.gtceu.api.gui.widget.PhantomFluidWidget;
 import com.gregtechceu.gtceu.api.item.component.IAddInformation;
+import com.gregtechceu.gtceu.api.item.component.IComponentCapability;
 import com.gregtechceu.gtceu.api.item.component.IItemComponent;
 import com.gregtechceu.gtceu.api.item.component.IItemUIFactory;
-import com.gregtechceu.gtceu.api.item.component.forge.IComponentCapability;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
+import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
 
 import com.lowdragmc.lowdraglib.gui.factory.HeldItemUIFactory;
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
@@ -26,6 +29,7 @@ import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
@@ -34,14 +38,11 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidUtil;
-
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidUtil;
+import net.neoforged.neoforge.fluids.SimpleFluidContent;
 
 import java.util.List;
 
@@ -70,11 +71,11 @@ public class CreativeFluidStats implements IItemComponent, IComponentCapability,
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
         tooltipComponents.add(Component.translatable(CREATIVE_TOOLTIP));
-        if (stack.hasTag() && stack.getTag().contains("Fluid")) {
+        if (!getStored(stack).isEmpty()) {
             FluidUtil.getFluidContained(stack).ifPresent(tank -> tooltipComponents
-                    .add(Component.translatable(CREATIVE_FLUID_CELL_TOOLTIP_1, tank.getDisplayName())));
+                    .add(Component.translatable(CREATIVE_FLUID_CELL_TOOLTIP_1, tank.getHoverName())));
             if (getAccurate(stack)) {
                 tooltipComponents
                         .add(Component.translatable(CREATIVE_FLUID_CELL_TOOLTIP_3, getCapacity(stack)));
@@ -85,15 +86,12 @@ public class CreativeFluidStats implements IItemComponent, IComponentCapability,
     }
 
     @Override
-    public @NotNull <T> LazyOptional<T> getCapability(ItemStack itemStack, @NotNull Capability<T> cap) {
-        if (cap == ForgeCapabilities.FLUID_HANDLER_ITEM) {
+    public void attachCapabilities(RegisterCapabilitiesEvent event, Item item) {
+        event.registerItem(Capabilities.FluidHandler.ITEM, (itemStack, ignored) -> {
             FluidStack fluidStack = getStored(itemStack);
             int capacity = getAccurate(itemStack) ? getCapacity(itemStack) : Integer.MAX_VALUE;
-            if (!fluidStack.isEmpty()) {
-                return ForgeCapabilities.FLUID_HANDLER_ITEM.orEmpty(cap, LazyOptional.of(() -> new CreativeFluidHandlerItemStack(itemStack, capacity, fluidStack)));
-            }
-        }
-        return LazyOptional.empty();
+            return fluidStack.isEmpty() ? null : new CreativeFluidHandlerItemStack(itemStack, capacity, fluidStack);
+        }, item);
     }
 
     @Override
@@ -127,15 +125,12 @@ public class CreativeFluidStats implements IItemComponent, IComponentCapability,
     }
 
     private boolean getAccurate(ItemStack fluidCell) {
-        CompoundTag tagCompound = fluidCell.getTag();
-        return tagCompound != null && tagCompound.contains("Accurate") && tagCompound.getBoolean("Accurate");
+        CompoundTag tagCompound = ItemStackNbtUtils.getTag(fluidCell);
+        return tagCompound.contains("Accurate") && tagCompound.getBoolean("Accurate");
     }
 
     private void setAccurate(boolean isEnable) {
-        if (!this.itemStack.hasTag()) {
-            this.itemStack.setTag(new CompoundTag());
-        }
-        this.itemStack.getTag().putBoolean("Accurate", isEnable);
+        ItemStackNbtUtils.updateTag(this.itemStack, tag -> tag.putBoolean("Accurate", isEnable));
     }
 
     private FluidStack getStored() {
@@ -143,25 +138,30 @@ public class CreativeFluidStats implements IItemComponent, IComponentCapability,
     }
 
     private FluidStack getStored(ItemStack fluidCell) {
-        CompoundTag tagCompound = fluidCell.getTag();
-        return tagCompound != null && tagCompound.contains("Fluid") ? FluidStack.loadFluidStackFromNBT(tagCompound.getCompound("Fluid")) : FluidStack.EMPTY;
+        FluidStack stored = fluidCell.getOrDefault(GTDataComponents.FLUID_CONTENT, SimpleFluidContent.EMPTY).copy();
+        if (!stored.isEmpty()) {
+            return stored;
+        }
+        CompoundTag tagCompound = ItemStackNbtUtils.getTag(fluidCell);
+        if (!tagCompound.contains("Fluid", Tag.TAG_COMPOUND)) {
+            return FluidStack.EMPTY;
+        }
+        return FluidStack.parseOptional(GTRegistries.builtinRegistry(), tagCompound.getCompound("Fluid"));
     }
 
     private void setStored(FluidStack fluid) {
         if (fluid.isEmpty()) {
             this.creativeTank.setFluid(FluidStack.EMPTY);
-            this.itemStack.getTag().remove("Fluid");
+            this.itemStack.remove(GTDataComponents.FLUID_CONTENT);
+            ItemStackNbtUtils.removeKeys(this.itemStack, "Fluid");
             setAccurate(false);
         } else {
             FluidStack stored = fluid.copy();
             stored.setAmount(1000);
             this.creativeTank.setFluid(stored);
-            if (!this.itemStack.hasTag()) {
-                this.itemStack.setTag(new CompoundTag());
-            }
-            CompoundTag fluidTag = new CompoundTag();
-            stored.writeToNBT(fluidTag);
-            this.itemStack.getTag().put("Fluid", fluidTag);
+            this.itemStack.set(GTDataComponents.FLUID_CONTENT, SimpleFluidContent.copyOf(stored));
+            ItemStackNbtUtils.updateTag(this.itemStack,
+                    tag -> tag.put("Fluid", stored.save(GTRegistries.builtinRegistry())));
         }
     }
 
@@ -170,20 +170,17 @@ public class CreativeFluidStats implements IItemComponent, IComponentCapability,
     }
 
     private int getCapacity(ItemStack fluidCell) {
-        CompoundTag tagCompound = fluidCell.getTag();
-        return tagCompound != null && tagCompound.contains("Capacity") ? tagCompound.getInt("Capacity") : 1000;
+        CompoundTag tagCompound = ItemStackNbtUtils.getTag(fluidCell);
+        return tagCompound.contains("Capacity") ? tagCompound.getInt("Capacity") : 1000;
     }
 
     private void setCapacity(int capacity) {
-        if (!this.itemStack.hasTag()) {
-            this.itemStack.setTag(new CompoundTag());
-        }
-        this.itemStack.getTag().putInt("Capacity", capacity);
+        ItemStackNbtUtils.updateTag(this.itemStack, tag -> tag.putInt("Capacity", capacity));
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Item item, Level level, Player player, InteractionHand usedHand) {
-        this.itemStack = player.getItemInHand(usedHand);
+    public InteractionResultHolder<ItemStack> use(ItemStack item, Level level, Player player, InteractionHand usedHand) {
+        this.itemStack = item;
         this.creativeTank.setFluid(getStored());
         return IItemUIFactory.super.use(item, level, player, usedHand);
     }

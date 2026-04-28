@@ -3,6 +3,7 @@ package cn.qiuye.gtmoremachine.common.item.behaviour;
 import cn.qiuye.gtmoremachine.api.annotation.GTMMDataGeneratorScanned;
 import cn.qiuye.gtmoremachine.api.annotation.language.GTMMRegisterLanguage;
 import cn.qiuye.gtmoremachine.common.data.GTMMItems;
+import cn.qiuye.gtmoremachine.utils.nbt.ItemStackNbtUtils;
 
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.api.item.component.IInteractionItem;
@@ -17,7 +18,6 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
@@ -59,7 +59,7 @@ public record WirelessTransferCoverPlaceBehavior(CoverDefinition coverDefinition
                 tag.putInt("x", blockPos.getX());
                 tag.putInt("y", blockPos.getY());
                 tag.putInt("z", blockPos.getZ());
-                itemStack.setTag(tag);
+                ItemStackNbtUtils.setTag(itemStack, tag);
                 if (level.isClientSide()) player.sendSystemMessage(Component.translatable(WIRELESS_TRANSFER_TOOLTIP_BIND_1, Component.translatable(level.getBlockState(blockPos).getBlock().getDescriptionId()), blockPos.toShortString()));
             }
             return InteractionResult.SUCCESS;
@@ -68,16 +68,10 @@ public record WirelessTransferCoverPlaceBehavior(CoverDefinition coverDefinition
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Item item, Level level, Player player, InteractionHand usedHand) {
+    public InteractionResultHolder<ItemStack> use(ItemStack item, Level level, Player player, InteractionHand usedHand) {
         if (player.isShiftKeyDown()) {
             ItemStack is = player.getItemInHand(InteractionHand.MAIN_HAND);
-            is.removeTagKey("dimensionid");
-            is.removeTagKey("blockid");
-            is.removeTagKey("pos");
-            is.removeTagKey("facing");
-            is.removeTagKey("x");
-            is.removeTagKey("y");
-            is.removeTagKey("z");
+            ItemStackNbtUtils.removeKeys(is, "dimensionid", "blockid", "pos", "facing", "x", "y", "z");
             if (level.isClientSide()) player.sendSystemMessage(Component.translatable(WIRELESS_TRANSFER_TOOLTIP_BIND_2));
         }
         return IInteractionItem.super.use(item, level, player, usedHand);

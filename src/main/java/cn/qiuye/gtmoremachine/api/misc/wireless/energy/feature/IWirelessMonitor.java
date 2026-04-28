@@ -27,9 +27,6 @@ import java.math.BigInteger;
 import java.time.Duration;
 import java.util.*;
 
-import javax.annotation.ParametersAreNonnullByDefault;
-
-@ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public interface IWirelessMonitor extends IWirelessEnergyContainerHolder {
 

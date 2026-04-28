@@ -11,9 +11,6 @@ import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.world.entity.player.Player;
 
-import javax.annotation.ParametersAreNonnullByDefault;
-
-@ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class NoRecipeLogicMultiblockMachine extends MultiblockControllerMachine implements IControllable, IFancyUIMachine, IDisplayUIMachine {
 

@@ -29,7 +29,7 @@ public interface ITransferData {
         return Component.translatable(machine.getBlockState().getBlock().getDescriptionId())
                 .withStyle(Style.EMPTY.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
                         Component.translatable("recipe.condition.dimension.tooltip",
-                                machine.getLevel().dimension().location()).append(" [").append(pos).append("] ")
+                                machine.getLevel().dimension().location().toString()).append(" [").append(pos).append("] ")
                                 .append(Component.translatable("gtmoremachine.machine.wireless_monitor.tooltip.0",
                                         TeamUtils.getName(machine.getLevel(), UUID()))))))
                 .append((cwu > 0 ? " +" : " ") + NumberUtils.formatInt(cwu, format))

@@ -24,15 +24,12 @@ import net.minecraft.world.item.ItemStack;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
 
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
-
 import static com.gregtechceu.gtceu.api.capability.GTCapabilityHelper.getEnergyContainer;
 
-@ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 @GTMMDataGeneratorScanned
 public class WirelessEnergyReceiveCover extends CoverBehavior implements IWirelessEnergyContainerHolder {

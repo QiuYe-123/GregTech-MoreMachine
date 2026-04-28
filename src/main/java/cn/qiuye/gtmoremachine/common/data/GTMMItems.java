@@ -12,7 +12,9 @@ import cn.qiuye.gtmoremachine.integration.ae.item.GTMMAEItems;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.item.ComponentItem;
+import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.api.item.component.ICustomRenderer;
+import com.gregtechceu.gtceu.api.item.component.IItemComponent;
 import com.gregtechceu.gtceu.common.item.behavior.CoverPlaceBehavior;
 import com.gregtechceu.gtceu.common.item.behavior.TooltipBehavior;
 
@@ -25,7 +27,6 @@ import java.util.Locale;
 
 import static cn.qiuye.gtmoremachine.common.data.GTMMCovers.*;
 import static cn.qiuye.gtmoremachine.common.registry.GTMMRegistration.GTMM;
-import static com.gregtechceu.gtceu.common.data.GTItems.attach;
 
 public class GTMMItems {
 
@@ -37,8 +38,12 @@ public class GTMMItems {
         return !GTmm.isClientSide() ? NonNullConsumer.noop() : (item) -> item.attachComponents(customRenderer);
     }
 
+    public static <T extends IComponentItem> NonNullConsumer<T> attach(IItemComponent... components) {
+        return item -> item.attachComponents(components);
+    }
+
     public final static ItemEntry<ComponentItem> WIRELESS_ITEM_TRANSFER_COVER = GTMM
-            .item("wireless_item_transfer_cover", ComponentItem::create)
+            .item("wireless_item_transfer_cover", ComponentItem::new)
             .lang("Wireless Item Transfer Cover")
             .onRegister(attach(new WirelessTransferCoverPlaceBehavior(GTMMCovers.WIRELESS_ITEM_TRANSFER),
                     new CoverPlaceBehavior(GTMMCovers.WIRELESS_ITEM_TRANSFER),
@@ -49,7 +54,7 @@ public class GTMMItems {
             .register();
 
     public final static ItemEntry<ComponentItem> WIRELESS_FLUID_TRANSFER_COVER = GTMM
-            .item("wireless_fluid_transfer_cover", ComponentItem::create)
+            .item("wireless_fluid_transfer_cover", ComponentItem::new)
             .lang("Wireless Fluid Transfer Cover")
             .onRegister(attach(new WirelessTransferCoverPlaceBehavior(GTMMCovers.WIRELESS_FLUID_TRANSFER),
                     new CoverPlaceBehavior(GTMMCovers.WIRELESS_FLUID_TRANSFER),
@@ -60,7 +65,7 @@ public class GTMMItems {
             .register();
 
     public final static ItemEntry<ComponentItem> ADVANCED_WIRELESS_ITEM_TRANSFER_COVER = GTMM
-            .item("advanced_wireless_item_transfer_cover", ComponentItem::create)
+            .item("advanced_wireless_item_transfer_cover", ComponentItem::new)
             .lang("§bAdvanced Wireless Item Transfer Cover")
             .onRegister(attach(new WirelessTransferCoverPlaceBehavior(GTMMCovers.ADVANCED_WIRELESS_ITEM_TRANSFER),
                     new CoverPlaceBehavior(GTMMCovers.ADVANCED_WIRELESS_ITEM_TRANSFER),
@@ -72,7 +77,7 @@ public class GTMMItems {
             .register();
 
     public final static ItemEntry<ComponentItem> ADVANCED_WIRELESS_FLUID_TRANSFER_COVER = GTMM
-            .item("advanced_wireless_fluid_transfer_cover", ComponentItem::create)
+            .item("advanced_wireless_fluid_transfer_cover", ComponentItem::new)
             .lang("§bAdvanced Wireless Fluid Transfer Cover")
             .onRegister(attach(new WirelessTransferCoverPlaceBehavior(GTMMCovers.ADVANCED_WIRELESS_FLUID_TRANSFER),
                     new CoverPlaceBehavior(GTMMCovers.ADVANCED_WIRELESS_FLUID_TRANSFER),
@@ -84,14 +89,14 @@ public class GTMMItems {
             .register();
 
     public final static ItemEntry<ComponentItem> ADVANCED_TERMINAL = GTMM
-            .item("advanced_terminal", ComponentItem::create)
+            .item("advanced_terminal", ComponentItem::new)
             .lang("§bAdvanced Terminal")
             .properties(p -> p.stacksTo(1))
             .onRegister(attach(new AdvancedTerminalBehavior()))
             .register();
 
     public final static ItemEntry<ComponentItem> WIRELESS_ENERGY_TERMINAL = GTMM
-            .item("wireless_energy_terminal", ComponentItem::create)
+            .item("wireless_energy_terminal", ComponentItem::new)
             .lang("Wireless Energy Terminal")
             .properties(p -> p.stacksTo(1))
             .onRegister(attach(new WirelessEnergyTerminalBehavior()))
@@ -99,7 +104,7 @@ public class GTMMItems {
             .register();
 
     public final static ItemEntry<ComponentItem> WIRELESS_ENERGY_BINDING_TOOL = GTMM
-            .item("wireless_energy_binding_tool", ComponentItem::create)
+            .item("wireless_energy_binding_tool", ComponentItem::new)
             .lang("Wireless Energy Binding Tool")
             .properties(p -> p.stacksTo(1))
             .onRegister(attach(new WirelessEnergyBindingToolBehavior()))
@@ -145,7 +150,7 @@ public class GTMMItems {
 
     private static ItemEntry<ComponentItem> registerTieredCover(int tier, int amperage) {
         return GTMM
-                .item(GTValues.VN[tier].toLowerCase(Locale.ROOT) + "_" + (amperage == 1 ? "" : amperage + "a_") + "wireless_energy_receive_cover", ComponentItem::create)
+                .item(GTValues.VN[tier].toLowerCase(Locale.ROOT) + "_" + (amperage == 1 ? "" : amperage + "a_") + "wireless_energy_receive_cover", ComponentItem::new)
                 .lang(GTValues.VNF[tier] + " " + "Wireless Energy Receive Cover")
                 .onRegister(attach(new TooltipBehavior(lines -> {
                     lines.add(Component.translatable(WirelessEnergyReceiveCover.WIRELESS_ENERGY_RECEIVE_COVER_TOOLTIP_1));

@@ -1,35 +1,22 @@
-ext.isJetbrainsRuntime = System.getProperty('java.vm.vendor').contains('JetBrains')
+import org.slf4j.event.Level
 
-mixin {
-    var refmap = add sourceSets.main, "gtmoremachine.refmap.json"
-    slimJar.from refmap
-    config "gtmoremachine.mixins.json"
-}
-
-// we have to force LWJGL version 3.3.2, because RenderNurse requires Java 21, and LWJGL 3.3.1 cannot run on Java 21.
-configurations.configureEach {
-    resolutionStrategy {
-        eachDependency {
-            if (it.requested.group == "org.lwjgl") {
-                it.useVersion("3.3.2")
-                it.because("We need a version of LWJGL that supports java 21 for RenderDoc support")
-            }
-        }
-    }
-}
-
-legacyForge {
-    // Specify Forge version
-    version = libs.versions.minecraftForge.get()
+neoForge {
+    version = libs.versions.neoForge.get()
 
     parchment {
         minecraftVersion = libs.versions.minecraft.get()
         mappingsVersion = libs.versions.parchment.get()
     }
 
-    accessTransformers = project.files('src/main/resources/META-INF/accesstransformer.cfg')
+    accessTransformers {
+        var file = project.file('src/main/resources/META-INF/accesstransformer.cfg')
+        from(file)
+        publish(file)
+    }
+    validateAccessTransformers = true
 
     addModdingDependenciesTo(sourceSets.test)
+    addModdingDependenciesTo(sourceSets.extra)
 
     mods {
         // define mod <-> source bindings
@@ -41,6 +28,7 @@ legacyForge {
             sourceSet(sourceSets.clientExtra)
         }
     }
+
     runs {
         client {
             client()
@@ -48,7 +36,7 @@ legacyForge {
             ideName = "Client"
 
             gameDirectory.set(file('run/client'))
-            systemProperty('forge.enabledGameTestNamespaces', project.mod_id)
+            systemProperty('neoforge.enabledGameTestNamespaces', project.mod_id)
         }
 
         server {
@@ -58,7 +46,7 @@ legacyForge {
 
             gameDirectory.set(file('run/server'))
             programArguments.addAll('--nogui', '--world', 'world-extra')
-            systemProperty('forge.enabledGameTestNamespaces', project.mod_id)
+            systemProperty('neoforge.enabledGameTestNamespaces', project.mod_id)
         }
 
         gameTestServer {
@@ -67,7 +55,7 @@ legacyForge {
             ideName = "Game Tests"
 
             gameDirectory.set(file('run/gametest'))
-            systemProperty('forge.enabledGameTestNamespaces', project.mod_id)
+            systemProperty('neoforge.enabledGameTestNamespaces', project.mod_id)
             environment('TEST', 'true')
         }
 
@@ -87,7 +75,7 @@ legacyForge {
         configureEach {
             systemProperty 'forge.logging.markers', 'REGISTRIES'
             jvmArgument('-ea:cn.qiuye.gtmoremachine...')
-            logLevel = org.slf4j.event.Level.INFO
+            logLevel = Level.INFO
         }
     }
 }

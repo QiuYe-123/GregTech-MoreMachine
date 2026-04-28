@@ -13,20 +13,18 @@ import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraft.network.chat.ComponentSerialization;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 import lombok.Setter;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
 import java.util.function.Supplier;
 
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
-
-@ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class AlignLabelWidget extends Widget implements IConfigurableWidget {
 
@@ -129,12 +127,12 @@ public class AlignLabelWidget extends Widget implements IConfigurableWidget {
         }
     }
 
-    public void writeInitialData(FriendlyByteBuf buffer) {
+    public void writeInitialData(RegistryFriendlyByteBuf buffer) {
         super.writeInitialData(buffer);
         if (!this.isClientSideWidget) {
             if (this.component != null) {
                 buffer.writeBoolean(true);
-                buffer.writeComponent(this.component);
+                writeComponent(buffer, this.component);
             } else {
                 buffer.writeBoolean(false);
                 this.lastTextValue = this.textSupplier.get();
@@ -146,10 +144,10 @@ public class AlignLabelWidget extends Widget implements IConfigurableWidget {
         }
     }
 
-    public void readInitialData(FriendlyByteBuf buffer) {
+    public void readInitialData(RegistryFriendlyByteBuf buffer) {
         super.readInitialData(buffer);
         if (buffer.readBoolean()) {
-            this.component = buffer.readComponent();
+            this.component = readComponent(buffer);
             this.lastTextValue = this.component.getString();
         } else {
             this.lastTextValue = buffer.readUtf();
@@ -163,7 +161,7 @@ public class AlignLabelWidget extends Widget implements IConfigurableWidget {
                 String latest = this.component.getString();
                 if (!latest.equals(this.lastTextValue)) {
                     this.lastTextValue = latest;
-                    this.writeUpdateInfo(-2, (buffer) -> buffer.writeComponent(this.component));
+                    this.writeUpdateInfo(-2, (buffer) -> writeComponent(buffer, this.component));
                 }
             }
 
@@ -176,17 +174,25 @@ public class AlignLabelWidget extends Widget implements IConfigurableWidget {
     }
 
     @OnlyIn(Dist.CLIENT)
-    public void readUpdateInfo(int id, FriendlyByteBuf buffer) {
+    public void readUpdateInfo(int id, RegistryFriendlyByteBuf buffer) {
         if (id == -1) {
             this.lastTextValue = buffer.readUtf();
             this.updateSize();
         } else if (id == -2) {
-            this.component = buffer.readComponent();
+            this.component = readComponent(buffer);
             this.lastTextValue = this.component.getString();
             this.updateSize();
         } else {
             super.readUpdateInfo(id, buffer);
         }
+    }
+
+    private static void writeComponent(RegistryFriendlyByteBuf buffer, Component component) {
+        ComponentSerialization.TRUSTED_STREAM_CODEC.encode(buffer, component);
+    }
+
+    private static Component readComponent(RegistryFriendlyByteBuf buffer) {
+        return ComponentSerialization.TRUSTED_STREAM_CODEC.decode(buffer);
     }
 
     @OnlyIn(Dist.CLIENT)

@@ -11,6 +11,7 @@ import cn.qiuye.gtmoremachine.api.pattern.AdvancedBlockNoAEPattern;
 import cn.qiuye.gtmoremachine.api.pattern.AdvancedBlockPattern;
 import cn.qiuye.gtmoremachine.api.pattern.Hatch;
 import cn.qiuye.gtmoremachine.common.block.BlockMap;
+import cn.qiuye.gtmoremachine.utils.nbt.ItemStackNbtUtils;
 
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
@@ -132,7 +133,7 @@ public class AdvancedTerminalBehavior implements IItemUIFactory {
         autoBuildSetting.setUseAEMode(getBooleanTag(mainHandItem, UseAEMode));
         autoBuildSetting.setFlipMode(getBooleanTag(mainHandItem, FlipMode));
         autoBuildSetting.setNoHatchMode(getBooleanTag(mainHandItem, NoHatch, true));
-        var blocks = mainHandItem.getOrCreateTag().getCompound("blocks");
+        var blocks = ItemStackNbtUtils.getTag(mainHandItem).getCompound("blocks");
         if (!blocks.isEmpty()) {
             ReferenceOpenHashSet<Block> blockSet = new ReferenceOpenHashSet<>();
             for (String key : BlockMap.MAP.keySet()) {
@@ -206,12 +207,12 @@ public class AdvancedTerminalBehavior implements IItemUIFactory {
     }
 
     private int getIntTag(ItemStack itemStack, String key, int def) {
-        var tag = itemStack.getOrCreateTag();
+        var tag = ItemStackNbtUtils.getTag(itemStack);
         return tag.contains(key) ? tag.getInt(key) : def;
     }
 
     private void setIntTag(ItemStack itemStack, String key, int value) {
-        itemStack.getOrCreateTag().putInt(key, value);
+        ItemStackNbtUtils.updateTag(itemStack, tag -> tag.putInt(key, value));
     }
 
     private boolean getBooleanTag(ItemStack itemStack, String key) {
@@ -219,12 +220,12 @@ public class AdvancedTerminalBehavior implements IItemUIFactory {
     }
 
     private boolean getBooleanTag(ItemStack itemStack, String key, boolean def) {
-        var tag = itemStack.getOrCreateTag();
+        var tag = ItemStackNbtUtils.getTag(itemStack);
         return tag.contains(key) ? tag.getBoolean(key) : def;
     }
 
     private void setBooleanTag(ItemStack itemStack, String key, boolean value) {
-        itemStack.getOrCreateTag().putBoolean(key, value);
+        ItemStackNbtUtils.updateTag(itemStack, tag -> tag.putBoolean(key, value));
     }
 
     @Setter

@@ -1,14 +1,11 @@
 package cn.qiuye.gtmoremachine.api.transfer
 
-import com.lowdragmc.lowdraglib.side.item.forge.ItemTransferHelperImpl
-
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.level.Level
-import net.minecraftforge.common.capabilities.ForgeCapabilities
-import net.minecraftforge.items.IItemHandler
-import net.minecraftforge.items.ItemHandlerHelper
+import net.neoforged.neoforge.capabilities.Capabilities
+import net.neoforged.neoforge.items.IItemHandler
 
 import it.unimi.dsi.fastutil.ints.IntArrayList
 import it.unimi.dsi.fastutil.ints.IntList
@@ -24,9 +21,8 @@ object UnlimitItemTransferHelper {
 		if (level.getBlockState(pos).hasBlockEntity()) {
 			val blockEntity = level.getBlockEntity(pos)
 			if (blockEntity != null) {
-				val cap = blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER, direction).resolve()
-				if (cap.isPresent) {
-					val target = cap.get()
+				val target = level.getCapability(Capabilities.ItemHandler.BLOCK, pos, direction)
+				if (target != null) {
 					for (srcIndex in 0..<source.slots) {
 						while (true) {
 							var sourceStack = source.extractItem(srcIndex, Int.MAX_VALUE, true)
@@ -56,7 +52,7 @@ object UnlimitItemTransferHelper {
 			return stack
 		}
 		if (!stack.isStackable) {
-			return ItemTransferHelperImpl.insertToEmpty(handler, stack, simulate)
+			return insertToEmpty(handler, stack, simulate)
 		}
 
 		val emptySlots: IntList = IntArrayList()
@@ -67,7 +63,7 @@ object UnlimitItemTransferHelper {
 			if (slotStack.isEmpty) {
 				emptySlots.add(i)
 			}
-			if (ItemHandlerHelper.canItemStacksStackRelaxed(stack, slotStack)) {
+			if (ItemStack.isSameItemSameComponents(stack, slotStack)) {
 				stack = handler.insertItem(i, stack, simulate)
 				if (stack.isEmpty) {
 					return ItemStack.EMPTY
@@ -84,5 +80,18 @@ object UnlimitItemTransferHelper {
 			}
 		}
 		return stack
+	}
+
+	private fun insertToEmpty(handler: IItemHandler, stack: ItemStack, simulate: Boolean): ItemStack {
+		var remainder = stack
+		for (i in 0..<handler.slots) {
+			if (handler.getStackInSlot(i).isEmpty) {
+				remainder = handler.insertItem(i, remainder, simulate)
+				if (remainder.isEmpty) {
+					return ItemStack.EMPTY
+				}
+			}
+		}
+		return remainder
 	}
 }

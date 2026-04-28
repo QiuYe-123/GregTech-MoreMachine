@@ -41,7 +41,7 @@ public interface ITransferData {
         Component laste = Component.translatable(machine.getBlockState().getBlock().getDescriptionId())
                 .withStyle(Style.EMPTY.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
                         Component.translatable("recipe.condition.dimension.tooltip",
-                                machine.getLevel().dimension().location()).append(" [").append(pos).append("] ")
+                                machine.getLevel().dimension().location().toString()).append(" [").append(pos).append("] ")
                                 .append(Component.translatable(ownertooltip, TeamUtils.getName(machine.getLevel(), UUID()))))))
                 .append((eut.compareTo(BigDecimal.ZERO) > 0 ? " +" : " ") + NumberUtils.formatBigDecimalNumberOrSic(eut, format))
                 .append(" EU/t (")

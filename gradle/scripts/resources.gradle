@@ -30,15 +30,18 @@ tasks.matching { it.name.startsWith('prepare') }.configureEach {
 }
 
 var generateModMetadata = tasks.register("generateModMetadata", ProcessResources) {
-    var forgeVers = libs.versions.forge.get().split("\\.")[0]
+    var neoVersion = libs.versions.neoForge.get()
+    neoVersion = neoVersion.substring(0, neoVersion.lastIndexOf('.'))
+    var configurationVersion = forge.versions.configuration.get()
+    configurationVersion = configurationVersion.substring(0, configurationVersion.lastIndexOf('-'))
     var replaceProperties = [
             version                 : version_toml,
             mod_id                  : mod_id,
-            minecraft_version       : libs.versions.minecraft.get(),
-            loader_version          : forgeVers,
-            forge_version           : forgeVers,
+            minecraft_version       : "[1.21, 1.21.1]",
+            loader_version          : libs.versions.loader.get(),
+            neo_version             : neoVersion,
             ldlib_version           : forge.versions.ldlib.get(),
-            configuration_version   : forge.versions.configuration.get().replace("-forge", ""),
+            configuration_version   : configurationVersion,
             gtceu_version           : forge.versions.gtm.get(),
             jei_version             : forge.versions.jei.get(),
             emi_version             : forge.versions.emi.get(),
@@ -56,4 +59,4 @@ var generateModMetadata = tasks.register("generateModMetadata", ProcessResources
     into "build/generated/sources/modMetadata"
 }
 sourceSets.main.resources.srcDir generateModMetadata
-legacyForge.ideSyncTask generateModMetadata
+neoForge.ideSyncTask generateModMetadata

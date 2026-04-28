@@ -31,12 +31,11 @@ import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -47,13 +46,10 @@ import java.math.BigInteger;
 import java.util.List;
 import java.util.UUID;
 
-import javax.annotation.ParametersAreNonnullByDefault;
-
 import static cn.qiuye.gtmoremachine.api.gui.widget.AlignLabelWidget.ALIGN_CENTER;
 import static cn.qiuye.gtmoremachine.common.machine.electric.WirelessEnergyMonitor.DISPLAY_TEXT_WIDTH;
 
 @GTMMDataGeneratorScanned
-@ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class WirelessEnergyTerminalBehavior implements IItemUIFactory, IItemHUDProvider, IWirelessEnergyContainerHolder {
 
@@ -156,10 +152,10 @@ public class WirelessEnergyTerminalBehavior implements IItemUIFactory, IItemHUDP
     @Override
     public ModularUI createUI(HeldItemUIFactory.HeldItemHolder holder, Player entityPlayer) {
         final var handItem = entityPlayer.getMainHandItem();
-        if (!TagUtils.hasTagKey("UUID", handItem)) {
+        if (!entityPlayer.level().isClientSide && !TagUtils.hasTagKey("UUID", handItem)) {
             TagUtils.setUUID(entityPlayer.getUUID(), handItem);
         }
-        return new ModularUI(DISPLAY_TEXT_WIDTH + 8 + 8, 117 + 8 + 8 + 8 + 17, holder, entityPlayer).widget(createWidget(handItem, holder.getHeld().getDescriptionId(), new WirelessMonitor(entityPlayer.getUUID(), (ServerLevel) entityPlayer.level())));
+        return new ModularUI(DISPLAY_TEXT_WIDTH + 8 + 8, 117 + 8 + 8 + 8 + 17, holder, entityPlayer).widget(createWidget(handItem, holder.getHeld().getDescriptionId(), new WirelessMonitor(entityPlayer.getUUID(), entityPlayer.level())));
     }
 
     /**
@@ -371,7 +367,7 @@ public class WirelessEnergyTerminalBehavior implements IItemUIFactory, IItemHUDP
      */
     private static class WirelessMonitor implements IWirelessMonitor {
 
-        private WirelessMonitor(UUID uuid, ServerLevel level) {
+        private WirelessMonitor(UUID uuid, Level level) {
             this.uuid = uuid;
             this.level = level;
         }
@@ -382,11 +378,11 @@ public class WirelessEnergyTerminalBehavior implements IItemUIFactory, IItemHUDP
          * @return 如果是客户端返回true
          */
         private boolean isRemote() {
-            return GTmm.isClientThread();
+            return level.isClientSide();
         }
 
         private final UUID uuid;
-        private final ServerLevel level;
+        private final Level level;
 
         private List<Component> displayTextCache;
 

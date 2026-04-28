@@ -1,7 +1,7 @@
 {
-  "variants": {
-    "": {
-      "model": "gtmoremachine:block/luv_energy_communication_unit"
+    "variants": {
+        "": {
+            "model": "gtmoremachine:block/luv_energy_communication_unit"
+        }
     }
-  }
 }

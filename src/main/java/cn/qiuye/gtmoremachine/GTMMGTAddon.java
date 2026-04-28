@@ -1,7 +1,5 @@
 package cn.qiuye.gtmoremachine;
 
-import cn.qiuye.gtmoremachine.common.data.GTMMBlocks;
-import cn.qiuye.gtmoremachine.common.data.GTMMItems;
 import cn.qiuye.gtmoremachine.common.registry.GTMMRegistration;
 import cn.qiuye.gtmoremachine.data.recipes.GTMMRecipes;
 
@@ -9,12 +7,10 @@ import com.gregtechceu.gtceu.api.addon.GTAddon;
 import com.gregtechceu.gtceu.api.addon.IGTAddon;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 
-import net.minecraft.data.recipes.FinishedRecipe;
-
-import java.util.function.Consumer;
+import net.minecraft.data.recipes.RecipeOutput;
 
 @SuppressWarnings("unused")
-@GTAddon
+@GTAddon(GTmm.MOD_ID)
 public class GTMMGTAddon implements IGTAddon {
 
     @Override
@@ -23,18 +19,10 @@ public class GTMMGTAddon implements IGTAddon {
     }
 
     @Override
-    public String addonModId() {
-        return GTmm.MOD_ID;
-    }
+    public void gtInitComplete() {}
 
     @Override
-    public void initializeAddon() {
-        GTMMItems.init();
-        GTMMBlocks.init();
-    }
-
-    @Override
-    public void addRecipes(Consumer<FinishedRecipe> provider) {
+    public void addRecipes(RecipeOutput provider) {
         GTMMRecipes.init(provider);
     }
 }

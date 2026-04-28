@@ -42,17 +42,13 @@ import net.minecraft.network.chat.Style;
 import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.Block;
-import net.minecraftforge.items.IItemHandlerModifiable;
+import net.neoforged.neoforge.items.IItemHandlerModifiable;
 
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-import javax.annotation.ParametersAreNonnullByDefault;
-
-@ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 @GTMMDataGeneratorScanned
 public class HugeBusPartMachine extends TieredIOPartMachine implements IDistinctPart, IPaintable {
@@ -98,9 +94,9 @@ public class HugeBusPartMachine extends TieredIOPartMachine implements IDistinct
 
     public HugeBusPartMachine(BlockEntityCreationInfo holder, int tier, IO io, int shareSize) {
         super(holder, tier, io);
-        this.inventory = this.attachTrait(createInventory(io));
-        this.circuitInventory = this.attachTrait(createCircuitItemHandler(io));
-        this.shareInventory = this.attachTrait(new CatalystItemStackHandler(shareSize, IO.IN, IO.NONE));
+        this.inventory = createInventory(io);
+        this.circuitInventory = createCircuitItemHandler(io);
+        this.shareInventory = new CatalystItemStackHandler(this, shareSize, IO.IN, IO.NONE);
     }
 
     //////////////////////////////////////
@@ -113,7 +109,7 @@ public class HugeBusPartMachine extends TieredIOPartMachine implements IDistinct
     }
 
     protected NotifiableItemStackHandler createInventory(IO io) {
-        return new NotifiableItemStackHandler(getInventorySize(), io, io, UnlimitedItemStackTransfer::new) {
+        return new NotifiableItemStackHandler(this, getInventorySize(), io, io, UnlimitedItemStackTransfer::new) {
 
             @Override
             public boolean canCapOutput() {
@@ -124,10 +120,10 @@ public class HugeBusPartMachine extends TieredIOPartMachine implements IDistinct
 
     protected NotifiableItemStackHandler createCircuitItemHandler(IO io) {
         if (io == IO.IN) {
-            return new NotifiableItemStackHandler(1, IO.IN, IO.NONE)
+            return new NotifiableItemStackHandler(this, 1, IO.IN, IO.NONE)
                     .setFilter(IntCircuitBehaviour::isIntegratedCircuit);
         } else {
-            return new NotifiableItemStackHandler(0, IO.NONE);
+            return new NotifiableItemStackHandler(this, 0, IO.NONE);
         }
     }
 
@@ -185,7 +181,7 @@ public class HugeBusPartMachine extends TieredIOPartMachine implements IDistinct
     //////////////////////////////////////
 
     @Override
-    public void onNeighborChanged(Block block, BlockPos fromPos, boolean isMoving) {
+    public void onNeighborChanged(net.minecraft.world.level.block.Block block, BlockPos fromPos, boolean isMoving) {
         super.onNeighborChanged(block, fromPos, isMoving);
         updateInventorySubscription();
     }
@@ -206,7 +202,7 @@ public class HugeBusPartMachine extends TieredIOPartMachine implements IDistinct
             ItemStack stackInSlot = inventory.getStackInSlot(i);
             if (!stackInSlot.isEmpty()) {
                 inventory.setStackInSlot(i, ItemStack.EMPTY);
-                Block.popResource(getLevel(), getBlockPos(), stackInSlot);
+                net.minecraft.world.level.block.Block.popResource(getLevel(), getBlockPos(), stackInSlot);
             }
         }
     }
@@ -300,7 +296,7 @@ public class HugeBusPartMachine extends TieredIOPartMachine implements IDistinct
         if (textList.isEmpty()) {
             textList.add(Component.translatable(HUGE_ITEM_BUS_TOOLTIP_3));
         }
-        textList.add(0, Component.translatable(HUGE_ITEM_BUS_TOOLTIP_2, itemCount, getInventorySize())
+        textList.addFirst(Component.translatable(HUGE_ITEM_BUS_TOOLTIP_2, itemCount, getInventorySize())
                 .setStyle(Style.EMPTY.withColor(ChatFormatting.GREEN)));
     }
 }

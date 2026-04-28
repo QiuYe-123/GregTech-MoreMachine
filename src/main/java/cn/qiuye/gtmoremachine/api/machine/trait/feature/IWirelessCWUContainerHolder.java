@@ -3,7 +3,7 @@ package cn.qiuye.gtmoremachine.api.machine.trait.feature;
 import cn.qiuye.gtmoremachine.api.capability.wireless.cwu.ICWUBindable;
 import cn.qiuye.gtmoremachine.api.misc.wireless.cwu.WirelessCWUContainer;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 public interface IWirelessCWUContainerHolder extends ICWUBindable {
 

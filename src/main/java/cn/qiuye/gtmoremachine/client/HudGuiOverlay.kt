@@ -6,19 +6,19 @@ import cn.qiuye.gtmoremachine.utils.SearchUtils.getItemEquipped
 import com.gregtechceu.gtceu.api.item.ComponentItem
 import com.gregtechceu.gtceu.api.item.component.IItemHUDProvider
 
+import net.minecraft.client.DeltaTracker
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.GuiGraphics
+import net.minecraft.client.gui.LayeredDraw
 import net.minecraft.world.item.ItemStack
-import net.minecraftforge.client.gui.overlay.ForgeGui
-import net.minecraftforge.client.gui.overlay.IGuiOverlay
 
 import lombok.NoArgsConstructor
 
 @NoArgsConstructor
-class HudGuiOverlay : IGuiOverlay {
-	override fun render(forgeGui: ForgeGui, guiGraphics: GuiGraphics, partialTick: Float, screenWidth: Int, screenHeight: Int) {
+class HudGuiOverlay : LayeredDraw.Layer {
+	override fun render(guiGraphics: GuiGraphics, tracker: DeltaTracker) {
 		val mc = Minecraft.getInstance()
-		if (mc.isWindowActive && mc.level != null && !mc.options.renderDebug && !mc.options.hideGui) {
+		if (mc.isWindowActive && mc.level != null && !mc.gui.debugOverlay.showDebugScreen() && !mc.options.hideGui) {
 			renderHUDMetaItem(getItemEquipped(mc.player!!, GTMMItems.WIRELESS_ENERGY_TERMINAL.asItem()), guiGraphics)
 		}
 	}

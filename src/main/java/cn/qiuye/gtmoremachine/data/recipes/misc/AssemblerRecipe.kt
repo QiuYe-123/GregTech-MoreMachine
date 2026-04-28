@@ -15,17 +15,16 @@ import com.gregtechceu.gtceu.common.data.machines.GTMultiMachines
 import com.gregtechceu.gtceu.common.data.machines.GTResearchMachines
 import com.gregtechceu.gtceu.data.recipe.CustomTags
 
-import net.minecraft.data.recipes.FinishedRecipe
+import net.minecraft.data.recipes.RecipeOutput
 import net.minecraft.world.item.Items
 
 import com.tterrag.registrate.util.entry.ItemEntry
 
 import java.util.*
-import java.util.function.Consumer
 
 object AssemblerRecipe {
 
-	fun init(provider: Consumer<FinishedRecipe>) {
+	fun init(provider: RecipeOutput) {
 		GTRecipeTypes.ASSEMBLER_RECIPES.recipeBuilder(GTmm.id("wireless_item_transfer_cover"))
 			.inputItems(GTItems.SENSOR_LV.asStack())
 			.inputItems(GTItems.EMITTER_LV.asStack())

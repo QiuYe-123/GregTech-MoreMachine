@@ -1,0 +1,83 @@
+modLoader = "javafml"
+loaderVersion = "[${loader_version},)"
+issueTrackerURL = "${mod_issue_tracker}"
+license = "${mod_license}"
+
+[[mods]]
+modId = "${mod_id}"
+version = "${version}"
+displayName = "${mod_name}"
+authors = "QiuYe"
+description = "${mod_description}"
+logoFile = "icon.png"
+displayURL = "${mod_url}"
+credits = "QiuYe, Original Project by liansishen"
+
+[[mixins]]
+config = "${mod_id}.mixins.json"
+
+[[accessTransformers]]
+file = "META-INF/accesstransformer.cfg"
+
+[[dependencies.${mod_id}]]
+modId = "neoforge"
+type = "required"
+versionRange = "[${neo_version},)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.${mod_id}]]
+modId = "minecraft"
+type = "required"
+versionRange = "${minecraft_version}"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.${mod_id}]]
+modId = "gtceu"
+type = "required"
+versionRange = "[${gtceu_version},)"
+ordering = "AFTER"
+side = "BOTH"
+
+[[dependencies.${mod_id}]]
+modId = "ldlib"
+type = "required"
+versionRange = "[${ldlib_version},)"
+ordering = "AFTER"
+side = "BOTH"
+
+[[dependencies.${mod_id}]]
+modId = "configuration"
+type = "required"
+versionRange = "[${configuration_version},)"
+ordering = "AFTER"
+side = "BOTH"
+
+[[dependencies.${mod_id}]]
+modId = "jei"
+type = "optional"
+versionRange = "[${jei_version},)"
+ordering = "AFTER"
+side = "BOTH"
+
+[[dependencies.${mod_id}]]
+modId = "emi"
+type = "optional"
+versionRange = "[${emi_version},)"
+ordering = "AFTER"
+side = "BOTH"
+
+[[dependencies.${mod_id}]]
+modId = "jade"
+type = "optional"
+versionRange = "[${jade_version},)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.${mod_id}]]
+modId = "ae2"
+type = "optional"
+versionRange = "[${ae2_version},)"
+ordering = "AFTER"
+side = "BOTH"

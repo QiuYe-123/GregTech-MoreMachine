@@ -6,8 +6,8 @@ import cn.qiuye.gtmoremachine.api.annotation.GTMMScanned;
 import cn.qiuye.gtmoremachine.api.annotation.language.GTMMRegisterLanguage;
 import cn.qiuye.gtmoremachine.api.lang.CNEN;
 
-import net.minecraftforge.fml.ModList;
-import net.minecraftforge.forgespi.language.ModFileScanData;
+import net.neoforged.fml.ModList;
+import net.neoforged.neoforgespi.language.ModFileScanData;
 
 import org.objectweb.asm.Type;
 

@@ -36,9 +36,6 @@ import lombok.Getter;
 
 import java.util.EnumSet;
 
-import javax.annotation.ParametersAreNonnullByDefault;
-
-@ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 @GTMMDataGeneratorScanned
 public class MEOutputPartMachine extends ItemBusPartMachine implements IGridConnectedMachine {
@@ -66,8 +63,8 @@ public class MEOutputPartMachine extends ItemBusPartMachine implements IGridConn
 
     public MEOutputPartMachine(BlockEntityCreationInfo holder) {
         super(holder, GTValues.LuV, IO.OUT);
-        this.fluidtank = this.attachTrait(createTank());
-        this.nodeHolder = this.attachTrait(new GridNodeHolder(this));
+        this.fluidtank = createTank();
+        this.nodeHolder = new GridNodeHolder(this);
         this.actionSource = IActionSource.ofMachine(nodeHolder.getMainNode()::getNode);
     }
 
@@ -105,12 +102,12 @@ public class MEOutputPartMachine extends ItemBusPartMachine implements IGridConn
     @Override
     protected NotifiableItemStackHandler createInventory() {
         this.internalBuffer = new KeyStorage();
-        return new InaccessibleInfiniteHandler(internalBuffer);
+        return new InaccessibleInfiniteHandler(this, internalBuffer);
     }
 
     protected NotifiableFluidTank createTank() {
         this.internalTankBuffer = new KeyStorage();
-        return new InaccessibleInfiniteTank(internalTankBuffer);
+        return new InaccessibleInfiniteTank(this, internalTankBuffer);
     }
 
     @Override

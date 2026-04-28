@@ -4,7 +4,7 @@ import cn.qiuye.gtmoremachine.api.lang.CNEN
 import cn.qiuye.gtmoremachine.api.lang.ChineseLangProvider
 import cn.qiuye.gtmoremachine.api.registries.ScanningClass
 
-import net.minecraftforge.common.data.LanguageProvider
+import net.neoforged.neoforge.common.data.LanguageProvider
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap
 

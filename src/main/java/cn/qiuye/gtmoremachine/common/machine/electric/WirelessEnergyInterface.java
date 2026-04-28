@@ -32,9 +32,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
 
-import javax.annotation.ParametersAreNonnullByDefault;
-
-@ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 @GTMMDataGeneratorScanned
 public class WirelessEnergyInterface extends TieredIOPartMachine implements IWirelessEnergyContainerHolder {
@@ -55,8 +52,8 @@ public class WirelessEnergyInterface extends TieredIOPartMachine implements IWir
 
     public WirelessEnergyInterface(BlockEntityCreationInfo holder) {
         super(holder, GTValues.MAX, IO.IN);
-        this.energyContainer = this.attachTrait(NotifiableEnergyContainer.receiverContainer(Long.MAX_VALUE,
-                GTValues.VEX[tier], 67108864));
+        this.energyContainer = NotifiableEnergyContainer.receiverContainer(this, Long.MAX_VALUE,
+                GTValues.VEX[tier], 67108864);
         this.energyContainer.setSideInputCondition(s -> s == getFrontFacing() && isWorkingEnabled());
         this.energyContainer.setCapabilityValidator(s -> s == null || s == getFrontFacing());
     }

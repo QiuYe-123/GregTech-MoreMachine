@@ -1,7 +1,7 @@
 {
-  "variants": {
-    "": {
-      "model": "gtmoremachine:block/ev_capacity_component"
+    "variants": {
+        "": {
+            "model": "gtmoremachine:block/ev_capacity_component"
+        }
     }
-  }
 }

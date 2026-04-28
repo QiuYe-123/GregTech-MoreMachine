@@ -16,7 +16,7 @@ version = "${mod_version}" + (isSnapshot ? "-SNAPSHOT" : "")
 boolean isCI = System.getenv("CI") != null
 
 java {
-    toolchain.languageVersion = JavaLanguageVersion.of(17)
+    toolchain.languageVersion = JavaLanguageVersion.of(21)
 }
 
 sourceSets {
@@ -50,6 +50,8 @@ configurations {
     clientRuntimeOnly.canBeResolved = false
     extraRuntimeOnly.canBeResolved = false
     clientExtraRuntimeOnly.canBeResolved = false
+    testImplementation.canBeResolved = false
+    testRuntimeOnly.canBeResolved = false
 
     runtimeClasspath.extendsFrom localRuntime
     extraRuntimeClasspath.extendsFrom extraLocalRuntime
@@ -59,23 +61,6 @@ configurations {
     renderNurseCfg {
         canBeConsumed = false
     }
-}
-
-afterEvaluate {
-    configurations {
-        // same as above but for the modRuntimeOnly configurations
-        modClientRuntimeOnly.canBeResolved = false
-        modExtraRuntimeOnly.canBeResolved = false
-        modClientExtraRuntimeOnly.canBeResolved = false
-    }
-}
-
-obfuscation {
-    createRemappingConfiguration(configurations.localRuntime)
-    createRemappingConfiguration(configurations.clientLocalRuntime)
-
-    createRemappingConfiguration(configurations.extraLocalRuntime)
-    createRemappingConfiguration(configurations.clientExtraLocalRuntime)
 }
 
 apply from: "$rootDir/gradle/scripts/jars.gradle"

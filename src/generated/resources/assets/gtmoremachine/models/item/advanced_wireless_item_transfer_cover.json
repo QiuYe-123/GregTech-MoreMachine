@@ -1,6 +1,6 @@
 {
-  "parent": "minecraft:item/generated",
-  "textures": {
-    "layer0": "gtmoremachine:item/advanced_wireless_item_transfer_cover"
-  }
+    "parent": "minecraft:item/generated",
+    "textures": {
+        "layer0": "gtmoremachine:item/advanced_wireless_item_transfer_cover"
+    }
 }

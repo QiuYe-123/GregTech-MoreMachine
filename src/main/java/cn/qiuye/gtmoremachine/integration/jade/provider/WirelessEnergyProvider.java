@@ -99,9 +99,9 @@ public class WirelessEnergyProvider extends CapabilityBlockProvider<IWirelessEne
                 tooltip.add(energyBody);
             } else {
                 if (cover) {
-                    tooltip.add(Component.translatable(WirelessEnergyReceiveCover.WIRELESS_ENERGY_COVER_TOOLTIP_3, uuid));
+                    tooltip.add(Component.translatable(WirelessEnergyReceiveCover.WIRELESS_ENERGY_COVER_TOOLTIP_3, uuid.toString()));
                 } else {
-                    tooltip.add(Component.translatable(WirelessEnergyHatchPartMachine.WIRELESS_ENERGY_HATCH_TOOLTIP_3, uuid));
+                    tooltip.add(Component.translatable(WirelessEnergyHatchPartMachine.WIRELESS_ENERGY_HATCH_TOOLTIP_3, uuid.toString()));
                 }
                 tooltip.add(energyBody);
             }

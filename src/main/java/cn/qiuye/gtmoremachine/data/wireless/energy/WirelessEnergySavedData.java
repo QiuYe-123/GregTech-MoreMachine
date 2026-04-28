@@ -4,6 +4,7 @@ import cn.qiuye.gtmoremachine.api.misc.wireless.energy.WirelessEnergyContainer;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -25,14 +26,16 @@ public class WirelessEnergySavedData extends SavedData {
     public static WirelessEnergySavedData INSTANCE;
 
     public static WirelessEnergySavedData getOrCreate(ServerLevel serverLevel) {
-        return serverLevel.getDataStorage().computeIfAbsent(WirelessEnergySavedData::new, WirelessEnergySavedData::new, "gtceu_wireless_energy");
+        return serverLevel.getDataStorage().computeIfAbsent(
+                new SavedData.Factory<>(WirelessEnergySavedData::new, WirelessEnergySavedData::new),
+                "gtceu_wireless_energy");
     }
 
     public final Map<UUID, WirelessEnergyContainer> containerMap = new HashMap<>();
 
     public WirelessEnergySavedData() {}
 
-    public WirelessEnergySavedData(CompoundTag tag) {
+    public WirelessEnergySavedData(CompoundTag tag, HolderLookup.Provider provider) {
         ListTag allEnergy = tag.getList("allEnergy", Tag.TAG_COMPOUND);
         for (int i = 0; i < allEnergy.size(); i++) {
             WirelessEnergyContainer container = readTag(allEnergy.getCompound(i));
@@ -41,7 +44,7 @@ public class WirelessEnergySavedData extends SavedData {
     }
 
     @Override
-    public @NotNull CompoundTag save(@NotNull CompoundTag compoundTag) {
+    public @NotNull CompoundTag save(@NotNull CompoundTag compoundTag, HolderLookup.@NotNull Provider provider) {
         ListTag allEnergy = new ListTag();
         for (WirelessEnergyContainer container : containerMap.values()) {
             CompoundTag engTag = toTag(container);
