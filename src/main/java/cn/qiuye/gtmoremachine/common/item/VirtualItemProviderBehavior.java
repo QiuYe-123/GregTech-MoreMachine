@@ -1,7 +1,8 @@
 package cn.qiuye.gtmoremachine.common.item;
 
+import cn.qiuye.gtmoremachine.common.data.GTMMDataComponents;
+import cn.qiuye.gtmoremachine.common.item.datacomponents.VirtualItemProviderData;
 import cn.qiuye.gtmoremachine.integration.ae.item.GTMMAEItems;
-import cn.qiuye.gtmoremachine.utils.nbt.ItemStackNbtUtils;
 
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.fancy.FancyMachineUIWidget;
@@ -19,9 +20,7 @@ import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
@@ -40,37 +39,25 @@ public final class VirtualItemProviderBehavior implements IAddInformation, IItem
     public static final VirtualItemProviderBehavior INSTANCE = new VirtualItemProviderBehavior();
 
     private static ItemStack setVirtualItem(ItemStack stack, ItemStack virtualItem) {
-        CompoundTag tag = ItemStackNbtUtils.getTag(stack);
-        tag.remove("t");
-        ResourceLocation id = BuiltInRegistries.ITEM.getKey(virtualItem.getItem());
-        if (id == null) {
-            return stack;
-        }
-        tag.putString("m", id.getNamespace());
-        tag.putString("n", id.getPath());
-        CompoundTag itemTag = ItemStackNbtUtils.getTag(virtualItem);
-        if (!itemTag.isEmpty()) tag.put("t", itemTag);
-        ItemStackNbtUtils.setTag(stack, tag);
+        setVirtualItemProviderData(stack, getVirtualItemProviderData(stack).withVirtualItem(virtualItem));
         return stack;
     }
 
     public static ItemStack getVirtualItem(ItemStack item) {
-        CompoundTag tag = ItemStackNbtUtils.getTag(item);
-        String mod = tag.getString("m");
-        if (mod.isEmpty()) {
-            return ItemStack.EMPTY;
+        var component = item.get(GTMMDataComponents.VIRTUAL_ITEM_PROVIDER.get());
+        if (component != null && !component.virtualItem().isEmpty()) {
+            return component.virtualItem().copy();
         }
-        ResourceLocation id = ResourceLocation.tryParse(mod + ":" + tag.getString("n"));
-        if (id == null) {
-            return ItemStack.EMPTY;
-        }
-        Item resolvedItem = BuiltInRegistries.ITEM.get(id);
-        if (resolvedItem == null) {
-            return ItemStack.EMPTY;
-        }
-        ItemStack stack = resolvedItem.getDefaultInstance();
-        if (tag.contains("t")) ItemStackNbtUtils.setTag(stack, tag.getCompound("t"));
-        return stack;
+        return ItemStack.EMPTY;
+    }
+
+    public static boolean hasVirtualItem(ItemStack item) {
+        return !getVirtualItem(item).isEmpty();
+    }
+
+    public static boolean isMarked(ItemStack item) {
+        var component = item.get(GTMMDataComponents.VIRTUAL_ITEM_PROVIDER.get());
+        return component != null && component.marked();
     }
 
     private Player player;
@@ -78,7 +65,7 @@ public final class VirtualItemProviderBehavior implements IAddInformation, IItem
 
     @Override
     public void appendHoverText(@NotNull ItemStack itemstack, Item.TooltipContext context, @NotNull List<Component> list, @NotNull TooltipFlag flag) {
-        if (ItemStackNbtUtils.hasTag(itemstack)) {
+        if (hasVirtualItem(itemstack)) {
             list.add(Component.translatable("gui.ae2.Items").append(": ").append(getVirtualItem(itemstack).getDisplayName()));
         }
     }
@@ -147,7 +134,7 @@ public final class VirtualItemProviderBehavior implements IAddInformation, IItem
 
         @Override
         public @NotNull ItemStack extractItem(int i, int j, boolean bl) {
-            if (ItemStackNbtUtils.getTag(getItem()).getBoolean("marked")) return ItemStack.EMPTY;
+            if (isMarked(getItem())) return ItemStack.EMPTY;
             setVirtualItem(getItem(), ItemStack.EMPTY);
             return getStackInSlot(0);
         }
@@ -161,5 +148,13 @@ public final class VirtualItemProviderBehavior implements IAddInformation, IItem
         public boolean isItemValid(int i, @NotNull ItemStack arg) {
             return true;
         }
+    }
+
+    private static VirtualItemProviderData getVirtualItemProviderData(ItemStack stack) {
+        return stack.getOrDefault(GTMMDataComponents.VIRTUAL_ITEM_PROVIDER.get(), VirtualItemProviderData.DEFAULT);
+    }
+
+    static void setVirtualItemProviderData(ItemStack stack, VirtualItemProviderData data) {
+        stack.set(GTMMDataComponents.VIRTUAL_ITEM_PROVIDER.get(), data);
     }
 }

@@ -1,7 +1,9 @@
 package cn.qiuye.gtmoremachine.common.item.itemstack;
 
+import cn.qiuye.gtmoremachine.common.data.GTMMDataComponents;
+import cn.qiuye.gtmoremachine.common.item.VirtualItemProviderBehavior;
+import cn.qiuye.gtmoremachine.common.item.datacomponents.VirtualItemProviderData;
 import cn.qiuye.gtmoremachine.integration.ae.item.GTMMAEItems;
-import cn.qiuye.gtmoremachine.utils.nbt.ItemStackNbtUtils;
 
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 
@@ -38,13 +40,17 @@ public final class VirtualItemProviderCellItem extends CreativeCellItem {
         }
 
         void load() {
-            if (ItemStackNbtUtils.hasTag(stack)) {
-                inv.readFromChildTag(ItemStackNbtUtils.getTag(stack), "list", GTRegistries.builtinRegistry());
+            var data = stack.get(GTMMDataComponents.VIRTUAL_ITEM_PROVIDER.get());
+            if (data != null && !data.configInventory().isEmpty()) {
+                inv.readFromChildTag(data.configInventory(), "list", GTRegistries.builtinRegistry());
             }
         }
 
         void save() {
-            ItemStackNbtUtils.updateTag(stack, tag -> inv.writeToChildTag(tag, "list", GTRegistries.builtinRegistry()));
+            var data = stack.getOrDefault(GTMMDataComponents.VIRTUAL_ITEM_PROVIDER.get(), VirtualItemProviderData.DEFAULT);
+            var config = new net.minecraft.nbt.CompoundTag();
+            inv.writeToChildTag(config, "list", GTRegistries.builtinRegistry());
+            VirtualItemProviderBehavior.setVirtualItemProviderData(stack, data.withConfigInventory(config));
         }
     }
 
@@ -59,10 +65,11 @@ public final class VirtualItemProviderCellItem extends CreativeCellItem {
                 super.setStack(slot, null);
             } else if (stack.what() instanceof AEItemKey itemKey &&
                     itemKey.getItem() == GTMMAEItems.VIRTUAL_ITEM_PROVIDER.asItem() &&
-                    ItemStackNbtUtils.hasTag(itemKey.getReadOnlyStack())) {
+                    VirtualItemProviderBehavior.hasVirtualItem(itemKey.getReadOnlyStack())) {
                         boolean typesOnly = this.mode == Mode.CONFIG_TYPES;
                         ItemStack markedStack = itemKey.toStack();
-                        ItemStackNbtUtils.updateTag(markedStack, tag -> tag.putBoolean("marked", true));
+                        var data = markedStack.getOrDefault(GTMMDataComponents.VIRTUAL_ITEM_PROVIDER.get(), VirtualItemProviderData.DEFAULT);
+                        VirtualItemProviderBehavior.setVirtualItemProviderData(markedStack, data.withMarked(true));
                         itemKey = AEItemKey.of(markedStack);
                         if (itemKey == null) return;
                         if (typesOnly && stack.amount() != 0L) {

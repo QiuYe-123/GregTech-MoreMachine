@@ -101,11 +101,12 @@ public class WirelessEnergyMonitor extends MetaMachine implements IFancyUIMachin
             }
         } else if (componentData.equals("powerStatus")) {
             if (!clickData.isRemote) {
-                // 循环切换PowerStatus：All -> In -> Out -> All
-                switch (powerStatus) {
-                    case All -> powerStatus = Status.In;
-                    case In -> powerStatus = Status.Out;
-                    case Out -> powerStatus = Status.All;
+                if (powerStatus == Status.All) {
+                    powerStatus = Status.In;
+                } else if (powerStatus == Status.In) {
+                    powerStatus = Status.Out;
+                } else {
+                    powerStatus = Status.All;
                 }
             }
         } else if (componentData.equals("sortingrules")) {
@@ -114,10 +115,12 @@ public class WirelessEnergyMonitor extends MetaMachine implements IFancyUIMachin
             }
         } else if (componentData.equals("type")) {
             if (!clickData.isRemote) {
-                switch (type) {
-                    case PowerInteraction -> type = Type.Capacitycomponent;
-                    case Capacitycomponent -> type = Type.RelayNode;
-                    case RelayNode -> type = Type.PowerInteraction;
+                if (type == Type.PowerInteraction) {
+                    type = Type.Capacitycomponent;
+                } else if (type == Type.Capacitycomponent) {
+                    type = Type.RelayNode;
+                } else {
+                    type = Type.PowerInteraction;
                 }
             }
         } else if (clickData.isRemote) {
