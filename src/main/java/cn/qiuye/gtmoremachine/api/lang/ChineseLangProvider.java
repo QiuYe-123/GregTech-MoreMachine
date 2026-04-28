@@ -17,7 +17,8 @@ import java.util.concurrent.CompletableFuture;
 @MethodsReturnNonnullByDefault
 public class ChineseLangProvider extends LanguageProvider implements RegistrateProvider {
 
-    public static final ProviderType<ChineseLangProvider> LANG = ProviderType.register("cn_lang", (registrate, vanillaPack) -> new ChineseLangProvider(registrate, vanillaPack.getGenerator().getPackOutput()));
+    public static final ProviderType<ChineseLangProvider> LANG = ProviderType.registerProvider("cn_lang",
+            context -> new ChineseLangProvider(context.parent(), context.output()));
 
     private static class TraditionalChineseLangProvider extends LanguageProvider {
 

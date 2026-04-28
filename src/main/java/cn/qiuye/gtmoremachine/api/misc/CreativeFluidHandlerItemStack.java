@@ -22,7 +22,7 @@ public class CreativeFluidHandlerItemStack extends FluidHandlerItemStack impleme
 
     @Override
     public @NotNull FluidStack drain(FluidStack resource, FluidAction action) {
-        if (resource.isFluidEqual(this.getFluid())) {
+        if (FluidStack.isSameFluidSameComponents(resource, this.getFluid())) {
             if (capacity == Integer.MAX_VALUE) {
                 return resource.copy();
             } else {
