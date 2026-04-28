@@ -27,4 +27,8 @@ class GTJadePlugin : IWailaPlugin {
 		registration.registerBlockComponent(WirelessCWUProvider(), Block::class.java)
 		registration.registerBlockComponent(WirelessOpticalComputationHatchProvider(), Block::class.java)
 	}
+
+	companion object {
+		const val JADE_PREFIX: String = "config.jade.plugin_gtmoremachine"
+	}
 }

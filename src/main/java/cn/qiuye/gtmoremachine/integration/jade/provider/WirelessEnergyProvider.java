@@ -6,6 +6,7 @@ import cn.qiuye.gtmoremachine.api.annotation.language.GTMMRegisterLanguage;
 import cn.qiuye.gtmoremachine.api.machine.trait.feature.IWirelessEnergyContainerHolder;
 import cn.qiuye.gtmoremachine.common.cover.WirelessEnergyReceiveCover;
 import cn.qiuye.gtmoremachine.common.machine.multiblock.part.WirelessEnergyHatchPartMachine;
+import cn.qiuye.gtmoremachine.integration.jade.GTJadePlugin;
 import cn.qiuye.gtmoremachine.utils.BigNumberUtils;
 import cn.qiuye.gtmoremachine.utils.FormattingUtil;
 import cn.qiuye.gtmoremachine.utils.NumberUtils;
@@ -35,13 +36,13 @@ import java.util.UUID;
 public class WirelessEnergyProvider extends CapabilityBlockProvider<IWirelessEnergyContainerHolder> {
 
     private static final String JADE_PREFIX = "config.jade.plugin_gtmoremachine";
-    @GTMMRegisterLanguage(en = "[GTMoreMachine] Wireless Energy Monitor", cn = "[GTMoreMachine] 无线能源监视器")
-    public static final String WIRELESS_ENERGY_PROVIDER = JADE_PREFIX + ".wireless_energy_provider";
+    @GTMMRegisterLanguage(valuePrefix = GTJadePlugin.JADE_PREFIX, en = "[GTMoreMachine] Wireless Energy Monitor", cn = "[GTMoreMachine] 无线能源监视器")
+    public static final String WIRELESS_ENERGY_PROVIDER = "wireless_energy_provider";
     @GTMMRegisterLanguage(en = "Total Energy: %s EU (%s A %s§r)", cn = "能源总量: %s EU (%s A %s§r)")
     public static final String WIRELESS_ENERGY_HATCH_PROVIDER_TOOLTIP_1 = JADE_PREFIX + ".wireless_energy_hatch_provider.tooltip.1";
 
     public WirelessEnergyProvider() {
-        super(GTmm.id("wireless_energy_provider"));
+        super(GTmm.id(WIRELESS_ENERGY_PROVIDER));
     }
 
     @Override

@@ -6,6 +6,7 @@ import cn.qiuye.gtmoremachine.api.annotation.language.GTMMRegisterLanguage;
 import cn.qiuye.gtmoremachine.api.machine.trait.feature.IWirelessCWUContainerHolder;
 import cn.qiuye.gtmoremachine.common.machine.electric.WirelessCWUMonitor;
 import cn.qiuye.gtmoremachine.common.machine.multiblock.part.WirelessEnergyHatchPartMachine;
+import cn.qiuye.gtmoremachine.integration.jade.GTJadePlugin;
 import cn.qiuye.gtmoremachine.utils.BigNumberUtils;
 import cn.qiuye.gtmoremachine.utils.NumberUtils;
 import cn.qiuye.gtmoremachine.utils.TeamUtils;
@@ -33,14 +34,13 @@ import java.util.UUID;
 @GTMMDataGeneratorScanned
 public class WirelessCWUProvider extends CapabilityBlockProvider<IWirelessCWUContainerHolder> {
 
-    private static final String JADE_PREFIX = "config.jade.plugin_gtmoremachine";
-    @GTMMRegisterLanguage(en = "[GTMoreMachine] Wireless CWU Monitor", cn = "[GTMoreMachine] 无线CWU监视器")
-    public static final String WIRELESS_CWU_PROVIDER = JADE_PREFIX + ".wireless_cwu_provider";
+    @GTMMRegisterLanguage(valuePrefix = GTJadePlugin.JADE_PREFIX, en = "[GTMoreMachine] Wireless CWU Monitor", cn = "[GTMoreMachine] 无线CWU监视器")
+    public static final String WIRELESS_CWU_PROVIDER = "wireless_cwu_provider";
     @GTMMRegisterLanguage(en = "Total CWU: %s CWU", cn = "CWU总量：%s CWU")
-    public static final String WIRELESS_CWU_HATCH_PROVIDER_TOOLTIP_1 = JADE_PREFIX + ".wireless_cwu_hatch_provider.tooltip.1";
+    public static final String WIRELESS_CWU_HATCH_PROVIDER_TOOLTIP_1 = GTJadePlugin.JADE_PREFIX + ".wireless_cwu_hatch_provider.tooltip.1";
 
     public WirelessCWUProvider() {
-        super(GTmm.id("wireless_cwu_provider"));
+        super(GTmm.id(WIRELESS_CWU_PROVIDER));
     }
 
     @Override

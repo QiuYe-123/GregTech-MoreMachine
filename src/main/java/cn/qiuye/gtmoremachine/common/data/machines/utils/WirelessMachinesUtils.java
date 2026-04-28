@@ -22,9 +22,6 @@ import java.util.function.BiFunction;
 
 public class WirelessMachinesUtils {
 
-    private static final String ENERGY_HATCH_PREFIX = "gtmoremachine.machine.energy_hatch";
-    private static final String WIRELESS_ENERGY_HATCH_PREFIX = "gtmoremachine.machine.wireless_energy_hatch";
-
     public static MachineDefinition[] registerTieredMachines(String name,
                                                              BiFunction<BlockEntityCreationInfo, Integer, MetaMachine> factory,
                                                              BiFunction<Integer, MachineBuilder<MachineDefinition, ?>, MachineDefinition> builder,
@@ -42,8 +39,8 @@ public class WirelessMachinesUtils {
                         .langValue(GTValues.VNF[tier] + " " + FormattingUtil.formatNumbers(amperage) + (io == IO.IN ? " Energy Hatch" : " Dynamo Hatch"))
                         .rotationState(RotationState.ALL)
                         .abilities(ability)
-                        .tooltips(Component.translatable(ENERGY_HATCH_PREFIX + "." + name + ".tooltip"),
-                                (Component.translatable(WIRELESS_ENERGY_HATCH_PREFIX + "." + name + ".tooltip")),
+                        .tooltips(Component.translatable(WirelessEnergyHatchPartMachine.ENERGY_HATCH_PREFIX + "." + name + ".tooltip"),
+                                (Component.translatable(WirelessEnergyHatchPartMachine.WIRELESS_ENERGY_HATCH_PREFIX + "." + name + ".tooltip")),
                                 Component.translatable("gtceu.universal.tooltip.voltage_" + voltage,
                                         FormattingUtil.formatNumbers(GTValues.V[tier]), GTValues.VNF[tier]),
                                 Component.translatable("gtceu.universal.tooltip.amperage_" + voltage, amperage),
@@ -67,8 +64,8 @@ public class WirelessMachinesUtils {
                                 FormattingUtil.toEnglishName(name) + " Hatch")
                         .rotationState(RotationState.ALL)
                         .abilities(ability)
-                        .tooltips(Component.translatable(ENERGY_HATCH_PREFIX + "." + name + ".tooltip"),
-                                Component.translatable(WIRELESS_ENERGY_HATCH_PREFIX + "." + name + ".tooltip"),
+                        .tooltips(Component.translatable(WirelessEnergyHatchPartMachine.ENERGY_HATCH_PREFIX + "." + name + ".tooltip"),
+                                Component.translatable(WirelessEnergyHatchPartMachine.WIRELESS_ENERGY_HATCH_PREFIX + "." + name + ".tooltip"),
                                 Component.translatable("gtceu.universal.tooltip.voltage_" + voltage,
                                         FormattingUtil.formatNumbers(GTValues.V[tier]), GTValues.VNF[tier]),
                                 Component.translatable("gtceu.universal.tooltip.amperage_" + voltage, amperage),
