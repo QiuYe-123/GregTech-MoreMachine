@@ -4,7 +4,6 @@ import cn.qiuye.gtmoremachine.api.annotation.GTMMDataGeneratorScanned;
 import cn.qiuye.gtmoremachine.api.annotation.language.GTMMRegisterLanguage;
 import cn.qiuye.gtmoremachine.api.capability.IGTMMJadeIF;
 import cn.qiuye.gtmoremachine.api.machine.trait.WirelessNotifiableComputationContainer;
-import cn.qiuye.gtmoremachine.utils.nbt.ItemStackNbtUtils;
 
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
@@ -12,6 +11,7 @@ import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IDataStickInteractable;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
+import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
@@ -21,6 +21,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 
@@ -134,7 +135,7 @@ public class WirelessCWUHatchMachine extends MultiblockPartMachine implements ID
     public InteractionResult onDataStickShiftUse(Player player, ItemStack dataStick) {
         if (isRemote()) return InteractionResult.SUCCESS;
 
-        CompoundTag tag = ItemStackNbtUtils.getTag(dataStick);
+        CompoundTag tag = new CompoundTag();
         BlockPos currentPos = getBlockPos();
         if (isTransmitter()) {
             tag.put(KEY_TRANSMITTER, createPos(currentPos));
@@ -143,7 +144,7 @@ public class WirelessCWUHatchMachine extends MultiblockPartMachine implements ID
             tag.put(KEY_RECEIVER, createPos(currentPos));
             player.sendSystemMessage(Component.translatable(WIRELESS_COMPUTATION_RECEIVER_HATCH_TOBIND));
         }
-        ItemStackNbtUtils.setTag(dataStick, tag);
+        dataStick.set(GTDataComponents.DATA_COPY_TAG, CustomData.of(tag));
         return InteractionResult.SUCCESS;
     }
 
@@ -151,7 +152,9 @@ public class WirelessCWUHatchMachine extends MultiblockPartMachine implements ID
     public InteractionResult onDataStickUse(Player player, ItemStack dataStick) {
         if (isRemote()) return InteractionResult.SUCCESS;
 
-        CompoundTag tag = ItemStackNbtUtils.getTag(dataStick);
+        CustomData data = dataStick.get(GTDataComponents.DATA_COPY_TAG);
+        if (data == null) return InteractionResult.PASS;
+        CompoundTag tag = data.copyTag();
         if (tag.isEmpty()) return InteractionResult.PASS;
 
         if (isTransmitter() && tag.contains(KEY_RECEIVER, 10)) {

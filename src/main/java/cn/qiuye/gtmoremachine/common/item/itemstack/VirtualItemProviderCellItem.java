@@ -1,9 +1,9 @@
 package cn.qiuye.gtmoremachine.common.item.itemstack;
 
+import cn.qiuye.gtmoremachine.common.data.GTMMDataComponents;
+import cn.qiuye.gtmoremachine.common.item.VirtualItemProviderBehavior;
+import cn.qiuye.gtmoremachine.common.item.datacomponents.VirtualItemProviderData;
 import cn.qiuye.gtmoremachine.integration.ae.item.GTMMAEItems;
-import cn.qiuye.gtmoremachine.utils.nbt.ItemStackNbtUtils;
-
-import com.gregtechceu.gtceu.api.registry.GTRegistries;
 
 import net.minecraft.world.item.ItemStack;
 
@@ -13,6 +13,9 @@ import appeng.api.stacks.GenericStack;
 import appeng.items.storage.CreativeCellItem;
 import appeng.util.ConfigInventory;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public final class VirtualItemProviderCellItem extends CreativeCellItem {
 
@@ -38,13 +41,33 @@ public final class VirtualItemProviderCellItem extends CreativeCellItem {
         }
 
         void load() {
-            if (ItemStackNbtUtils.hasTag(stack)) {
-                inv.readFromChildTag(ItemStackNbtUtils.getTag(stack), "list", GTRegistries.builtinRegistry());
+            var data = VirtualItemProviderBehavior.getVirtualItemProviderData(stack);
+            var configuredStacks = data.configInventory();
+            int slotCount = Math.min(inv.size(), configuredStacks.size());
+            for (int slot = 0; slot < slotCount; slot++) {
+                ItemStack configuredStack = configuredStacks.get(slot);
+                if (configuredStack.isEmpty()) {
+                    continue;
+                }
+                AEItemKey itemKey = AEItemKey.of(configuredStack);
+                if (itemKey != null) {
+                    inv.setStack(slot, new GenericStack(itemKey, 0L));
+                }
             }
         }
 
         void save() {
-            ItemStackNbtUtils.updateTag(stack, tag -> inv.writeToChildTag(tag, "list", GTRegistries.builtinRegistry()));
+            var data = VirtualItemProviderBehavior.getVirtualItemProviderData(stack);
+            List<ItemStack> configuredStacks = new ArrayList<>(inv.size());
+            for (int slot = 0; slot < inv.size(); slot++) {
+                GenericStack genericStack = inv.getStack(slot);
+                if (genericStack != null && genericStack.what() instanceof AEItemKey itemKey) {
+                    configuredStacks.add(itemKey.toStack());
+                } else {
+                    configuredStacks.add(ItemStack.EMPTY);
+                }
+            }
+            VirtualItemProviderBehavior.setVirtualItemProviderData(stack, data.withConfigInventory(configuredStacks));
         }
     }
 
@@ -59,10 +82,11 @@ public final class VirtualItemProviderCellItem extends CreativeCellItem {
                 super.setStack(slot, null);
             } else if (stack.what() instanceof AEItemKey itemKey &&
                     itemKey.getItem() == GTMMAEItems.VIRTUAL_ITEM_PROVIDER.asItem() &&
-                    ItemStackNbtUtils.hasTag(itemKey.getReadOnlyStack())) {
+                    VirtualItemProviderBehavior.hasVirtualItem(itemKey.getReadOnlyStack())) {
                         boolean typesOnly = this.mode == Mode.CONFIG_TYPES;
                         ItemStack markedStack = itemKey.toStack();
-                        ItemStackNbtUtils.updateTag(markedStack, tag -> tag.putBoolean("marked", true));
+                        var data = markedStack.getOrDefault(GTMMDataComponents.VIRTUAL_ITEM_PROVIDER.get(), VirtualItemProviderData.DEFAULT);
+                        VirtualItemProviderBehavior.setVirtualItemProviderData(markedStack, data.withMarked(true));
                         itemKey = AEItemKey.of(markedStack);
                         if (itemKey == null) return;
                         if (typesOnly && stack.amount() != 0L) {

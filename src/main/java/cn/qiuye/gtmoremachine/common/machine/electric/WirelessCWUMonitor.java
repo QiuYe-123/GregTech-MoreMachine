@@ -86,11 +86,12 @@ public class WirelessCWUMonitor extends MetaMachine implements IFancyUIMachine, 
             }
         } else if (componentData.equals("CWUStatus")) {
             if (!clickData.isRemote) {
-                // 循环切换PowerStatus：All -> In -> Out -> All
-                switch (CWUStatus) {
-                    case All -> CWUStatus = Status.In;
-                    case In -> CWUStatus = Status.Out;
-                    case Out -> CWUStatus = Status.All;
+                if (CWUStatus == Status.All) {
+                    CWUStatus = Status.In;
+                } else if (CWUStatus == Status.In) {
+                    CWUStatus = Status.Out;
+                } else {
+                    CWUStatus = Status.All;
                 }
             }
         } else if (clickData.isRemote) {

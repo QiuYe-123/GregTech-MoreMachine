@@ -10,9 +10,10 @@ import cn.qiuye.gtmoremachine.api.item.ModularHUD;
 import cn.qiuye.gtmoremachine.api.machine.trait.feature.IWirelessEnergyContainerHolder;
 import cn.qiuye.gtmoremachine.api.misc.wireless.energy.WirelessEnergyContainer;
 import cn.qiuye.gtmoremachine.api.misc.wireless.energy.feature.IWirelessMonitor;
+import cn.qiuye.gtmoremachine.common.data.GTMMDataComponents;
+import cn.qiuye.gtmoremachine.common.item.datacomponents.WirelessEnergyTerminalData;
 import cn.qiuye.gtmoremachine.utils.FormattingUtil;
 import cn.qiuye.gtmoremachine.utils.NumberUtils;
-import cn.qiuye.gtmoremachine.utils.nbt.TagUtils;
 
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.item.component.IItemHUDProvider;
@@ -28,6 +29,7 @@ import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -54,7 +56,7 @@ import static cn.qiuye.gtmoremachine.common.machine.electric.WirelessEnergyMonit
 public class WirelessEnergyTerminalBehavior implements IItemUIFactory, IItemHUDProvider, IWirelessEnergyContainerHolder {
 
     private static final String WIRELESS_MONITOR_PREFIX = "gtmoremachine.machine.wireless_monitor";
-    @GTMMRegisterLanguage(en = "Electricity Statistics：%s     Display Format：%s    Power status：%s\nSorting rules：%s        Type：%s", cn = "用电统计：%s     显示格式：%s    功率状态：%s\n排序规则：%s        类别: %s")
+    @GTMMRegisterLanguage(en = "Electricity Statistics：%s     Display Format：%s    Power status：%s    Sorting rules：%s        Type：%s", cn = "用电统计：%s     显示格式：%s    功率状态：%s    排序规则：%s        类别: %s")
     public static final String WIRELESS_MONITOR_TOOLTIP_STATISTICS_ENERGY = WIRELESS_MONITOR_PREFIX + ".tooltip.statistics.energy";
     @GTMMRegisterLanguage(en = "CWU Statistics：%s     Display Format：%s    CWU status：%s", cn = "算力统计：%s     显示格式：%s    算力状态：%s")
     public static final String WIRELESS_MONITOR_TOOLTIP_STATISTICS_CWU = WIRELESS_MONITOR_PREFIX + ".tooltip.statistics.cwu";
@@ -116,11 +118,13 @@ public class WirelessEnergyTerminalBehavior implements IItemUIFactory, IItemHUDP
             }
         } else if (componentData.equals(powerstatus)) {
             if (!clickData.isRemote) {
-                // 循环切换PowerStatus：All -> In -> Out -> All
-                switch (getPowerStatus(stack)) {
-                    case All -> setPowerStatus(Status.In, stack);
-                    case In -> setPowerStatus(Status.Out, stack);
-                    case Out -> setPowerStatus(Status.All, stack);
+                var currentPowerStatus = getPowerStatus(stack);
+                if (currentPowerStatus == Status.All) {
+                    setPowerStatus(Status.In, stack);
+                } else if (currentPowerStatus == Status.In) {
+                    setPowerStatus(Status.Out, stack);
+                } else {
+                    setPowerStatus(Status.All, stack);
                 }
             }
         } else if (componentData.equals(sortingrules)) {
@@ -129,10 +133,13 @@ public class WirelessEnergyTerminalBehavior implements IItemUIFactory, IItemHUDP
             }
         } else if (componentData.equals(type)) {
             if (!clickData.isRemote) {
-                switch (getType(stack)) {
-                    case PowerInteraction -> setType(Type.Capacitycomponent, stack);
-                    case Capacitycomponent -> setType(Type.RelayNode, stack);
-                    case RelayNode -> setType(Type.PowerInteraction, stack);
+                var currentType = getType(stack);
+                if (currentType == Type.PowerInteraction) {
+                    setType(Type.Capacitycomponent, stack);
+                } else if (currentType == Type.Capacitycomponent) {
+                    setType(Type.RelayNode, stack);
+                } else {
+                    setType(Type.PowerInteraction, stack);
                 }
             }
         } else if (clickData.isRemote) {
@@ -151,10 +158,7 @@ public class WirelessEnergyTerminalBehavior implements IItemUIFactory, IItemHUDP
      */
     @Override
     public ModularUI createUI(HeldItemUIFactory.HeldItemHolder holder, Player entityPlayer) {
-        final var handItem = entityPlayer.getMainHandItem();
-        if (!entityPlayer.level().isClientSide && !TagUtils.hasTagKey("UUID", handItem)) {
-            TagUtils.setUUID(entityPlayer.getUUID(), handItem);
-        }
+        final var handItem = holder.getHeld();
         return new ModularUI(DISPLAY_TEXT_WIDTH + 8 + 8, 117 + 8 + 8 + 8 + 17, holder, entityPlayer).widget(createWidget(handItem, holder.getHeld().getDescriptionId(), new WirelessMonitor(entityPlayer.getUUID(), entityPlayer.level())));
     }
 
@@ -209,7 +213,8 @@ public class WirelessEnergyTerminalBehavior implements IItemUIFactory, IItemHUDP
      */
     @Override
     public void drawHUD(ItemStack stack, GuiGraphics guiGraphics) {
-        UUID uuid = TagUtils.getUUID(stack);
+        var player = Minecraft.getInstance().player;
+        UUID uuid = player != null ? player.getUUID() : null;
         BigDecimal all;
         BigDecimal in;
         BigDecimal out;
@@ -255,7 +260,7 @@ public class WirelessEnergyTerminalBehavior implements IItemUIFactory, IItemHUDP
      * @param stack    物品堆
      */
     private void setStatistics(Statistics enumtype, ItemStack stack) {
-        TagUtils.setEnumTag(statistics, enumtype, stack);
+        setTerminalData(stack, getTerminalData(stack).withStatistics(enumtype));
     }
 
     /**
@@ -265,7 +270,7 @@ public class WirelessEnergyTerminalBehavior implements IItemUIFactory, IItemHUDP
      * @return 当前统计模式
      */
     private Statistics getStatistics(ItemStack stack) {
-        return TagUtils.getEnumTag(statistics, stack, Statistics.class, Statistics.Companion);
+        return getTerminalData(stack).statistics();
     }
 
     /**
@@ -275,7 +280,7 @@ public class WirelessEnergyTerminalBehavior implements IItemUIFactory, IItemHUDP
      * @param stack    物品堆
      */
     private void setFormat(Format enumtype, ItemStack stack) {
-        TagUtils.setEnumTag(format, enumtype, stack);
+        setTerminalData(stack, getTerminalData(stack).withFormat(enumtype));
     }
 
     /**
@@ -285,7 +290,7 @@ public class WirelessEnergyTerminalBehavior implements IItemUIFactory, IItemHUDP
      * @return 当前数字格式
      */
     private Format getFormat(ItemStack stack) {
-        return TagUtils.getEnumTag(format, stack, Format.class, Format.Companion);
+        return getTerminalData(stack).format();
     }
 
     /**
@@ -295,7 +300,7 @@ public class WirelessEnergyTerminalBehavior implements IItemUIFactory, IItemHUDP
      * @param stack    物品堆
      */
     private void setPowerStatus(Status enumtype, ItemStack stack) {
-        TagUtils.setEnumTag(powerstatus, enumtype, stack);
+        setTerminalData(stack, getTerminalData(stack).withPowerStatus(enumtype));
     }
 
     /**
@@ -305,7 +310,7 @@ public class WirelessEnergyTerminalBehavior implements IItemUIFactory, IItemHUDP
      * @return 当前电力状态
      */
     private Status getPowerStatus(ItemStack stack) {
-        return TagUtils.getEnumTag(powerstatus, stack, Status.class, Status.Companion);
+        return getTerminalData(stack).powerStatus();
     }
 
     /**
@@ -315,7 +320,7 @@ public class WirelessEnergyTerminalBehavior implements IItemUIFactory, IItemHUDP
      * @param stack    物品堆
      */
     private void setSortingrules(Sorting enumtype, ItemStack stack) {
-        TagUtils.setEnumTag(sortingrules, enumtype, stack);
+        setTerminalData(stack, getTerminalData(stack).withSortingRules(enumtype));
     }
 
     /**
@@ -325,7 +330,7 @@ public class WirelessEnergyTerminalBehavior implements IItemUIFactory, IItemHUDP
      * @return 当前排序规则
      */
     private Sorting getSortingrules(ItemStack stack) {
-        return TagUtils.getEnumTag(sortingrules, stack, Sorting.class, Sorting.Companion);
+        return getTerminalData(stack).sortingRules();
     }
 
     /**
@@ -335,7 +340,7 @@ public class WirelessEnergyTerminalBehavior implements IItemUIFactory, IItemHUDP
      * @param stack    物品堆
      */
     private void setType(Type enumtype, ItemStack stack) {
-        TagUtils.setEnumTag(type, enumtype, stack);
+        setTerminalData(stack, getTerminalData(stack).withType(enumtype));
     }
 
     /**
@@ -345,7 +350,7 @@ public class WirelessEnergyTerminalBehavior implements IItemUIFactory, IItemHUDP
      * @return 当前显示的设备类型
      */
     private Type getType(ItemStack stack) {
-        return TagUtils.getEnumTag(type, stack, Type.class, Type.Companion);
+        return getTerminalData(stack).type();
     }
 
     // ==================== UUID 相关 ====================
@@ -358,6 +363,14 @@ public class WirelessEnergyTerminalBehavior implements IItemUIFactory, IItemHUDP
     @Override
     public @Nullable UUID getUUID() {
         return this.uuid;
+    }
+
+    private static WirelessEnergyTerminalData getTerminalData(ItemStack stack) {
+        return stack.getOrDefault(GTMMDataComponents.WIRELESS_ENERGY_TERMINAL.get(), WirelessEnergyTerminalData.DEFAULT);
+    }
+
+    private static void setTerminalData(ItemStack stack, WirelessEnergyTerminalData data) {
+        stack.set(GTMMDataComponents.WIRELESS_ENERGY_TERMINAL.get(), data);
     }
 
     // ==================== 内部类 ====================

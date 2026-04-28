@@ -6,6 +6,7 @@ import cn.qiuye.gtmoremachine.common.block.BlockMap;
 import cn.qiuye.gtmoremachine.common.data.GTMMBlocks;
 import cn.qiuye.gtmoremachine.common.data.GTMMCovers;
 import cn.qiuye.gtmoremachine.common.data.GTMMCreativeModeTabs;
+import cn.qiuye.gtmoremachine.common.data.GTMMDataComponents;
 import cn.qiuye.gtmoremachine.common.data.GTMMItems;
 import cn.qiuye.gtmoremachine.common.data.machines.Machines;
 import cn.qiuye.gtmoremachine.common.data.machines.multiblockmachine.MultiMachines;
@@ -26,6 +27,7 @@ public class CommonProxy {
 
     public static void init(IEventBus eventBus) {
         init();
+        GTMMDataComponents.DATA_COMPONENTS.register(eventBus);
         GTMMRegistration.GTMM.registerEventListeners(eventBus);
         eventBus.addListener(CommonProxy::commonSetup);
         eventBus.addListener(CommonProxy::registerCreativeModeTabs);

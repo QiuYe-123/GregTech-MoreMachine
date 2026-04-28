@@ -21,11 +21,8 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.core.component.DataComponents;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.level.block.Block;
 
 import it.unimi.dsi.fastutil.booleans.BooleanConsumer;
@@ -38,6 +35,7 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiConsumer;
 import java.util.function.BooleanSupplier;
+import java.util.function.Supplier;
 
 @GTMMDataGeneratorScanned
 @SuppressWarnings("ConstantConditions")
@@ -74,14 +72,15 @@ public class PatternWidgetGroup extends WidgetGroup {
     private final WidgetGroup[] categoryRowWidgets;  // 每个类别对应的行组件
     private final BlockRowWidget[] blockRowWidgets;  // 每个方块对应的行组件
     private int selectedBlockIndex = 0;           // 当前选中的方块索引（1-based）
-    private final ItemStack dataItemStack;        // 存储选中数据的物品
     private final BiConsumer<String, Integer> blockSelectionConsumer; // 保存选中结果的回调
+    private final Supplier<Map<String, Integer>> tierBlockSupplier;
     @Getter
     private boolean editingMode = false;          // 是否处于编辑模式
     private String selectedCategory = null;       // 当前选中的类别名称
 
     // ==================== 构造方法 ====================
-    public PatternWidgetGroup(int x, int y, int width, int height, BooleanConsumer onEditingModeChanged, ItemStack dataStack) {
+    public PatternWidgetGroup(int x, int y, int width, int height, BooleanConsumer onEditingModeChanged,
+                              Supplier<Map<String, Integer>> tierBlockSupplier, BiConsumer<String, Integer> blockSelectionConsumer) {
         super(x, y, width, height);
 
         // 初始化静态数据（仅一次）
@@ -93,20 +92,8 @@ public class PatternWidgetGroup extends WidgetGroup {
 
         this.categoryRowWidgets = new WidgetGroup[CATEGORY_COUNT];
         this.blockRowWidgets = new BlockRowWidget[MAX_BLOCKS_PER_CATEGORY];
-        this.dataItemStack = dataStack;
-        this.blockSelectionConsumer = (category, index) -> {
-            if (category != null && index != 0) {
-                CustomData.update(DataComponents.CUSTOM_DATA, dataStack, rootTag -> {
-                    CompoundTag blocksTag = rootTag.getCompound("blocks");
-                    if (blocksTag.contains(category) && blocksTag.getInt(category) == index) {
-                        blocksTag.remove(category);
-                    } else {
-                        blocksTag.putInt(category, index);
-                    }
-                    rootTag.put("blocks", blocksTag);
-                });
-            }
-        };
+        this.tierBlockSupplier = tierBlockSupplier;
+        this.blockSelectionConsumer = blockSelectionConsumer;
 
         // 创建左侧滚动面板
         this.categoryListPanel = new WidgetGroup();
@@ -167,22 +154,16 @@ public class PatternWidgetGroup extends WidgetGroup {
 
     // ==================== 私有辅助方法 ====================
     private boolean isBlockSelected(String category, Block block) {
-        CompoundTag rootTag = getCustomDataTag(this.dataItemStack);
-        CompoundTag blocksTag = rootTag.getCompound("blocks");
-        int selectedIndex = blocksTag.getInt(category);
+        int selectedIndex = this.tierBlockSupplier.get().getOrDefault(category, 0);
         Block[] blocks = BlockMap.MAP.get(category);
         return blocks != null && selectedIndex - 1 >= 0 && selectedIndex - 1 < blocks.length && blocks[selectedIndex - 1] == block;
-    }
-
-    private static CompoundTag getCustomDataTag(ItemStack stack) {
-        return stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag();
     }
 
     private void initCategoryList() {
         AtomicInteger rowCounter = new AtomicInteger(0);
         for (Map.Entry<String, Block[]> entry : BlockMap.MAP.entrySet()) {
             String category = entry.getKey();
-            BooleanSupplier isSelected = () -> getCustomDataTag(this.dataItemStack).getCompound("blocks").contains(category);
+            BooleanSupplier isSelected = () -> this.tierBlockSupplier.get().containsKey(category);
 
             if (this.categoryRowWidgets[rowCounter.get()] != null) {
                 rowCounter.getAndIncrement();

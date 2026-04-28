@@ -4,7 +4,8 @@ import cn.qiuye.gtmoremachine.api.annotation.GTMMDataGeneratorScanned;
 import cn.qiuye.gtmoremachine.api.annotation.language.GTMMRegisterLanguage;
 import cn.qiuye.gtmoremachine.api.gui.widget.TerminalInputWidget;
 import cn.qiuye.gtmoremachine.api.misc.CreativeFluidHandlerItemStack;
-import cn.qiuye.gtmoremachine.utils.nbt.ItemStackNbtUtils;
+import cn.qiuye.gtmoremachine.common.data.GTMMDataComponents;
+import cn.qiuye.gtmoremachine.common.item.datacomponents.CreativeFluidData;
 
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.UITemplate;
@@ -28,6 +29,7 @@ import com.lowdragmc.lowdraglib.gui.widget.SwitchWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
@@ -125,12 +127,15 @@ public class CreativeFluidStats implements IItemComponent, IComponentCapability,
     }
 
     private boolean getAccurate(ItemStack fluidCell) {
-        CompoundTag tagCompound = ItemStackNbtUtils.getTag(fluidCell);
-        return tagCompound.contains("Accurate") && tagCompound.getBoolean("Accurate");
+        var component = fluidCell.get(GTMMDataComponents.CREATIVE_FLUID.get());
+        if (component != null) {
+            return component.accurate();
+        }
+        return getLegacyTag(fluidCell).getBoolean("Accurate");
     }
 
     private void setAccurate(boolean isEnable) {
-        ItemStackNbtUtils.updateTag(this.itemStack, tag -> tag.putBoolean("Accurate", isEnable));
+        setFluidData(this.itemStack, getFluidData(this.itemStack).withAccurate(isEnable));
     }
 
     private FluidStack getStored() {
@@ -142,7 +147,7 @@ public class CreativeFluidStats implements IItemComponent, IComponentCapability,
         if (!stored.isEmpty()) {
             return stored;
         }
-        CompoundTag tagCompound = ItemStackNbtUtils.getTag(fluidCell);
+        CompoundTag tagCompound = getLegacyTag(fluidCell);
         if (!tagCompound.contains("Fluid", Tag.TAG_COMPOUND)) {
             return FluidStack.EMPTY;
         }
@@ -153,15 +158,12 @@ public class CreativeFluidStats implements IItemComponent, IComponentCapability,
         if (fluid.isEmpty()) {
             this.creativeTank.setFluid(FluidStack.EMPTY);
             this.itemStack.remove(GTDataComponents.FLUID_CONTENT);
-            ItemStackNbtUtils.removeKeys(this.itemStack, "Fluid");
             setAccurate(false);
         } else {
             FluidStack stored = fluid.copy();
             stored.setAmount(1000);
             this.creativeTank.setFluid(stored);
             this.itemStack.set(GTDataComponents.FLUID_CONTENT, SimpleFluidContent.copyOf(stored));
-            ItemStackNbtUtils.updateTag(this.itemStack,
-                    tag -> tag.put("Fluid", stored.save(GTRegistries.builtinRegistry())));
         }
     }
 
@@ -170,12 +172,29 @@ public class CreativeFluidStats implements IItemComponent, IComponentCapability,
     }
 
     private int getCapacity(ItemStack fluidCell) {
-        CompoundTag tagCompound = ItemStackNbtUtils.getTag(fluidCell);
+        var component = fluidCell.get(GTMMDataComponents.CREATIVE_FLUID.get());
+        if (component != null) {
+            return component.capacity();
+        }
+        CompoundTag tagCompound = getLegacyTag(fluidCell);
         return tagCompound.contains("Capacity") ? tagCompound.getInt("Capacity") : 1000;
     }
 
     private void setCapacity(int capacity) {
-        ItemStackNbtUtils.updateTag(this.itemStack, tag -> tag.putInt("Capacity", capacity));
+        setFluidData(this.itemStack, getFluidData(this.itemStack).withCapacity(capacity));
+    }
+
+    private static CreativeFluidData getFluidData(ItemStack stack) {
+        return stack.getOrDefault(GTMMDataComponents.CREATIVE_FLUID.get(), CreativeFluidData.DEFAULT);
+    }
+
+    private static void setFluidData(ItemStack stack, CreativeFluidData data) {
+        stack.set(GTMMDataComponents.CREATIVE_FLUID.get(), data);
+    }
+
+    private static CompoundTag getLegacyTag(ItemStack stack) {
+        var customData = stack.get(DataComponents.CUSTOM_DATA);
+        return customData == null ? new CompoundTag() : customData.copyTag();
     }
 
     @Override

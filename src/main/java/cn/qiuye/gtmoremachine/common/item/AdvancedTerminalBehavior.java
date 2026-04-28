@@ -11,7 +11,8 @@ import cn.qiuye.gtmoremachine.api.pattern.AdvancedBlockNoAEPattern;
 import cn.qiuye.gtmoremachine.api.pattern.AdvancedBlockPattern;
 import cn.qiuye.gtmoremachine.api.pattern.Hatch;
 import cn.qiuye.gtmoremachine.common.block.BlockMap;
-import cn.qiuye.gtmoremachine.utils.nbt.ItemStackNbtUtils;
+import cn.qiuye.gtmoremachine.common.data.GTMMDataComponents;
+import cn.qiuye.gtmoremachine.common.item.datacomponents.AdvancedTerminalData;
 
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
@@ -27,10 +28,13 @@ import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.gui.widget.*;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -127,18 +131,18 @@ public class AdvancedTerminalBehavior implements IItemUIFactory {
 
     private AutoBuildSetting getAutoBuildSetting(ItemStack mainHandItem) {
         var autoBuildSetting = new AutoBuildSetting();
-        autoBuildSetting.setRepeatCount(getIntTag(mainHandItem, repeatCount));
-        autoBuildSetting.setReplaceMode(getBooleanTag(mainHandItem, ReplaceMode));
-        autoBuildSetting.setDemolitionMode(getBooleanTag(mainHandItem, DemolitionMode));
-        autoBuildSetting.setUseAEMode(getBooleanTag(mainHandItem, UseAEMode));
-        autoBuildSetting.setFlipMode(getBooleanTag(mainHandItem, FlipMode));
-        autoBuildSetting.setNoHatchMode(getBooleanTag(mainHandItem, NoHatch, true));
-        var blocks = ItemStackNbtUtils.getTag(mainHandItem).getCompound("blocks");
-        if (!blocks.isEmpty()) {
+        var terminalData = getTerminalData(mainHandItem);
+        autoBuildSetting.setRepeatCount(terminalData.repeatCount());
+        autoBuildSetting.setReplaceMode(terminalData.replaceMode());
+        autoBuildSetting.setDemolitionMode(terminalData.demolitionMode());
+        autoBuildSetting.setUseAEMode(terminalData.useAEMode());
+        autoBuildSetting.setFlipMode(terminalData.flipMode());
+        autoBuildSetting.setNoHatchMode(terminalData.noHatchMode());
+        if (!terminalData.tierBlocks().isEmpty()) {
             ReferenceOpenHashSet<Block> blockSet = new ReferenceOpenHashSet<>();
             for (String key : BlockMap.MAP.keySet()) {
                 Block[] blockArray = BlockMap.MAP.get(key);
-                int blocktier = blocks.getInt(key);
+                int blocktier = terminalData.tierBlocks().getOrDefault(key, 0);
                 if (blocktier > 0 && blocktier <= blockArray.length) {
                     blockSet.addAll(Arrays.asList(blockArray));
                 }
@@ -163,27 +167,29 @@ public class AdvancedTerminalBehavior implements IItemUIFactory {
                 .setYScrollBarWidth(2)
                 .setYBarStyle(null, ColorPattern.T_WHITE.rectTexture().setRadius(1))
                 .addWidget(new ExtendLabelWidget(65, 8, Component.translatable(TITLE)))
-                .addWidget(new PatternWidgetGroup(96, 4, 76, 12, b -> group.setSelfPositionX(b ? -70 : 0), handItem))
+                .addWidget(new PatternWidgetGroup(96, 4, 76, 12, b -> group.setSelfPositionX(b ? -70 : 0),
+                        () -> getTerminalData(handItem).tierBlocks(),
+                        (category, index) -> toggleTierBlock(handItem, category, index)))
                 .addWidget(new ExtendLabelWidget(4, 5 + 16 * rowIndex, Component.translatable(S1))
                         .setHoverTooltips(Component.translatable(S1T)))
                 .addWidget(new TerminalInputWidget(140, 5 + 16 * rowIndex++, 25, 16,
-                        () -> getIntTag(handItem, repeatCount), (v) -> setIntTag(handItem, repeatCount, v))
+                        () -> getTerminalData(handItem).repeatCount(), v -> setRepeatCount(handItem, v))
                         .setMin(0).setMax(1000))
                 .addWidget(new ExtendLabelWidget(4, 5 + 16 * rowIndex, Component.translatable(S2))
                         .setHoverTooltips(Component.translatable(S2T)))
-                .addWidget(Button(140, 5 + 16 * rowIndex++, () -> getBooleanTag(handItem, NoHatch, true), v -> setBooleanTag(handItem, NoHatch, v)))
+                .addWidget(Button(140, 5 + 16 * rowIndex++, () -> getTerminalData(handItem).noHatchMode(), v -> setNoHatchMode(handItem, v)))
                 .addWidget(new ExtendLabelWidget(4, 5 + 16 * rowIndex, Component.translatable(S3))
                         .setHoverTooltips(Component.translatable(S3T)))
-                .addWidget(Button(140, 5 + 16 * rowIndex++, () -> getBooleanTag(handItem, ReplaceMode), v -> setBooleanTag(handItem, ReplaceMode, v)))
+                .addWidget(Button(140, 5 + 16 * rowIndex++, () -> getTerminalData(handItem).replaceMode(), v -> setReplaceMode(handItem, v)))
                 .addWidget(new ExtendLabelWidget(4, 5 + 16 * rowIndex, Component.translatable(S4))
                         .setHoverTooltips(Component.translatable(S4T)))
-                .addWidget(Button(140, 5 + 16 * rowIndex++, () -> getBooleanTag(handItem, UseAEMode), (v) -> setBooleanTag(handItem, UseAEMode, v)))
+                .addWidget(Button(140, 5 + 16 * rowIndex++, () -> getTerminalData(handItem).useAEMode(), v -> setUseAEMode(handItem, v)))
                 .addWidget(new LabelWidget(4, 5 + 16 * rowIndex, Component.translatable(S5))
                         .setHoverTooltips(Component.translatable(S5T)))
-                .addWidget(Button(140, 5 + 16 * rowIndex++, () -> getBooleanTag(handItem, FlipMode), (v) -> setBooleanTag(handItem, FlipMode, v)))
+                .addWidget(Button(140, 5 + 16 * rowIndex++, () -> getTerminalData(handItem).flipMode(), v -> setFlipMode(handItem, v)))
                 .addWidget(new LabelWidget(4, 5 + 16 * rowIndex, Component.translatable(S6))
                         .setHoverTooltips(Component.translatable(S6T)))
-                .addWidget(Button(140, 5 + 16 * rowIndex++, () -> getBooleanTag(handItem, DemolitionMode), (v) -> setBooleanTag(handItem, DemolitionMode, v))));
+                .addWidget(Button(140, 5 + 16 * rowIndex++, () -> getTerminalData(handItem).demolitionMode(), v -> setDemolitionMode(handItem, v))));
         group.setBackground(GuiTextures.BACKGROUND_INVERSE);
         return group;
     }
@@ -202,30 +208,66 @@ public class AdvancedTerminalBehavior implements IItemUIFactory {
         return widget;
     }
 
-    private int getIntTag(ItemStack itemStack, String key) {
-        return getIntTag(itemStack, key, 0);
+    private static AdvancedTerminalData getTerminalData(ItemStack stack) {
+        var component = stack.get(GTMMDataComponents.ADVANCED_TERMINAL.get());
+        if (component != null) {
+            return component;
+        }
+
+        CompoundTag legacyTag = getLegacyTag(stack);
+        Map<String, Integer> tierBlocks = new HashMap<>();
+        CompoundTag blocks = legacyTag.getCompound("blocks");
+        for (String key : blocks.getAllKeys()) {
+            tierBlocks.put(key, blocks.getInt(key));
+        }
+        return new AdvancedTerminalData(
+                legacyTag.getInt(repeatCount),
+                legacyTag.getBoolean(ReplaceMode),
+                legacyTag.getBoolean(DemolitionMode),
+                legacyTag.getBoolean(UseAEMode),
+                legacyTag.getBoolean(FlipMode),
+                !legacyTag.contains(NoHatch) || legacyTag.getBoolean(NoHatch),
+                tierBlocks);
     }
 
-    private int getIntTag(ItemStack itemStack, String key, int def) {
-        var tag = ItemStackNbtUtils.getTag(itemStack);
-        return tag.contains(key) ? tag.getInt(key) : def;
+    private static void setTerminalData(ItemStack stack, AdvancedTerminalData data) {
+        stack.set(GTMMDataComponents.ADVANCED_TERMINAL.get(), data);
     }
 
-    private void setIntTag(ItemStack itemStack, String key, int value) {
-        ItemStackNbtUtils.updateTag(itemStack, tag -> tag.putInt(key, value));
+    private static CompoundTag getLegacyTag(ItemStack stack) {
+        CustomData customData = stack.get(DataComponents.CUSTOM_DATA);
+        return customData == null ? new CompoundTag() : customData.copyTag();
     }
 
-    private boolean getBooleanTag(ItemStack itemStack, String key) {
-        return getBooleanTag(itemStack, key, false);
+    private void setRepeatCount(ItemStack itemStack, int value) {
+        setTerminalData(itemStack, getTerminalData(itemStack).withRepeatCount(value));
     }
 
-    private boolean getBooleanTag(ItemStack itemStack, String key, boolean def) {
-        var tag = ItemStackNbtUtils.getTag(itemStack);
-        return tag.contains(key) ? tag.getBoolean(key) : def;
+    private void setReplaceMode(ItemStack itemStack, boolean value) {
+        setTerminalData(itemStack, getTerminalData(itemStack).withReplaceMode(value));
     }
 
-    private void setBooleanTag(ItemStack itemStack, String key, boolean value) {
-        ItemStackNbtUtils.updateTag(itemStack, tag -> tag.putBoolean(key, value));
+    private void setDemolitionMode(ItemStack itemStack, boolean value) {
+        setTerminalData(itemStack, getTerminalData(itemStack).withDemolitionMode(value));
+    }
+
+    private void setUseAEMode(ItemStack itemStack, boolean value) {
+        setTerminalData(itemStack, getTerminalData(itemStack).withUseAEMode(value));
+    }
+
+    private void setFlipMode(ItemStack itemStack, boolean value) {
+        setTerminalData(itemStack, getTerminalData(itemStack).withFlipMode(value));
+    }
+
+    private void setNoHatchMode(ItemStack itemStack, boolean value) {
+        setTerminalData(itemStack, getTerminalData(itemStack).withNoHatchMode(value));
+    }
+
+    private void toggleTierBlock(ItemStack itemStack, String category, int index) {
+        if (category == null || index == 0) {
+            return;
+        }
+        setTerminalData(itemStack, getTerminalData(itemStack).toggleTierBlock(category, index));
     }
 
     @Setter

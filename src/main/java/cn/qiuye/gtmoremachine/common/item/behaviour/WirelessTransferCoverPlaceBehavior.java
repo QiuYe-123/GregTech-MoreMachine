@@ -2,8 +2,9 @@ package cn.qiuye.gtmoremachine.common.item.behaviour;
 
 import cn.qiuye.gtmoremachine.api.annotation.GTMMDataGeneratorScanned;
 import cn.qiuye.gtmoremachine.api.annotation.language.GTMMRegisterLanguage;
+import cn.qiuye.gtmoremachine.common.data.GTMMDataComponents;
 import cn.qiuye.gtmoremachine.common.data.GTMMItems;
-import cn.qiuye.gtmoremachine.utils.nbt.ItemStackNbtUtils;
+import cn.qiuye.gtmoremachine.common.item.datacomponents.WirelessTransferCoverData;
 
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.api.item.component.IInteractionItem;
@@ -12,7 +13,6 @@ import com.lowdragmc.lowdraglib.side.fluid.FluidTransferHelper;
 import com.lowdragmc.lowdraglib.side.item.ItemTransferHelper;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -51,15 +51,12 @@ public record WirelessTransferCoverPlaceBehavior(CoverDefinition coverDefinition
             var itemTransfer = ItemTransferHelper.getItemTransfer(level, blockPos, context.getClickedFace());
             var fluidTransfer = FluidTransferHelper.getFluidTransfer(level, blockPos, context.getClickedFace());
             if (((itemStack.is(GTMMItems.WIRELESS_ITEM_TRANSFER_COVER.asItem()) || itemStack.is(GTMMItems.ADVANCED_WIRELESS_ITEM_TRANSFER_COVER.asItem())) && itemTransfer != null && itemTransfer.getSlots() > 0) || ((itemStack.is(GTMMItems.WIRELESS_FLUID_TRANSFER_COVER.asItem()) || itemStack.is(GTMMItems.ADVANCED_WIRELESS_FLUID_TRANSFER_COVER.asItem())) && fluidTransfer != null && fluidTransfer.getTanks() > 0)) {
-                CompoundTag tag = new CompoundTag();
-                tag.putString("dimensionid", level.dimension().location().toString());
-                tag.putString("blockid", level.getBlockState(blockPos).getBlock().getDescriptionId());
-                tag.putString("pos", blockPos.toShortString());
-                tag.putString("facing", context.getClickedFace().toString());
-                tag.putInt("x", blockPos.getX());
-                tag.putInt("y", blockPos.getY());
-                tag.putInt("z", blockPos.getZ());
-                ItemStackNbtUtils.setTag(itemStack, tag);
+                itemStack.set(GTMMDataComponents.WIRELESS_TRANSFER_COVER.get(),
+                        WirelessTransferCoverData.of(
+                                level.dimension().location().toString(),
+                                level.getBlockState(blockPos).getBlock().getDescriptionId(),
+                                blockPos,
+                                context.getClickedFace().toString()));
                 if (level.isClientSide()) player.sendSystemMessage(Component.translatable(WIRELESS_TRANSFER_TOOLTIP_BIND_1, Component.translatable(level.getBlockState(blockPos).getBlock().getDescriptionId()), blockPos.toShortString()));
             }
             return InteractionResult.SUCCESS;
@@ -71,7 +68,7 @@ public record WirelessTransferCoverPlaceBehavior(CoverDefinition coverDefinition
     public InteractionResultHolder<ItemStack> use(ItemStack item, Level level, Player player, InteractionHand usedHand) {
         if (player.isShiftKeyDown()) {
             ItemStack is = player.getItemInHand(InteractionHand.MAIN_HAND);
-            ItemStackNbtUtils.removeKeys(is, "dimensionid", "blockid", "pos", "facing", "x", "y", "z");
+            is.remove(GTMMDataComponents.WIRELESS_TRANSFER_COVER.get());
             if (level.isClientSide()) player.sendSystemMessage(Component.translatable(WIRELESS_TRANSFER_TOOLTIP_BIND_2));
         }
         return IInteractionItem.super.use(item, level, player, usedHand);
