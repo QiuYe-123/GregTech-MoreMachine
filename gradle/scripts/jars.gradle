@@ -14,9 +14,14 @@ obfuscation {
         archiveClassifier = "slim"
     }
 }
+// Keep the slim reobf jar as part of the assembled outputs without using the
+// deprecated `archives` configuration.
+tasks.named('assemble') {
+    dependsOn(reobfSlimJar)
+}
+
 // Add sources jar to components.java
 java {
-    artifacts.archives(reobfSlimJar)
     withSourcesJar()
 }
 

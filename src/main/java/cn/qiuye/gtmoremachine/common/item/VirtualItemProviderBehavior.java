@@ -17,7 +17,6 @@ import com.lowdragmc.lowdraglib.gui.texture.ItemStackTexture;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -29,6 +28,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.items.IItemHandlerModifiable;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -45,7 +45,10 @@ public final class VirtualItemProviderBehavior implements IAddInformation, IItem
     private static ItemStack setVirtualItem(ItemStack stack, ItemStack virtualItem) {
         CompoundTag tag = stack.getOrCreateTag();
         tag.remove("t");
-        ResourceLocation id = BuiltInRegistries.ITEM.getKey(virtualItem.getItem());
+        ResourceLocation id = ForgeRegistries.ITEMS.getKey(virtualItem.getItem());
+        if (id == null) {
+            return stack;
+        }
         tag.putString("m", id.getNamespace());
         tag.putString("n", id.getPath());
         CompoundTag itemTag = virtualItem.getTag();
@@ -59,7 +62,15 @@ public final class VirtualItemProviderBehavior implements IAddInformation, IItem
         if (mod.isEmpty()) {
             return ItemStack.EMPTY;
         }
-        ItemStack stack = BuiltInRegistries.ITEM.get(tryBuild(mod, tag.getString("n"))).getDefaultInstance();
+        ResourceLocation id = tryBuild(mod, tag.getString("n"));
+        if (id == null) {
+            return ItemStack.EMPTY;
+        }
+        Item resolvedItem = ForgeRegistries.ITEMS.getValue(id);
+        if (resolvedItem == null) {
+            return ItemStack.EMPTY;
+        }
+        ItemStack stack = resolvedItem.getDefaultInstance();
         if (tag.contains("t")) stack.setTag((CompoundTag) tag.get("t"));
         return stack;
     }
@@ -107,7 +118,7 @@ public final class VirtualItemProviderBehavior implements IAddInformation, IItem
 
     @Override
     public Component getTitle() {
-        return GTMMAEItems.VIRTUAL_ITEM_PROVIDER.get().getDescription();
+        return Component.translatable(GTMMAEItems.VIRTUAL_ITEM_PROVIDER.get().getDescriptionId());
     }
 
     private record ItemHandler(Player entityPlayer, InteractionHand hand) implements IItemHandlerModifiable {
