@@ -74,7 +74,7 @@ public class WirelessCWUProvider extends CapabilityBlockProvider<IWirelessCWUCon
                 tooltip.add(Component.translatable(WirelessEnergyHatchPartMachine.WIRELESS_ENERGY_HATCH_TOOLTIP_2, TeamUtils.getName(block.getLevel(), uuid)));
                 tooltip.add(Component.translatable(WirelessCWUMonitor.WIRELESS_CWU_MONITOR_TOOLTIP_1, formattedCwu));
             } else {
-                tooltip.add(Component.translatable(WirelessEnergyHatchPartMachine.WIRELESS_ENERGY_HATCH_TOOLTIP_3, uuid));
+                tooltip.add(Component.translatable(WirelessEnergyHatchPartMachine.WIRELESS_ENERGY_HATCH_TOOLTIP_3, uuid.toString()));
                 tooltip.add(Component.translatable(WirelessCWUMonitor.WIRELESS_CWU_MONITOR_TOOLTIP_1, formattedCwu));
             }
         }

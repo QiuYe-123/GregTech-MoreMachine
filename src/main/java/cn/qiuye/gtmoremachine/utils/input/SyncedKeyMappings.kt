@@ -4,7 +4,7 @@ import cn.qiuye.gtmoremachine.GTmm
 
 import com.gregtechceu.gtceu.utils.input.SyncedKeyMapping
 
-import net.minecraftforge.client.settings.KeyConflictContext
+import net.neoforged.neoforge.client.settings.KeyConflictContext
 
 import com.mojang.blaze3d.platform.InputConstants
 

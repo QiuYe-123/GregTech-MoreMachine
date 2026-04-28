@@ -1,87 +1,60 @@
 dependencies {
     compileOnly(libs.jetbrains.annotations)
 
-    modClientLocalRuntime(forge.jecharacters.get())
+    testJarJar(testImplementation(libs.testframework.get()))
 
-    // kotlin-for-forge
-    modApi(forge.kotlinforforge.get())
-    jarJar(forge.kotlinforforge)
+    // Kotlin for Forge
+    jarJar(api(forge.kotlinforforge.get()))
 
-    // Mixin (& Extras)
-    annotationProcessor(variantOf(libs.mixin) { classifier("processor") })
-    api(annotationProcessor(forge.mixinExtras.common.get()))
-
-    // LDLib
-    modCompileOnly(forge.ldlib)
-
-    // Registrate
-    modCompileOnly(forge.registrate)
-
-    // Configuration
-    modCompileOnly(forge.configuration)
+    // Core libraries
+    jarJar(api(forge.ldlib.get()))
+    jarJar(api(forge.registrate.get()))
+    jarJar(api(forge.configuration.get()))
 
     // GregTech
-    modCompileOnly(forge.gtm)
+    compileOnly(forge.gtm)
 
-    // Recipe Viewers
-    modCompileOnly(forge.bundles.jei)
-    modCompileOnly(forge.emi)
+    // Recipe viewers
+    compileOnly(forge.bundles.jei)
+    compileOnly(forge.emi)
 
     // WAILA-likes
-    modCompileOnly(forge.jade)
+    compileOnly(forge.jade)
 
     // Curios
-    modCompileOnly(variantOf(forge.curios) { classifier("api") })
+    compileOnly(variantOf(forge.curios) { classifier("api") })
 
     // AE2
-    modCompileOnly(forge.ae2)
+    compileOnly(forge.ae2)
+
+    // KubeJS/Rhino are exposed by GTM's 1.21.1 registrate builders.
+    compileOnly(forge.bundles.kjs)
 
     // FTB
-    modCompileOnly(forge.architectury)
+    compileOnly(forge.architectury)
+    compileOnly(forge.ftblibrary)
+    compileOnly(forge.ftbteams)
 
-    modCompileOnly(forge.ftblibrary)
-    modCompileOnly(forge.ftbteams)
+    // Standard runtime mods
+    localRuntime(libs.testframework)
+    localRuntime(forge.jade)
+    localRuntime(forge.curios)
+    localRuntime(forge.modernfix)
+    localRuntime(forge.ae2)
+    localRuntime(forge.bundles.kjs)
+    localRuntime(forge.architectury)
+    localRuntime(forge.ftblibrary)
+    localRuntime(forge.ftbteams)
+    localRuntime(forge.ldlib)
+    localRuntime(forge.configuration)
+    localRuntime(forge.gtm)
 
-    // Standard runtime mods //
-    modLocalRuntime(forge.jade)
-    modLocalRuntime(forge.curios)
-    modLocalRuntime(forge.modernfix)
-    modLocalRuntime(forge.ferritecore)
+    // Runtime recipe viewers
+    localRuntime(forge.emi)
+    localRuntime(forge.jei.neoforge.impl)
 
-    // AE2 //
-    modLocalRuntime(forge.ae2)
-
-    modLocalRuntime(forge.guideme)
-
-    // FTB //
-    modLocalRuntime(forge.architectury)
-    modLocalRuntime(forge.ftblibrary)
-    modLocalRuntime(forge.ftbteams)
-
-    // GregTech //
-    modLocalRuntime(forge.ldlib)
-    modLocalRuntime(forge.configuration)
-    modLocalRuntime(forge.gtm)
-
-    // Sophisticated Mods //
-    modLocalRuntime(forge.sophisticatedcore)
-    modLocalRuntime(forge.sophisticatedbackpacks)
-    modLocalRuntime(forge.sophisticatedstorage)
-
-    // Runtime Recipe Viewers - uncomment whichever one you want to use //
-    modLocalRuntime(forge.emi)
-    modLocalRuntime(forge.jei.forge.impl)
-
-    // Client-only runtime mods //
-    modClientLocalRuntime(forge.embeddium)
-    modClientLocalRuntime(forge.oculus)
-    modClientLocalRuntime(forge.modernui)
+    // Client-only runtime mods
+    clientLocalRuntime(forge.sodium)
+    clientLocalRuntime(forge.iris)
     renderNurseCfg(libs.renderNurse)
-
-//    // Mouse Tweaks
-//    modRuntimeOnly("curse.maven:mouse-tweaks-60089:5338457")
-
-//    // WorldEdit
-//    modRuntimeOnly("curse.maven:worldedit-225608:4586218")
-
 }

@@ -1,8 +1,8 @@
 {
-  "parent": "minecraft:block/cube_bottom_top",
-  "textures": {
-    "bottom": "gtmoremachine:block/casings/capacitycomponent/zpm/top",
-    "side": "gtmoremachine:block/casings/capacitycomponent/zpm/side",
-    "top": "gtmoremachine:block/casings/capacitycomponent/zpm/top"
-  }
+    "parent": "minecraft:block/cube_bottom_top",
+    "textures": {
+        "bottom": "gtmoremachine:block/casings/capacitycomponent/zpm/top",
+        "side": "gtmoremachine:block/casings/capacitycomponent/zpm/side",
+        "top": "gtmoremachine:block/casings/capacitycomponent/zpm/top"
+    }
 }

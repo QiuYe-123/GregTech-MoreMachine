@@ -5,6 +5,7 @@ import cn.qiuye.gtmoremachine.api.misc.wireless.cwu.WirelessCWUContainer;
 
 import com.gregtechceu.gtceu.api.capability.IOpticalComputationProvider;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
+import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
@@ -22,9 +23,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import javax.annotation.ParametersAreNonnullByDefault;
-
-@ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class WirelessNotifiableCWUContainer extends NotifiableComputationContainer {
 
@@ -35,8 +33,8 @@ public class WirelessNotifiableCWUContainer extends NotifiableComputationContain
 
     private int currentOutputCwu = 0, lastOutputCwu = 0;
 
-    public WirelessNotifiableCWUContainer(IO handlerIO, boolean transmitter) {
-        super(handlerIO, transmitter);
+    public WirelessNotifiableCWUContainer(MetaMachine machine, IO handlerIO, boolean transmitter) {
+        super(machine, handlerIO, transmitter);
     }
 
     @Override

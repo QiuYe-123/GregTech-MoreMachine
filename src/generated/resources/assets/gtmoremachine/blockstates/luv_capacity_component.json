@@ -1,7 +1,7 @@
 {
-  "variants": {
-    "": {
-      "model": "gtmoremachine:block/luv_capacity_component"
+    "variants": {
+        "": {
+            "model": "gtmoremachine:block/luv_capacity_component"
+        }
     }
-  }
 }

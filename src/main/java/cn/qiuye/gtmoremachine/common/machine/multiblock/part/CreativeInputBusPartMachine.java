@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.api.blockentity.IPaintable;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.fancy.ConfiguratorPanel;
+import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.fancyconfigurator.CircuitFancyConfigurator;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IDistinctPart;
@@ -23,7 +24,6 @@ import com.lowdragmc.lowdraglib.gui.util.DrawerHelper;
 import com.lowdragmc.lowdraglib.gui.widget.PhantomSlotWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-import com.lowdragmc.lowdraglib.misc.ItemStackTransfer;
 import com.lowdragmc.lowdraglib.syncdata.ISubscription;
 import com.lowdragmc.lowdraglib.utils.Position;
 
@@ -31,9 +31,8 @@ import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.Slot;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
+import net.neoforged.neoforge.common.crafting.SizedIngredient;
 
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
@@ -43,9 +42,6 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.function.IntFunction;
 
-import javax.annotation.ParametersAreNonnullByDefault;
-
-@ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class CreativeInputBusPartMachine extends TieredIOPartMachine implements IDistinctPart, IPaintable {
 
@@ -62,20 +58,20 @@ public class CreativeInputBusPartMachine extends TieredIOPartMachine implements 
     @SaveField
     protected final NotifiableItemStackHandler circuitInventory;
     @SaveField
-    private ItemStackTransfer creativeStorage;
-    protected ArrayList<Item> lstItem;
+    private CustomItemStackHandler creativeStorage;
+    protected ArrayList<net.minecraft.world.item.Item> lstItem;
 
-    public CreativeInputBusPartMachine(BlockEntityCreationInfo holder, Function<Integer, ItemStackTransfer> transferFactory) {
+    public CreativeInputBusPartMachine(BlockEntityCreationInfo holder, Function<Integer, CustomItemStackHandler> transferFactory) {
         super(holder, GTValues.MAX, IO.IN);
-        this.inventory = this.attachTrait(new InfinityItemStackHandler(getInventorySize(), io, io, UnlimitedItemStackTransfer::new));
-        this.circuitInventory = this.attachTrait(new NotifiableItemStackHandler(1, IO.IN, IO.NONE)
-                .setFilter(IntCircuitBehaviour::isIntegratedCircuit));
+        this.inventory = new InfinityItemStackHandler(this, getInventorySize(), io, io, UnlimitedItemStackTransfer::new);
+        this.circuitInventory = new NotifiableItemStackHandler(this, 1, IO.IN, IO.NONE)
+                .setFilter(IntCircuitBehaviour::isIntegratedCircuit);
         this.creativeStorage = transferFactory.apply(this.getInventorySize());
         this.lstItem = new ArrayList<>();
     }
 
     public CreativeInputBusPartMachine(BlockEntityCreationInfo holder) {
-        this(holder, ItemStackTransfer::new);
+        this(holder, CustomItemStackHandler::new);
     }
 
     protected int getInventorySize() {
@@ -276,12 +272,12 @@ public class CreativeInputBusPartMachine extends TieredIOPartMachine implements 
 
     private static class InfinityItemStackHandler extends NotifiableItemStackHandler {
 
-        public InfinityItemStackHandler(int slots, IO handlerIO, IO capabilityIO, IntFunction<CustomItemStackHandler> storageFactory) {
-            super(slots, handlerIO, capabilityIO, storageFactory);
+        public InfinityItemStackHandler(MetaMachine machine, int slots, IO handlerIO, IO capabilityIO, IntFunction<CustomItemStackHandler> storageFactory) {
+            super(machine, slots, handlerIO, capabilityIO, storageFactory);
         }
 
         @Override
-        public @Nullable List<Ingredient> handleRecipeInner(IO io, GTRecipe recipe, List<Ingredient> left, boolean simulate) {
+        public @Nullable List<SizedIngredient> handleRecipeInner(IO io, GTRecipe recipe, List<SizedIngredient> left, boolean simulate) {
             return super.handleRecipeInner(io, recipe, left, true);
         }
     }

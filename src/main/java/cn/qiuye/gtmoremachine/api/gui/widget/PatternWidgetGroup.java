@@ -21,9 +21,11 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.level.block.Block;
 
 import it.unimi.dsi.fastutil.booleans.BooleanConsumer;
@@ -94,15 +96,15 @@ public class PatternWidgetGroup extends WidgetGroup {
         this.dataItemStack = dataStack;
         this.blockSelectionConsumer = (category, index) -> {
             if (category != null && index != 0) {
-                CompoundTag rootTag = dataStack.getOrCreateTag();
-                CompoundTag blocksTag = rootTag.getCompound("blocks");
-                if (blocksTag.contains(category) && blocksTag.getInt(category) == index) {
-                    blocksTag.remove(category);
-                } else {
-                    blocksTag.putInt(category, index);
-                }
-                rootTag.put("blocks", blocksTag);
-                dataStack.setTag(rootTag);
+                CustomData.update(DataComponents.CUSTOM_DATA, dataStack, rootTag -> {
+                    CompoundTag blocksTag = rootTag.getCompound("blocks");
+                    if (blocksTag.contains(category) && blocksTag.getInt(category) == index) {
+                        blocksTag.remove(category);
+                    } else {
+                        blocksTag.putInt(category, index);
+                    }
+                    rootTag.put("blocks", blocksTag);
+                });
             }
         };
 
@@ -165,18 +167,22 @@ public class PatternWidgetGroup extends WidgetGroup {
 
     // ==================== 私有辅助方法 ====================
     private boolean isBlockSelected(String category, Block block) {
-        CompoundTag rootTag = this.dataItemStack.getOrCreateTag();
+        CompoundTag rootTag = getCustomDataTag(this.dataItemStack);
         CompoundTag blocksTag = rootTag.getCompound("blocks");
         int selectedIndex = blocksTag.getInt(category);
         Block[] blocks = BlockMap.MAP.get(category);
         return blocks != null && selectedIndex - 1 >= 0 && selectedIndex - 1 < blocks.length && blocks[selectedIndex - 1] == block;
     }
 
+    private static CompoundTag getCustomDataTag(ItemStack stack) {
+        return stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag();
+    }
+
     private void initCategoryList() {
         AtomicInteger rowCounter = new AtomicInteger(0);
         for (Map.Entry<String, Block[]> entry : BlockMap.MAP.entrySet()) {
             String category = entry.getKey();
-            BooleanSupplier isSelected = () -> this.dataItemStack.getOrCreateTag().getCompound("blocks").contains(category);
+            BooleanSupplier isSelected = () -> getCustomDataTag(this.dataItemStack).getCompound("blocks").contains(category);
 
             if (this.categoryRowWidgets[rowCounter.get()] != null) {
                 rowCounter.getAndIncrement();

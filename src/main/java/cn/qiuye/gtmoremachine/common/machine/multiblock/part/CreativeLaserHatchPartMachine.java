@@ -36,12 +36,9 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import javax.annotation.ParametersAreNonnullByDefault;
-
 import static com.gregtechceu.gtceu.api.GTValues.MAX_PLUS_FORMAT;
 import static net.minecraft.ChatFormatting.*;
 
-@ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class CreativeLaserHatchPartMachine extends TieredIOPartMachine implements IDataInfoProvider {
 
@@ -91,7 +88,7 @@ public class CreativeLaserHatchPartMachine extends TieredIOPartMachine implement
         super(holder, GTValues.MAX, IO.IN);
         this.voltage = GTValues.VEX[this.setTier];
         this.maxEnergy = this.voltage * this.amps;
-        this.buffer = this.attachTrait(NotifiableLaserContainer.receiverContainer(this.maxEnergy, this.voltage, this.amps));
+        this.buffer = NotifiableLaserContainer.receiverContainer(this, this.maxEnergy, this.voltage, this.amps);
     }
 
     @Override

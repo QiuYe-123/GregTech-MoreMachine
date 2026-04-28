@@ -13,15 +13,16 @@ import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.network.chat.Style;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -32,9 +33,6 @@ import java.util.Objects;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
-import javax.annotation.ParametersAreNonnullByDefault;
-
-@ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class AlignComponentPanelWidget extends Widget {
 
@@ -113,16 +111,16 @@ public class AlignComponentPanelWidget extends Widget {
         return this;
     }
 
-    public void writeInitialData(FriendlyByteBuf buffer) {
+    public void writeInitialData(RegistryFriendlyByteBuf buffer) {
         super.writeInitialData(buffer);
         buffer.writeVarInt(this.lastText.size());
 
         for (Component textComponent : this.lastText) {
-            buffer.writeComponent(textComponent);
+            writeComponent(buffer, textComponent);
         }
     }
 
-    public void readInitialData(FriendlyByteBuf buffer) {
+    public void readInitialData(RegistryFriendlyByteBuf buffer) {
         super.readInitialData(buffer);
         this.readUpdateInfo(1, buffer);
     }
@@ -164,7 +162,7 @@ public class AlignComponentPanelWidget extends Widget {
                     buffer.writeVarInt(this.lastText.size());
 
                     for (Component textComponent : this.lastText) {
-                        buffer.writeComponent(textComponent);
+                        writeComponent(buffer, textComponent);
                     }
 
                 });
@@ -172,13 +170,13 @@ public class AlignComponentPanelWidget extends Widget {
         }
     }
 
-    public void readUpdateInfo(int id, FriendlyByteBuf buffer) {
+    public void readUpdateInfo(int id, RegistryFriendlyByteBuf buffer) {
         if (id == 1) {
             this.lastText.clear();
             int count = buffer.readVarInt();
 
             for (int i = 0; i < count; ++i) {
-                this.lastText.add(buffer.readComponent());
+                this.lastText.add(readComponent(buffer));
             }
 
             this.formatDisplayText();
@@ -186,7 +184,7 @@ public class AlignComponentPanelWidget extends Widget {
         }
     }
 
-    public void handleClientAction(int id, FriendlyByteBuf buffer) {
+    public void handleClientAction(int id, RegistryFriendlyByteBuf buffer) {
         if (id == 1) {
             ClickData clickData = ClickData.readFromBuf(buffer);
             String componentData = buffer.readUtf();
@@ -196,6 +194,14 @@ public class AlignComponentPanelWidget extends Widget {
         } else {
             super.handleClientAction(id, buffer);
         }
+    }
+
+    private static void writeComponent(RegistryFriendlyByteBuf buffer, Component component) {
+        ComponentSerialization.TRUSTED_STREAM_CODEC.encode(buffer, component);
+    }
+
+    private static Component readComponent(RegistryFriendlyByteBuf buffer) {
+        return ComponentSerialization.TRUSTED_STREAM_CODEC.decode(buffer);
     }
 
     @OnlyIn(Dist.CLIENT)

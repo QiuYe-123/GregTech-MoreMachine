@@ -16,7 +16,7 @@ import com.tterrag.registrate.util.entry.RegistryEntry
 
 object GTMMCreativeModeTabs {
 	@JvmField
-	val CREATIVE_TAB: RegistryEntry<CreativeModeTab> = GTMMRegistration.GTMM
+	val CREATIVE_TAB: RegistryEntry<CreativeModeTab, CreativeModeTab> = GTMMRegistration.GTMM
 		.defaultCreativeTab("creative") { builder: CreativeModeTab.Builder ->
 			builder
 				.displayItems(
@@ -32,7 +32,7 @@ object GTMMCreativeModeTabs {
 		.register()
 
 	@JvmField
-	val WIRELESS_TAB: RegistryEntry<CreativeModeTab> = GTMMRegistration.GTMM
+	val WIRELESS_TAB: RegistryEntry<CreativeModeTab, CreativeModeTab> = GTMMRegistration.GTMM
 		.defaultCreativeTab("wireless") { builder: CreativeModeTab.Builder ->
 			builder
 				.displayItems(
@@ -57,7 +57,7 @@ object GTMMCreativeModeTabs {
 		.register()
 
 	@JvmField
-	val MORE_MACHINES: RegistryEntry<CreativeModeTab> = GTMMRegistration.GTMM
+	val MORE_MACHINES: RegistryEntry<CreativeModeTab, CreativeModeTab> = GTMMRegistration.GTMM
 		.defaultCreativeTab("more_machines") { builder: CreativeModeTab.Builder ->
 			builder
 				.displayItems(

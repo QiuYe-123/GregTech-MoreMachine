@@ -6,12 +6,12 @@ import com.gregtechceu.gtceu.api.blockentity.IPaintable;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.widget.PhantomFluidWidget;
+import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IDistinctPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredIOPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
-import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
 
@@ -19,7 +19,8 @@ import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
-import net.minecraftforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -27,9 +28,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.ParametersAreNonnullByDefault;
-
-@ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class CreativeInputHatchPartMachine extends TieredIOPartMachine implements IDistinctPart, IPaintable {
 
@@ -49,7 +47,7 @@ public class CreativeInputHatchPartMachine extends TieredIOPartMachine implement
     public CreativeInputHatchPartMachine(BlockEntityCreationInfo holder) {
         super(holder, GTValues.MAX, IO.IN);
         this.slots = SLOT_COUNT;
-        this.tank = this.attachTrait(new InfinityFluidTank(SLOT_COUNT, Integer.MAX_VALUE, IO.IN));
+        this.tank = new InfinityFluidTank(this, SLOT_COUNT, Integer.MAX_VALUE, IO.IN);
         this.fluidMap = new HashMap<>();
         this.creativeTanks = new CustomFluidTank[SLOT_COUNT];
         for (int i = 0; i < this.creativeTanks.length; i++) {
@@ -205,12 +203,12 @@ public class CreativeInputHatchPartMachine extends TieredIOPartMachine implement
 
     private static class InfinityFluidTank extends NotifiableFluidTank {
 
-        public InfinityFluidTank(int slots, int capacity, IO io) {
-            super(slots, capacity, io);
+        public InfinityFluidTank(MetaMachine machine, int slots, int capacity, IO io) {
+            super(machine, slots, capacity, io);
         }
 
         @Override
-        public @Nullable List<FluidIngredient> handleRecipeInner(IO io, GTRecipe recipe, List<FluidIngredient> left, boolean simulate) {
+        public @Nullable List<SizedFluidIngredient> handleRecipeInner(IO io, GTRecipe recipe, List<SizedFluidIngredient> left, boolean simulate) {
             return super.handleRecipeInner(io, recipe, left, true);
         }
     }

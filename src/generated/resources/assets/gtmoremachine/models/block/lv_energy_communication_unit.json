@@ -1,8 +1,8 @@
 {
-  "parent": "gtmoremachine:block/cube/tinted/bottom_top",
-  "textures": {
-    "bottom": "gtmoremachine:block/casings/ecu/lv/bottom",
-    "side": "gtmoremachine:block/casings/ecu/lv/side",
-    "top": "gtmoremachine:block/casings/ecu/lv/top"
-  }
+    "parent": "gtmoremachine:block/cube/tinted/bottom_top",
+    "textures": {
+        "bottom": "gtmoremachine:block/casings/ecu/lv/bottom",
+        "side": "gtmoremachine:block/casings/ecu/lv/side",
+        "top": "gtmoremachine:block/casings/ecu/lv/top"
+    }
 }

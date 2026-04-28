@@ -15,8 +15,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
@@ -41,8 +41,7 @@ public final class VirtualItemProviderRenderer implements IRenderer {
         if (transformType == ItemDisplayContext.GUI) {
             poseStack.translate(-0.5F, -0.5F, -0.5F);
             Tesselator tess = Tesselator.getInstance();
-            BufferBuilder builder = tess.getBuilder();
-            builder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
+            BufferBuilder builder = tess.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
             RenderSystem.setShader(GameRenderer::getPositionTexShader);
             TextureAtlasSprite sprite = ModelFactory.getBlockSprite(VIRTUAL_ITEM_PROVIDER_SPRITE);
             RenderSystem.setShaderTexture(0, InventoryMenu.BLOCK_ATLAS);
@@ -51,11 +50,11 @@ public final class VirtualItemProviderRenderer implements IRenderer {
             float minV = sprite.getV0();
             float maxV = sprite.getV1();
             Matrix4f pos = poseStack.last().pose();
-            builder.vertex(pos, 1, 1, 0).uv(maxU, minV).endVertex();
-            builder.vertex(pos, 0, 1, 0).uv(minU, minV).endVertex();
-            builder.vertex(pos, 0, 0, 0).uv(minU, maxV).endVertex();
-            builder.vertex(pos, 1, 0, 0).uv(maxU, maxV).endVertex();
-            tess.end();
+            builder.addVertex(pos, 1, 1, 0).setUv(maxU, minV);
+            builder.addVertex(pos, 0, 1, 0).setUv(minU, minV);
+            builder.addVertex(pos, 0, 0, 0).setUv(minU, maxV);
+            builder.addVertex(pos, 1, 0, 0).setUv(maxU, maxV);
+            BufferUploader.drawWithShader(builder.buildOrThrow());
         }
         poseStack.popPose();
     }

@@ -2,15 +2,20 @@ package cn.qiuye.gtmoremachine.utils.nbt
 
 import cn.qiuye.gtmoremachine.api.gui.monitor.DefaultValueProvider
 
+import net.minecraft.core.component.DataComponents
+import net.minecraft.nbt.CompoundTag
 import net.minecraft.world.item.ItemStack
+import net.minecraft.world.item.component.CustomData
 
 import java.util.UUID
 
 object TagUtils {
 
+	private fun getCustomDataTag(stack: ItemStack): CompoundTag = stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag()
+
 	@JvmStatic
 	fun <T : Enum<T>> getEnumTag(tagKey: String, stack: ItemStack, enumClass: Class<T>, defaultValueProvider: DefaultValueProvider<T>): T {
-		val tag = stack.orCreateTag
+		val tag = getCustomDataTag(stack)
 		return if (!tag.isEmpty && tag.contains(tagKey)) {
 			java.lang.Enum.valueOf(enumClass, tag.getString(tagKey))
 		} else {
@@ -32,9 +37,9 @@ object TagUtils {
 	 */
 	@JvmStatic
 	fun setStringTag(tagKey: String, tag: String, stack: ItemStack) {
-		val itemStacktag = stack.getOrCreateTag()
-		itemStacktag.putString(tagKey, tag)
-		stack.tag = itemStacktag
+		CustomData.update(DataComponents.CUSTOM_DATA, stack) {
+			it.putString(tagKey, tag)
+		}
 	}
 
 	/**
@@ -46,7 +51,7 @@ object TagUtils {
 	 */
 	@JvmStatic
 	fun hasTagKey(tagkey: String, itemStack: ItemStack): Boolean {
-		val tag = itemStack.getOrCreateTag()
+		val tag = getCustomDataTag(itemStack)
 		return tag.contains(tagkey)
 	}
 
@@ -60,9 +65,9 @@ object TagUtils {
 	 */
 	@JvmStatic
 	fun setUUID(uuid: UUID, itemStack: ItemStack) {
-		val tag = itemStack.getOrCreateTag()
-		tag.putUUID("UUID", uuid)
-		itemStack.tag = tag
+		CustomData.update(DataComponents.CUSTOM_DATA, itemStack) {
+			it.putUUID("UUID", uuid)
+		}
 	}
 
 	/**
@@ -73,7 +78,7 @@ object TagUtils {
 	 */
 	@JvmStatic
 	fun getUUID(itemStack: ItemStack): UUID? {
-		val tag = itemStack.getOrCreateTag()
+		val tag = getCustomDataTag(itemStack)
 		return if (!tag.isEmpty && tag.contains("UUID")) {
 			tag.getUUID("UUID")
 		} else {

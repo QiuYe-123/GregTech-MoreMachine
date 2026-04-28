@@ -2,6 +2,7 @@ package cn.qiuye.gtmoremachine.data.wireless.cwu;
 
 import cn.qiuye.gtmoremachine.api.misc.wireless.cwu.WirelessCWUContainer;
 
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
@@ -20,14 +21,16 @@ public class WirelessCWUSavedData extends SavedData {
     public static WirelessCWUSavedData INSTANCE;
 
     public static WirelessCWUSavedData getOrCreate(ServerLevel serverLevel) {
-        return serverLevel.getDataStorage().computeIfAbsent(WirelessCWUSavedData::new, WirelessCWUSavedData::new, "gtceu_wireless_cwu");
+        return serverLevel.getDataStorage().computeIfAbsent(
+                new SavedData.Factory<>(WirelessCWUSavedData::new, WirelessCWUSavedData::new),
+                "gtceu_wireless_cwu");
     }
 
     public final Map<UUID, WirelessCWUContainer> containerMap = new HashMap<>();
 
     public WirelessCWUSavedData() {}
 
-    public WirelessCWUSavedData(CompoundTag tag) {
+    public WirelessCWUSavedData(CompoundTag tag, HolderLookup.Provider provider) {
         ListTag allCWU = tag.getList("allCWU", Tag.TAG_COMPOUND);
         for (int i = 0; i < allCWU.size(); i++) {
             WirelessCWUContainer container = readTag(allCWU.getCompound(i));
@@ -36,7 +39,7 @@ public class WirelessCWUSavedData extends SavedData {
     }
 
     @Override
-    public @NotNull CompoundTag save(@NotNull CompoundTag compoundTag) {
+    public @NotNull CompoundTag save(@NotNull CompoundTag compoundTag, HolderLookup.Provider provider) {
         ListTag allcwu = new ListTag();
         for (WirelessCWUContainer container : containerMap.values()) {
             CompoundTag engTag = toTag(container);

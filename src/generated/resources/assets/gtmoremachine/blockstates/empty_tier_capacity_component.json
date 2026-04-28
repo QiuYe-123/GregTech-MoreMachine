@@ -1,7 +1,7 @@
 {
-  "variants": {
-    "": {
-      "model": "gtmoremachine:block/empty_tier_capacity_component"
+    "variants": {
+        "": {
+            "model": "gtmoremachine:block/empty_tier_capacity_component"
+        }
     }
-  }
 }

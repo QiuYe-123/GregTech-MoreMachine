@@ -5,8 +5,8 @@ import cn.qiuye.gtmoremachine.utils.datagen.ChineseConverter;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.PackOutput;
-import net.minecraftforge.common.data.LanguageProvider;
-import net.minecraftforge.fml.LogicalSide;
+import net.neoforged.fml.LogicalSide;
+import net.neoforged.neoforge.common.data.LanguageProvider;
 
 import com.tterrag.registrate.AbstractRegistrate;
 import com.tterrag.registrate.providers.ProviderType;
@@ -14,9 +14,6 @@ import com.tterrag.registrate.providers.RegistrateProvider;
 
 import java.util.concurrent.CompletableFuture;
 
-import javax.annotation.ParametersAreNonnullByDefault;
-
-@ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class ChineseLangProvider extends LanguageProvider implements RegistrateProvider {
 
@@ -47,12 +44,13 @@ public class ChineseLangProvider extends LanguageProvider implements RegistrateP
         this.traditional = new TraditionalChineseLangProvider(packOutput, this.owner.getModid(), "zh_tw");
     }
 
-    public LogicalSide getSide() {
-        return LogicalSide.CLIENT;
-    }
-
     public String getName() {
         return "Lang (zh_cn/zh_tw)";
+    }
+
+    @Override
+    public LogicalSide getSide() {
+        return LogicalSide.CLIENT;
     }
 
     @Override

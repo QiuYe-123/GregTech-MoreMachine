@@ -3,7 +3,6 @@ package cn.qiuye.gtmoremachine.api.pattern;
 import cn.qiuye.gtmoremachine.common.item.AdvancedTerminalBehavior;
 
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.api.machine.feature.IDropSaveMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.pattern.BlockPattern;
 import com.gregtechceu.gtceu.api.pattern.MultiblockState;
@@ -29,9 +28,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.items.IItemHandler;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.items.IItemHandler;
 
 import it.unimi.dsi.fastutil.ints.IntObjectPair;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
@@ -143,9 +141,7 @@ public class AdvancedBlockNoAEPattern extends BlockPattern {
                                             ItemStack dropStack = new ItemStack(currentBlock);
                                             if (currentState.hasBlockEntity() && worldlevel.getBlockEntity(worldPos) instanceof MetaMachine metaMachine) {
                                                 metaMachine.modifyDrops(Collections.singletonList(dropStack));
-                                                if (metaMachine instanceof IDropSaveMachine dropSave && dropSave.saveBreak()) {
-                                                    dropSave.saveToItem(dropStack.getOrCreateTag());
-                                                }
+                                                metaMachine.saveToItem(dropStack, worldlevel.registryAccess());
                                             }
 
                                             if (!player.isCreative() && !player.addItem(dropStack)) {
@@ -300,7 +296,7 @@ public class AdvancedBlockNoAEPattern extends BlockPattern {
 
     private static Triplet<ItemStack, IItemHandler, Integer> findItemFromPlayer(Player player, List<ItemStack> candidates) {
         if (!player.isCreative()) {
-            IntObjectPair<IItemHandler> result = findItemRecursively(candidates, player.getCapability(ForgeCapabilities.ITEM_HANDLER));
+            IntObjectPair<IItemHandler> result = findItemRecursively(candidates, player.getCapability(Capabilities.ItemHandler.ENTITY));
             if (result != null) {
                 IItemHandler handler = result.right();
                 int slot = result.leftInt();
@@ -317,17 +313,16 @@ public class AdvancedBlockNoAEPattern extends BlockPattern {
     }
 
     @Nullable
-    private static IntObjectPair<IItemHandler> findItemRecursively(List<ItemStack> candidates, LazyOptional<IItemHandler> capability) {
-        IItemHandler handler = capability.resolve().orElse(null);
+    private static IntObjectPair<IItemHandler> findItemRecursively(List<ItemStack> candidates, @Nullable IItemHandler handler) {
         if (handler == null) return null;
         for (int slot = 0; slot < handler.getSlots(); slot++) {
             ItemStack stack = handler.getStackInSlot(slot);
             if (stack.isEmpty()) continue;
-            LazyOptional<IItemHandler> subCap = stack.getCapability(ForgeCapabilities.ITEM_HANDLER);
-            if (subCap.isPresent()) {
+            IItemHandler subCap = stack.getCapability(Capabilities.ItemHandler.ITEM);
+            if (subCap != null) {
                 IntObjectPair<IItemHandler> subResult = findItemRecursively(candidates, subCap);
                 if (subResult != null) return subResult;
-            } else if (candidates.stream().anyMatch(c -> ItemStack.isSameItemSameTags(c, stack)) &&
+            } else if (candidates.stream().anyMatch(c -> ItemStack.isSameItemSameComponents(c, stack)) &&
                     stack.getItem() instanceof BlockItem) {
                         return IntObjectPair.of(slot, handler);
                     }

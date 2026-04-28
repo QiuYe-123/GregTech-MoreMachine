@@ -36,7 +36,7 @@ public class GTMMCovers {
     public static CoverDefinition register(String id, CoverDefinition.CoverBehaviourProvider behaviorCreator,
                                            Supplier<Supplier<ICoverRenderer>> coverRenderer) {
         var definition = new CoverDefinition(GTmm.id(id), behaviorCreator, coverRenderer);
-        GTRegistries.COVERS.register(GTmm.id(id), definition);
+        GTRegistries.register(GTRegistries.COVERS, definition.getId(), definition);
         return definition;
     }
 

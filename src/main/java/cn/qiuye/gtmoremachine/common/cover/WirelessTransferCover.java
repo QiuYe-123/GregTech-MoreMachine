@@ -1,5 +1,7 @@
 package cn.qiuye.gtmoremachine.common.cover;
 
+import cn.qiuye.gtmoremachine.utils.nbt.ItemStackNbtUtils;
+
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
@@ -34,11 +36,8 @@ import net.minecraft.world.level.Level;
 
 import java.util.Objects;
 
-import javax.annotation.ParametersAreNonnullByDefault;
-
 import static net.minecraft.resources.ResourceLocation.tryParse;
 
-@ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class WirelessTransferCover extends CoverBehavior {
 
@@ -115,8 +114,8 @@ public class WirelessTransferCover extends CoverBehavior {
 
     @Override
     public void onAttached(ItemStack itemStack, ServerPlayer player) {
-        CompoundTag tag = itemStack.getTag();
-        if (tag != null) {
+        CompoundTag tag = ItemStackNbtUtils.getTag(itemStack);
+        if (!tag.isEmpty()) {
             this.dimensionId = tag.getString("dimensionid");
             var intX = tag.getInt("x");
             var intY = tag.getInt("y");

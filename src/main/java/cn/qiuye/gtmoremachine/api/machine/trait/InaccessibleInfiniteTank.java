@@ -1,15 +1,15 @@
 package cn.qiuye.gtmoremachine.api.machine.trait;
 
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
+import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
-import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
 import com.gregtechceu.gtceu.integration.ae2.utils.KeyStorage;
 
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraftforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 
 import appeng.api.stacks.AEFluidKey;
 
@@ -20,30 +20,31 @@ public class InaccessibleInfiniteTank extends NotifiableFluidTank {
 
     private final FluidStorageDelegate storage;
 
-    public InaccessibleInfiniteTank(KeyStorage internalBuffer) {
-        super(List.of(new FluidStorageDelegate(internalBuffer)), IO.OUT, IO.NONE);
+    public InaccessibleInfiniteTank(MetaMachine machine, KeyStorage internalBuffer) {
+        super(machine, List.of(new FluidStorageDelegate(internalBuffer)), IO.OUT, IO.NONE);
         internalBuffer.setOnContentsChanged(this::onContentsChanged);
         storage = (FluidStorageDelegate) getStorages()[0];
         allowSameFluids = true;
     }
 
-    public static Fluid getFirst(FluidIngredient fluidIngredient) {
-        for (FluidIngredient.Value value : fluidIngredient.values) {
-            for (Fluid fluid : value.getFluids()) {
-                return fluid;
+    public static Fluid getFirst(SizedFluidIngredient fluidIngredient) {
+        for (FluidStack stack : fluidIngredient.getFluids()) {
+            if (!stack.isEmpty()) {
+                return stack.getFluid();
             }
         }
         return null;
     }
 
     @Override
-    public List<FluidIngredient> handleRecipe(IO io, GTRecipe recipe, List<?> left, boolean simulate) {
+    public List<SizedFluidIngredient> handleRecipe(IO io, GTRecipe recipe, List<?> left, boolean simulate) {
         if (!simulate && io == IO.OUT) {
             for (Object ingredient : left) {
-                if (((FluidIngredient) ingredient).isEmpty()) continue;
-                Fluid fluid = getFirst((FluidIngredient) ingredient);
+                var sizedIngredient = (SizedFluidIngredient) ingredient;
+                if (sizedIngredient.ingredient().hasNoFluids()) continue;
+                Fluid fluid = getFirst(sizedIngredient);
                 if (fluid != null) {
-                    storage.fill(fluid, ((FluidIngredient) ingredient).getAmount(), ((FluidIngredient) ingredient).getNbt());
+                    storage.fill(sizedIngredient.getFluids()[0], sizedIngredient.amount());
                 }
             }
             storage.internalBuffer.onChanged();
@@ -91,25 +92,29 @@ public class InaccessibleInfiniteTank extends NotifiableFluidTank {
     }
 
     @Override
-    public List<FluidIngredient> handleRecipeInner(IO io, GTRecipe recipe, List<FluidIngredient> left, boolean simulate) {
+    public List<SizedFluidIngredient> handleRecipeInner(IO io, GTRecipe recipe, List<SizedFluidIngredient> left, boolean simulate) {
         if (io != IO.OUT) return left;
         FluidAction action = simulate ? FluidAction.SIMULATE : FluidAction.EXECUTE;
-        for (var it = left.iterator(); it.hasNext();) {
+        for (var it = left.listIterator(); it.hasNext();) {
             var ingredient = it.next();
-            if (ingredient.isEmpty()) {
+            if (ingredient.ingredient().hasNoFluids()) {
                 it.remove();
                 continue;
             }
 
-            var fluids = ingredient.getStacks();
+            var fluids = ingredient.getFluids();
             if (fluids.length == 0 || fluids[0].isEmpty()) {
                 it.remove();
                 continue;
             }
 
             FluidStack output = fluids[0];
-            ingredient.shrink(storage.fill(output, action));
-            if (ingredient.getAmount() <= 0) it.remove();
+            int remaining = ingredient.amount() - storage.fill(output, action);
+            if (remaining <= 0) {
+                it.remove();
+            } else {
+                it.set(new SizedFluidIngredient(ingredient.ingredient(), remaining));
+            }
         }
         return left.isEmpty() ? null : left;
     }
@@ -123,8 +128,8 @@ public class InaccessibleInfiniteTank extends NotifiableFluidTank {
             this.internalBuffer = internalBuffer;
         }
 
-        private void fill(Fluid fluid, int amount, CompoundTag tag) {
-            var key = AEFluidKey.of(fluid, tag);
+        private void fill(FluidStack fluid, int amount) {
+            var key = AEFluidKey.of(fluid);
             long oldValue = internalBuffer.storage.getOrDefault(key, 0);
             long changeValue = Math.min(Long.MAX_VALUE - oldValue, amount);
             if (changeValue > 0) {
@@ -142,7 +147,7 @@ public class InaccessibleInfiniteTank extends NotifiableFluidTank {
 
         @Override
         public int fill(FluidStack resource, FluidAction action) {
-            var key = AEFluidKey.of(resource.getFluid(), resource.getTag());
+            var key = AEFluidKey.of(resource);
             int amount = resource.getAmount();
             long oldValue = internalBuffer.storage.getOrDefault(key, 0);
             long changeValue = Math.min(Long.MAX_VALUE - oldValue, amount);

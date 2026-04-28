@@ -25,10 +25,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
 
-import javax.annotation.ParametersAreNonnullByDefault;
-
 @MethodsReturnNonnullByDefault
-@ParametersAreNonnullByDefault
 public class WirelessCWUHatchPartMachine extends MultiblockPartMachine implements IWirelessCWUContainerHolder {
 
     @Getter
@@ -44,7 +41,7 @@ public class WirelessCWUHatchPartMachine extends MultiblockPartMachine implement
     public WirelessCWUHatchPartMachine(BlockEntityCreationInfo holder, boolean transmitter) {
         super(holder);
         this.transmitter = transmitter;
-        this.computationContainer = this.attachTrait(new WirelessNotifiableCWUContainer(IO.IN, transmitter));
+        this.computationContainer = new WirelessNotifiableCWUContainer(this, IO.IN, transmitter);
     }
 
     @Override

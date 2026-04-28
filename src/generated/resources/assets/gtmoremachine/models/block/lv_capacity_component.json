@@ -1,8 +1,8 @@
 {
-  "parent": "minecraft:block/cube_bottom_top",
-  "textures": {
-    "bottom": "gtmoremachine:block/casings/capacitycomponent/lv/top",
-    "side": "gtmoremachine:block/casings/capacitycomponent/lv/side",
-    "top": "gtmoremachine:block/casings/capacitycomponent/lv/top"
-  }
+    "parent": "minecraft:block/cube_bottom_top",
+    "textures": {
+        "bottom": "gtmoremachine:block/casings/capacitycomponent/lv/top",
+        "side": "gtmoremachine:block/casings/capacitycomponent/lv/side",
+        "top": "gtmoremachine:block/casings/capacitycomponent/lv/top"
+    }
 }

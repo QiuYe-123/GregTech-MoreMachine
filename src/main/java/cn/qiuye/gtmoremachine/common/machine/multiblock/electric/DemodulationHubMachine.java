@@ -13,6 +13,7 @@ import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.fancy.TooltipsPanel;
 import com.gregtechceu.gtceu.api.machine.ConditionalSubscriptionHandler;
+import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IDisplayUIMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
@@ -45,9 +46,6 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.*;
 
-import javax.annotation.ParametersAreNonnullByDefault;
-
-@ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class DemodulationHubMachine extends WorkableMultiblockMachine
                                     implements IFancyUIMachine, IDisplayUIMachine, IDimensionalBank, IWirelessEnergyContainerHolder {
@@ -65,7 +63,7 @@ public class DemodulationHubMachine extends WorkableMultiblockMachine
     public DemodulationHubMachine(BlockEntityCreationInfo holder) {
         super(holder);
         this.tickSubscription = new ConditionalSubscriptionHandler(this, this::updateMachineStatus, this::isFormed);
-        this.capacityBank = this.attachTrait(new DimensionalRelayNodeBank(List.of()));
+        this.capacityBank = new DimensionalRelayNodeBank(this, List.of());
     }
 
     // ============== IWirelessEnergyContainerHolder ==============
@@ -158,7 +156,7 @@ public class DemodulationHubMachine extends WorkableMultiblockMachine
         }
 
         if (this.capacityBank == null) {
-            this.capacityBank = this.attachTrait(new DimensionalRelayNodeBank(components));
+            this.capacityBank = new DimensionalRelayNodeBank(this, components);
         } else {
             this.capacityBank = this.capacityBank.rebuild(components);
         }
@@ -270,12 +268,16 @@ public class DemodulationHubMachine extends WorkableMultiblockMachine
         }
 
         @Getter
-        private final BigInteger totalCapacity;
+        private BigInteger totalCapacity;
         @Getter
-        private final BigInteger totalPassiveDrain;
+        private BigInteger totalPassiveDrain;
 
-        public DimensionalRelayNodeBank(List<ICCData> components) {
-            super();
+        public DimensionalRelayNodeBank(MetaMachine machine, List<ICCData> components) {
+            super(machine);
+            update(components);
+        }
+
+        private void update(List<ICCData> components) {
             this.totalCapacity = components.stream()
                     .map(ICCData::getCapacity)
                     .reduce(BigInteger.ZERO, BigInteger::add);
@@ -288,7 +290,8 @@ public class DemodulationHubMachine extends WorkableMultiblockMachine
             if (component.isEmpty()) {
                 throw new IllegalArgumentException("Cannot rebuild bank with no batteries!");
             }
-            return new DimensionalRelayNodeBank(component);
+            update(component);
+            return this;
         }
     }
 

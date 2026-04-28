@@ -3,7 +3,6 @@ package cn.qiuye.gtmoremachine.api.pattern;
 import cn.qiuye.gtmoremachine.common.item.AdvancedTerminalBehavior;
 
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.api.machine.feature.IDropSaveMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.pattern.BlockPattern;
 import com.gregtechceu.gtceu.api.pattern.MultiblockState;
@@ -28,10 +27,9 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.ItemStackHandler;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.items.ItemStackHandler;
 
 import appeng.api.config.Actionable;
 import appeng.api.networking.IGrid;
@@ -158,9 +156,7 @@ public class AdvancedBlockPattern extends BlockPattern {
                                             ItemStack dropStack = new ItemStack(currentBlock);
                                             if (currentState.hasBlockEntity() && worldlevel.getBlockEntity(worldPos) instanceof MetaMachine metaMachine) {
                                                 metaMachine.modifyDrops(Collections.singletonList(dropStack));
-                                                if (metaMachine instanceof IDropSaveMachine DropSave && DropSave.saveBreak()) {
-                                                    DropSave.saveToItem(dropStack.getOrCreateTag());
-                                                }
+                                                metaMachine.saveToItem(dropStack, worldlevel.registryAccess());
                                             }
 
                                             long inserted = meStorage == null ? 0L : meStorage.insert(AEItemKey.of(dropStack), 1L, Actionable.MODULATE, IActionSource.ofPlayer(player));
@@ -234,9 +230,9 @@ public class AdvancedBlockPattern extends BlockPattern {
                                     }
                                     List<Block> stacks = autoBuildSetting.apply(candidatesToPlace);
                                     List<AEKey> aeKeys = stacks.stream()
-                                            .map(block -> {
+                                            .<AEKey>map(block -> {
                                                 if (block instanceof LiquidBlock liquid) {
-                                                    return AEFluidKey.of(liquid.getFluid().getSource());
+                                                    return AEFluidKey.of(liquid.fluid.getSource());
                                                 } else {
                                                     return AEItemKey.of(block.asItem());
                                                 }
@@ -349,7 +345,7 @@ public class AdvancedBlockPattern extends BlockPattern {
      */
     private static Triplet<ItemStack, IItemHandler, Integer> findItemFromPlayerOrAE(Player player, List<ItemStack> candidates, MEStorage aeStorage) {
         if (!player.isCreative()) {
-            IntObjectPair<IItemHandler> result = findItemRecursively(candidates, player.getCapability(ForgeCapabilities.ITEM_HANDLER), player, aeStorage);
+            IntObjectPair<IItemHandler> result = findItemRecursively(candidates, player.getCapability(Capabilities.ItemHandler.ENTITY), player, aeStorage);
             if (result != null) {
                 IItemHandler handler = result.right();
                 int slot = result.leftInt();
@@ -366,14 +362,13 @@ public class AdvancedBlockPattern extends BlockPattern {
     }
 
     @Nullable
-    private static IntObjectPair<IItemHandler> findItemRecursively(List<ItemStack> candidates, LazyOptional<IItemHandler> capability, Player player, MEStorage aeStorage) {
-        IItemHandler handler = capability.resolve().orElse(null);
+    private static IntObjectPair<IItemHandler> findItemRecursively(List<ItemStack> candidates, @Nullable IItemHandler handler, Player player, MEStorage aeStorage) {
         if (handler == null) return null;
         for (int slot = 0; slot < handler.getSlots(); slot++) {
             ItemStack stack = handler.getStackInSlot(slot);
             if (stack.isEmpty()) continue;
-            LazyOptional<IItemHandler> subCap = stack.getCapability(ForgeCapabilities.ITEM_HANDLER);
-            if (subCap.isPresent()) {
+            IItemHandler subCap = stack.getCapability(Capabilities.ItemHandler.ITEM);
+            if (subCap != null) {
                 IntObjectPair<IItemHandler> subResult = findItemRecursively(candidates, subCap, player, aeStorage);
                 if (subResult != null) return subResult;
             } else {
@@ -387,7 +382,7 @@ public class AdvancedBlockPattern extends BlockPattern {
                         }
                     }
                 }
-                if (candidates.stream().anyMatch(c -> ItemStack.isSameItem(c, stack)) && !stack.isEmpty() && stack.getItem() instanceof BlockItem) {
+                if (candidates.stream().anyMatch(c -> ItemStack.isSameItemSameComponents(c, stack)) && !stack.isEmpty() && stack.getItem() instanceof BlockItem) {
                     return IntObjectPair.of(slot, handler);
                 }
             }
@@ -507,16 +502,15 @@ public class AdvancedBlockPattern extends BlockPattern {
      */
     @Nullable
     private static MEStorage findFirstAETerminalStorage(Player player) {
-        LazyOptional<IItemHandler> cap = player.getCapability(ForgeCapabilities.ITEM_HANDLER);
-        IItemHandler inv = cap.resolve().orElse(null);
+        IItemHandler inv = player.getCapability(Capabilities.ItemHandler.ENTITY);
         if (inv == null) return null;
 
         for (int i = 0; i < inv.getSlots(); i++) {
             ItemStack stack = inv.getStackInSlot(i);
             if (stack.isEmpty()) continue;
 
-            if (stack.getItem() instanceof WirelessTerminalItem terminal && stack.hasTag() && stack.getTag().contains("accessPoint", 10)) {
-                IGrid grid = terminal.getLinkedGrid(stack, player.level(), player);
+            if (stack.getItem() instanceof WirelessTerminalItem terminal && terminal.getLinkedPosition(stack) != null) {
+                IGrid grid = terminal.getLinkedGrid(stack, player.level(), player::sendSystemMessage);
                 if (grid != null) {
                     return grid.getStorageService().getInventory();
                 }

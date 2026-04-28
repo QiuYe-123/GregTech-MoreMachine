@@ -1,6 +1,7 @@
 package cn.qiuye.gtmoremachine.common.item;
 
 import cn.qiuye.gtmoremachine.integration.ae.item.GTMMAEItems;
+import cn.qiuye.gtmoremachine.utils.nbt.ItemStackNbtUtils;
 
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.fancy.FancyMachineUIWidget;
@@ -17,6 +18,7 @@ import com.lowdragmc.lowdraglib.gui.texture.ItemStackTexture;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -27,51 +29,47 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.items.IItemHandlerModifiable;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.items.IItemHandlerModifiable;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
-
-import javax.annotation.Nullable;
-
-import static net.minecraft.resources.ResourceLocation.tryBuild;
 
 public final class VirtualItemProviderBehavior implements IAddInformation, IItemUIFactory, IFancyUIProvider {
 
     public static final VirtualItemProviderBehavior INSTANCE = new VirtualItemProviderBehavior();
 
     private static ItemStack setVirtualItem(ItemStack stack, ItemStack virtualItem) {
-        CompoundTag tag = stack.getOrCreateTag();
+        CompoundTag tag = ItemStackNbtUtils.getTag(stack);
         tag.remove("t");
-        ResourceLocation id = ForgeRegistries.ITEMS.getKey(virtualItem.getItem());
+        ResourceLocation id = BuiltInRegistries.ITEM.getKey(virtualItem.getItem());
         if (id == null) {
             return stack;
         }
         tag.putString("m", id.getNamespace());
         tag.putString("n", id.getPath());
-        CompoundTag itemTag = virtualItem.getTag();
-        if (itemTag != null) tag.put("t", itemTag);
+        CompoundTag itemTag = ItemStackNbtUtils.getTag(virtualItem);
+        if (!itemTag.isEmpty()) tag.put("t", itemTag);
+        ItemStackNbtUtils.setTag(stack, tag);
         return stack;
     }
 
     public static ItemStack getVirtualItem(ItemStack item) {
-        CompoundTag tag = item.getOrCreateTag();
+        CompoundTag tag = ItemStackNbtUtils.getTag(item);
         String mod = tag.getString("m");
         if (mod.isEmpty()) {
             return ItemStack.EMPTY;
         }
-        ResourceLocation id = tryBuild(mod, tag.getString("n"));
+        ResourceLocation id = ResourceLocation.tryParse(mod + ":" + tag.getString("n"));
         if (id == null) {
             return ItemStack.EMPTY;
         }
-        Item resolvedItem = ForgeRegistries.ITEMS.getValue(id);
+        Item resolvedItem = BuiltInRegistries.ITEM.get(id);
         if (resolvedItem == null) {
             return ItemStack.EMPTY;
         }
         ItemStack stack = resolvedItem.getDefaultInstance();
-        if (tag.contains("t")) stack.setTag((CompoundTag) tag.get("t"));
+        if (tag.contains("t")) ItemStackNbtUtils.setTag(stack, tag.getCompound("t"));
         return stack;
     }
 
@@ -79,14 +77,14 @@ public final class VirtualItemProviderBehavior implements IAddInformation, IItem
     private InteractionHand hand;
 
     @Override
-    public void appendHoverText(@NotNull ItemStack itemstack, @Nullable Level world, @NotNull List<Component> list, @NotNull TooltipFlag flag) {
-        if (itemstack.hasTag()) {
+    public void appendHoverText(@NotNull ItemStack itemstack, Item.TooltipContext context, @NotNull List<Component> list, @NotNull TooltipFlag flag) {
+        if (ItemStackNbtUtils.hasTag(itemstack)) {
             list.add(Component.translatable("gui.ae2.Items").append(": ").append(getVirtualItem(itemstack).getDisplayName()));
         }
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Item item, Level level, Player player, InteractionHand usedHand) {
+    public InteractionResultHolder<ItemStack> use(ItemStack item, Level level, Player player, InteractionHand usedHand) {
         this.player = player;
         hand = usedHand;
         return IItemUIFactory.super.use(item, level, player, usedHand);
@@ -149,7 +147,7 @@ public final class VirtualItemProviderBehavior implements IAddInformation, IItem
 
         @Override
         public @NotNull ItemStack extractItem(int i, int j, boolean bl) {
-            if (getItem().getOrCreateTag().getBoolean("marked")) return ItemStack.EMPTY;
+            if (ItemStackNbtUtils.getTag(getItem()).getBoolean("marked")) return ItemStack.EMPTY;
             setVirtualItem(getItem(), ItemStack.EMPTY);
             return getStackInSlot(0);
         }

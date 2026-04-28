@@ -15,12 +15,10 @@ import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
+import org.jetbrains.annotations.Nullable;
 
 import static com.gregtechceu.gtceu.api.capability.GTCapabilityHelper.getEnergyContainer;
 
-@ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class CreativeEnergyCover extends CoverBehavior {
 

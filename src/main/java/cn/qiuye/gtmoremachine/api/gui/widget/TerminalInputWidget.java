@@ -3,7 +3,7 @@ package cn.qiuye.gtmoremachine.api.gui.widget;
 import com.lowdragmc.lowdraglib.gui.widget.TextFieldWidget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.util.Mth;
 
 import lombok.Getter;
@@ -63,13 +63,13 @@ public class TerminalInputWidget extends WidgetGroup {
     }
 
     @Override
-    public void writeInitialData(FriendlyByteBuf buffer) {
+    public void writeInitialData(RegistryFriendlyByteBuf buffer) {
         super.writeInitialData(buffer);
         buffer.writeUtf(toText(valueSupplier.get()));
     }
 
     @Override
-    public void readInitialData(FriendlyByteBuf buffer) {
+    public void readInitialData(RegistryFriendlyByteBuf buffer) {
         super.readInitialData(buffer);
         this.textField.setCurrentString(buffer.readUtf());
     }
@@ -80,10 +80,10 @@ public class TerminalInputWidget extends WidgetGroup {
                 stringValue -> this.setValue(clamp(fromText(stringValue), min, max))) {
 
             @Override
-            public boolean mouseWheelMove(double mouseX, double mouseY, double wheelDelta) {
+            public boolean mouseWheelMove(double mouseX, double mouseY, double scrollX, double scrollY) {
                 if (wheelDur > 0 && numberInstance != null && isMouseOverElement(mouseX, mouseY) && isFocus()) {
                     try {
-                        onTextChanged(String.valueOf(Integer.parseInt(getCurrentString()) + (int) ((wheelDelta > 0 ? 1 : -1) * wheelDur)));
+                        onTextChanged(String.valueOf(Integer.parseInt(getCurrentString()) + (int) ((scrollY > 0 ? 1 : -1) * wheelDur)));
                     } catch (Exception ignored) {}
                     setFocus(true);
                     return true;

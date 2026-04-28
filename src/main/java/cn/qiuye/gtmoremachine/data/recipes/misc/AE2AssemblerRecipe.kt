@@ -15,18 +15,17 @@ import com.gregtechceu.gtceu.common.data.GTRecipeTypes
 import com.gregtechceu.gtceu.common.data.machines.GTAEMachines
 import com.gregtechceu.gtceu.data.recipe.CustomTags
 
-import net.minecraft.data.recipes.FinishedRecipe
+import net.minecraft.data.recipes.RecipeOutput
 import net.minecraft.world.item.ItemStack
 
 import appeng.core.definitions.AEBlocks
 import appeng.core.definitions.AEItems
 
 import java.util.Locale
-import java.util.function.Consumer
 
 object AE2AssemblerRecipe {
 
-	fun init(provider: Consumer<FinishedRecipe>) {
+	fun init(provider: RecipeOutput) {
 		GTRecipeTypes.ASSEMBLER_RECIPES.recipeBuilder(GTmm.id("programmable_cover"))
 			.inputItems(GTItems.ROBOT_ARM_LV.asStack(2))
 			.inputItems(GTMMAEItems.VIRTUAL_ITEM_PROVIDER.asStack())

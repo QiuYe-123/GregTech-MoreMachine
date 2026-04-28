@@ -31,9 +31,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.UUID;
 
-import javax.annotation.ParametersAreNonnullByDefault;
-
-@ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 @GTMMDataGeneratorScanned
 public class WirelessEnergyMonitor extends MetaMachine implements IFancyUIMachine, IWirelessMonitor {

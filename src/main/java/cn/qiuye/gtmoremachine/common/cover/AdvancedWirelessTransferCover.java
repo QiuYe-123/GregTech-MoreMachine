@@ -1,5 +1,7 @@
 package cn.qiuye.gtmoremachine.common.cover;
 
+import cn.qiuye.gtmoremachine.utils.nbt.ItemStackNbtUtils;
+
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
@@ -40,11 +42,11 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidUtil;
-import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.ItemHandlerHelper;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidUtil;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.items.ItemHandlerHelper;
 
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
@@ -52,11 +54,8 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.Objects;
 
-import javax.annotation.ParametersAreNonnullByDefault;
-
 import static net.minecraft.resources.ResourceLocation.tryParse;
 
-@ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class AdvancedWirelessTransferCover extends CoverBehavior implements IUICover {
 
@@ -112,8 +111,8 @@ public class AdvancedWirelessTransferCover extends CoverBehavior implements IUIC
 
     @Override
     public void onAttached(ItemStack itemStack, ServerPlayer player) {
-        CompoundTag tag = itemStack.getTag();
-        if (tag != null) {
+        CompoundTag tag = ItemStackNbtUtils.getTag(itemStack);
+        if (!tag.isEmpty()) {
             this.dimensionId = tag.getString("dimensionid");
             var intX = tag.getInt("x");
             var intY = tag.getInt("y");
@@ -234,7 +233,7 @@ public class AdvancedWirelessTransferCover extends CoverBehavior implements IUIC
 
     protected @Nullable IItemHandler getAdjacentItemTransfer() {
         if (targetLever == null || targetPos == null) return null;
-        return GTTransferUtils.getItemHandler(targetLever, targetPos, facing.getOpposite()).resolve().orElse(null);
+        return GTTransferUtils.getItemHandler(targetLever, targetPos, facing.getOpposite()).orElse(null);
     }
 
     protected @Nullable IFluidHandler getOwnFluidTransfer() {
@@ -243,7 +242,7 @@ public class AdvancedWirelessTransferCover extends CoverBehavior implements IUIC
 
     protected @Nullable IFluidHandler getAdjacentFluidTransfer() {
         if (targetLever == null || targetPos == null) return null;
-        return FluidUtil.getFluidHandler(targetLever, targetPos, facing.getOpposite()).resolve().orElse(null);
+        return FluidUtil.getFluidHandler(targetLever, targetPos, facing.getOpposite()).orElse(null);
     }
 
     @Override

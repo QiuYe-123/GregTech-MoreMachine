@@ -1,29 +1,23 @@
 package cn.qiuye.gtmoremachine.client;
 
-import cn.qiuye.gtmoremachine.common.CommonProxy;
+import cn.qiuye.gtmoremachine.GTmm;
 
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.RegisterGuiOverlaysEvent;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
+import net.neoforged.neoforge.client.event.RegisterGuiLayersEvent;
 
-@OnlyIn(Dist.CLIENT)
-public class ClientProxy extends CommonProxy {
+public class ClientProxy {
 
-    public ClientProxy() {
-        super();
+    public static void init(IEventBus eventBus) {
         init();
-        IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
         eventBus.addListener(ClientProxy::clientSetup);
         eventBus.addListener(ClientProxy::registerGuiOverlays);
     }
 
     private static void init() {}
 
-    public static void registerGuiOverlays(RegisterGuiOverlaysEvent event) {
-        event.registerAboveAll("hud", new HudGuiOverlay());
+    public static void registerGuiOverlays(RegisterGuiLayersEvent event) {
+        event.registerAboveAll(GTmm.id("hud"), new HudGuiOverlay());
     }
 
     private static void clientSetup(FMLClientSetupEvent event) {}

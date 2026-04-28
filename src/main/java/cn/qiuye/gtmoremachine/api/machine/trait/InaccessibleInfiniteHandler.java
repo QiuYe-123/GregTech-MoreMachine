@@ -1,14 +1,15 @@
 package cn.qiuye.gtmoremachine.api.machine.trait;
 
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
+import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
-import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredient;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.integration.ae2.utils.KeyStorage;
 
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.neoforged.neoforge.common.crafting.SizedIngredient;
 
 import appeng.api.stacks.AEItemKey;
 
@@ -19,18 +20,14 @@ public class InaccessibleInfiniteHandler extends NotifiableItemStackHandler {
 
     private final ItemStackHandlerDelegate delegate;
 
-    public InaccessibleInfiniteHandler(KeyStorage internalBuffer) {
-        super(1, IO.OUT, IO.NONE, i -> new ItemStackHandlerDelegate(internalBuffer));
+    public InaccessibleInfiniteHandler(MetaMachine machine, KeyStorage internalBuffer) {
+        super(machine, 1, IO.OUT, IO.NONE, i -> new ItemStackHandlerDelegate(internalBuffer));
         internalBuffer.setOnContentsChanged(this::onContentsChanged);
         delegate = ((ItemStackHandlerDelegate) storage);
     }
 
     public static ItemStack getFirstSized(SizedIngredient sizedIngredient) {
-        Ingredient inner = sizedIngredient.getInner();
-        if (inner instanceof SizedIngredient ingredient) {
-            return getFirstSized(ingredient);
-        }
-        return getFirst(inner);
+        return getFirst(sizedIngredient.ingredient());
     }
 
     public static ItemStack getFirst(Ingredient ingredient) {
@@ -43,16 +40,17 @@ public class InaccessibleInfiniteHandler extends NotifiableItemStackHandler {
     }
 
     @Override
-    public List<Ingredient> handleRecipe(IO io, GTRecipe recipe, List<?> left, boolean simulate) {
+    public List<SizedIngredient> handleRecipe(IO io, GTRecipe recipe, List<?> left, boolean simulate) {
         if (!simulate && io == IO.OUT) {
             for (Object ingredient : left) {
-                if (((Ingredient) ingredient).isEmpty()) continue;
                 ItemStack item;
                 int count;
                 if (ingredient instanceof SizedIngredient sizedIngredient) {
+                    if (sizedIngredient.ingredient().isEmpty()) continue;
                     item = getFirstSized(sizedIngredient);
-                    count = sizedIngredient.getAmount();
+                    count = sizedIngredient.count();
                 } else {
+                    if (((Ingredient) ingredient).isEmpty()) continue;
                     item = getFirst((Ingredient) ingredient);
                     count = item.getCount();
                 }

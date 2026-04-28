@@ -9,8 +9,11 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.RotationState;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.pattern.FactoryBlockPattern;
-import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
+
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 
 import static cn.qiuye.gtmoremachine.common.registry.GTMMRegistration.GTMM;
 import static com.gregtechceu.gtceu.api.pattern.Predicates.blocks;
@@ -26,7 +29,7 @@ public class WirelessMultiMachines {
             .multiblock("wirelsess_energy_dimensional_relay_node", DimensionalRelayNodeMachine::new)
             .langValue("Wirelsess Energy Dimensional Relay Node")
             .rotationState(RotationState.NON_Y_AXIS)
-            .appearanceBlock(GTBlocks.HIGH_POWER_CASING)
+            .appearanceBlock(WirelessMultiMachines::highPowerCasing)
             .recipeType(GTRecipeTypes.DUMMY_RECIPES)
             .pattern(definition -> FactoryBlockPattern.start()
                     .aisle("A")
@@ -42,7 +45,7 @@ public class WirelessMultiMachines {
             .multiblock("wirelsess_energy_demodulation_hub", DemodulationHubMachine::new)
             .langValue("Wirelsess Energy Demodulation Hub")
             .rotationState(RotationState.NON_Y_AXIS)
-            .appearanceBlock(GTBlocks.HIGH_POWER_CASING)
+            .appearanceBlock(WirelessMultiMachines::highPowerCasing)
             .recipeType(GTRecipeTypes.DUMMY_RECIPES)
             .pattern(definition -> FactoryBlockPattern.start()
                     .aisle("A")
@@ -53,6 +56,10 @@ public class WirelessMultiMachines {
             .workableCasingModel(GTCEu.id("block/casings/hpca/high_power_casing"),
                     GTCEu.id("block/multiblock/network_switch"))
             .register();
+
+    private static Block highPowerCasing() {
+        return BuiltInRegistries.BLOCK.getOptional(GTCEu.id("high_power_casing")).orElse(Blocks.IRON_BLOCK);
+    }
 
     public static void init() {}
 }

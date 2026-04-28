@@ -1,10 +1,11 @@
 package cn.qiuye.gtmoremachine.api.misc;
 
 import com.gregtechceu.gtceu.api.capability.IThermalFluidHandlerItemStack;
+import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
 
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.templates.FluidHandlerItemStack;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.capability.templates.FluidHandlerItemStack;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -15,7 +16,7 @@ public class CreativeFluidHandlerItemStack extends FluidHandlerItemStack impleme
      * @param capacity  The maximum capacity of this fluid tank.
      */
     public CreativeFluidHandlerItemStack(@NotNull ItemStack container, int capacity, FluidStack fluidStack) {
-        super(container, capacity);
+        super(GTDataComponents.FLUID_CONTENT, container, capacity);
         this.setFluid(fluidStack);
     }
 

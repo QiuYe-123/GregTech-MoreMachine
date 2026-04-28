@@ -1,10 +1,14 @@
 package cn.qiuye.gtmoremachine.common.item.itemstack;
 
 import cn.qiuye.gtmoremachine.integration.ae.item.GTMMAEItems;
+import cn.qiuye.gtmoremachine.utils.nbt.ItemStackNbtUtils;
+
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 
 import net.minecraft.world.item.ItemStack;
 
 import appeng.api.stacks.AEItemKey;
+import appeng.api.stacks.AEKeyTypes;
 import appeng.api.stacks.GenericStack;
 import appeng.items.storage.CreativeCellItem;
 import appeng.util.ConfigInventory;
@@ -34,36 +38,41 @@ public final class VirtualItemProviderCellItem extends CreativeCellItem {
         }
 
         void load() {
-            if (stack.hasTag()) {
-                inv.readFromChildTag(stack.getOrCreateTag(), "list");
+            if (ItemStackNbtUtils.hasTag(stack)) {
+                inv.readFromChildTag(ItemStackNbtUtils.getTag(stack), "list", GTRegistries.builtinRegistry());
             }
         }
 
         void save() {
-            inv.writeToChildTag(stack.getOrCreateTag(), "list");
+            ItemStackNbtUtils.updateTag(stack, tag -> inv.writeToChildTag(tag, "list", GTRegistries.builtinRegistry()));
         }
     }
 
     private static class VirtualConfigInventory extends ConfigInventory {
 
         private VirtualConfigInventory(int size, @Nullable Runnable listener) {
-            super(null, Mode.CONFIG_TYPES, size, listener, false);
+            super(AEKeyTypes.getAll(), null, Mode.CONFIG_TYPES, size, listener, false);
         }
 
         public void setStack(int slot, @Nullable GenericStack stack) {
             if (stack == null) {
                 super.setStack(slot, null);
-            } else if (stack.what() instanceof AEItemKey itemKey && itemKey.getItem() == GTMMAEItems.VIRTUAL_ITEM_PROVIDER.asItem() && itemKey.hasTag()) {
-                boolean typesOnly = this.mode == Mode.CONFIG_TYPES;
-                itemKey.getTag().putBoolean("marked", true);
-                if (typesOnly && stack.amount() != 0L) {
-                    stack = new GenericStack(itemKey, 0L);
-                } else if (!typesOnly && stack.amount() <= 0L) {
-                    stack = null;
-                }
+            } else if (stack.what() instanceof AEItemKey itemKey &&
+                    itemKey.getItem() == GTMMAEItems.VIRTUAL_ITEM_PROVIDER.asItem() &&
+                    ItemStackNbtUtils.hasTag(itemKey.getReadOnlyStack())) {
+                        boolean typesOnly = this.mode == Mode.CONFIG_TYPES;
+                        ItemStack markedStack = itemKey.toStack();
+                        ItemStackNbtUtils.updateTag(markedStack, tag -> tag.putBoolean("marked", true));
+                        itemKey = AEItemKey.of(markedStack);
+                        if (itemKey == null) return;
+                        if (typesOnly && stack.amount() != 0L) {
+                            stack = new GenericStack(itemKey, 0L);
+                        } else if (!typesOnly && stack.amount() <= 0L) {
+                            stack = null;
+                        }
 
-                super.setStack(slot, stack);
-            }
+                        super.setStack(slot, stack);
+                    }
         }
     }
 }

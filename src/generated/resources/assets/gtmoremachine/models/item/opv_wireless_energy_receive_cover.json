@@ -1,6 +1,6 @@
 {
-  "parent": "minecraft:item/generated",
-  "textures": {
-    "layer0": "gtmoremachine:item/opv_wireless_energy_receive_cover"
-  }
+    "parent": "minecraft:item/generated",
+    "textures": {
+        "layer0": "gtmoremachine:item/opv_wireless_energy_receive_cover"
+    }
 }

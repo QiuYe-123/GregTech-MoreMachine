@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 
 import com.lowdragmc.lowdraglib.side.item.ItemTransferHelper;
 
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -14,8 +15,6 @@ import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Function;
-
-import javax.annotation.Nonnull;
 
 public class UnlimitedItemStackTransfer extends CustomItemStackHandler {
 
@@ -35,7 +34,7 @@ public class UnlimitedItemStackTransfer extends CustomItemStackHandler {
     private Function<ItemStack, Boolean> filter;
 
     @Override
-    public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
+    public boolean isItemValid(int slot, @NotNull ItemStack stack) {
         return filter == null || filter.apply(stack);
     }
 
@@ -83,7 +82,7 @@ public class UnlimitedItemStackTransfer extends CustomItemStackHandler {
     }
 
     @Override
-    public CompoundTag serializeNBT() {
+    public CompoundTag serializeNBT(HolderLookup.Provider provider) {
         ListTag nbtTagList = new ListTag();
         for (int i = 0; i < stacks.size(); i++) {
             if (!stacks.get(i).isEmpty()) {
@@ -92,7 +91,7 @@ public class UnlimitedItemStackTransfer extends CustomItemStackHandler {
                 var is = stacks.get(i).copy();
                 itemTag.putInt("realCount", is.getCount());
                 is.setCount(1);
-                is.save(itemTag);
+                is.save(provider, itemTag);
                 nbtTagList.add(itemTag);
             }
         }
@@ -103,7 +102,7 @@ public class UnlimitedItemStackTransfer extends CustomItemStackHandler {
     }
 
     @Override
-    public void deserializeNBT(CompoundTag nbt) {
+    public void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt) {
         setSize(nbt.contains("Size", Tag.TAG_INT) ? nbt.getInt("Size") : stacks.size());
         ListTag tagList = nbt.getList("Items", Tag.TAG_COMPOUND);
         for (int i = 0; i < tagList.size(); i++) {
@@ -111,7 +110,7 @@ public class UnlimitedItemStackTransfer extends CustomItemStackHandler {
             int slot = itemTags.getInt("Slot");
 
             if (slot >= 0 && slot < stacks.size()) {
-                var is = ItemStack.of(itemTags).copy();
+                var is = ItemStack.parseOptional(provider, itemTags).copy();
                 is.setCount(itemTags.getInt("realCount"));
                 stacks.set(slot, is);
             }

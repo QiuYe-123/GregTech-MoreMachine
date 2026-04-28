@@ -28,17 +28,14 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidStack;
 
 import lombok.Getter;
 import org.jetbrains.annotations.UnknownNullability;
 
 import java.util.List;
 
-import javax.annotation.ParametersAreNonnullByDefault;
-
 @GTMMDataGeneratorScanned
-@ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class HugeDualHatchPartMachine extends HugeBusPartMachine {
 
@@ -59,12 +56,12 @@ public class HugeDualHatchPartMachine extends HugeBusPartMachine {
 
     public HugeDualHatchPartMachine(@UnknownNullability BlockEntityCreationInfo holder, int tier, IO io) {
         super(holder, tier, io, 9);
-        this.tank = this.attachTrait(createTank());
-        this.shareTank = this.attachTrait(new CatalystFluidStackHandler(9, 16000, IO.IN, IO.NONE));
+        this.tank = createTank();
+        this.shareTank = new CatalystFluidStackHandler(this, 9, 16000, IO.IN, IO.NONE);
     }
 
     protected NotifiableFluidTank createTank() {
-        return new NotifiableFluidTank(this.getTankInventorySize(), Integer.MAX_VALUE, io) {
+        return new NotifiableFluidTank(this, this.getTankInventorySize(), Integer.MAX_VALUE, io) {
 
             @Override
             public boolean canCapOutput() {
@@ -184,7 +181,7 @@ public class HugeDualHatchPartMachine extends HugeBusPartMachine {
         for (int i = 0; i < this.getTankInventorySize(); ++i) {
             FluidStack fs = this.tank.getFluidInTank(i);
             if (!fs.isEmpty()) {
-                textList.add(fs.getDisplayName().copy().setStyle(Style.EMPTY.withColor(ChatFormatting.GOLD))
+                textList.add(fs.getHoverName().copy().setStyle(Style.EMPTY.withColor(ChatFormatting.GOLD))
                         .append(Component.literal(fs.getAmount() < 1000 ? fs.getAmount() + "mB" :
                                 NumberUtils.formatLong(fs.getAmount() / 1000L) + "B")
                                 .setStyle(Style.EMPTY.withColor(ChatFormatting.AQUA))));

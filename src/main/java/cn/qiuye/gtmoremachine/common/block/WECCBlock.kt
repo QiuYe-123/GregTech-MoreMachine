@@ -11,18 +11,17 @@ import com.gregtechceu.gtceu.utils.FormattingUtil
 import net.minecraft.MethodsReturnNonnullByDefault
 import net.minecraft.network.chat.Component
 import net.minecraft.util.StringRepresentable
+import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.TooltipFlag
-import net.minecraft.world.level.BlockGetter
 import net.minecraft.world.level.block.Block
 
 import lombok.Getter
 
 import java.math.BigInteger
-import javax.annotation.ParametersAreNonnullByDefault
 
 @GTMMDataGeneratorScanned
-@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 class WECCBlock(properties: Properties, @field:Getter val data: ICCData) : Block(properties) {
 
 	companion object {
@@ -43,8 +42,8 @@ class WECCBlock(properties: Properties, @field:Getter val data: ICCData) : Block
 		)
 		const val CAPACITY_COMPONENT_TOOLTIP_PASSIVE_DRAIN: String = "$CAPACITY_COMPONENT_PREFIX.tooltip_passive_drain"
 	}
-	override fun appendHoverText(stack: ItemStack, level: BlockGetter?, tooltip: MutableList<Component>, flag: TooltipFlag) {
-		super.appendHoverText(stack, level, tooltip, flag)
+	override fun appendHoverText(stack: ItemStack, context: Item.TooltipContext, tooltip: MutableList<Component>, flag: TooltipFlag) {
+		super.appendHoverText(stack, context, tooltip, flag)
 		if (this.data.getTier() == -1) {
 			tooltip.add(Component.translatable(CAPACITY_COMPONENT_TOOLTIP_EMPTY))
 		} else {
