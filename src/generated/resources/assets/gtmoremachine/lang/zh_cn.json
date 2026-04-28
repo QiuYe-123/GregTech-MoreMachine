@@ -547,7 +547,7 @@
   "gtmoremachine.machine.wireless_monitor.tooltip.net_cwu": "平均净CWU：%s",
   "gtmoremachine.machine.wireless_monitor.tooltip.net_power": "平均净功率：%s",
   "gtmoremachine.machine.wireless_monitor.tooltip.statistics.cwu": "算力统计：%s     显示格式：%s    算力状态：%s",
-  "gtmoremachine.machine.wireless_monitor.tooltip.statistics.energy": "用电统计：%s     显示格式：%s    功率状态：%s\n排序规则：%s        类别: %s",
+    "gtmoremachine.machine.wireless_monitor.tooltip.statistics.energy": "用电统计：%s     显示格式：%s    功率状态：%s    排序规则：%s        类别: %s",
   "gtmoremachine.multiblock.pattern.error.ecutypes": "§c必须使用同种能源通讯单元",
   "gtmoremachine.multiblock.pattern.error.wecc": "§c必须使用相同的电网容量组件",
   "gtmoremachine.universal.disabled": "多方块结构共享：§4禁止",

@@ -137,11 +137,14 @@ object FormattingUtil {
 	}
 
 	fun getSpacer(font: Font, splitChar: String, spaceLength: Int): String {
-		var spacerCount = spaceLength / font.width(splitChar)
+		if (spaceLength <= 0) return " "
+		val splitWidth = font.width(splitChar)
+		if (splitWidth <= 0) return " "
+		var spacerCount = spaceLength / splitWidth
 		while (font.width(splitChar.repeat(spacerCount) + " ") <= spaceLength) {
 			spacerCount++
 		}
-		return splitChar.repeat(spacerCount - 2) + " "
+		return splitChar.repeat((spacerCount - 2).coerceAtLeast(0)) + " "
 	}
 
 	private fun stripColor(text: String): String = (
@@ -174,7 +177,7 @@ object FormattingUtil {
 				getSpacer(
 					font,
 					splitChar,
-					maxWidth - before.get() - after.get(),
+					(maxWidth - before.get() - after.get()).coerceAtLeast(0),
 				)
 			} else {
 				text

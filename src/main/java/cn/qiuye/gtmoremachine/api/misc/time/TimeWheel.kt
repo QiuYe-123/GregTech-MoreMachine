@@ -9,7 +9,7 @@ import java.util.*
 
 class TimeWheel(slotResolution: Int, private val slotNum: Int, windowStart: Int) {
 	private var firstUpdateTick = -1
-	private var lastUpdateTick = -1
+	private var lastObservedTick = -1
 
 	object TIMESCALE {
 		const val SECOND: Int = 20
@@ -31,7 +31,8 @@ class TimeWheel(slotResolution: Int, private val slotNum: Int, windowStart: Int)
 		this.slots.offer(Slot())
 	}
 
-	fun tock(): Boolean {
+	fun tock(currentTick: Int): Boolean {
+		this.lastObservedTick = currentTick
 		if (this.slots.size == this.slotNum) {
 			val s: Slot = this.slots.poll()
 			this.changedSum = this.changedSum.subtract(s.inputSum).add(s.outputSum)
@@ -55,8 +56,8 @@ class TimeWheel(slotResolution: Int, private val slotNum: Int, windowStart: Int)
 			this.outputSum = this.outputSum.add(positiveValue)
 			this.changedSum = this.changedSum.add(value)
 		}
-		this.lastUpdateTick = currentTick
-		if (this.firstUpdateTick == -1) this.firstUpdateTick = this.lastUpdateTick
+		this.lastObservedTick = currentTick
+		if (this.firstUpdateTick == -1) this.firstUpdateTick = this.lastObservedTick
 	}
 
 	@get:ApiStatus.ScheduledForRemoval(inVersion = "2.1.0")
@@ -71,26 +72,7 @@ class TimeWheel(slotResolution: Int, private val slotNum: Int, windowStart: Int)
 			replaceWith = ReplaceWith("getAvgChangedByTick()"),
 			level = DeprecationLevel.ERROR,
 		)
-		get() {
-			if (lastUpdateTick - firstUpdateTick < slotResolution * slotNum) {
-				return BigDecimal(changedSum).divide(
-					BigDecimal.valueOf(
-						(lastUpdateTick - firstUpdateTick + 1).toLong(),
-					),
-					RoundingMode.HALF_UP,
-				)
-			}
-			return if (slots.isEmpty()) {
-				BigDecimal.ZERO
-			} else {
-				BigDecimal(changedSum).divide(
-					BigDecimal.valueOf(
-						slots.size.toLong() * slotResolution + lastUpdateTick % slotResolution - slotResolution,
-					),
-					RoundingMode.HALF_UP,
-				)
-			}
-		}
+		get() = calculateAvg(this.changedSum)
 
 	/** 获取变化量（净流量）平均值 / 刻 */
 	val avgChangedByTick
@@ -118,16 +100,11 @@ class TimeWheel(slotResolution: Int, private val slotNum: Int, windowStart: Int)
 
 	// 私有辅助方法：计算实际覆盖的时间跨度（刻数）
 	private fun totalTimeSpan(): Long {
-		if (this.firstUpdateTick == -1) return 0L
-		val ticksElapsed = this.lastUpdateTick - this.firstUpdateTick + 1
+		if (this.firstUpdateTick == -1 || this.lastObservedTick < this.firstUpdateTick) return 0L
+		val ticksElapsed = this.lastObservedTick - this.firstUpdateTick + 1
 		val windowLength = this.slotResolution.toLong() * this.slotNum
 
-		return if (ticksElapsed < windowLength) {
-			ticksElapsed.toLong()
-		} else {
-			(this.slotNum - 1).toLong() * this.slotResolution +
-				(this.lastUpdateTick % this.slotResolution) + 1
-		}
+		return minOf(ticksElapsed.toLong(), windowLength)
 	}
 
 	// 统一的平均值计算方法，复用了时间跨度逻辑
