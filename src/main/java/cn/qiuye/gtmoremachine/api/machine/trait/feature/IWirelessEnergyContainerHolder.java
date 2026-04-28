@@ -1,0 +1,22 @@
+package cn.qiuye.gtmoremachine.api.machine.trait.feature;
+
+import cn.qiuye.gtmoremachine.api.capability.wireless.energy.IEnergyBindable;
+import cn.qiuye.gtmoremachine.api.misc.wireless.energy.WirelessEnergyContainer;
+
+import org.jetbrains.annotations.Nullable;
+
+public interface IWirelessEnergyContainerHolder extends IEnergyBindable {
+
+    void setWirelessEnergyContainerCache(WirelessEnergyContainer container);
+
+    WirelessEnergyContainer getWirelessEnergyContainerCache();
+
+    @Nullable
+    default WirelessEnergyContainer getWirelessEnergyContainer() {
+        if (getUUID() != null && getWirelessEnergyContainerCache() == null) {
+            WirelessEnergyContainer container = WirelessEnergyContainer.getOrCreateContainer(getUUID());
+            setWirelessEnergyContainerCache(container);
+        }
+        return getWirelessEnergyContainerCache();
+    }
+}

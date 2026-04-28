@@ -1,0 +1,68 @@
+package cn.qiuye.gtmoremachine.forge;
+
+import cn.qiuye.gtmoremachine.GTmm;
+import cn.qiuye.gtmoremachine.api.misc.wireless.cwu.WirelessCWUContainer;
+import cn.qiuye.gtmoremachine.api.misc.wireless.energy.WirelessEnergyContainer;
+import cn.qiuye.gtmoremachine.common.item.WirelessEnergyBindingToolBehavior;
+import cn.qiuye.gtmoremachine.data.wireless.cwu.WirelessCWUSavedData;
+import cn.qiuye.gtmoremachine.data.wireless.energy.WirelessEnergySavedData;
+
+import com.gregtechceu.gtceu.api.machine.MetaMachine;
+
+import net.minecraft.core.GlobalPos;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.Level;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.event.level.LevelEvent;
+import net.neoforged.neoforge.event.tick.ServerTickEvent;
+
+import java.math.BigInteger;
+
+@EventBusSubscriber(modid = GTmm.MOD_ID)
+public class ForgeCommonEventListener {
+
+    @SubscribeEvent
+    public static void onServerTickEvent(ServerTickEvent.Post event) {
+        var server = event.getServer();
+        var tickCount = server.getTickCount();
+        if (tickCount % 20 == 0) {
+            boolean refreshBinding = tickCount % 200 == 0;
+            for (WirelessEnergyContainer container : WirelessEnergySavedData.INSTANCE.containerMap.values()) {
+                if (refreshBinding) {
+                    GlobalPos pos = container.getBindPos();
+                    ServerLevel level = pos != null ? server.getLevel(pos.dimension()) : null;
+                    var machine = level != null ? MetaMachine.getMachine(level, pos.pos()) : null;
+                    var rate = WirelessEnergyBindingToolBehavior.Companion.getRate(machine);
+                    if (machine != null) {
+                        container.setDimensional(14, rate.compareTo(BigInteger.ZERO) > 0, machine);
+                    }
+                    container.setRate(rate);
+                }
+                container.PassiveDrainEnergy();
+                container.getEnergyStat().tick();
+            }
+            for (WirelessCWUContainer container : WirelessCWUSavedData.INSTANCE.containerMap.values()) {
+                container.getCWUStat().tick();
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public static void onServerTickPre(ServerTickEvent.Pre event) {
+        WirelessEnergyContainer.observed = false;
+        WirelessCWUContainer.observed = false;
+    }
+
+    @SubscribeEvent
+    public static void serverSetup(LevelEvent.Load event) {
+        if (event.getLevel() instanceof ServerLevel level) {
+            ServerLevel serverLevel = level.getServer().getLevel(Level.OVERWORLD);
+            if (serverLevel == null) return;
+            WirelessEnergySavedData.INSTANCE = WirelessEnergySavedData.getOrCreate(serverLevel);
+            WirelessEnergyContainer.server = event.getLevel().getServer();
+            WirelessCWUSavedData.INSTANCE = WirelessCWUSavedData.getOrCreate(serverLevel);
+            WirelessCWUContainer.server = event.getLevel().getServer();
+        }
+    }
+}

@@ -1,0 +1,7 @@
+{
+    "variants": {
+        "": {
+            "model": "gtmoremachine:block/mv_capacity_component"
+        }
+    }
+}

@@ -1,0 +1,56 @@
+[versions]
+ldlib = "1.0.35.a"
+registrate = "MC1.21-1.3.0+67"
+configuration = "3.1.1-neoforge"
+kotlinforforge = "5.7.0"
+gtm = "8.0.0-SNAPSHOT"
+
+jei = "19.25.1.328"
+emi = "1.1.22+1.21.1"
+ae2 = "19.2.8"
+kubejs = "2101.7.2-build.336"
+rhino = "2101.2.7-build.81"
+architectury = "13.0.8"
+curios = "9.4.2+1.21.1"
+
+## ftb mod ##
+ftblibrary = "2101.1.30"
+ftbteams = "2101.1.9"
+
+## modrinth maven ##
+jade = "15.10.0+neoforge"
+sodium = "mc1.21.1-0.6.13-neoforge"
+iris = "1.8.8+1.21.1-neoforge"
+modernfix = "4SPHwiDB" # 5.24.3+mc1.21.1
+
+## libs ##
+
+
+[libraries]
+ldlib               = { module = "com.lowdragmc.ldlib:ldlib-neoforge-1.21.1", version.ref = "ldlib" }
+registrate          = { module = "com.tterrag.registrate:Registrate", version.ref = "registrate" }
+configuration       = { module = "dev.toma.configuration:configuration-1.21.1", version.ref = "configuration" }
+kotlinforforge      = { module = "thedarkcolour:kotlinforforge-neoforge", version.ref = "kotlinforforge" }
+gtm                 = { module = "com.gregtechceu.gtceu:gtceu-1.21.1", version.ref = "gtm" }
+
+jei-common-api      = { module = "mezz.jei:jei-1.21.1-common-api", version.ref = "jei" }
+jei-neoforge-api    = { module = "mezz.jei:jei-1.21.1-neoforge-api", version.ref = "jei" }
+jei-neoforge-impl   = { module = "mezz.jei:jei-1.21.1-neoforge", version.ref = "jei" }
+emi                 = { module = "dev.emi:emi-neoforge", version.ref = "emi" }
+
+ftblibrary          = { module = "dev.ftb.mods:ftb-library-neoforge", version.ref = "ftblibrary" }
+ftbteams            = { module = "dev.ftb.mods:ftb-teams-neoforge", version.ref = "ftbteams" }
+
+ae2                 = { module = "org.appliedenergistics:appliedenergistics2", version.ref = "ae2" }
+kubejs              = { module = "dev.latvian.mods:kubejs-neoforge", version.ref = "kubejs" }
+rhino               = { module = "dev.latvian.mods:rhino", version.ref = "rhino" }
+architectury        = { module = "dev.architectury:architectury-neoforge", version.ref = "architectury" }
+curios              = { module = "top.theillusivec4.curios:curios-neoforge", version.ref = "curios" }
+jade                = { module = "maven.modrinth:jade", version.ref = "jade" }
+sodium              = { module = "maven.modrinth:sodium", version.ref = "sodium" }
+iris                = { module = "maven.modrinth:iris", version.ref = "iris" }
+modernfix           = { module = "maven.modrinth:modernfix", version.ref = "modernfix" }
+
+[bundles]
+jei = ["jei-common-api", "jei-neoforge-api", "jei-neoforge-impl"]
+kjs = ["kubejs", "rhino"]

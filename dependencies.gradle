@@ -1,0 +1,60 @@
+dependencies {
+    compileOnly(libs.jetbrains.annotations)
+
+    testJarJar(testImplementation(libs.testframework.get()))
+
+    // Kotlin for Forge
+    jarJar(api(forge.kotlinforforge.get()))
+
+    // Core libraries
+    jarJar(api(forge.ldlib.get()))
+    jarJar(api(forge.registrate.get()))
+    jarJar(api(forge.configuration.get()))
+
+    // GregTech
+    compileOnly(forge.gtm)
+
+    // Recipe viewers
+    compileOnly(forge.bundles.jei)
+    compileOnly(forge.emi)
+
+    // WAILA-likes
+    compileOnly(forge.jade)
+
+    // Curios
+    compileOnly(variantOf(forge.curios) { classifier("api") })
+
+    // AE2
+    compileOnly(forge.ae2)
+
+    // KubeJS/Rhino are exposed by GTM's 1.21.1 registrate builders.
+    compileOnly(forge.bundles.kjs)
+
+    // FTB
+    compileOnly(forge.architectury)
+    compileOnly(forge.ftblibrary)
+    compileOnly(forge.ftbteams)
+
+    // Standard runtime mods
+    localRuntime(libs.testframework)
+    localRuntime(forge.jade)
+    localRuntime(forge.curios)
+    localRuntime(forge.modernfix)
+    localRuntime(forge.ae2)
+    localRuntime(forge.bundles.kjs)
+    localRuntime(forge.architectury)
+    localRuntime(forge.ftblibrary)
+    localRuntime(forge.ftbteams)
+    localRuntime(forge.ldlib)
+    localRuntime(forge.configuration)
+    localRuntime(forge.gtm)
+
+    // Runtime recipe viewers
+    localRuntime(forge.emi)
+    localRuntime(forge.jei.neoforge.impl)
+
+    // Client-only runtime mods
+    clientLocalRuntime(forge.sodium)
+    clientLocalRuntime(forge.iris)
+    renderNurseCfg(libs.renderNurse)
+}

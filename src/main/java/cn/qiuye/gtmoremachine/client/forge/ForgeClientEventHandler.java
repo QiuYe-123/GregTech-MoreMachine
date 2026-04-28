@@ -1,0 +1,83 @@
+package cn.qiuye.gtmoremachine.client.forge;
+
+import cn.qiuye.gtmoremachine.GTmm;
+import cn.qiuye.gtmoremachine.common.item.WirelessEnergyTerminalBehavior;
+import cn.qiuye.gtmoremachine.common.machine.electric.WirelessCWUMonitor;
+import cn.qiuye.gtmoremachine.common.machine.electric.WirelessEnergyMonitor;
+
+import com.gregtechceu.gtceu.api.GTValues;
+
+import com.lowdragmc.lowdraglib.client.utils.RenderBufferUtils;
+
+import net.minecraft.client.Camera;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.phys.Vec3;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
+
+import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.*;
+
+@EventBusSubscriber(modid = GTmm.MOD_ID, value = Dist.CLIENT)
+@OnlyIn(Dist.CLIENT)
+public class ForgeClientEventHandler {
+
+    @SubscribeEvent
+    public static void onRenderWorldLast(RenderLevelStageEvent event) {
+        var stage = event.getStage();
+        if (stage == RenderLevelStageEvent.Stage.AFTER_TRIPWIRE_BLOCKS) {
+            ClientLevel level = Minecraft.getInstance().level;
+            if (level == null) return;
+            PoseStack poseStack = event.getPoseStack();
+            Camera camera = event.getCamera();
+            long tick = GTValues.CLIENT_TIME;
+
+            if (WirelessEnergyMonitor.p > 0) {
+                if (tick % 20 == 0) WirelessEnergyMonitor.p--;
+                BlockPos pose = WirelessEnergyMonitor.pPos;
+                if (pose != null) highlightBlock(RGBAColor.RED, camera, poseStack, pose, pose);
+            }
+            if (WirelessEnergyTerminalBehavior.p > 0) {
+                if (tick % 20 == 0) WirelessEnergyTerminalBehavior.p--;
+                BlockPos pose = WirelessEnergyTerminalBehavior.pPos;
+                if (pose != null) highlightBlock(RGBAColor.RED, camera, poseStack, pose, pose);
+            }
+            if (WirelessCWUMonitor.p > 0) {
+                if (tick % 20 == 0) WirelessCWUMonitor.p--;
+                BlockPos pose = WirelessCWUMonitor.pPos;
+                if (pose != null) highlightBlock(RGBAColor.ORANGE, camera, poseStack, pose, pose);
+            }
+        }
+    }
+
+    private static void highlightBlock(RGBAColor color, Camera camera, PoseStack poseStack, BlockPos... poses) {
+        Vec3 pos = camera.getPosition();
+        poseStack.pushPose();
+        poseStack.translate(-pos.x, -pos.y, -pos.z);
+        RenderSystem.disableDepthTest();
+        RenderSystem.enableBlend();
+        RenderSystem.disableCull();
+        RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
+        Tesselator tesselator = Tesselator.getInstance();
+        BufferBuilder buffer = tesselator.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
+        RenderSystem.setShader(GameRenderer::getPositionColorShader);
+        RenderBufferUtils.renderCubeFace(poseStack, buffer, poses[0].getX(), poses[0].getY(), poses[0].getZ(), poses[1].getX() + 1, poses[1].getY() + 1, poses[1].getZ() + 1, color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha(), true);
+        BufferUploader.drawWithShader(buffer.buildOrThrow());
+        buffer = tesselator.begin(VertexFormat.Mode.LINES, DefaultVertexFormat.POSITION_COLOR_NORMAL);
+        RenderSystem.setShader(GameRenderer::getRendertypeLinesShader);
+        RenderSystem.lineWidth(3);
+        RenderBufferUtils.drawCubeFrame(poseStack, buffer, poses[0].getX(), poses[0].getY(), poses[0].getZ(), poses[1].getX() + 1, poses[1].getY() + 1, poses[1].getZ() + 1, color.getFramered(), color.getFramegreen(), color.getFrameblue(), color.getFramealpha());
+        BufferUploader.drawWithShader(buffer.buildOrThrow());
+        RenderSystem.enableCull();
+        RenderSystem.disableBlend();
+        RenderSystem.enableDepthTest();
+        poseStack.popPose();
+    }
+}

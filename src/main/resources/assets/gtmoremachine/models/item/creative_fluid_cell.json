@@ -1,0 +1,9 @@
+{
+	"loader": "neoforge:fluid_container",
+	"parent": "neoforge:item/default",
+	"textures": {
+		"base": "gtmoremachine:item/creative_fluid_cell/base",
+		"fluid": "gtmoremachine:item/creative_fluid_cell/overlay"
+	},
+	"fluid": "minecraft:empty"
+}

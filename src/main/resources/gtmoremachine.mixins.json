@@ -1,0 +1,16 @@
+{
+	"required": true,
+	"minVersion": "0.8",
+	"package": "cn.qiuye.gtmoremachine.mixin",
+	"refmap": "gtmoremachine.refmap.json",
+	"compatibilityLevel": "JAVA_21",
+	"client": [],
+	"mixins": [
+		"gtm.api.machine.SimpleTieredMachineMixin",
+		"gtm.api.machine.multiblock.MultiblockDisplayText$BuilderMixin"
+	],
+	"injectors": {
+		"defaultRequire": 1,
+		"maxShiftBy": 5
+	}
+}

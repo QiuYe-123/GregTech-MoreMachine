@@ -1,0 +1,7 @@
+{
+    "variants": {
+        "": {
+            "model": "gtmoremachine:block/uiv_energy_communication_unit"
+        }
+    }
+}

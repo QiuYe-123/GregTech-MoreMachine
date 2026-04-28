@@ -1,0 +1,154 @@
+# ChangeLog
+
+## Version [v1.6.0](https://github.com/QiuYe-123/GTMoreMachine/compare/v1.5.1-1.20.1...v1.6.0-1.20.1)
+### Fixed
+
+- 简化isDataGen() && isDev() 到isDev() by @QiuYe-123 in [#101](https://github.com/QiuYe-123/GTMoreMachine/pull/101)
+
+### Changed
+
+- Refactor GTMMRegistration by @QiuYe-123 in [#88](https://github.com/QiuYe-123/GTMoreMachine/pull/88)
+
+ 
+## Version [v1.5.1](https://github.com/QiuYe-123/GTMoreMachine/compare/v1.5.0-1.20.1...v1.5.1-1.20.1)
+### Fixed
+
+- TagUtils fix by @QiuYe-123 in [#89](https://github.com/QiuYe-123/GTMoreMachine/pull/89)
+
+### Changed
+
+- 将传输限制改为等级控制 by @QiuYe-123 in [#86](https://github.com/QiuYe-123/GTMoreMachine/pull/86)
+
+ 
+## Version [v1.5.0](https://github.com/QiuYe-123/GTMoreMachine/compare/v1.4.1-1.20.1...v1.5.0-1.20.1)
+### Fixed
+
+- Fix Tag by @QiuYe-123 in [#76](https://github.com/QiuYe-123/GTMoreMachine/pull/76)
+- 提前null检测 by @QiuYe-123 in [#82](https://github.com/QiuYe-123/GTMoreMachine/pull/82)
+
+### Changed
+
+- GTMM ItemTag Tag refactor by @QiuYe-123 in [#83](https://github.com/QiuYe-123/GTMoreMachine/pull/83)
+
+ 
+## Version [v1.4.1](https://github.com/QiuYe-123/GTMoreMachine/compare/v1.4.0-1.20.1...v1.4.1-1.20.1)
+ 
+## Version [v1.4.0](https://github.com/QiuYe-123/GTMoreMachine/compare/v1.3.0-1.20.1...v1.4.0-1.20.1)
+### Added
+
+- 完善无线网络 by @QiuYe-123 in [#61](https://github.com/QiuYe-123/GTMoreMachine/pull/61)
+- 重构无线电网系统UHD by @QiuYe-123 in [#66](https://github.com/QiuYe-123/GTMoreMachine/pull/66)
+
+### Fixed
+
+- 修复来自CuriosUtils的报错 by @QiuYe-123 in [#67](https://github.com/QiuYe-123/GTMoreMachine/pull/67)
+
+### Changed
+
+- 重构无线电网系统UHD by @QiuYe-123 in [#66](https://github.com/QiuYe-123/GTMoreMachine/pull/66)
+
+ 
+## Version [v1.3.0](https://github.com/QiuYe-123/GTMoreMachine/compare/v1.2.2-1.20.1...v1.3.0-1.20.1)
+### Added
+
+- 算力网络修复 by @QiuYe-123 in [#54](https://github.com/QiuYe-123/GTMoreMachine/pull/54)
+- 无线网络修复 by @QiuYe-123 in [#58](https://github.com/QiuYe-123/GTMoreMachine/pull/58)
+
+### Fixed
+
+- 算力网络修复 by @QiuYe-123 in [#54](https://github.com/QiuYe-123/GTMoreMachine/pull/54)
+- 无线网络修复 by @QiuYe-123 in [#58](https://github.com/QiuYe-123/GTMoreMachine/pull/58)
+
+ 
+## Version [v1.2.2](https://github.com/QiuYe-123/GTMoreMachine/compare/v1.2.1-1.20.1...v1.2.2-1.20.1)
+### Added
+
+- 添加更多无线能源仓 by @QiuYe-123 in [#48](https://github.com/QiuYe-123/GTMoreMachine/pull/48)
+- 修正无线能源监视器的世界显示 by @QiuYe-123 in [#50](https://github.com/QiuYe-123/GTMoreMachine/pull/50)
+- 添加算力网络 by @QiuYe-123 in [#51](https://github.com/QiuYe-123/GTMoreMachine/pull/51)
+
+### Fixed
+
+- 添加缺失语言本地化文件 by @QiuYe-123 in [#46](https://github.com/QiuYe-123/GTMoreMachine/pull/46)
+- 修复lang key引用错误 by @QiuYe-123 in [#47](https://github.com/QiuYe-123/GTMoreMachine/pull/47)
+- 修正无线能源监视器的世界显示 by @QiuYe-123 in [#50](https://github.com/QiuYe-123/GTMoreMachine/pull/50)
+
+ 
+## Version [v1.2.1](https://github.com/QiuYe-123/GTMoreMachine/compare/v1.2.0-1.20.1...v1.2.1-1.20.1)
+### Added
+
+- 添加可编程系列物品 by @QiuYe-123 in [#38](https://github.com/QiuYe-123/GTMoreMachine/pull/38)
+- 添加剩余配方 by @QiuYe-123 in [#40](https://github.com/QiuYe-123/GTMoreMachine/pull/40)
+- 完善高级终端，添加拆除模式 by @QiuYe-123 in [#41](https://github.com/QiuYe-123/GTMoreMachine/pull/41)
+- 无线传输覆盖版(流体，物品) by @QiuYe-123 in [#42](https://github.com/QiuYe-123/GTMoreMachine/pull/42)
+
+### Fixed
+
+- 修复无线电网监视器 by @QiuYe-123 in [#37](https://github.com/QiuYe-123/GTMoreMachine/pull/37)
+- 添加剩余配方 by @QiuYe-123 in [#40](https://github.com/QiuYe-123/GTMoreMachine/pull/40)
+- 完善高级终端，添加拆除模式 by @QiuYe-123 in [#41](https://github.com/QiuYe-123/GTMoreMachine/pull/41)
+- 添加en_us en_ud翻译 by @QiuYe-123 in [#43](https://github.com/QiuYe-123/GTMoreMachine/pull/43)
+
+### Changed
+
+- 添加en_us en_ud翻译 by @QiuYe-123 in [#43](https://github.com/QiuYe-123/GTMoreMachine/pull/43)
+
+ 
+## Version [v1.2.0](https://github.com/QiuYe-123/GTMoreMachine/compare/v1.1.0-1.20.1...v1.2.0-1.20.1)
+### Added
+
+- 添加无线算力仓 by @QiuYe-123 in [#28](https://github.com/QiuYe-123/GTMoreMachine/pull/28)
+- 添加更多可替换方块 by @QiuYe-123 in [#29](https://github.com/QiuYe-123/GTMoreMachine/pull/29)
+- 添加无线覆盖板 by @QiuYe-123 in [#30](https://github.com/QiuYe-123/GTMoreMachine/pull/30)
+- 添加巨型物品输入输出总线 巨型输入总成 by @QiuYe-123 in [#31](https://github.com/QiuYe-123/GTMoreMachine/pull/31)
+- 添加配方(GTMThings) 未进行整理 by @QiuYe-123 in [#34](https://github.com/QiuYe-123/GTMoreMachine/pull/34)
+
+### Fixed
+
+- 修复流体钻机与基岩矿石钻机的最大功率不统一 by @QiuYe-123 in [#26](https://github.com/QiuYe-123/GTMoreMachine/pull/26)
+- 添加无线覆盖板 by @QiuYe-123 in [#30](https://github.com/QiuYe-123/GTMoreMachine/pull/30)
+- 修复无线电网系统的问题 by @QiuYe-123 in [#32](https://github.com/QiuYe-123/GTMoreMachine/pull/32)
+- 高级终端修改 key和读取逻辑 by @QiuYe-123 in [#33](https://github.com/QiuYe-123/GTMoreMachine/pull/33)
+
+### Changed
+
+- 高级终端修改 key和读取逻辑 by @QiuYe-123 in [#33](https://github.com/QiuYe-123/GTMoreMachine/pull/33)
+
+ 
+## Version [v1.1.0](https://github.com/QiuYe-123/GTMoreMachine/compare/v1.0.1-1.20.1...v1.1.0-1.20.1)
+### Added
+
+- 数据格式化实装，进出分类实装 by @QiuYe-123 in [#17](https://github.com/QiuYe-123/GTMoreMachine/pull/17)
+- 添加无线仓 纹理来自gtmthings by @QiuYe-123 in [#19](https://github.com/QiuYe-123/GTMoreMachine/pull/19)
+- 修改无线仓tooltips by @QiuYe-123 in [#20](https://github.com/QiuYe-123/GTMoreMachine/pull/20)
+- 添加无线接口 by @QiuYe-123 in [#21](https://github.com/QiuYe-123/GTMoreMachine/pull/21)
+- 添加me输出总成和一系列创造物品(GTMThings) by @QiuYe-123 in [#22](https://github.com/QiuYe-123/GTMoreMachine/pull/22)
+- 为所有机器提供了最大功率格式化 by @QiuYe-123 in [#23](https://github.com/QiuYe-123/GTMoreMachine/pull/23)
+
+### Fixed
+
+- 将部分工具类切换为kt by @QiuYe-123 in [#16](https://github.com/QiuYe-123/GTMoreMachine/pull/16)
+- 修改无线仓tooltips by @QiuYe-123 in [#20](https://github.com/QiuYe-123/GTMoreMachine/pull/20)
+- 添加无线接口 by @QiuYe-123 in [#21](https://github.com/QiuYe-123/GTMoreMachine/pull/21)
+- 添加me输出总成和一系列创造物品(GTMThings) by @QiuYe-123 in [#22](https://github.com/QiuYe-123/GTMoreMachine/pull/22)
+- 为所有机器提供了最大功率格式化 by @QiuYe-123 in [#23](https://github.com/QiuYe-123/GTMoreMachine/pull/23)
+
+### Changed
+
+- 将部分工具类切换为kt by @QiuYe-123 in [#16](https://github.com/QiuYe-123/GTMoreMachine/pull/16)
+
+ 
+## Version [v1.0.1](https://github.com/QiuYe-123/GTMoreMachine/compare/v1.0.0-1.20.1...v1.0.1-1.20.1)
+### Added
+
+- 添加无线能源网络基础类 by @QiuYe-123 in [#12](https://github.com/QiuYe-123/GTMoreMachine/pull/12)
+- 添加无线能源链接工具 by @QiuYe-123 in [#13](https://github.com/QiuYe-123/GTMoreMachine/pull/13)
+- 添加一部分显示优化 by @QiuYe-123 in [#14](https://github.com/QiuYe-123/GTMoreMachine/pull/14)
+
+### Fixed
+
+- 添加无线能源网络基础类 by @QiuYe-123 in [#12](https://github.com/QiuYe-123/GTMoreMachine/pull/12)
+- 添加一部分显示优化 by @QiuYe-123 in [#14](https://github.com/QiuYe-123/GTMoreMachine/pull/14)
+
+ 
+- no changes
