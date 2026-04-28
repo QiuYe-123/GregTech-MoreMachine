@@ -32,6 +32,8 @@ import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.network.chat.Style;
+import net.minecraft.server.TickTask;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -99,12 +101,18 @@ public class DemodulationHubMachine extends WorkableMultiblockMachine
         if (item.isEmpty()) return InteractionResult.PASS;
 
         if (item.is(GTItems.TOOL_DATA_STICK.get())) {
+            WirelessEnergyContainer previousContainer = getWirelessEnergyContainer();
+            if (previousContainer != null) {
+                previousContainer.setCapacity(false, this);
+            }
+
+            setOwnerUUID(context.getPlayer().getUUID());
+            setWirelessEnergyContainerCache(null);
+
             WirelessEnergyContainer container = getWirelessEnergyContainer();
             if (container != null) {
                 container.setCapacity(this.isFormed(), this);
             }
-            setOwnerUUID(context.getPlayer().getUUID());
-            setWirelessEnergyContainerCache(null);
 
             context.getPlayer().sendSystemMessage(Component.translatable(
                     WirelessEnergyHatchPartMachine.WIRELESS_ENERGY_HATCH_TOOLTIP_BIND,
@@ -140,37 +148,39 @@ public class DemodulationHubMachine extends WorkableMultiblockMachine
     @Override
     public void onStructureFormed() {
         super.onStructureFormed();
-
-        List<ICCData> components = new ArrayList<>();
-
-        for (Map.Entry<String, Object> battery : getMultiblockState().getMatchContext().entrySet()) {
-            if (battery.getKey().startsWith(CAPACITY_COMPONENT_HEADER) &&
-                    battery.getValue() instanceof ComponentMatchWrapper wrapper) {
-                for (int i = 0; i < wrapper.amount; i++) {
-                    components.add(wrapper.componentData);
-                }
-            }
-        }
-
-        if (components.isEmpty()) {
+        if (!rebuildCapacityBank()) {
             onStructureInvalid();
             return;
         }
-
-        if (this.capacityBank == null) {
-            this.capacityBank = this.attachTrait(new DimensionalRelayNodeBank(components));
-        } else {
-            this.capacityBank = this.capacityBank.rebuild(components);
-        }
-
-        tickSubscription.updateSubscription();
+        syncCapacityState();
     }
 
     @Override
     public void onStructureInvalid() {
         tickSubscription.unsubscribe();
+        WirelessEnergyContainer container = getWirelessEnergyContainer();
+        if (container != null) {
+            container.setCapacity(false, this);
+        }
 
         super.onStructureInvalid();
+    }
+
+    @Override
+    public void onLoad() {
+        super.onLoad();
+        if (getLevel() instanceof ServerLevel serverLevel) {
+            serverLevel.getServer().tell(new TickTask(0, this::syncCapacityState));
+        }
+    }
+
+    @Override
+    public void onUnload() {
+        WirelessEnergyContainer container = getWirelessEnergyContainer();
+        if (container != null) {
+            container.setCapacity(false, this);
+        }
+        super.onUnload();
     }
 
     // ============== Status Update ==============
@@ -249,12 +259,46 @@ public class DemodulationHubMachine extends WorkableMultiblockMachine
 
     @Override
     public void setWorkingEnabled(boolean ignored) {
-        // 固定为工作状态
+        // Always enabled.
     }
 
     @Override
     public DimensionalBank getDimensionalRelayNodeBank() {
         return new DimensionalBank(this.getTotalCapacity(), this.getTotalPassiveDrain());
+    }
+
+    private void syncCapacityState() {
+        if (!isFormed()) return;
+        if (!rebuildCapacityBank()) return;
+        tickSubscription.updateSubscription();
+        WirelessEnergyContainer container = getWirelessEnergyContainer();
+        if (container != null) {
+            container.setCapacity(true, this);
+        }
+    }
+
+    private boolean rebuildCapacityBank() {
+        List<ICCData> components = new ArrayList<>();
+
+        for (Map.Entry<String, Object> battery : getMultiblockState().getMatchContext().entrySet()) {
+            if (battery.getKey().startsWith(CAPACITY_COMPONENT_HEADER) &&
+                    battery.getValue() instanceof ComponentMatchWrapper wrapper) {
+                for (int i = 0; i < wrapper.amount; i++) {
+                    components.add(wrapper.componentData);
+                }
+            }
+        }
+
+        if (components.isEmpty()) {
+            return false;
+        }
+
+        if (this.capacityBank == null) {
+            this.capacityBank = this.attachTrait(new DimensionalRelayNodeBank(components));
+        } else {
+            this.capacityBank = this.capacityBank.rebuild(components);
+        }
+        return true;
     }
 
     // ============== Inner Class: DimensionalBank ==============
@@ -270,12 +314,15 @@ public class DemodulationHubMachine extends WorkableMultiblockMachine
         }
 
         @Getter
-        private final BigInteger totalCapacity;
+        private BigInteger totalCapacity;
         @Getter
-        private final BigInteger totalPassiveDrain;
+        private BigInteger totalPassiveDrain;
 
         public DimensionalRelayNodeBank(List<ICCData> components) {
-            super();
+            update(components);
+        }
+
+        private void update(List<ICCData> components) {
             this.totalCapacity = components.stream()
                     .map(ICCData::getCapacity)
                     .reduce(BigInteger.ZERO, BigInteger::add);
@@ -288,7 +335,8 @@ public class DemodulationHubMachine extends WorkableMultiblockMachine
             if (component.isEmpty()) {
                 throw new IllegalArgumentException("Cannot rebuild bank with no batteries!");
             }
-            return new DimensionalRelayNodeBank(component);
+            update(component);
+            return this;
         }
     }
 
