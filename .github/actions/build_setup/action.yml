@@ -19,14 +19,14 @@ runs:
     - name: Set up JDK
       uses: actions/setup-java@v4
       env:
-        REF: ${{ inputs.ref || github.ref }}
+        REF: ${{ inputs.ref || github.base_ref || github.ref }}
       with:
         distribution: temurin
-        java-version: 17
+        java-version: ${{ contains(env.REF, '1.20.1') && '17' || '21' }}
 
     - name: Setup Gradle
       uses: gradle/actions/setup-gradle@v4
       with:
         cache-write-only: ${{ inputs.update-cache }}
-        cache-read-only: ${{ github.ref != 'refs/heads/1.20.1' }}
+        cache-read-only: ${{ github.ref != 'refs/heads/1.20.1' && github.ref != 'refs/heads/1.21.1' }}
         add-job-summary: 'on-failure'
