@@ -96,7 +96,6 @@ generateModMetadata.doFirst {
 tasks.withType(JavaCompile).configureEach {
     options.encoding = "UTF-8"
     options.compilerArgs << "-Xlint:-removal"
-    options.compilerArgs << "-Aquiet=true"// 忽略删除和过时，真删了报错再说吧
 }
 
 tasks.named('compileJava', JavaCompile) {
@@ -138,3 +137,4 @@ jacocoTestReport {
         }))
     }
 }
+
