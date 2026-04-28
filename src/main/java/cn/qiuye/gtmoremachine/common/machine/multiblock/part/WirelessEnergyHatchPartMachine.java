@@ -40,7 +40,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @GTMMDataGeneratorScanned
 public class WirelessEnergyHatchPartMachine extends TieredIOPartMachine implements IWirelessEnergyContainerHolder {
 
-    private static final String WIRELESS_ENERGY_HATCH_PREFIX = "gtmoremachine.machine.wireless_energy_hatch";
+    public static final String WIRELESS_ENERGY_HATCH_PREFIX = "gtmoremachine.machine.wireless_energy_hatch";
     @GTMMRegisterLanguage(en = "Bind to: %s", cn = "成功绑定至：%s")
     public static final String WIRELESS_ENERGY_HATCH_TOOLTIP_BIND = WIRELESS_ENERGY_HATCH_PREFIX + ".tooltip.bind";
     @GTMMRegisterLanguage(en = "Unbind!", cn = "解除绑定成功")
@@ -52,25 +52,25 @@ public class WirelessEnergyHatchPartMachine extends TieredIOPartMachine implemen
     @GTMMRegisterLanguage(en = "Bind to unknow user: %s", cn = "已绑定至未知用户：%s")
     public static final String WIRELESS_ENERGY_HATCH_TOOLTIP_3 = WIRELESS_ENERGY_HATCH_PREFIX + ".tooltip.3";
     @GTMMRegisterLanguage(en = "Multiblock Sharing §4Disabled", cn = "多方块结构共享：§4禁止")
-    public static final String UNIVERSAL_DISABLED = "gtmoremachine.universal.disabled";
+    private static final String UNIVERSAL_DISABLED = "gtmoremachine.universal.disabled";
 
-    private static final String ENERGY_HATCH_PREFIX = "gtmoremachine.machine.energy_hatch";
+    public static final String ENERGY_HATCH_PREFIX = "gtmoremachine.machine.energy_hatch";
     @GTMMRegisterLanguage(en = "Energy Input for Multiblocks", cn = "为多方块结构输入能量")
-    public static final String ENERGY_HATCH_INPUT_TOOLTIP = ENERGY_HATCH_PREFIX + ".input.tooltip";
+    private static final String ENERGY_HATCH_INPUT_TOOLTIP = ENERGY_HATCH_PREFIX + ".input.tooltip";
     @GTMMRegisterLanguage(en = "Energy Output for Multiblocks", cn = "为多方块结构输出能量")
-    public static final String ENERGY_HATCH_OUTPUT_TOOLTIP = ENERGY_HATCH_PREFIX + ".output.tooltip";
+    private static final String ENERGY_HATCH_OUTPUT_TOOLTIP = ENERGY_HATCH_PREFIX + ".output.tooltip";
     @GTMMRegisterLanguage(en = "Large Amount Of Energy Input for Multiblocks", cn = "为多方块结构输入大量能量")
-    public static final String ENERGY_HATCH_TARGET_TOOLTIP = ENERGY_HATCH_PREFIX + ".target.tooltip";
+    private static final String ENERGY_HATCH_TARGET_TOOLTIP = ENERGY_HATCH_PREFIX + ".target.tooltip";
     @GTMMRegisterLanguage(en = "Large Amount Of Energy Output for Multiblocks", cn = "为多方块结构输出大量能量")
-    public static final String ENERGY_HATCH_SOURCE_TOOLTIP = ENERGY_HATCH_PREFIX + ".source.tooltip";
+    private static final String ENERGY_HATCH_SOURCE_TOOLTIP = ENERGY_HATCH_PREFIX + ".source.tooltip";
     @GTMMRegisterLanguage(en = "You can bind or change the owner by left-click the Energy Hatch with Data Stick,or right-click to unbind.", cn = "手持闪存右键点击能源仓可绑定·变更所有者，左键点击可解除绑定。")
-    public static final String WIRELESS_ENERGY_HATCH_INPUT_TOOLTIP = WIRELESS_ENERGY_HATCH_PREFIX + ".input.tooltip";
+    private static final String WIRELESS_ENERGY_HATCH_INPUT_TOOLTIP = WIRELESS_ENERGY_HATCH_PREFIX + ".input.tooltip";
     @GTMMRegisterLanguage(en = "You can bind or change the owner by left-click the Dynoma Hatch with Data Stick,or right-click to unbind.", cn = "手持闪存右键点击动力仓可绑定·变更所有者，左键点击可解除绑定。")
-    public static final String WIRELESS_ENERGY_HATCH_OUTPUT_TOOLTIP = WIRELESS_ENERGY_HATCH_PREFIX + ".output.tooltip";
+    private static final String WIRELESS_ENERGY_HATCH_OUTPUT_TOOLTIP = WIRELESS_ENERGY_HATCH_PREFIX + ".output.tooltip";
     @GTMMRegisterLanguage(en = "You can bind or change the owner by left-click the Laser Target Hatch with Data Stick,or right-click to unbind.", cn = "手持闪存右键点击激光靶仓可绑定·变更所有者，左键点击可解除绑定。")
-    public static final String WIRELESS_ENERGY_HATCH_TARGET_TOOLTIP = WIRELESS_ENERGY_HATCH_PREFIX + ".target.tooltip";
+    private static final String WIRELESS_ENERGY_HATCH_TARGET_TOOLTIP = WIRELESS_ENERGY_HATCH_PREFIX + ".target.tooltip";
     @GTMMRegisterLanguage(en = "You can bind or change the owner by left-click the Laser Source Hatch with Data Stick,or right-click to unbind.", cn = "手持闪存右键点击激光源仓可绑定·变更所有者，左键点击可解除绑定。")
-    public static final String WIRELESS_ENERGY_HATCH_SOURCE_TOOLTIP = WIRELESS_ENERGY_HATCH_PREFIX + ".source.tooltip";
+    private static final String WIRELESS_ENERGY_HATCH_SOURCE_TOOLTIP = WIRELESS_ENERGY_HATCH_PREFIX + ".source.tooltip";
 
     @Nullable
     @Getter

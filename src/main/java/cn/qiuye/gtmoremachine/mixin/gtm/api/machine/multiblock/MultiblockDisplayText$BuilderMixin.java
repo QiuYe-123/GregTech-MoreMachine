@@ -17,8 +17,8 @@ public class MultiblockDisplayText$BuilderMixin {
                        value = "INVOKE",
                        target = "Lcom/gregtechceu/gtceu/utils/FormattingUtil;formatNumbers(J)Ljava/lang/String;"),
               remap = false)
-    private String modifyFormatNumbersArg(long original) {
-        return NumberUtils.formatLong(original);
+    private String modifyFormatNumbersArg(long number) {
+        return NumberUtils.formatLong(number);
     }
 
     @Redirect(
@@ -27,8 +27,8 @@ public class MultiblockDisplayText$BuilderMixin {
                        value = "INVOKE",
                        target = "Lcom/gregtechceu/gtceu/utils/FormattingUtil;formatNumbers(J)Ljava/lang/String;"),
               remap = false)
-    private String modifyFormatNumbersArg1(long original) {
-        return NumberUtils.formatLong(original);
+    private String modifyFormatNumbersArg1(long number) {
+        return NumberUtils.formatLong(number);
     }
 
     @Redirect(
@@ -37,7 +37,7 @@ public class MultiblockDisplayText$BuilderMixin {
                        value = "INVOKE",
                        target = "Lcom/gregtechceu/gtceu/utils/FormattingUtil;formatNumbers(J)Ljava/lang/String;"),
               remap = false)
-    private String modifyFormatNumbersArg2(long original) {
-        return NumberUtils.formatLong(original);
+    private String modifyFormatNumbersArg2(long number) {
+        return NumberUtils.formatLong(number);
     }
 }
