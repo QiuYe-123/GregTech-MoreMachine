@@ -137,11 +137,14 @@ object FormattingUtil {
 	}
 
 	fun getSpacer(font: Font, splitChar: String, spaceLength: Int): String {
-		var spacerCount = spaceLength / font.width(splitChar)
+		if (spaceLength <= 0) return " "
+		val splitWidth = font.width(splitChar)
+		if (splitWidth <= 0) return " "
+		var spacerCount = spaceLength / splitWidth
 		while (font.width(splitChar.repeat(spacerCount) + " ") <= spaceLength) {
 			spacerCount++
 		}
-		return splitChar.repeat(spacerCount - 2) + " "
+		return splitChar.repeat((spacerCount - 2).coerceAtLeast(0)) + " "
 	}
 
 	private fun stripColor(text: String): String = (
@@ -174,7 +177,7 @@ object FormattingUtil {
 				getSpacer(
 					font,
 					splitChar,
-					maxWidth - before.get() - after.get(),
+					(maxWidth - before.get() - after.get()).coerceAtLeast(0),
 				)
 			} else {
 				text
@@ -210,11 +213,6 @@ object FormattingUtil {
 
 	private val ONE_THOUSAND = BigDecimal(1000)
 
-	/** 预计算 1000^0 ~ 1000^(UNITS.size-1)，由 lazy 延迟初始化，供 formatNumberReadable 和 calculateExponent 复用 */
-	private val POWERS by lazy {
-		Array(UNITS.size) { ONE_THOUSAND.pow(it) }
-	}
-
 	fun formatNumberReadable(number: BigDecimal): String = formatNumberReadable(number, false)
 
 	fun formatNumberReadable(number: BigDecimal, milli: Boolean): String = formatNumberReadable(number, milli, DECIMAL_FORMAT_1F, null)
@@ -222,54 +220,62 @@ object FormattingUtil {
 	fun formatNumberReadable(number: BigDecimal, milli: Boolean, fmt: NumberFormat, @Nullable unit: String?): String {
 		val sb = StringBuilder()
 		val zero = BigDecimal.ZERO
-		var number1 = number
-		var numberVar = number
-		if (numberVar < zero) {
-			numberVar = numberVar.abs()
+
+		// 处理负数
+		val absNumber: BigDecimal
+		if (number < zero) {
 			sb.append('-')
+			absNumber = -number
+		} else {
+			absNumber = number
 		}
+
+		// 处理毫单位（除以 1000）：用移动小数点 + 精度截断替代大数除法
+		var numberVar = absNumber
 		var milliVar = milli
 		if (milliVar && numberVar >= ONE_THOUSAND) {
 			milliVar = false
-			numberVar = numberVar.divide(ONE_THOUSAND, MathContext.DECIMAL128)
+			numberVar = numberVar.movePointLeft(3).round(MathContext.DECIMAL128)
 		}
-		var exp = 0
-		if (numberVar >= ONE_THOUSAND) {
-			exp = calculateExponent(numberVar)
 
-			// 当指数超过单位数组范围时使用科学计数法
+		var exp = 0
+		var number1 = numberVar // 最终用于格式化的数值
+
+		if (numberVar >= ONE_THOUSAND) {
+			// 直接通过整数位数计算千位指数，完全避免 while 循环除法
+			val intDigits = getIntegerDigits(numberVar)
+			exp = (intDigits - 1) / 3 // 每 3 位一个单位
+
 			if (exp > UNITS.size - 1) {
 				return DECIMAL_FORMAT_SIC_2F.format(numberVar)
 			}
 
-			// 使用BigDecimal进行幂运算
-			if (exp > 0) {
-				val divisor = POWERS[exp]
-				number1 = numberVar.divide(divisor, MathContext.DECIMAL128)
-			}
+			// 移动小数点相当于除以 1000^exp，再截断到 34 位有效数字
+			number1 = numberVar.movePointLeft(3 * exp).round(MathContext.DECIMAL128)
 		}
+
 		sb.append(fmt.format(number1))
+
+		// 追加单位后缀
 		if (exp > 0) {
 			sb.append(UNITS[exp])
 		} else if (milliVar && number1.compareTo(zero) != 0) {
 			sb.append('m')
 		}
 		if (unit != null) sb.append(unit)
+
 		return sb.toString()
 	}
 
 	/**
-	 * 使用BigDecimal计算指数，避免double精度限制
+	 * 高效获取 BigDecimal 整数部分的十进制位数，内部仅用 bitLength() 等信息，O(1) 复杂度
 	 */
-	private fun calculateExponent(number: BigDecimal): Int {
-		var exponent = 0
-		var temp = number
-
-		while (temp >= ONE_THOUSAND) {
-			temp = temp.divide(ONE_THOUSAND, MathContext.DECIMAL128)
-			exponent++
-		}
-		return exponent
+	private fun getIntegerDigits(number: BigDecimal): Int {
+		if (number.signum() == 0) return 0
+		// 整数位数 = 有效数字总位数（precision） - 小数位数（scale）
+		val precision = number.precision() // 对巨型整数，底层仅依赖于 BigInteger.bitLength()
+		val scale = number.scale()
+		return maxOf(0, precision - scale)
 	}
 
 	fun formatNumber(number: Double): String {

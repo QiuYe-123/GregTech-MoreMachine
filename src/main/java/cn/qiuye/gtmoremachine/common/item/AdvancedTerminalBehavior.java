@@ -69,19 +69,19 @@ public class AdvancedTerminalBehavior implements IItemUIFactory {
     private static final String S2T = "item.gtmoremachine.advanced_terminal.setting.2.tooltip";
     @GTMMRegisterLanguage(cn = "替换模式", en = "Replace mode")
     private static final String S3 = "item.gtmoremachine.advanced_terminal.setting.3";
-    @GTMMRegisterLanguage(cn = "是否启用等级方块替换模式(OFF:不启用,ON:启用)\n启用等级方块替换模式会将所有线圈替换为等级方块中指定的等级。", en = "Whether to enable the Tier Block replace mode (OFF: not enabled, ON: enabled)\nAfter enabling the Tier Block replace mode, all coils will be replaced by the Tier Block specified in the Tier Block setting.")
+    @GTMMRegisterLanguage(cn = "是否启用等级方块替换模式(暗:不启用,亮:启用)\n启用等级方块替换模式会将所有线圈替换为等级方块中指定的等级。", en = "Whether to enable the Tier Block replace mode (Dark: not enabled, Bright: enabled)\nAfter enabling the Tier Block replace mode, all coils will be replaced by the Tier Block specified in the Tier Block setting.")
     private static final String S3T = "item.gtmoremachine.advanced_terminal.setting.3.tooltip";
     @GTMMRegisterLanguage(cn = "使用AE物品", en = "Use AE Items")
     private static final String S4 = "item.gtmoremachine.advanced_terminal.setting.4";
-    @GTMMRegisterLanguage(cn = "是否使用AE物品(OFF:不使用,ON:使用)\n使用AE物品开启后，会通过背包中的AE终端连接到相应的AE网络并使用其中的物品来进行建造。", en = "Whether to use AE items (OFF: not use, ON: use)\nAfter enabling 'Use AE Items', it will connect to the corresponding AE network via the AE Terminal in the inventory and use the items from it for construction.")
+    @GTMMRegisterLanguage(cn = "是否使用AE物品(暗:不启用,亮:启用)\n使用AE物品开启后，会通过背包中的AE终端连接到相应的AE网络并使用其中的物品来进行建造。", en = "Whether to use AE items (Dark: not enabled, Bright: enabled)\nAfter enabling 'Use AE Items', it will connect to the corresponding AE network via the AE Terminal in the inventory and use the items from it for construction.")
     private static final String S4T = "item.gtmoremachine.advanced_terminal.setting.4.tooltip";
     @GTMMRegisterLanguage(cn = "镜像搭建", en = "Mirror Building")
     private static final String S5 = "item.gtmoremachine.advanced_terminal.setting.5";
-    @GTMMRegisterLanguage(cn = "是否启用镜像搭建(OFF:不启用,ON:启用)\n启用镜像搭建后，会将所有结构的镜像进行搭建。", en = "Whether to enable Mirror Building (OFF: not enabled, ON: enabled)\nAfter enabling Mirror Building, it will build the mirror image of all structures.")
+    @GTMMRegisterLanguage(cn = "是否启用镜像搭建(暗:不启用,亮:启用)\n启用镜像搭建后，会将所有结构的镜像进行搭建。", en = "Whether to enable Mirror Building (Dark: not enabled, Bright: enabled)\nAfter enabling Mirror Building, it will build the mirror image of all structures.")
     private static final String S5T = "item.gtmoremachine.advanced_terminal.setting.5.tooltip";
     @GTMMRegisterLanguage(cn = "拆除模式", en = "Dismantle mode")
     private static final String S6 = "item.gtmoremachine.advanced_terminal.setting.6";
-    @GTMMRegisterLanguage(cn = "是否启用拆除模式(OFF:不启用,ON:启用)\n启用拆除模式后，会将设定好重复结构次数的部分结构进行拆除。\n警告:会将结构内的所有方块拆除。", en = "Whether to enable Dismantle mode (OFF: not enabled, ON: enabled)\nAfter enabling Dismantle mode, it will dismantle the structural parts for which the number of repetitions has been set.\nWarning: All blocks within the structure will be dismantled.")
+    @GTMMRegisterLanguage(cn = "是否启用拆除模式(暗:不启用,亮:启用)\n启用拆除模式后，会将设定好重复结构次数的部分结构进行拆除。\n警告:会将结构内的所有方块拆除。", en = "Whether to enable Dismantle mode (Dark: not enabled, Bright: enabled)\nAfter enabling Dismantle mode, it will dismantle the structural parts for which the number of repetitions has been set.\nWarning: All blocks within the structure will be dismantled.")
     private static final String S6T = "item.gtmoremachine.advanced_terminal.setting.6.tooltip";
 
     public AdvancedTerminalBehavior() {}
