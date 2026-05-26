@@ -57,8 +57,10 @@ public class GTMMAEMachines {
                     .modelProperty(GTMachineModelProperties.IS_FORMED, false)
                     .workableTieredHullModel(GTCEu.id("block/machine/part/dual_hatch.import"))
                     .tooltips(Component.translatable("gtceu.machine.dual_hatch.import.tooltip"),
-                            Component.translatable("gtceu.universal.tooltip.item_storage_capacity", HugeBusPartMachine.getInventorySize(tier)),
-                            Component.translatable("gtceu.universal.tooltip.fluid_storage_capacity_mult", HugeDualHatchPartMachine.getTankInventorySize(tier),
+                            Component.translatable("gtceu.universal.tooltip.item_storage_capacity",
+                                    HugeBusPartMachine.getInventorySize(tier)),
+                            Component.translatable("gtceu.universal.tooltip.fluid_storage_capacity_mult",
+                                    HugeDualHatchPartMachine.getTankInventorySize(tier),
                                     FormattingUtil.formatNumbers(Integer.MAX_VALUE)),
                             Component.translatable("gtceu.part_sharing.enabled"))
                     .register(),
