@@ -87,7 +87,7 @@ public class BlockMap {
      * @throws NullPointerException 如果 {@code category} 或 {@code blocks} 为 {@code null}，
      *                              或 {@code blocks} 数组中含有 {@code null} 元素
      */
-    public static void registerCategory(@NotNull String category, @NotNull Block @NotNull[] blocks) {
+    public static void registerCategory(@NotNull String category, @NotNull Block @NotNull [] blocks) {
         MAP.put(category, blocks);
         for (Block block : blocks) {
             BLOCK_CATEGORY_MAP.put(block, category);
@@ -111,9 +111,9 @@ public class BlockMap {
      * @return 按 {@code tierComparator} 升序排列后提取的 {@code Block} 数组，无重复元素
      * @throws NullPointerException 如果 {@code entries} 或 {@code tierComparator} 为 {@code null}
      */
-    public static <K, V extends Supplier<? extends Block>> @NotNull Block @NotNull[] sortEntries(
-                                                                                        @NotNull Collection<? extends Map.@NotNull Entry<K, V>> entries,
-                                                                                        @NotNull Comparator<? super K> tierComparator) {
+    public static <K, V extends Supplier<? extends Block>> @NotNull Block @NotNull [] sortEntries(
+                                                                                                  @NotNull Collection<? extends Map.@NotNull Entry<K, V>> entries,
+                                                                                                  @NotNull Comparator<? super K> tierComparator) {
         /*
          * 不使用 Map.Entry.comparingByKey() 而用显式 lambda 的原因是：
          * JDK 对带有通配符边界的 Entry 类型无法正确进行捕获转换，
