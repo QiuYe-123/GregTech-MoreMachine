@@ -108,8 +108,12 @@ public class HugeBusPartMachine extends TieredIOPartMachine implements IDistinct
     //////////////////////////////////////
 
     protected int getInventorySize() {
-        if (getTier() < GTValues.EV) return 1 + getTier();
-        else return (1 + getTier()) * INV_MULTIPLE;
+        return getInventorySize(this.getTier());
+    }
+
+    public static int getInventorySize(int tier) {
+        if (tier < GTValues.EV) return 1 + tier;
+        else return (1 + tier) * INV_MULTIPLE;
     }
 
     protected NotifiableItemStackHandler createInventory(IO io) {

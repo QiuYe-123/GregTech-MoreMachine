@@ -16,7 +16,6 @@ import com.gregtechceu.gtceu.utils.FormattingUtil;
 import net.minecraft.network.chat.Component;
 
 import static cn.qiuye.gtmoremachine.common.data.machines.utils.CustomMachinesUtils.registerTieredMachines;
-import static cn.qiuye.gtmoremachine.common.machine.multiblock.part.HugeBusPartMachine.INV_MULTIPLE;
 import static cn.qiuye.gtmoremachine.common.registry.GTMMRegistration.GTMM;
 import static com.gregtechceu.gtceu.common.data.models.GTMachineModels.*;
 
@@ -39,7 +38,7 @@ public class CustomMachines {
                     .colorOverlayTieredHullModel("overlay_pipe_in_emissive", "overlay_pipe", OVERLAY_ITEM_HATCH_INPUT)
                     .tooltips(Component.translatable(HugeBusPartMachine.HUGE_ITEM_BUS_IMPORT_TOOLTIP),
                             Component.translatable("gtceu.universal.tooltip.item_storage_capacity",
-                                    (1 + tier) * HugeBusPartMachine.INV_MULTIPLE))
+                                    HugeBusPartMachine.getInventorySize(tier)))
                     .tooltips(Component.translatable("gtceu.part_sharing.enabled"))
                     .register(),
             ALL_TIERS);
@@ -55,7 +54,7 @@ public class CustomMachines {
                     .colorOverlayTieredHullModel("overlay_pipe_out_emissive", "overlay_pipe", OVERLAY_ITEM_HATCH_OUTPUT)
                     .tooltips(Component.translatable(HugeBusPartMachine.HUGE_ITEM_BUS_EXPORT_TOOLTIP),
                             Component.translatable("gtceu.universal.tooltip.item_storage_capacity",
-                                    (1 + tier) * INV_MULTIPLE))
+                                    HugeBusPartMachine.getInventorySize(tier)))
                     .tooltips(Component.translatable("gtceu.part_sharing.enabled"))
                     .register(),
             ALL_TIERS);
@@ -69,9 +68,10 @@ public class CustomMachines {
                         .abilities(GTMachineUtils.DUAL_INPUT_HATCH_ABILITIES)
                         .tooltips(Component.translatable("gtceu.machine.dual_hatch.import.tooltip"));
                 builder.tooltips(Component.translatable("gtceu.universal.tooltip.item_storage_capacity",
-                        (1 + tier) * INV_MULTIPLE))
+                        HugeBusPartMachine.getInventorySize(tier)))
                         .tooltips(Component.translatable("gtceu.universal.tooltip.fluid_storage_capacity_mult",
-                                tier, FormattingUtil.formatNumbers(Integer.MAX_VALUE)))
+                                HugeDualHatchPartMachine.getTankInventorySize(tier),
+                                FormattingUtil.formatNumbers(Integer.MAX_VALUE)))
                         .tooltips(Component.translatable("gtceu.part_sharing.enabled"));
                 return builder.register();
             },
