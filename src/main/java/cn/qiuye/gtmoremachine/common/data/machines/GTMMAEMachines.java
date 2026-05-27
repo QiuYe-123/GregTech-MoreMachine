@@ -1,6 +1,8 @@
 package cn.qiuye.gtmoremachine.common.data.machines;
 
 import cn.qiuye.gtmoremachine.GTmm;
+import cn.qiuye.gtmoremachine.common.machine.multiblock.part.HugeBusPartMachine;
+import cn.qiuye.gtmoremachine.common.machine.multiblock.part.HugeDualHatchPartMachine;
 import cn.qiuye.gtmoremachine.integration.ae.machine.ProgrammableDualHatchPartMachine;
 import cn.qiuye.gtmoremachine.integration.ae.machine.ProgrammableHatchPartMachine;
 import cn.qiuye.gtmoremachine.integration.ae.machine.multiblock.part.MEOutputPartMachine;
@@ -17,7 +19,6 @@ import com.gregtechceu.gtceu.utils.FormattingUtil;
 import net.minecraft.network.chat.Component;
 
 import static cn.qiuye.gtmoremachine.common.data.machines.utils.CustomMachinesUtils.registerTieredMachines;
-import static cn.qiuye.gtmoremachine.common.machine.multiblock.part.HugeBusPartMachine.INV_MULTIPLE;
 import static cn.qiuye.gtmoremachine.common.registry.GTMMRegistration.GTMM;
 import static com.gregtechceu.gtceu.common.data.machines.GTMachineUtils.DUAL_HATCH_TIERS;
 
@@ -56,8 +57,11 @@ public class GTMMAEMachines {
                     .modelProperty(GTMachineModelProperties.IS_FORMED, false)
                     .workableTieredHullModel(GTCEu.id("block/machine/part/dual_hatch.import"))
                     .tooltips(Component.translatable("gtceu.machine.dual_hatch.import.tooltip"),
-                            Component.translatable("gtceu.universal.tooltip.item_storage_capacity", (1 + tier) * INV_MULTIPLE),
-                            Component.translatable("gtceu.universal.tooltip.fluid_storage_capacity_mult", tier, FormattingUtil.formatNumbers(Integer.MAX_VALUE)),
+                            Component.translatable("gtceu.universal.tooltip.item_storage_capacity",
+                                    HugeBusPartMachine.getInventorySize(tier)),
+                            Component.translatable("gtceu.universal.tooltip.fluid_storage_capacity_mult",
+                                    HugeDualHatchPartMachine.getTankInventorySize(tier),
+                                    FormattingUtil.formatNumbers(Integer.MAX_VALUE)),
                             Component.translatable("gtceu.part_sharing.enabled"))
                     .register(),
             DUAL_HATCH_TIERS);

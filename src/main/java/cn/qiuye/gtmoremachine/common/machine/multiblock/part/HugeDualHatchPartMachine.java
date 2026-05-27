@@ -74,7 +74,11 @@ public class HugeDualHatchPartMachine extends HugeBusPartMachine {
     }
 
     protected int getTankInventorySize() {
-        return this.getTier() + 1;
+        return getTankInventorySize(this.getTier());
+    }
+
+    public static int getTankInventorySize(int tier) {
+        return tier + 1;
     }
 
     @Override
