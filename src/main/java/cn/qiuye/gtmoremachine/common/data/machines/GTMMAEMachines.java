@@ -1,6 +1,7 @@
 package cn.qiuye.gtmoremachine.common.data.machines;
 
 import cn.qiuye.gtmoremachine.GTmm;
+import cn.qiuye.gtmoremachine.common.data.GTMMCreativeModeTabs;
 import cn.qiuye.gtmoremachine.common.machine.multiblock.part.HugeBusPartMachine;
 import cn.qiuye.gtmoremachine.common.machine.multiblock.part.HugeDualHatchPartMachine;
 import cn.qiuye.gtmoremachine.integration.ae.machine.ProgrammableDualHatchPartMachine;
@@ -23,6 +24,10 @@ import static cn.qiuye.gtmoremachine.common.registry.GTMMRegistration.GTMM;
 import static com.gregtechceu.gtceu.common.data.machines.GTMachineUtils.DUAL_HATCH_TIERS;
 
 public class GTMMAEMachines {
+
+    static {
+        GTMM.creativeModeTab(() -> GTMMCreativeModeTabs.MORE_MACHINES);
+    }
 
     public static final MachineDefinition ME_EXPORT_BUFFER = GTMM
             .machine("me_export_buffer", MEOutputPartMachine::new)
