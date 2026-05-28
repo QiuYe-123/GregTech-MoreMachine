@@ -8,7 +8,6 @@ import cn.qiuye.gtmoremachine.integration.ae.machine.ProgrammableDualHatchPartMa
 import cn.qiuye.gtmoremachine.integration.ae.machine.ProgrammableHatchPartMachine;
 import cn.qiuye.gtmoremachine.integration.ae.machine.multiblock.part.MEOutputPartMachine;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.RotationState;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
@@ -45,7 +44,7 @@ public class GTMMAEMachines {
                     .rotationState(RotationState.ALL)
                     .abilities(PartAbility.IMPORT_ITEMS, PartAbility.IMPORT_FLUIDS)
                     .modelProperty(GTMachineModelProperties.IS_FORMED, false)
-                    .workableTieredHullModel(GTCEu.id("block/machine/part/dual_hatch.import"))
+                    .overlayTieredHullModel("dual_input_hatch")
                     .tooltips(Component.translatable("gtceu.machine.dual_hatch.import.tooltip"),
                             Component.translatable("gtceu.universal.tooltip.item_storage_capacity", (int) Math.pow((tier - 4), 2)),
                             Component.translatable("gtceu.universal.tooltip.fluid_storage_capacity_mult", (tier - 4), DualHatchPartMachine.getTankCapacity(DualHatchPartMachine.INITIAL_TANK_CAPACITY, tier)),
@@ -60,7 +59,7 @@ public class GTMMAEMachines {
                     .rotationState(RotationState.ALL)
                     .abilities(PartAbility.IMPORT_ITEMS, PartAbility.IMPORT_FLUIDS)
                     .modelProperty(GTMachineModelProperties.IS_FORMED, false)
-                    .workableTieredHullModel(GTCEu.id("block/machine/part/dual_hatch.import"))
+                    .overlayTieredHullModel("dual_input_hatch")
                     .tooltips(Component.translatable("gtceu.machine.dual_hatch.import.tooltip"),
                             Component.translatable("gtceu.universal.tooltip.item_storage_capacity",
                                     HugeBusPartMachine.getInventorySize(tier)),

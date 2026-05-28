@@ -17,6 +17,7 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.common.item.behavior.IntCircuitBehaviour;
+import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.integration.ae2.gui.widget.slot.AEConfigSlotWidget;
 
 import com.lowdragmc.lowdraglib.gui.util.DrawerHelper;
@@ -62,14 +63,14 @@ public class CreativeInputBusPartMachine extends TieredIOPartMachine implements 
     @SaveField
     protected final NotifiableItemStackHandler circuitInventory;
     @SaveField
-    private ItemStackTransfer creativeStorage;
+    private final ItemStackTransfer creativeStorage;
     protected ArrayList<Item> lstItem;
 
     public CreativeInputBusPartMachine(BlockEntityCreationInfo holder, Function<Integer, ItemStackTransfer> transferFactory) {
         super(holder, GTValues.MAX, IO.IN);
-        this.inventory = this.attachTrait(new InfinityItemStackHandler(getInventorySize(), io, io, UnlimitedItemStackTransfer::new));
+        this.inventory = this.attachTrait(new InfinityItemStackHandler(getInventorySize(), io, io, UnlimitedItemStackTransfer::new).shouldDropInventoryInWorld(false));
         this.circuitInventory = this.attachTrait(new NotifiableItemStackHandler(1, IO.IN, IO.NONE)
-                .setFilter(IntCircuitBehaviour::isIntegratedCircuit));
+                .setFilter(IntCircuitBehaviour::isIntegratedCircuit).shouldDropInventoryInWorld(!ConfigHolder.INSTANCE.machines.ghostCircuit).shouldSearchContent(false));
         this.creativeStorage = transferFactory.apply(this.getInventorySize());
         this.lstItem = new ArrayList<>();
     }

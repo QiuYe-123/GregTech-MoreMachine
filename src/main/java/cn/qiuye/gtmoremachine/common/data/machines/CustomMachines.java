@@ -35,7 +35,7 @@ public class CustomMachines {
                     .abilities(
                             tier == 0 ? new PartAbility[] { PartAbility.IMPORT_ITEMS, PartAbility.STEAM_IMPORT_ITEMS } :
                                     new PartAbility[] { PartAbility.IMPORT_ITEMS })
-                    .colorOverlayTieredHullModel("overlay_pipe_in_emissive", "overlay_pipe", OVERLAY_ITEM_HATCH_INPUT)
+                    .colorOverlayTieredHullModel(OVERLAY_ITEM_HATCH_INPUT, "overlay_pipe", "overlay_pipe_in_emissive")
                     .tooltips(Component.translatable(HugeBusPartMachine.HUGE_ITEM_BUS_IMPORT_TOOLTIP),
                             Component.translatable("gtceu.universal.tooltip.item_storage_capacity",
                                     HugeBusPartMachine.getInventorySize(tier)))
@@ -51,7 +51,7 @@ public class CustomMachines {
                     .abilities(
                             tier == 0 ? new PartAbility[] { PartAbility.EXPORT_ITEMS, PartAbility.STEAM_EXPORT_ITEMS } :
                                     new PartAbility[] { PartAbility.EXPORT_ITEMS })
-                    .colorOverlayTieredHullModel("overlay_pipe_out_emissive", "overlay_pipe", OVERLAY_ITEM_HATCH_OUTPUT)
+                    .colorOverlayTieredHullModel(OVERLAY_ITEM_HATCH_OUTPUT, "overlay_pipe", "overlay_pipe_out_emissive")
                     .tooltips(Component.translatable(HugeBusPartMachine.HUGE_ITEM_BUS_EXPORT_TOOLTIP),
                             Component.translatable("gtceu.universal.tooltip.item_storage_capacity",
                                     HugeBusPartMachine.getInventorySize(tier)))

@@ -62,7 +62,7 @@ public class CreativeEnergyHatchPartMachine extends TieredIOPartMachine implemen
         super(holder, GTValues.MAX, IO.IN);
         this.voltage = GTValues.VEX[setTier];
         this.maxEnergy = this.voltage * this.amps;
-        this.energyContainer = new InfinityEnergyContainer(this.maxEnergy, this.voltage, this.amps, 0L, 0L);
+        this.energyContainer = attachTrait(new InfinityEnergyContainer(this.maxEnergy, this.voltage, this.amps, 0L, 0L));
     }
 
     //////////////////////////////////////
