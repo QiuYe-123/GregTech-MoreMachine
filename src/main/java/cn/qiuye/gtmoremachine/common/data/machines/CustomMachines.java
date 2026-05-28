@@ -11,13 +11,13 @@ import com.gregtechceu.gtceu.api.data.RotationState;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.common.data.machines.GTMachineUtils;
+import com.gregtechceu.gtceu.common.data.models.GTMachineModels;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
 import net.minecraft.network.chat.Component;
 
 import static cn.qiuye.gtmoremachine.common.data.machines.utils.CustomMachinesUtils.registerTieredMachines;
 import static cn.qiuye.gtmoremachine.common.registry.GTMMRegistration.GTMM;
-import static com.gregtechceu.gtceu.common.data.models.GTMachineModels.*;
 
 public class CustomMachines {
 
@@ -35,7 +35,7 @@ public class CustomMachines {
                     .abilities(
                             tier == 0 ? new PartAbility[] { PartAbility.IMPORT_ITEMS, PartAbility.STEAM_IMPORT_ITEMS } :
                                     new PartAbility[] { PartAbility.IMPORT_ITEMS })
-                    .colorOverlayTieredHullModel(OVERLAY_ITEM_HATCH_INPUT, "overlay_pipe", "overlay_pipe_in_emissive")
+                    .colorOverlayTieredHullModel(GTMachineModels.OVERLAY_ITEM_HATCH_INPUT, "overlay_pipe", "overlay_pipe_in_emissive")
                     .tooltips(Component.translatable(HugeBusPartMachine.HUGE_ITEM_BUS_IMPORT_TOOLTIP),
                             Component.translatable("gtceu.universal.tooltip.item_storage_capacity",
                                     HugeBusPartMachine.getInventorySize(tier)))
@@ -51,7 +51,7 @@ public class CustomMachines {
                     .abilities(
                             tier == 0 ? new PartAbility[] { PartAbility.EXPORT_ITEMS, PartAbility.STEAM_EXPORT_ITEMS } :
                                     new PartAbility[] { PartAbility.EXPORT_ITEMS })
-                    .colorOverlayTieredHullModel(OVERLAY_ITEM_HATCH_OUTPUT, "overlay_pipe", "overlay_pipe_out_emissive")
+                    .colorOverlayTieredHullModel(GTMachineModels.OVERLAY_ITEM_HATCH_OUTPUT, "overlay_pipe", "overlay_pipe_out_emissive")
                     .tooltips(Component.translatable(HugeBusPartMachine.HUGE_ITEM_BUS_EXPORT_TOOLTIP),
                             Component.translatable("gtceu.universal.tooltip.item_storage_capacity",
                                     HugeBusPartMachine.getInventorySize(tier)))
