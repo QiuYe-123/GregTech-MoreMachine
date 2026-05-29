@@ -2,25 +2,20 @@
   "parent": "minecraft:block/block",
   "loader": "gtceu:machine",
   "machine": "gtmoremachine:zpm_programmablec_hatch",
+  "replaceable_textures": [
+    "bottom",
+    "top",
+    "side"
+  ],
   "variants": {
-    "recipe_logic_status=idle": {
+    "": {
       "model": {
-        "parent": "gtceu:block/casings/voltage/zpm"
-      }
-    },
-    "recipe_logic_status=suspend": {
-      "model": {
-        "parent": "gtceu:block/casings/voltage/zpm"
-      }
-    },
-    "recipe_logic_status=waiting": {
-      "model": {
-        "parent": "gtceu:block/casings/voltage/zpm"
-      }
-    },
-    "recipe_logic_status=working": {
-      "model": {
-        "parent": "gtceu:block/casings/voltage/zpm"
+        "parent": "gtmoremachine:block/machine/part/dual_input_hatch",
+        "textures": {
+          "bottom": "gtceu:block/casings/voltage/zpm/bottom",
+          "side": "gtceu:block/casings/voltage/zpm/side",
+          "top": "gtceu:block/casings/voltage/zpm/top"
+        }
       }
     }
   }
