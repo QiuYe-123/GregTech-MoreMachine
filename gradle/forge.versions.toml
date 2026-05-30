@@ -32,6 +32,7 @@ modernui = "6ksT8CWg" #3.12.0.1
 modernfix = "5.24.4+mc1.20.1"
 
 ## curseforge maven ##
+ar = "7196153"
 jech = "7411324"
 
 ## libs ##
@@ -69,7 +70,9 @@ sophisticatedcore  = { module = "maven.modrinth:nmoqTijg", version.ref = "sophis
 sophisticatedbackpacks = { module = "maven.modrinth:TyCTlI4b", version.ref = "sophisticated-backpacks" }
 sophisticatedstorage = { module = "maven.modrinth:hMlaZH8f", version.ref = "sophisticated-storage" }
 
-
+ar                  = { module = "curse.maven:accelerated-rendering-1314021", version.ref = "ar" }
 jecharacters        = { module = "curse.maven:just-enough-characters-250702", version.ref = "jech" }
+
+
 [bundles]
 jei = ["jei-common-api", "jei-forge-api", "jei-forge-impl"]

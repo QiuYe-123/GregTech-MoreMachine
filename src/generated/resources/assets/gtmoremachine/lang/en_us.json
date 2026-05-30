@@ -222,6 +222,7 @@
   "block.gtmoremachine.opv_huge_item_import_bus": "§9§lOpV Input Bus",
   "block.gtmoremachine.opv_programmablec_dualhatch": "§9§lOpV Programmablec Dual Hatch",
   "block.gtmoremachine.opv_programmablec_hatch": "§9§lOpV Programmablec Hatch",
+  "block.gtmoremachine.planetaryengine": "§cPlanetary Engine",
   "block.gtmoremachine.uev_1024a_wireless_laser_source_hatch": "§aUEV 1,024A Laser Source Hatch",
   "block.gtmoremachine.uev_1024a_wireless_laser_target_hatch": "§aUEV 1,024A Laser Target Hatch",
   "block.gtmoremachine.uev_1048576a_wireless_laser_source_hatch": "§aUEV 1,048,576A Laser Source Hatch",
